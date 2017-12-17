@@ -22,6 +22,7 @@ function init() {
             return;
         }
 
+
         snapshot.forEach(function (childSnap) {
             var doc = document.createElement('div');
             doc.setAttribute("class", "card");
@@ -76,7 +77,9 @@ function init() {
                     break;
             }
 
-            document.getElementById('card_wrapper').appendChild(doc);
+            if(childSnap.child("dataType").val() !== 0){
+                document.getElementById('card_wrapper').appendChild(doc);
+            }
         });
     });
 }
