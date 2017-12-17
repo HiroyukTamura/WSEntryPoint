@@ -181,8 +181,7 @@ body {
 }
 
 .card {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px 30px;
 }
 
 .card-block {
@@ -194,12 +193,11 @@ body {
 }
 
 .time {
-    width: 2em;
+    width: 40px;
 }
 
 .min {
-    width: 3em;
-
+    width: 40px;
 }
 
 .input_eve {
@@ -216,6 +214,7 @@ body {
 }
 
 .colon {
+    width: 10px;
     margin-right: 10px;
     margin-left: 10px;
     font-size: 25px;
@@ -227,11 +226,26 @@ body {
     font-size: 20px;
 }
 
-#circle {
-    width: 50px;
-    height: 50px;
-    -webkit-border-radius: 25px;
-    -moz-border-radius: 25px;
-    border-radius: 25px;
-    background: red;
+.icon_down{
+    color: #9fcdff;
+    margin-left: -4px;
 }
+
+.circle {
+    width: 10px;
+    height: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background: #9fcdff;
+    margin-right: 20px;
+}
+
+/*#stripe {*/
+    /*position: relative;*/
+    /*width: 4px;*/
+    /*height: 100%;*/
+    /*margin-right: 33px;*/
+    /*margin-left: 33px;*/
+    /*background-color: #9fcdff;*/
+/*}*/
