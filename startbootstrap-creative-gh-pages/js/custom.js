@@ -24,7 +24,7 @@ var uiConfig = {
         // Called when the user has been successfully signed in.
         'signInSuccess': function(user, credential, redirectUrl) {
             console.log(user.uid);
-            redirectUrl = '../front/front.php' + "?uid=" + user.uid;
+            redirectUrl = '../input/index.html' + "?uid=" + user.uid;
             window.location.href = redirectUrl;
             return false;
         }

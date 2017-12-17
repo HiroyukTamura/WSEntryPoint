@@ -47,8 +47,10 @@
                 <h2>Simple Sidebar</h2>
             </div>
             <div class="seem"></div>
-            <p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
-            <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>
+
+            <div id="card_wrapper">
+            </div>
+
             <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
 
             <!--<footer class="footer">-->
@@ -70,12 +72,14 @@
 
 <script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
+<script src="app.js"></script>
+
 <!-- Menu Toggle Script -->
 <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
+    window.onload = function (ev) { init() };
 </script>
 
 

@@ -27,7 +27,6 @@
 <body>
 <header>
     <div id="header">
-
         <h3 id="chart-title"></h3>
     </div>
 </header>
