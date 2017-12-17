@@ -169,11 +169,8 @@ body {
 }
 
 #header {
-    margin-top: -20px;
-    padding-top: 20px;
-    margin-bottom: 40px;
-    height: 35px;
-    line-height: 35px;
+    height: 75px;
+    line-height: 75px;
 }
 
 .seem {
@@ -186,4 +183,40 @@ body {
 .card {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.card-block {
+    margin: 20px;
+    width: 100%;
+}
+
+.time_eve {
+    color: #68B3C8;
+}
+
+.time {
+    width: 2em;
+}
+
+.min {
+    width: 3em;
+}
+
+.event_name{
+    margin-left: 30px;
+}
+
+.mdl-textfield__input{
+    font-size: 25px;
+}
+
+.colon {
+    margin-right: 10px;
+    margin-left: 10px;
+    font-size: 25px;
+    display: inline-block;
+}
+
+.mdl-textfield__label{
+    margin-bottom:0;
 }
