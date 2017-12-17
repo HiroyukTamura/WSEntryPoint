@@ -227,7 +227,6 @@ body {
 }
 
 .icon_down{
-    color: #9fcdff;
     margin-left: -4px;
 }
 
@@ -237,10 +236,12 @@ body {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-    background: #9fcdff;
     margin-right: 20px;
 }
 
+#dummy {
+    display: none;
+}
 /*#stripe {*/
     /*position: relative;*/
     /*width: 4px;*/
