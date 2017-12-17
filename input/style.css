@@ -186,8 +186,7 @@ body {
 }
 
 .card-block {
-    margin: 20px;
-    width: 100%;
+    margin: 20px 40px;
 }
 
 .time_eve {
@@ -200,10 +199,16 @@ body {
 
 .min {
     width: 3em;
+
+}
+
+.input_eve {
+
 }
 
 .event_name{
-    margin-left: 30px;
+    margin-left: 40px;
+    display: inline-block;
 }
 
 .mdl-textfield__input{
@@ -214,9 +219,19 @@ body {
     margin-right: 10px;
     margin-left: 10px;
     font-size: 25px;
-    display: inline-block;
 }
 
 .mdl-textfield__label{
-    margin-bottom:0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    font-size: 20px;
+}
+
+#circle {
+    width: 50px;
+    height: 50px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    background: red;
 }
