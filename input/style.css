@@ -188,12 +188,9 @@ body {
     margin: 20px 40px;
 }
 
-.time_eve {
-    color: #68B3C8;
-}
-
 .time {
     width: 40px;
+    margin-right: -15px;
 }
 
 .min {
@@ -204,20 +201,29 @@ body {
 
 }
 
+.time_input {
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    /*color: slategray;*/
+}
+
 .event_name{
     margin-left: 40px;
     display: inline-block;
+    color: #616161;
 }
 
-.mdl-textfield__input{
-    font-size: 25px;
+.input_eve {
+    font-size: 20px;
 }
 
 .colon {
-    width: 10px;
-    margin-right: 10px;
-    margin-left: 10px;
+    margin-bottom: -15px;
     font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+    color: slategray;
 }
 
 .mdl-textfield__label{
@@ -226,8 +232,13 @@ body {
     font-size: 20px;
 }
 
+.mdl-textfield{
+    padding-bottom: 0;
+}
+
 .icon_down{
-    margin-left: -4px;
+    margin-left: 90px;
+    margin-bottom: -20px;
 }
 
 .circle {
@@ -240,7 +251,16 @@ body {
 }
 
 #dummy {
-    display: none;
+
+}
+
+.card_title {
+    color: slategray;
+    float: left;
+}
+
+.remove_btn {
+    float: right;
 }
 /*#stripe {*/
     /*position: relative;*/

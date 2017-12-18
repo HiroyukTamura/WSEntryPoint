@@ -72,7 +72,7 @@
                 </td>
 
                 <td>
-                    <form action="#" class="time">
+                    <form action="#" class="time colored">
                         <div class="mdl-textfield mdl-js-textfield">
                             <input class="mdl-textfield__input time_input" type="text" pattern="([01]?[0-9]{1}|2[0-3]{1})" id="sample">
                             <label class="mdl-textfield__label" for="sample"></label>
@@ -82,11 +82,11 @@
                 </td>
 
                 <td>
-                    <p class="colon">:</p>
+                    <p class="colon colored">:</p>
                 </td>
 
                 <td>
-                    <form action="#" class="min">
+                    <form action="#" class="min colored">
                         <div class="mdl-textfield mdl-js-textfield">
                             <input class="mdl-textfield__input time_input" type="text" pattern="[0-5]{1}[0-9]{1}" id="sample2">
                             <label class="mdl-textfield__label" for="sample2"></label>
@@ -98,8 +98,8 @@
                 <td>
                     <form action="#" class="event_name">
                         <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input" type="text" id="sample1">
-                            <label class="mdl-textfield__label" for="sample1">イベント名</label>
+                            <input class="mdl-textfield__input input_eve" type="text" id="sample3">
+                            <label class="mdl-textfield__label" for="sample3">イベント名</label>
                         </div>
                     </form>
                 </td>
@@ -117,25 +117,25 @@
                 </td>
 
                 <td>
-                    <form action="#" class="time">
+                    <form action="#" class="time colored">
                         <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input time_input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
-                            <label class="mdl-textfield__label" for="sample2"></label>
-                            <span class="mdl-textfield__error">Input is not a number!</span>
+                            <input class="mdl-textfield__input time_input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
+                            <label class="mdl-textfield__label" for="sample4"></label>
+                            <span class="mdl-textfield__error">Error</span>
                         </div>
                     </form>
                 </td>
 
                 <td>
-                    <p class="colon">:</p>
+                    <div class="colon colored">:</div>
                 </td>
 
                 <td>
-                    <form action="#" class="min">
+                    <form action="#" class="min colored">
                         <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input time_input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
-                            <label class="mdl-textfield__label" for="sample2"></label>
-                            <span class="mdl-textfield__error">Input is not a number!</span>
+                            <input class="mdl-textfield__input time_input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">
+                            <label class="mdl-textfield__label" for="sample5"></label>
+                            <span class="mdl-textfield__error">Error</span>
                         </div>
                     </form>
                 </td>
@@ -143,13 +143,20 @@
                 <td>
                     <form action="#" class="event_name">
                         <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input" type="text" id="sample1">
-                            <label class="mdl-textfield__label" for="sample1">イベント名</label>
+                            <input class="mdl-textfield__input" type="text" id="sample6">
+                            <label class="mdl-textfield__label" for="sample6">イベント名</label>
                         </div>
                     </form>
                 </td>
             </tr>
         </table>
+
+        <div class="card">
+            <span>
+                <div class="card_title">イベント</div>
+            <a href="#" class="remove_btn"><i class="fas fa-times"></i></a>
+            </span>
+        </div>
     </div>
     <!-- /#page-content-wrapper -->
 

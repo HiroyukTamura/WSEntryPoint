@@ -43,7 +43,18 @@ function init() {
                             var block = document.getElementById("dummy").getElementsByTagName("tr")[0].cloneNode(true);
                             var inputs = block.getElementsByClassName("mdl-textfield__input");
                             setEveInputValues(inputs, value);
-                            block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+
+                            //時刻の色を変える
+                            var coloreds = block.getElementsByClassName("colored");
+                            var color = getColor(value["colorNum"]);
+                            console.log(coloreds.length);
+                            for (var i=0; i<coloreds.length; i++){
+                                console.log(i);
+                                coloreds[i].style.color = color;
+                            }
+                            changeTimeColor(block, value);
+                            // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
+                            // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
 
                             doc.children[0].appendChild(block);
                         });
@@ -58,8 +69,10 @@ function init() {
                             var endInputs = blocks[2].getElementsByClassName("mdl-textfield__input");
                             setEveInputValues(endInputs, value["end"]);
 
-                            blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-                            blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+                            // blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+                            changeTimeColor(blocks[0], value);
+                            changeTimeColor(blocks[2], value);
+                            // blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
                             blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
 
                             console.log(blocks.length);
@@ -99,6 +112,15 @@ function getColor(num) {
             return "#1F497D";
         case 3:
             return "#8064A2";
+    }
+}
+
+function changeTimeColor(block, value) {
+    //時刻の色を変える
+    var coloreds = block.getElementsByClassName("colored");
+    var color = getColor(value["colorNum"]);
+    for (var i=0; i<coloreds.length; i++){
+        coloreds[i].style.color = color;
     }
 }
 
