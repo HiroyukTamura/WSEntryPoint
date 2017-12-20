@@ -22,18 +22,10 @@ function init() {
             return;
         }
 
-
         snapshot.forEach(function (childSnap) {
-            var doc = document.createElement('div');
-            doc.setAttribute("class", "card");
-            doc.innerHTML =
-                '<span class="ele_header">イベント ' +
-                    '<a href="#" class="remove_btn ele_header_button"><i class="fas fa-times"></i></a>' +
-                    '<a href="#" class="arrow_down ele_header_button"><i class="fas fa-angle-down"></i></a>' +
-                    '<a href="#" class="arrow_up ele_header_button"><i class="fas fa-angle-up"></i></a>' +
-                '</span>' +
-                '<table class="card-block">' +
-                '</table>';
+            var doc = createElementWithHeader();
+            // '<table class="card-block">' +
+            // '</table>';
 
             // document.getElementById('card_wrapper').innerHTML += '<div class="card"><div class="card-block"></div></div>';
 
@@ -41,6 +33,8 @@ function init() {
                 case 0:
                     break;
                 case 1:
+                    doc.appendChild(createTable());
+
                     var json = childSnap.child("data").child("0").val();
                     json = JSON.parse(json);
                     console.log(json);
@@ -97,10 +91,14 @@ function init() {
                     break;
                 case 4:
                     var title = childSnap.child("dataName").val();
-                    var summery = getCommentAsNonNull(childSnap);
+                    var summery = getCommentAsNullable(childSnap);
 
-                    var ee = doc.getElementsByClassName("ele_header")[0].innerHTML = title;
-
+                    setHeaderTitle(doc, title);
+                    var clone = document.getElementById("comment_dummy").cloneNode(true);
+                    if(summery){
+                        clone.getElementsByClassName("mdl-textfield__input")[0].setAttribute("value", summery);
+                    }
+                    doc.appendChild(clone);
                     break;
             }
 
@@ -159,4 +157,33 @@ function getCommentAsNonNull(childSnap) {
         return "";
     }
     return childSnap.child("data").val();
+}
+
+function  getCommentAsNullable(childSnap) {
+    if (!childSnap.hasChild("data")){
+        return null;
+    }
+    return childSnap.child("data").val();
+}
+
+function createElementWithHeader() {
+    var doc = document.createElement('div');
+    doc.setAttribute("class", "card");
+    doc.innerHTML =
+        '<span class="ele_header">' +
+        '<a href="#" class="remove_btn ele_header_button"><i class="fas fa-times"></i></a>' +
+        '<a href="#" class="arrow_down ele_header_button"><i class="fas fa-angle-down"></i></a>' +
+        '<a href="#" class="arrow_up ele_header_button"><i class="fas fa-angle-up"></i></a>' +
+        '</span>';
+    return doc;
+}
+
+function setHeaderTitle(doc, title) {
+    doc.getElementsByClassName("ele_header")[0].insertAdjacentHTML('afterbegin', title);
+}
+
+function createTable() {
+    var table = document.createElement("table");
+    table.setAttribute("class", "card_block");
+    return table;
 }
