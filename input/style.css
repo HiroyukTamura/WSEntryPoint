@@ -226,7 +226,7 @@ body {
 }
 
 .mdl-textfield__label{
-    margin-bottom: 0;
+    margin-bottom: -20px;
     padding-bottom: 0;
     font-size: 20px;
 }
@@ -273,6 +273,21 @@ body {
 
 td {
     vertical-align: bottom;
+}
+
+/*コメントまわり*/
+.comment {
+    width: 100%;
+}
+
+.comment_form {
+    padding-right: 30px;
+    padding-left: 30px;
+    padding-bottom: 20px;/*この値はmdl-textfieldのデフォルト値に合わせてる*/
+}
+
+.comment > .mdl-textfield__input {
+    width: 100%;
 }
 /*#stripe {*/
     /*position: relative;*/

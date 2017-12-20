@@ -95,6 +95,13 @@ function init() {
                 case 3:
 
                     break;
+                case 4:
+                    var title = childSnap.child("dataName").val();
+                    var summery = getCommentAsNonNull(childSnap);
+
+                    var ee = doc.getElementsByClassName("ele_header")[0].innerHTML = title;
+
+                    break;
             }
 
             if(childSnap.child("dataType").val() !== 0){
@@ -142,4 +149,14 @@ function format0to00(value) {
         return "00";
      else
          return value;
+}
+
+/**
+ * コメントノードは、存在が保障されていません
+ */
+function getCommentAsNonNull(childSnap) {
+    if (!childSnap.hasChild("data")){
+        return "";
+    }
+    return childSnap.child("data").val();
 }
