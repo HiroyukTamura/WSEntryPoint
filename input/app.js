@@ -26,7 +26,14 @@ function init() {
         snapshot.forEach(function (childSnap) {
             var doc = document.createElement('div');
             doc.setAttribute("class", "card");
-            doc.innerHTML = '<table class="card-block"></table>';
+            doc.innerHTML =
+                '<span class="ele_header">イベント ' +
+                    '<a href="#" class="remove_btn ele_header_button"><i class="fas fa-times"></i></a>' +
+                    '<a href="#" class="arrow_down ele_header_button"><i class="fas fa-angle-down"></i></a>' +
+                    '<a href="#" class="arrow_up ele_header_button"><i class="fas fa-angle-up"></i></a>' +
+                '</span>' +
+                '<table class="card-block">' +
+                '</table>';
 
             // document.getElementById('card_wrapper').innerHTML += '<div class="card"><div class="card-block"></div></div>';
 
@@ -56,7 +63,7 @@ function init() {
                             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
                             // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
 
-                            doc.children[0].appendChild(block);
+                            doc.children[1].appendChild(block);
                         });
                     }
 
@@ -77,7 +84,7 @@ function init() {
 
                             console.log(blocks.length);
                             for(var i=0; i<blocks.length; i++){
-                                doc.children[0].appendChild(blocks[i].cloneNode(true));
+                                doc.children[1].appendChild(blocks[i].cloneNode(true));
                             }
                         });
                     }

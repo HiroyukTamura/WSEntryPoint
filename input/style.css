@@ -219,7 +219,6 @@ body {
 }
 
 .colon {
-    margin-bottom: -15px;
     font-size: 25px;
     text-align: center;
     font-weight: bold;
@@ -257,10 +256,23 @@ body {
 .card_title {
     color: slategray;
     float: left;
+    margin: 16px;
 }
 
-.remove_btn {
+.ele_header_button {
     float: right;
+    color: black;
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
+.ele_header {
+    padding: 8px 16px;
+    background-color: #e2e2e2;
+}
+
+td {
+    vertical-align: bottom;
 }
 /*#stripe {*/
     /*position: relative;*/
