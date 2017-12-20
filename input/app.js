@@ -87,13 +87,13 @@ function init() {
 
                     break;
                 case 3:
-
+                    var element = on3(doc, childSnap);
+                    if(element){
+                        doc.appendChild(element);
+                    }
                     break;
                 case 4:
-                    var title = childSnap.child("dataName").val();
                     var summery = getCommentAsNullable(childSnap);
-
-                    setHeaderTitle(doc, title);
                     var clone = document.getElementById("comment_dummy").cloneNode(true);
                     if(summery){
                         clone.getElementsByClassName("mdl-textfield__input")[0].setAttribute("value", summery);
@@ -103,6 +103,7 @@ function init() {
             }
 
             if(childSnap.child("dataType").val() !== 0){
+                setHeaderTitle(doc, childSnap);
                 document.getElementById('card_wrapper').appendChild(doc);
             }
         });
@@ -178,7 +179,13 @@ function createElementWithHeader() {
     return doc;
 }
 
-function setHeaderTitle(doc, title) {
+function setHeaderTitle(doc, childSnap) {
+    var title;
+    if(childSnap.child("dataType").val() !== 1){
+        title = childSnap.child("dataName").val();
+    } else {
+        title = "イベント";
+    }
     doc.getElementsByClassName("ele_header")[0].insertAdjacentHTML('afterbegin', title);
 }
 
@@ -186,4 +193,36 @@ function createTable() {
     var table = document.createElement("table");
     table.setAttribute("class", "card_block");
     return table;
+}
+
+function on3(doc, childSnap) {
+    if(childSnap.hasChild("data")){
+        var ul = document.createElement("ul");
+        ul.setAttribute("class", "demo-list-item mdl-list");
+        
+        childSnap.child("data").forEach(function (childSnap) {
+            var splited = childSnap.val().split("9mVSv");
+            console.log(splited);
+            var witch = splited[0];
+            var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
+            clone.getElementsByClassName("params_title")[0].innerHTML = splited[1];
+            switch(witch){
+                case "0":
+                    clone.getElementsByClassName("params_slider")[0].style.display = "none";
+                    if(splited[2] == true){//==でstring型をbooleanに内部変換してもらえる
+                        clone.getElementsByClassName("mdl-checkbox__input")[0].setAttribute("checked", "");
+                    }
+                    break;
+                case "1":
+                    clone.getElementsByClassName("params_check")[0].style.display = "none";
+                    var slider = clone.getElementsByClassName("mdl-slider")[0];
+                    slider.setAttribute("value", splited[2]);
+                    slider.setAttribute("max", splited[3]);
+                    break;
+            }
+
+            ul.appendChild(clone.children[0]);
+        });
+        doc.appendChild(ul);
+    }
 }

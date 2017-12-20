@@ -289,6 +289,10 @@ td {
 .comment > .mdl-textfield__input {
     width: 100%;
 }
+
+.params_check .params_slider {
+    display: none;
+}
 /*#stripe {*/
     /*position: relative;*/
     /*width: 4px;*/
