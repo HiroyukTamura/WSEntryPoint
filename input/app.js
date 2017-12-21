@@ -1,4 +1,7 @@
 function init() {
+    document.getElementById("place-holder").style.height = screen.availHeight + "px";
+    document.getElementById("place-holder").style.display = "inline";
+
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
@@ -104,6 +107,9 @@ function init() {
                 document.getElementById('card_wrapper').appendChild(doc);
             }
         });
+
+        document.getElementById("place-holder").style.display = "none";
+        document.getElementById("page-content-wrapper").style.display = "inline";
     });
 }
 

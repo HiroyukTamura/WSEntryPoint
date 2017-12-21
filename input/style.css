@@ -38,6 +38,7 @@ body > .container {
 
 body {
     overflow-x: hidden;
+    background-color: #F4F3EF;
 }
 
 #wrapper {
@@ -151,7 +152,6 @@ body {
     #page-content-wrapper {
         padding: 20px;
         position: relative;
-        background-color: #F4F3EF;
     }
     #wrapper.toggled #page-content-wrapper {
         position: relative;
@@ -375,6 +375,18 @@ td {
     background-color: #F1EAE0;
 }
 
+/*---------------ローディング画面系-------------*/
+#page-content-wrapper {
+    display: none;
+}
+
+#place-holder {
+    display: none;
+}
+
+#loading-spinner{
+    margin: auto;
+}
 /*.mdl-chip__text{*/
     /*color: white;*/
 /*}*/
