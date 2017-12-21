@@ -57,7 +57,7 @@ function init() {
                             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
                             // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
 
-                            doc.children[1].appendChild(block);
+                            doc.children[2].appendChild(block);
                         });
                     }
 
@@ -78,7 +78,7 @@ function init() {
 
                             console.log(blocks.length);
                             for(var i=0; i<blocks.length; i++){
-                                doc.children[1].appendChild(blocks[i].cloneNode(true));
+                                doc.children[2].appendChild(blocks[i].cloneNode(true));
                             }
                         });
                     }
@@ -178,7 +178,10 @@ function createElementWithHeader() {
             '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">' +
                 '<i class="fas fa-angle-up"></i>' +
             '</button>' +
-        '</span>';
+        '</span>' +
+        '<div class="seem_wrapper">' +
+            '<div class="seem">' +
+        '</div>';
     return doc;
 }
 
@@ -251,11 +254,13 @@ function operateAs2(doc, childSnap) {
         var clone = document.getElementById("tags_dummy").children[0].cloneNode(true);
 
         clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
-        clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[1]);
-        if(splited[1] === "0"){
+        clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[2]);
+        if(splited[2] === "false"){
             clone.getElementsByClassName("chips_btn")[1].style.display = "none";
-        } else if (splited[1] === "1"){
+        } else if (splited[2] === "true"){
             clone.getElementsByClassName("chips_btn")[0].style.display = "none";
+        } else {
+            console.log(splited);
         }
         pool.append(clone);
     });
@@ -265,13 +270,13 @@ function operateAs2(doc, childSnap) {
 
 /**
  *
- * @param num :only "0"/"1"
+ * @param shouldShow :only "true"/"false"
  */
-function convertToDisplayLetters(num) {
-    switch (num){
-        case "0":
+function convertToDisplayLetters(shouldShow) {
+    switch (shouldShow){
+        case "true":
             return "非表示";
-        case "1":
+        case "false":
             return "表示";
     }
 }
