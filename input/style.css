@@ -376,17 +376,17 @@ td {
 }
 
 /*---------------ローディング画面系-------------*/
-#page-content-wrapper {
-    display: none;
-}
+/*#page-content-wrapper {*/
+    /*display: none;*/
+/*}*/
 
-#place-holder {
-    display: none;
-}
+/*#place-holder {*/
+    /*display: none;*/
+/*}*/
 
-#loading-spinner{
-    margin: auto;
-}
+/*#loading-spinner{*/
+    /*margin: auto;*/
+/*}*/
 /*.mdl-chip__text{*/
     /*color: white;*/
 /*}*/

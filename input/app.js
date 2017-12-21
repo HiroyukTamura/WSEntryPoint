@@ -1,6 +1,6 @@
 function init() {
-    document.getElementById("place-holder").style.height = screen.availHeight + "px";
-    document.getElementById("place-holder").style.display = "inline";
+    // document.getElementById("place-holder").style.height = screen.availHeight + "px";
+    // document.getElementById("place-holder").style.display = "inline";
 
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
@@ -60,7 +60,7 @@ function init() {
                             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
                             // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
 
-                            doc.children[2].appendChild(block);
+                            doc.children[2].children[0].appendChild(block);
                         });
                     }
 
@@ -81,10 +81,14 @@ function init() {
 
                             console.log(blocks.length);
                             for(var i=0; i<blocks.length; i++){
-                                doc.children[2].appendChild(blocks[i].cloneNode(true));
+                                var element = blocks[i].cloneNode(true);
+                                setElementAsMdl(element);
+                                doc.children[2].children[0].appendChild(element);
                             }
                         });
                     }
+
+
                     break;
                 case 2:
                     operateAs2(doc, childSnap);
@@ -108,8 +112,8 @@ function init() {
             }
         });
 
-        document.getElementById("place-holder").style.display = "none";
-        document.getElementById("page-content-wrapper").style.display = "inline";
+        // document.getElementById("place-holder").style.display = "none";
+        // document.getElementById("page-content-wrapper").style.display = "inline";
     });
 }
 
@@ -175,19 +179,20 @@ function createElementWithHeader() {
     doc.setAttribute("class", "card");
     doc.innerHTML =
         '<span class="ele_header">' +
-            '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">' +
-                '<i class="fas fa-times"></i>' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
+                '<i class="fas fa-times mdl-pre-upgrade"></i>' +
             '</button>' +
-            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button">' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">' +
                 '<i class="fas fa-angle-down"></i>' +
             '</button>' +
-            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
                 '<i class="fas fa-angle-up"></i>' +
             '</button>' +
         '</span>' +
         '<div class="seem_wrapper">' +
             '<div class="seem">' +
         '</div>';
+    setElementAsMdl(doc);
     return doc;
 }
 
@@ -204,6 +209,7 @@ function setHeaderTitle(doc, childSnap) {
 function createTable() {
     var table = document.createElement("table");
     table.setAttribute("class", "card_block");
+    table.innerHTML = "<tbody></tbody>"
     return table;
 }
 
@@ -237,16 +243,29 @@ function operateAs3(doc, childSnap) {
             ul.appendChild(clone.children[0]);
         });
 
+        setElementAsMdl(ul);
         doc.appendChild(ul);
     }
 }
 
 function operateAs4(doc, childSnap) {
+    var clone = document.createElement("div");
+    clone.innerHTML =
+        '<div id="comment_dummy">'+
+        '<form action="#" class="comment_form">' +
+        '<div class="mdl-textfield mdl-js-textfield comment mdl-pre-upgrade">' +
+        '<textarea class="mdl-textfield__input comment_ta mdl-pre-upgrade" type="text" rows= "3" id="comment" ></textarea>' +
+        '<label class="mdl-textfield__label mdl-pre-upgrade" for="comment">Text...</label>' +
+        '</div>' +
+        '</form>' +
+        '</div>';
+    // var clone = document.getElementById("comment_dummy").cloneNode(true);
     var summery = getCommentAsNullable(childSnap);
-    var clone = document.getElementById("comment_dummy").cloneNode(true);
     if(summery){
         clone.getElementsByClassName("mdl-textfield__input")[0].setAttribute("value", summery);
     }
+
+    setElementAsMdl(clone);
     doc.appendChild(clone);
 }
 
@@ -269,6 +288,8 @@ function operateAs2(doc, childSnap) {
             console.log(splited);
         }
         clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
+
+        setElementAsMdl(clone);
         pool.append(clone);
     });
 
@@ -285,5 +306,12 @@ function convertToDisplayLetters(shouldShow) {
             return "非表示";
         case "false":
             return "表示";
+    }
+}
+
+function setElementAsMdl(clone) {
+    var ele = clone.getElementsByClassName("mdl-pre-upgrade");
+    for (var i=0; i<ele.length; i++){
+        componentHandler.upgradeElement(ele[i]);
     }
 }
