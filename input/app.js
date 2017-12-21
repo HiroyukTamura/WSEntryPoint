@@ -223,6 +223,7 @@ function on3(doc, childSnap) {
 
             ul.appendChild(clone.children[0]);
         });
+
         doc.appendChild(ul);
     }
 }
