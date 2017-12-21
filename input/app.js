@@ -262,6 +262,7 @@ function operateAs2(doc, childSnap) {
         } else {
             console.log(splited);
         }
+        clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
         pool.append(clone);
     });
 

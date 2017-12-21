@@ -191,8 +191,9 @@ body {
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
 }
 
-.card-block {
-    margin: 20px 40px;
+/*タイムイベント系*/
+.card_block {
+    margin: 20px auto 36px auto;
 }
 
 .time {
@@ -230,6 +231,7 @@ body {
     text-align: center;
     font-weight: bold;
     color: slategray;
+    margin-bottom: 11px;/*=16-5*/
 }
 
 .mdl-textfield__label{
@@ -295,8 +297,8 @@ td {
 }
 
 .comment_form {
-    padding-right: 30px;
-    padding-left: 30px;
+    padding-right: 46px;
+    padding-left: 46px;
     padding-bottom: 20px;/*この値はmdl-textfieldのデフォルト値に合わせてる*/
 }
 
@@ -304,6 +306,10 @@ td {
     padding-right: 30px;
     padding-left: 30px;
     padding-bottom: 20px;/*この値はmdl-textfieldのデフォルト値に合わせてる*/
+}
+
+.tag_pool {
+    padding: 20px 30px;
 }
 
 .comment > .mdl-textfield__input {
@@ -339,15 +345,21 @@ td {
     font-size: 15px;
 }
 
+/*---------タグプール系-----------*/
+
 .chips_btn {
-    color: #F4F3EF;
-    margin: 4px;
-    font-size: 24px;
+    color: white;
+    margin: 5px;
+    font-size: 22px;
 }
 
 .chips_btn_circle {
-    color: #767676;/*.mdl-chip__action に合わせてる*/
+    color: white;/*.mdl-chip__action に合わせてる*/
     margin: 0;
+}
+
+.mdl-chip__action{
+    display: none;
 }
 
 .custom_tips_btn{
@@ -356,7 +368,16 @@ td {
 
 .tag_wrapper{
     display: inline-block;
+    margin: 2px 5px;
 }
+
+.mdl-chip{
+    background-color: #F1EAE0;
+}
+
+/*.mdl-chip__text{*/
+    /*color: white;*/
+/*}*/
 /*#stripe {*/
     /*position: relative;*/
     /*width: 4px;*/
