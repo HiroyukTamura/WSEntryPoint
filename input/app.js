@@ -84,21 +84,18 @@ function init() {
                     }
                     break;
                 case 2:
-
+                    operateAs2(doc, childSnap);
                     break;
                 case 3:
-                    var element = on3(doc, childSnap);
+                    var element = operateAs3(doc, childSnap);
                     if(element){
                         doc.appendChild(element);
+                    } else {
+                        //todo エラー時処理？？
                     }
                     break;
                 case 4:
-                    var summery = getCommentAsNullable(childSnap);
-                    var clone = document.getElementById("comment_dummy").cloneNode(true);
-                    if(summery){
-                        clone.getElementsByClassName("mdl-textfield__input")[0].setAttribute("value", summery);
-                    }
-                    doc.appendChild(clone);
+                    operateAs4(doc, childSnap);
                     break;
             }
 
@@ -201,7 +198,7 @@ function createTable() {
     return table;
 }
 
-function on3(doc, childSnap) {
+function operateAs3(doc, childSnap) {
     if(childSnap.hasChild("data")){
         var ul = document.createElement("ul");
         ul.setAttribute("class", "demo-list-item mdl-list");
@@ -216,7 +213,7 @@ function on3(doc, childSnap) {
                 case "0":
                     clone.getElementsByClassName("params_slider")[0].style.display = "none";
                     // if(splited[2] == true){//==でstring型をbooleanに内部変換してもらえる
-                        clone.getElementsByClassName("mdl-checkbox__input")[0].setAttribute("checked", "");
+                    //     clone.getElementsByClassName("mdl-checkbox__input")[0].setAttribute("checked", "");
                         console.log("こっち");
                     // }
                     break;
@@ -232,5 +229,49 @@ function on3(doc, childSnap) {
         });
 
         doc.appendChild(ul);
+    }
+}
+
+function operateAs4(doc, childSnap) {
+    var summery = getCommentAsNullable(childSnap);
+    var clone = document.getElementById("comment_dummy").cloneNode(true);
+    if(summery){
+        clone.getElementsByClassName("mdl-textfield__input")[0].setAttribute("value", summery);
+    }
+    doc.appendChild(clone);
+}
+
+function operateAs2(doc, childSnap) {
+    var pool = document.createElement("div");
+    pool.setAttribute("class", "tag_pool");
+
+
+    childSnap.child("data").forEach(function (grChildSnap) {
+        var splited = grChildSnap.val().split("9mVSv");
+        var clone = document.getElementById("tags_dummy").children[0].cloneNode(true);
+
+        clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
+        clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[1]);
+        if(splited[1] === "0"){
+            clone.getElementsByClassName("chips_btn")[1].style.display = "none";
+        } else if (splited[1] === "1"){
+            clone.getElementsByClassName("chips_btn")[0].style.display = "none";
+        }
+        pool.append(clone);
+    });
+
+    doc.append(pool);
+}
+
+/**
+ *
+ * @param num :only "0"/"1"
+ */
+function convertToDisplayLetters(num) {
+    switch (num){
+        case "0":
+            return "非表示";
+        case "1":
+            return "表示";
     }
 }

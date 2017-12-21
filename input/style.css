@@ -304,6 +304,25 @@ td {
     min-width: 15px;
     font-size: 15px;
 }
+
+.chips_btn {
+    color: #f2f2f2;
+    margin: 4px;
+    font-size: 24px;
+}
+
+.chips_btn_circle {
+    color: #767676;/*.mdl-chip__action に合わせてる*/
+    margin: 0;
+}
+
+.custom_tips_btn{
+    font-size: 32px;
+}
+
+.tag_wrapper{
+    display: inline-block;
+}
 /*#stripe {*/
     /*position: relative;*/
     /*width: 4px;*/
