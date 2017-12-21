@@ -172,9 +172,15 @@ function createElementWithHeader() {
     doc.setAttribute("class", "card");
     doc.innerHTML =
         '<span class="ele_header">' +
-        '<a href="#" class="remove_btn ele_header_button"><i class="fas fa-times"></i></a>' +
-        '<a href="#" class="arrow_down ele_header_button"><i class="fas fa-angle-down"></i></a>' +
-        '<a href="#" class="arrow_up ele_header_button"><i class="fas fa-angle-up"></i></a>' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">' +
+                '<i class="fas fa-times"></i>' +
+            '</button>' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button">' +
+                '<i class="fas fa-angle-down"></i>' +
+            '</button>' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">' +
+                '<i class="fas fa-angle-up"></i>' +
+            '</button>' +
         '</span>';
     return doc;
 }
@@ -209,9 +215,10 @@ function on3(doc, childSnap) {
             switch(witch){
                 case "0":
                     clone.getElementsByClassName("params_slider")[0].style.display = "none";
-                    if(splited[2] == true){//==でstring型をbooleanに内部変換してもらえる
+                    // if(splited[2] == true){//==でstring型をbooleanに内部変換してもらえる
                         clone.getElementsByClassName("mdl-checkbox__input")[0].setAttribute("checked", "");
-                    }
+                        console.log("こっち");
+                    // }
                     break;
                 case "1":
                     clone.getElementsByClassName("params_check")[0].style.display = "none";

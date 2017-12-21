@@ -293,6 +293,17 @@ td {
 .params_check .params_slider {
     display: none;
 }
+
+.mdl-button{
+    padding: 0;
+}
+
+.mdl-button--icon {
+    height: 18px;
+    width: 18px;
+    min-width: 15px;
+    font-size: 15px;
+}
 /*#stripe {*/
     /*position: relative;*/
     /*width: 4px;*/
