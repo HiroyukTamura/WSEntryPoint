@@ -317,9 +317,9 @@ function setElementAsMdl(clone) {
 function createHtmlAs1Eve() {
     var clone = document.createElement('tr');
     clone.innerHTML =
-    '<td class="circle_wrapper">' +
-    '<div class="circle">' +'</div>' +
-    '</td>' +
+    // '<td class="circle_wrapper">' +
+    // '<div class="circle">' +'</div>' +
+    // '</td>' +
 
     '<td>' +
         '<form action="#" class="time colored">' +
@@ -332,7 +332,8 @@ function createHtmlAs1Eve() {
     '</td>' +
 
     '<td>' +
-    '<p class="colon colored">:</p>' +
+
+        '<p class="colon colored">:</p>' +
     '</td>' +
 
     '<td>' +

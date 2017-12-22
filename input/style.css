@@ -185,15 +185,23 @@ body {
 }
 
 .card {
-    margin: 10px 30px;
+    margin: 10px 20px;
     border: 0;
     border-radius: 6px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    max-width: 524px;/*イベントのカードの横幅default値*/
 }
 
-/*タイムイベント系*/
+#card_wrapper{
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap; /* Safari */
+    flex-wrap:         wrap;
+}
+
+/****************** time events *******************/
 .card_block {
-    margin: 20px auto 36px auto;
+    margin: 20px 36px 36px 36px;
 }
 
 .time {
@@ -212,7 +220,7 @@ body {
 .time_input {
     text-align: center;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 25px;
     /*color: slategray;*/
 }
 
@@ -231,13 +239,13 @@ body {
     text-align: center;
     font-weight: bold;
     color: slategray;
-    margin-bottom: 11px;/*=16-5*/
+    margin-bottom: 8px;/*=16-5*/
 }
 
 .mdl-textfield__label{
     margin-bottom: -20px;
     padding-bottom: 0;
-    font-size: 20px;
+    font-size: 16px;/*depends on .mdl-textfield*/
 }
 
 .mdl-textfield{
