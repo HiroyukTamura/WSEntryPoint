@@ -381,7 +381,7 @@ function createHtmlAs2() {
                     '</span>' +
                 '</a>' +
             '<span class="mdl-chip__text"></span>' +
-            '<a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>'+
+            '<a href="#" class="mdl-chip__action mdl-pre-upgrade a_remove_btn"><i class="fas fa-times remove_btn"></i></a>'+
         '</span>' +
         '<div class="mdl-tooltip" for="tooltip_delete"></div>';
     return clone;

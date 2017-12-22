@@ -358,10 +358,6 @@ td {
     margin: 0;
 }
 
-.mdl-chip__action{
-    display: none;
-}
-
 .custom_tips_btn{
     font-size: 32px;
 }
@@ -373,6 +369,11 @@ td {
 
 .mdl-chip{
     background-color: #F1EAE0;
+}
+
+.remove_btn{
+    width: 24px;
+    height: 24px;
 }
 
 /*---------------ローディング画面系-------------*/
