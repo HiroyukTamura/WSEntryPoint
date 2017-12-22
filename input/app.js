@@ -28,70 +28,13 @@ function init() {
         var count = 0;
         snapshot.forEach(function (childSnap) {
             var doc = createElementWithHeader();
-            // '<table class="card-block">' +
-            // '</table>';
 
             // document.getElementById('card_wrapper').innerHTML += '<div class="card"><div class="card-block"></div></div>';
             switch (childSnap.child("dataType").val()){
                 case 0:
                     break;
                 case 1:
-                    doc.appendChild(createTable());
-
-                    var json = childSnap.child("data").child("0").val();
-                    json = JSON.parse(json);
-                    console.log(json);
-
-                    if(json["eventList"]){
-                        json["eventList"].forEach(function (value) {
-                            var block = createHtmlAs1Eve();
-                            var inputs = block.getElementsByClassName("mdl-textfield__input");
-                            setEveInputValues(inputs, value);
-
-                            //時刻の色を変える
-                            var coloreds = block.getElementsByClassName("colored");
-                            var color = getColor(value["colorNum"]);
-                            console.log(coloreds.length);
-                            for (var i=0; i<coloreds.length; i++){
-                                console.log(i);
-                                coloreds[i].style.color = color;
-                            }
-                            changeTimeColor(block, value);
-                            // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
-                            // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-
-                            setElementAsMdl(block);
-                            doc.children[2].children[0].appendChild(block);
-                        });
-                    }
-
-                    if(json["rangeList"]){
-                        json["rangeList"].forEach(function (value) {
-                            // var clone = document.getElementById("dummy").getElementsByClassName("card-block")[0].cloneNode(true);
-                            var blocks = [];
-                            blocks[0] = createHtmlAs1Eve();
-                            blocks[1] = craeteHtmlAs1Row();
-                            blocks[2] = createHtmlAs1Eve();
-                            var startInputs = blocks[0].getElementsByClassName("mdl-textfield__input");
-                            setEveInputValues(startInputs, value["start"]);
-                            var endInputs = blocks[2].getElementsByClassName("mdl-textfield__input");
-                            setEveInputValues(endInputs, value["end"]);
-
-                            // blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-                            changeTimeColor(blocks[0], value);
-                            changeTimeColor(blocks[2], value);
-                            // blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-                            blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
-
-                            console.log(blocks.length);
-                            for(var i=0; i<blocks.length; i++){
-                                var element = blocks[i].cloneNode(true);
-                                setElementAsMdl(element);
-                                doc.children[2].children[0].appendChild(element);
-                            }
-                        });
-                    }
-
+                    operateAs1(doc, childSnap);
                     break;
                 case 2:
                     operateAs2(doc, childSnap);
@@ -178,28 +121,6 @@ function  getCommentAsNullable(childSnap) {
     return childSnap.child("data").val();
 }
 
-function createElementWithHeader() {
-    var doc = document.createElement('div');
-    doc.setAttribute("class", "card");
-    doc.innerHTML =
-        '<span class="ele_header">' +
-            '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
-                '<i class="fas fa-times mdl-pre-upgrade"></i>' +
-            '</button>' +
-            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">' +
-                '<i class="fas fa-angle-down"></i>' +
-            '</button>' +
-            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
-                '<i class="fas fa-angle-up"></i>' +
-            '</button>' +
-        '</span>' +
-        '<div class="seem_wrapper">' +
-            '<div class="seem">' +
-        '</div>';
-    setElementAsMdl(doc);
-    return doc;
-}
-
 function setHeaderTitle(doc, childSnap) {
     var title;
     if(childSnap.child("dataType").val() !== 1){
@@ -215,6 +136,91 @@ function createTable() {
     table.setAttribute("class", "card_block");
     table.innerHTML = "<tbody></tbody>"
     return table;
+}
+
+//region **************operate系*******************
+function operateAs1(doc, childSnap) {
+    doc.appendChild(createTable());
+
+    var json = childSnap.child("data").child("0").val();
+    json = JSON.parse(json);
+    console.log(json);
+
+    if(json["eventList"]){
+        json["eventList"].forEach(function (value) {
+            var block = createHtmlAs1Eve();
+            var inputs = block.getElementsByClassName("mdl-textfield__input");
+            setEveInputValues(inputs, value);
+
+            //時刻の色を変える
+            var coloreds = block.getElementsByClassName("colored");
+            var color = getColor(value["colorNum"]);
+            console.log(coloreds.length);
+            for (var i=0; i<coloreds.length; i++){
+                console.log(i);
+                coloreds[i].style.color = color;
+            }
+            changeTimeColor(block, value);
+            // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
+            // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+
+            setElementAsMdl(block);
+            doc.children[2].children[0].appendChild(block);
+        });
+    }
+
+    if(json["rangeList"]){
+        json["rangeList"].forEach(function (value) {
+            // var clone = document.getElementById("dummy").getElementsByClassName("card-block")[0].cloneNode(true);
+            var blocks = [];
+            blocks[0] = createHtmlAs1Eve();
+            blocks[1] = craeteHtmlAs1Row();
+            blocks[2] = createHtmlAs1Eve();
+            var startInputs = blocks[0].getElementsByClassName("mdl-textfield__input");
+            setEveInputValues(startInputs, value["start"]);
+            var endInputs = blocks[2].getElementsByClassName("mdl-textfield__input");
+            setEveInputValues(endInputs, value["end"]);
+
+            // blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+            changeTimeColor(blocks[0], value);
+            changeTimeColor(blocks[2], value);
+            // blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+            blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
+
+            console.log(blocks.length);
+            for(var i=0; i<blocks.length; i++){
+                var element = blocks[i].cloneNode(true);
+                setElementAsMdl(element);
+                doc.children[2].children[0].appendChild(element);
+            }
+        });
+    }
+}
+
+function operateAs2(doc, childSnap) {
+    var pool = document.createElement("div");
+    pool.setAttribute("class", "tag_pool");
+
+    childSnap.child("data").forEach(function (grChildSnap) {
+        var splited = grChildSnap.val().split("9mVSv");
+        var clone = createHtmlAs2();
+
+        clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
+        // clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[2]);
+        if(splited[2] === "false"){
+            clone.getElementsByClassName("chips_btn")[1].style.display = "none";
+        } else if (splited[2] === "true"){
+            clone.getElementsByClassName("chips_btn")[0].style.display = "none";
+        } else {
+            console.log(splited);
+        }
+        clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
+
+        setElementAsMdl(clone);
+        pool.append(clone);
+    });
+
+    doc.append(pool);
 }
 
 function operateAs3(doc, childSnap, dataNum) {
@@ -235,7 +241,7 @@ function operateAs3(doc, childSnap, dataNum) {
                     clone.getElementsByClassName("params_slider")[0].style.display = "none";
                     // if(splited[2] == true){//==でstring型をbooleanに内部変換してもらえる
                     //     clone.getElementsByClassName("mdl-checkbox__input")[0].setAttribute("checked", "");
-                        console.log("こっち");
+                    console.log("こっち");
                     // }
                     break;
                 case "1":
@@ -267,32 +273,7 @@ function operateAs4(doc, childSnap) {
     setElementAsMdl(clone);
     doc.appendChild(clone);
 }
-
-function operateAs2(doc, childSnap) {
-    var pool = document.createElement("div");
-    pool.setAttribute("class", "tag_pool");
-
-    childSnap.child("data").forEach(function (grChildSnap) {
-        var splited = grChildSnap.val().split("9mVSv");
-        var clone = createHtmlAs2();
-
-        clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
-        // clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[2]);
-        if(splited[2] === "false"){
-            clone.getElementsByClassName("chips_btn")[1].style.display = "none";
-        } else if (splited[2] === "true"){
-            clone.getElementsByClassName("chips_btn")[0].style.display = "none";
-        } else {
-            console.log(splited);
-        }
-        clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
-
-        setElementAsMdl(clone);
-        pool.append(clone);
-    });
-
-    doc.append(pool);
-}
+//endregion
 
 /**
  *
@@ -312,6 +293,30 @@ function setElementAsMdl(clone) {
     for (var i=0; i<ele.length; i++){
         componentHandler.upgradeElement(ele[i]);
     }
+}
+
+//region *****************html生成系**************
+
+function createElementWithHeader() {
+    var doc = document.createElement('div');
+    doc.setAttribute("class", "card");
+    doc.innerHTML =
+        '<span class="ele_header">' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
+                '<i class="fas fa-times mdl-pre-upgrade"></i>' +
+            '</button>' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">' +
+                '<i class="fas fa-angle-down"></i>' +
+            '</button>' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
+                '<i class="fas fa-angle-up"></i>' +
+            '</button>' +
+        '</span>' +
+        '<div class="seem_wrapper">' +
+            '<div class="seem"></div>' +
+        '</div>';
+    setElementAsMdl(doc);
+    return doc;
 }
 
 function createHtmlAs1Eve() {
@@ -425,3 +430,4 @@ function createHtmlAs4() {
         '</div>';
     return clone;
 }
+//endregion
