@@ -1,11 +1,13 @@
+var masterJson;
+
 function init() {
     // document.getElementById("place-holder").style.height = screen.availHeight + "px";
     // document.getElementById("place-holder").style.display = "inline";
 
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
+    // $("#menu-toggle").click(function(e) {
+    //     e.preventDefault();
+    //     $("#wrapper").toggleClass("toggled");
+    // });
 
     var config = {
         apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
@@ -20,19 +22,25 @@ function init() {
 
     defaultDatabase.ref("/userData/" + getUid() + "/template").once('value').then(function(snapshot) {
 
+        masterJson = [];
+        snapshot.forEach(function (childSnap) {
+            masterJson.push(childSnap.toJSON());
+        });
+        masterJson.shift();
+        console.log(masterJson);
+
         if (!snapshot.exists()) {
             console.log("テンプレ存在せず！うわー！");
             return;
         }
 
-        var count = 0;
-        snapshot.forEach(function (childSnap) {
-            var doc = createElementWithHeader();
+        for (var i=0; i<masterJson.length; i++){
+            var childSnap = masterJson[i];
+            var doc = createElementWithHeader(i);
 
-            // document.getElementById('card_wrapper').innerHTML += '<div class="card"><div class="card-block"></div></div>';
-            switch (childSnap.child("dataType").val()){
+            switch (childSnap["dataType"]){
                 case 0:
-                    break;
+                    continue;
                 case 1:
                     operateAs1(doc, childSnap);
                     break;
@@ -40,9 +48,9 @@ function init() {
                     operateAs2(doc, childSnap);
                     break;
                 case 3:
-                    var element = operateAs3(doc, childSnap, count);
+                    var element = operateAs3(doc, childSnap, i);
                     if(element){
-                        doc.appendChild(element);
+                        createElementWithHeader(i).appendChild(element);
                     } else {
                         //todo エラー時処理？？
                     }
@@ -52,13 +60,56 @@ function init() {
                     break;
             }
 
-            if(childSnap.child("dataType").val() !== 0){
-                setHeaderTitle(doc, childSnap);
-                document.getElementById('card_wrapper').appendChild(doc);
-                count++;
+            setHeaderTitle(doc, childSnap);
+            document.getElementById('card_wrapper').appendChild(doc);
+        }
+
+        var mixier = mixitup('#card_wrapper', {
+            // load: {
+            //     sort: 'order:asc'
+            // },
+            animation: {
+                duration: 250,
+                nudge: true,
+                reverseOut: false,
+                effects: "fade translateZ(-100px)"
+            },
+            selectors: {
+                target: '.card'
             }
         });
 
+        $(".ele_header_button").click(function(e) {
+            e.preventDefault();
+            var index = $('.ele_header_button').index(this);
+            var dataNum = Math.floor(index/3);//小数切り捨て
+            console.log("dataNum: "+dataNum);
+            var cards = $(".card");
+            switch (index%3){
+                case 0:
+                    delete masterJson[dataNum];
+                    cards.eq(dataNum).remove();
+                    break;
+                case 1:
+                    //最後尾は後ろにずらせない
+                    if(dataNum+1 < masterJson.length){
+                        masterJson = swap(masterJson, dataNum, dataNum+1);
+                        cards.eq(dataNum).attr("data-order", dataNum+1);
+                        cards.eq(dataNum+1).attr("data-order", dataNum);
+                    }
+                    break;
+                case 2:
+                    //最初の要素は前にずらせない masterJsonの先頭はダミー
+                    if(dataNum-1 >= 0){
+                        masterJson = swap(masterJson, dataNum, dataNum-1);
+                        cards.eq(dataNum).attr("data-order", dataNum-1);
+                        cards.eq(dataNum-1).attr("data-order", dataNum);
+                    }
+                    break;
+            }
+            console.log(masterJson);
+            mixier.sort("order:asc");
+        });
         // document.getElementById("place-holder").style.display = "none";
         // document.getElementById("page-content-wrapper").style.display = "inline";
     });
@@ -111,20 +162,20 @@ function getCommentAsNonNull(childSnap) {
     if (!childSnap.hasChild("data")){
         return "";
     }
-    return childSnap.child("data").val();
+    return childSnap["data"].val();
 }
 
 function  getCommentAsNullable(childSnap) {
-    if (!childSnap.hasChild("data")){
+    if (!childSnap["data"]){
         return null;
     }
-    return childSnap.child("data").val();
+    return childSnap["data"].val();
 }
 
 function setHeaderTitle(doc, childSnap) {
     var title;
-    if(childSnap.child("dataType").val() !== 1){
-        title = childSnap.child("dataName").val();
+    if(childSnap["dataType"] !== 1){
+        title = childSnap["dataName"];
     } else {
         title = "イベント";
     }
@@ -134,7 +185,7 @@ function setHeaderTitle(doc, childSnap) {
 function createTable() {
     var table = document.createElement("table");
     table.setAttribute("class", "card_block");
-    table.innerHTML = "<tbody></tbody>"
+    table.innerHTML = "<tbody></tbody>";
     return table;
 }
 
@@ -142,9 +193,7 @@ function createTable() {
 function operateAs1(doc, childSnap) {
     doc.appendChild(createTable());
 
-    var json = childSnap.child("data").child("0").val();
-    json = JSON.parse(json);
-    console.log(json);
+    var json = JSON.parse(childSnap["data"]["0"]);
 
     if(json["eventList"]){
         json["eventList"].forEach(function (value) {
@@ -201,8 +250,8 @@ function operateAs2(doc, childSnap) {
     var pool = document.createElement("div");
     pool.setAttribute("class", "tag_pool");
 
-    childSnap.child("data").forEach(function (grChildSnap) {
-        var splited = grChildSnap.val().split("9mVSv");
+    Object.keys(childSnap["data"]).forEach(function (key) {
+        var splited = childSnap["data"][key].split("9mVSv");
         var clone = createHtmlAs2();
 
         clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
@@ -224,17 +273,20 @@ function operateAs2(doc, childSnap) {
 }
 
 function operateAs3(doc, childSnap, dataNum) {
-    if(childSnap.hasChild("data")){
+    if(childSnap["data"]){
         var ul = document.createElement("ul");
         ul.setAttribute("class", "demo-list-item mdl-list");
 
-        var liNum = 0;
-        childSnap.child("data").forEach(function (childSnap) {
-            var splited = childSnap.val().split("9mVSv");
+        // var liNum = 0;
+        var keys = Object.keys(childSnap["data"]);
+        console.log(childSnap["data"]);
+
+        for (var i=0; i<keys.length; i++){
+            var splited = childSnap["data"][keys[i]].split("9mVSv");
             console.log(splited);
             var witch = splited[0];
             // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
-            var clone = createHtmlAs3(dataNum + "_" + liNum);
+            var clone = createHtmlAs3(dataNum + "_" + keys[i]);
             clone.getElementsByClassName("params_title")[0].innerHTML = splited[1];
             switch(witch){
                 case "0":
@@ -253,9 +305,7 @@ function operateAs3(doc, childSnap, dataNum) {
             }
 
             ul.appendChild(clone.children[0]);
-
-            liNum++;
-        });
+        }
 
         setElementAsMdl(ul);
         doc.appendChild(ul);
@@ -288,6 +338,13 @@ function convertToDisplayLetters(shouldShow) {
     }
 }
 
+function swap(arr,x,y){
+    var a = arr[x];
+    arr[x] = arr[y];
+    arr[y] = a;
+    return arr;
+}
+
 function setElementAsMdl(clone) {
     var ele = clone.getElementsByClassName("mdl-pre-upgrade");
     for (var i=0; i<ele.length; i++){
@@ -297,9 +354,10 @@ function setElementAsMdl(clone) {
 
 //region *****************html生成系**************
 
-function createElementWithHeader() {
+function createElementWithHeader(dataNum) {
     var doc = document.createElement('div');
-    doc.setAttribute("class", "card");
+    doc.setAttribute("class", "card mix");
+    doc.setAttribute("data-order", dataNum.toString());
     doc.innerHTML =
         '<span class="ele_header">' +
             '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
