@@ -277,7 +277,7 @@ function operateAs2(doc, childSnap) {
         var clone = createHtmlAs2();
 
         clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
-        clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[2]);
+        // clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[2]);
         if(splited[2] === "false"){
             clone.getElementsByClassName("chips_btn")[1].style.display = "none";
         } else if (splited[2] === "true"){
@@ -372,18 +372,20 @@ function createHtmlAs2() {
     var clone = document.createElement("div");
     clone.setAttribute("class", "tag_wrapper");
     clone.innerHTML =
-        '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
-            '<a href="#" class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">' +
-                '<span class="fa-stack">' +
-                    '<i class="fas fa-circle fa-stack-1x chips_btn_circle"></i>' +
-                    '<i class="fas fa-eye fa-stack-1x chips_btn"></i>' +
-                    '<i class="fas fa-eye-slash fa-stack-1x chips_btn"></i>' +
+        '<a href="#">'+
+            '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
+                '<span class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">' +
+                    '<span class="fa-stack">' +
+                        '<i class="fas fa-circle fa-stack-1x chips_btn_circle"></i>' +
+                        '<i class="fas fa-eye fa-stack-1x chips_btn"></i>' +
+                        '<i class="fas fa-eye-slash fa-stack-1x chips_btn"></i>' +
                     '</span>' +
-                '</a>' +
-            '<span class="mdl-chip__text"></span>' +
-            '<a href="#" class="mdl-chip__action mdl-pre-upgrade a_remove_btn"><i class="fas fa-times remove_btn"></i></a>'+
-        '</span>' +
-        '<div class="mdl-tooltip" for="tooltip_delete"></div>';
+                '</span>' +
+                '<span class="mdl-chip__text"></span>' +
+                // '<a href="#" class="mdl-chip__action mdl-pre-upgrade a_remove_btn"><i class="fas fa-times remove_btn"></i></a>'+
+            '</span>' +
+        '</a>';
+        // '<div class="mdl-tooltip" for="tooltip_delete"></div>';
     return clone;
 }
 
