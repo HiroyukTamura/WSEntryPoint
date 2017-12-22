@@ -25,13 +25,13 @@ function init() {
             return;
         }
 
+        var count = 0;
         snapshot.forEach(function (childSnap) {
             var doc = createElementWithHeader();
             // '<table class="card-block">' +
             // '</table>';
 
             // document.getElementById('card_wrapper').innerHTML += '<div class="card"><div class="card-block"></div></div>';
-
             switch (childSnap.child("dataType").val()){
                 case 0:
                     break;
@@ -97,7 +97,7 @@ function init() {
                     operateAs2(doc, childSnap);
                     break;
                 case 3:
-                    var element = operateAs3(doc, childSnap);
+                    var element = operateAs3(doc, childSnap, count);
                     if(element){
                         doc.appendChild(element);
                     } else {
@@ -112,6 +112,7 @@ function init() {
             if(childSnap.child("dataType").val() !== 0){
                 setHeaderTitle(doc, childSnap);
                 document.getElementById('card_wrapper').appendChild(doc);
+                count++;
             }
         });
 
@@ -216,17 +217,18 @@ function createTable() {
     return table;
 }
 
-function operateAs3(doc, childSnap) {
+function operateAs3(doc, childSnap, dataNum) {
     if(childSnap.hasChild("data")){
         var ul = document.createElement("ul");
         ul.setAttribute("class", "demo-list-item mdl-list");
-        
+
+        var liNum = 0;
         childSnap.child("data").forEach(function (childSnap) {
             var splited = childSnap.val().split("9mVSv");
             console.log(splited);
             var witch = splited[0];
             // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
-            var clone = createHtmlAs3();
+            var clone = createHtmlAs3(dataNum + "_" + liNum);
             clone.getElementsByClassName("params_title")[0].innerHTML = splited[1];
             switch(witch){
                 case "0":
@@ -245,6 +247,8 @@ function operateAs3(doc, childSnap) {
             }
 
             ul.appendChild(clone.children[0]);
+
+            liNum++;
         });
 
         setElementAsMdl(ul);
@@ -362,44 +366,6 @@ function craeteHtmlAs1Row() {
             '</td>' +
         '</tr>';
     return clone;
-
-    // '<tr>' +
-    // '<td class="circle_wrapper">' +
-    // '<div class="circle">' +'</div>' +
-    // '</td>' +
-
-    // '<td>' +
-    // '<form action="#" class="time colored">' +
-    // '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-    // '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">' +
-    // '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample4">' +'</label>' +
-    // '<span class="mdl-textfield__error mdl-pre-upgrade">' +Error'</span>' +
-    // '</div>' +
-    // '</form>' +
-    // '</td>' +
-    //
-    // '<td>' +
-    // '<p class="colon colored">' +:'</p>' +
-    // '</td>' +
-    //
-    // '<td>' +
-    // '<form action="#" class="min colored">' +
-    // '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-    // '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">' +
-    // '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample5">' +'</label>' +
-    // '<span class="mdl-textfield__error mdl-pre-upgrade">' +Error'</span>' +
-    // '</div>' +
-    // '</form>' +
-    // '</td>' +
-    //
-    // '<td>' +
-    // '<form action="#" class="event_name">' +
-    // '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-    // '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample6">' +
-    // '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample6">' +イベント名'</label>' +
-    // '</div>' +
-    // '</form>' +
-    // '</td>';
 }
 
 function createHtmlAs2() {
@@ -421,7 +387,7 @@ function createHtmlAs2() {
     return clone;
 }
 
-function createHtmlAs3() {
+function createHtmlAs3(id) {
     var clone = document.createElement("ul");
     clone.setAttribute("class", "demo-list-item mdl-list mdl-pre-upgrade");
     clone.innerHTML =
@@ -431,8 +397,8 @@ function createHtmlAs3() {
                 '<span class="params_title"></span>'+
             '</span>'+
             '<span class="mdl-list__item-secondary-action params_check">'+
-                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="list-checkbox-1">'+
-                    '<input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input mdl-pre-upgrade" />'+
+                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + id +'">'+
+                    '<input type="checkbox" id="' + id + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
                 '</label>'+
             '</span>'+
 
