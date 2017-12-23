@@ -387,6 +387,14 @@ body {
     margin-left: 4px;
 }
 
+.drag_bars {
+    cursor: move;
+    font-size: 15px;
+    margin-right: 16px;
+    margin-top: 1px;
+    color: #BCBCBC;
+}
+
 .ele_header {
     padding: 10px 16px;
 }

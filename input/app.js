@@ -119,6 +119,20 @@ function init() {
             console.log(masterJson);
             mixier.sort("order:asc");
         });
+
+        dragula([document.querySelector("#card_wrapper")], {
+            moves: function (el, container, handle) {
+                return handle.classList.contains('drag_bars');
+            }
+        }).on('drop', function (el) {
+            var cards = $(".card");
+            var prevPos = el.getAttribute("data-order");
+            var currentPos = cards.index(el);
+            masterJson = swap(masterJson, prevPos, currentPos);
+            el.setAttribute("data-order", currentPos);
+            cards.eq(prevPos).attr("data-order", prevPos);
+        });
+
         // document.getElementById("place-holder").style.display = "none";
         // document.getElementById("page-content-wrapper").style.display = "inline";
     });
@@ -188,7 +202,7 @@ function setHeaderTitle(doc, childSnap) {
     } else {
         title = "イベント";
     }
-    doc.getElementsByClassName("ele_header")[0].insertAdjacentHTML('afterbegin', title);
+    doc.getElementsByClassName("drag_bars")[0].insertAdjacentHTML('afterend', title);
 }
 
 function createTable() {
@@ -278,6 +292,7 @@ function operateAs2(doc, childSnap) {
         pool.append(clone);
     });
 
+    dragula([pool]);
     doc.append(pool);
 }
 
@@ -369,6 +384,7 @@ function createElementWithHeader(dataNum) {
     doc.setAttribute("data-order", dataNum.toString());
     doc.innerHTML =
         '<span class="ele_header">' +
+            '<i class="fas fa-bars drag_bars"></i>'+
             '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
                 '<i class="fas fa-times mdl-pre-upgrade"></i>' +
             '</button>' +
