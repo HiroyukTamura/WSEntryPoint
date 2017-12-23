@@ -84,26 +84,35 @@ function init() {
             var index = $('.ele_header_button').index(this);
             var dataNum = Math.floor(index/3);//小数切り捨て
             console.log("dataNum: "+dataNum);
-            var cards = $(".card");
+            var selectedCard = $("[data-order=" + dataNum + "]");
+            var elements = $(".card");
             switch (index%3){
                 case 0:
                     delete masterJson[dataNum];
-                    cards.eq(dataNum).remove();
+                    masterJson.splice(dataNum, 1);
+                    selectedCard.remove();
+
+                    for(var i=dataNum+1; i<masterJson.length+1; i++){
+                        console.log("ueeee");
+                        $("[data-order=" + i + "]").attr("data-order", i-1);
+                    }
                     break;
                 case 1:
                     //最後尾は後ろにずらせない
                     if(dataNum+1 < masterJson.length){
                         masterJson = swap(masterJson, dataNum, dataNum+1);
-                        cards.eq(dataNum).attr("data-order", dataNum+1);
-                        cards.eq(dataNum+1).attr("data-order", dataNum);
+                        var nextCard = $("[data-order="+ (dataNum+1) +"]");
+                        selectedCard.attr("data-order", dataNum+1);
+                        nextCard.attr("data-order", dataNum);
                     }
                     break;
                 case 2:
                     //最初の要素は前にずらせない masterJsonの先頭はダミー
                     if(dataNum-1 >= 0){
                         masterJson = swap(masterJson, dataNum, dataNum-1);
-                        cards.eq(dataNum).attr("data-order", dataNum-1);
-                        cards.eq(dataNum-1).attr("data-order", dataNum);
+                        var prevCard = $("[data-order=" + (dataNum-1) + "]");
+                        selectedCard.attr("data-order", dataNum-1);
+                        prevCard.attr("data-order", dataNum);
                     }
                     break;
             }
