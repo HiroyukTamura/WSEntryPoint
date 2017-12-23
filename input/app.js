@@ -202,7 +202,7 @@ function setHeaderTitle(doc, childSnap) {
     } else {
         title = "イベント";
     }
-    doc.getElementsByClassName("drag_bars")[0].insertAdjacentHTML('afterend', title);
+    doc.getElementsByClassName("card_title_input")[0].setAttribute("value", title);
 }
 
 function createTable() {
@@ -237,7 +237,7 @@ function operateAs1(doc, childSnap) {
             // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
 
             setElementAsMdl(block);
-            doc.children[2].children[0].appendChild(block);
+            doc.children[1].children[0].appendChild(block);
         });
     }
 
@@ -263,7 +263,7 @@ function operateAs1(doc, childSnap) {
             for(var i=0; i<blocks.length; i++){
                 var element = blocks[i].cloneNode(true);
                 setElementAsMdl(element);
-                doc.children[2].children[0].appendChild(element);
+                doc.children[1].children[0].appendChild(element);
             }
         });
     }
@@ -339,6 +339,17 @@ function operateAs3(doc, childSnap, dataNum) {
             }
         });
 
+        var modal = $('#exampleModal');
+
+        /* blur on modal open, unblur on close */
+        modal.on('show.bs.modal', function () {
+            $('.container').addClass('blur');
+        });
+
+        modal.on('hide.bs.modal', function () {
+            $('.container').removeClass('blur');
+        });
+
         doc.appendChild(ul);
     }
 }
@@ -389,9 +400,16 @@ function createElementWithHeader(dataNum) {
     var doc = document.createElement('div');
     doc.setAttribute("class", "card mix");
     doc.setAttribute("data-order", dataNum.toString());
+    var id = "card_title_" + dataNum;
     doc.innerHTML =
         '<span class="ele_header">' +
             '<i class="fas fa-bars drag_bars"></i>'+
+
+            '<span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title">' +
+                '<input class="mdl-textfield__input input_eve mdl-pre-upgrade card_title_input" type="text" id="'+ id +'">' +
+                '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ id +'"></label>' +
+            '</span>' +
+
             '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
                 '<i class="fas fa-times mdl-pre-upgrade"></i>' +
             '</button>' +
@@ -401,10 +419,10 @@ function createElementWithHeader(dataNum) {
             '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
                 '<i class="fas fa-angle-up"></i>' +
             '</button>' +
-        '</span>' +
-        '<div class="seem_wrapper">' +
-            '<div class="seem"></div>' +
-        '</div>';
+        '</span>';
+        // '<div class="seem_wrapper">' +
+        //     '<div class="seem"></div>' +
+        // '</div>';
     setElementAsMdl(doc);
     return doc;
 }
@@ -464,12 +482,16 @@ function craeteHtmlAs1Row() {
     return clone;
 }
 
+function showModal() {
+    $('#exampleModal').modal();
+}
+
 function createHtmlAs2() {
     var clone = document.createElement("div");
     clone.setAttribute("class", "tag_wrapper");
     clone.innerHTML =
         '<a href="#">'+
-            '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
+            '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade" onclick="showModal()">' +
                 '<span class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">' +
                     '<span class="fa-stack">' +
                         '<i class="fas fa-circle fa-stack-1x chips_btn_circle"></i>' +
@@ -488,6 +510,8 @@ function createHtmlAs2() {
 function createHtmlAs3(id) {
     var clone = document.createElement("ul");
     clone.setAttribute("class", "demo-list-item mdl-list mdl-pre-upgrade");
+    var checkId = "checkId" + id;
+    var inputId = "inputId" + id;
     clone.innerHTML =
         '<li class="mdl-list__item mdl-pre-upgrade">'+
             '<i class="fas fa-bars drag_btn_i"></i>'+
@@ -495,15 +519,15 @@ function createHtmlAs3(id) {
         '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
             '<form action="#">' +
                 '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
-                    '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+id+'">' +
-                    '<label class="mdl-textfield__label" for="'+id+'"></label>' +
+                    '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
+                    '<label class="mdl-textfield__label" for="'+inputId+'"></label>' +
                 '</div>' +
             '</form>' +
         '</span>'+
 
             '<span class="mdl-list__item-secondary-action params_check">'+
-                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + id +'">'+
-                    '<input type="checkbox" id="' + id + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
+                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + checkId +'">'+
+                    '<input type="checkbox" id="' + checkId + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
                 '</label>'+
             '</span>'+
 

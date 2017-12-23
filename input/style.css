@@ -268,21 +268,21 @@ body {
     /*margin-right: 20px;*/
 /*}*/
 
-.seem {
-    height: 1px;
-    width: 100%;
-    background-color: #F1EAE0;
-}
+/*.seem {*/
+    /*height: 1px;*/
+    /*width: 100%;*/
+    /*background-color: #F1EAE0;*/
+/*}*/
 
-.seem_wrapper {
-    margin-right: 10px;
-    margin-left: 10px;
-}
+/*.seem_wrapper {*/
+    /*margin-right: 10px;*/
+    /*margin-left: 10px;*/
+/*}*/
 
 .card {
     margin: 10px 20px;
     border: 0;
-    border-radius: 6px;
+    border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
     max-width: 524px;/*イベントのカードの横幅default値*/
 }
@@ -362,20 +362,16 @@ body {
     margin-right: 20px;
 }
 
-/*region ----------ダミー系----------------*/
 #dummy {
-    display: none;
+    /*display: none;*/
 }
-
-.tags_dummy{
-    display: none;
-}
-/*endregion -----------ダミー系ここまで---------*/
 
 .card_title {
-    color: slategray;
-    float: left;
-    margin: 16px;
+    padding-top: 0;
+}
+
+.card_title_input{
+    font-size: 14px;
 }
 
 .ele_header_button {
@@ -391,8 +387,9 @@ body {
     cursor: move;
     font-size: 15px;
     margin-right: 16px;
-    margin-top: 1px;
+    margin-top: 7px;/*1pxはborder?補正の分, 4pxは{.card_title_input}のpadding-topの分*/
     color: #BCBCBC;
+    vertical-align: top;
 }
 
 .ele_header {
@@ -492,6 +489,24 @@ td {
 
 .mdl-chip{
     background-color: #F1EAE0;
+}
+
+/*-------------モーダル系----------------*/
+.modal-content{
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+}
+
+.blur {
+    -webkit-filter: blur(5px) grayscale(50%);
+    -moz-filter: blur(5px) grayscale(50%);
+    -ms-filter: blur(5px);
+    filter: blur(5px) grayscale(50%);
+}
+
+.modal-backdrop {
+    background-color: black;
 }
 
 /*.remove_btn{*/
