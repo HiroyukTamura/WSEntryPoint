@@ -438,16 +438,21 @@ td {
 }
 
 .drag_btn_i {
-    cursor: pointer;
-    margin-right: 16px;
+    margin-right: 32px;
     min-width: 16px;
     font-size: 16px;
     color: #BCBCBC;
+    cursor: move;
 }
 
 .params_title {
     vertical-align: middle;
     color: #66615b;
+    font-size: 15px;
+}
+
+.params_title_w{
+    padding-top: 0;
 }
 
 .mdl-button--icon {
@@ -455,6 +460,12 @@ td {
     width: 18px;
     min-width: 15px;
     font-size: 15px;
+}
+
+.mdl-list__item{
+    padding-right: 8px;
+    padding-left: 8px;
+    vertical-align: middle;
 }
 
 /*---------タグプール系-----------*/

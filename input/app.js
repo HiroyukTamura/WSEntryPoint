@@ -311,7 +311,7 @@ function operateAs3(doc, childSnap, dataNum) {
             var witch = splited[0];
             // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
             var clone = createHtmlAs3(dataNum + "_" + keys[i]);
-            clone.getElementsByClassName("params_title")[0].innerHTML = splited[1];
+            clone.getElementsByClassName("params_title")[0].setAttribute("value", splited[1]);
             switch(witch){
                 case "0":
                     clone.getElementsByClassName("params_slider")[0].style.display = "none";
@@ -332,6 +332,13 @@ function operateAs3(doc, childSnap, dataNum) {
         }
 
         setElementAsMdl(ul);
+
+        dragula([ul], {
+            moves: function (el, container, handle) {
+                return handle.classList.contains('.drag_btn_i');
+            }
+        });
+
         doc.appendChild(ul);
     }
 }
@@ -484,9 +491,16 @@ function createHtmlAs3(id) {
     clone.innerHTML =
         '<li class="mdl-list__item mdl-pre-upgrade">'+
             '<i class="fas fa-bars drag_btn_i"></i>'+
-            '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                '<span class="params_title"></span>'+
-            '</span>'+
+
+        '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+            '<form action="#">' +
+                '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
+                    '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+id+'">' +
+                    '<label class="mdl-textfield__label" for="'+id+'"></label>' +
+                '</div>' +
+            '</form>' +
+        '</span>'+
+
             '<span class="mdl-list__item-secondary-action params_check">'+
                 '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + id +'">'+
                     '<input type="checkbox" id="' + id + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
