@@ -354,12 +354,74 @@ body {
 }
 
 .circle {
-    width: 10px;
-    height: 10px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
     margin-right: 20px;
+    border: 3px solid transparent;
+}
+
+.circle :hover{
+    border-color: #00bbff;
+}
+
+.modal-circle{
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/*.circle.active{*/
+    /*border-color: #00bbff;*/
+/*}*/
+
+#circle1{
+    color: #C0504D;
+}
+
+#circle2{
+    color: #9BBB59;
+}
+
+#circle3{
+    color: #1F497D;
+}
+
+#circle4 {
+    color: #8064A2;
+}
+
+.modal-circle-w{
+    cursor: pointer;
+    margin-left: 24px;
+}
+
+/*override {.modal-circle-w}*/
+#modal-circle-w1{
+    margin-left: 12px;
+}
+
+.modal-circle-i{
+    /*position: relative;*/
+    font-size: 24px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.modal-circle-check{
+    /*position: absolute;*/
+    /*-webkit-transform: translateX(50%);*/
+    /*transform: translateX(50%);*/
+    font-size: 24px;
+    color: white;
+    text-align: center;
+}
+
+#modal-circle-w {
+    vertical-align: middle;
 }
 
 #dummy {
@@ -507,6 +569,32 @@ td {
 
 .modal-backdrop {
     background-color: black;
+}
+
+#checkbox-modal-label{
+    width: auto;
+    margin-left: 16px;
+}
+
+.modal-ele {
+    display: inline-block;
+}
+
+#modal-row1{
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+#modal-row3{
+    margin-top: 20px;/*depends on padding of {.mdl-textfield}*/
+}
+
+.modal-footer{
+    border-top: 0;
+}
+
+.modal-footer-btn{
+    cursor: pointer;
 }
 
 /*.remove_btn{*/

@@ -289,6 +289,10 @@ function operateAs2(doc, childSnap) {
         clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
 
         setElementAsMdl(clone);
+
+        var order = clone.closest($(".card")).attr("data-order");
+        console.log(order);
+
         pool.append(clone);
     });
 
@@ -483,15 +487,14 @@ function craeteHtmlAs1Row() {
 }
 
 function showModal() {
-    $('#exampleModal').modal();
+    var modal = $('#exampleModal').modal();
 }
 
 function createHtmlAs2() {
-    var clone = document.createElement("div");
-    clone.setAttribute("class", "tag_wrapper");
-    clone.innerHTML =
+    var clone = $("div", {class: "tag_wrapper"});
+    clone.html(
         '<a href="#">'+
-            '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade" onclick="showModal()">' +
+            '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
                 '<span class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">' +
                     '<span class="fa-stack">' +
                         '<i class="fas fa-circle fa-stack-1x chips_btn_circle"></i>' +
@@ -502,7 +505,8 @@ function createHtmlAs2() {
                 '<span class="mdl-chip__text"></span>' +
                 // '<a href="#" class="mdl-chip__action mdl-pre-upgrade a_remove_btn"><i class="fas fa-times remove_btn"></i></a>'+
             '</span>' +
-        '</a>';
+        '</a>'
+    );
         // '<div class="mdl-tooltip" for="tooltip_delete"></div>';
     return clone;
 }

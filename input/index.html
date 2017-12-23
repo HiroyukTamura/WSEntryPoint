@@ -295,18 +295,51 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
             <div class="modal-body">
-                ...
+                <div id="modal-row1">
+                    <span class="fa-layers modal-circle-w" id="modal-circle-w1">
+                        <i class="fas fa-circle modal-circle-i" id="circle1"></i>
+                        <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                    </span>
+                    <span class="fa-layers modal-circle-w">
+                        <i class="fas fa-circle modal-circle-i" id="circle2"></i>
+                        <!--<i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>-->
+                    </span>
+                    <span class="fa-layers modal-circle-w">
+                        <i class="fas fa-circle modal-circle-i" id="circle3"></i>
+                        <!--<i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>-->
+                    </span>
+                    <span class="fa-layers modal-circle-w">
+                        <i class="fas fa-circle modal-circle-i" id="circle4"></i>
+                        <!--<i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>-->
+                    </span>
+                    <!--<span class="circle" id="circle1"><i class="fas fa-check"></i></span>-->
+                    <!--<span class="circle" id="circle2"></span>-->
+                    <!--<span class="circle" id="circle3"></span>-->
+                    <!--<span class="circle" id="circle4"></span>-->
+                </div>
+
+                <div>
+                    <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label modal_row">
+                        <input class="mdl-textfield__input card_title_input" type="text" id="modal_input">
+                        <label class="mdl-textfield__label" for="modal_input">項目名</label>
+                    </span>
+                </div>
+
+                <div id="modal-row3">
+                    <span>
+                        <span>初期状態で表示する</span>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-modal" id="checkbox-modal-label">
+                          <input type="checkbox" id="checkbox-modal" class="mdl-checkbox__input" checked>
+                          <span class="mdl-checkbox__label"></span>
+                        </label>
+                    </span>
+                </div>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary modal-footer-btn" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-primary modal-footer-btn">OK</button>
             </div>
         </div>
     </div>
