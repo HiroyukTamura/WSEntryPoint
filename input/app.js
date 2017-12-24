@@ -5,6 +5,10 @@ var modalDataNum;
 var modalTipNum;
 var clickedColor;
 
+Array.prototype.move = function(from, to) {
+    this.splice(to, 0, this.splice(from, 1)[0]);
+};
+
 function init() {
     // document.getElementById("place-holder").style.height = screen.availHeight + "px";
     // document.getElementById("place-holder").style.display = "inline";
@@ -32,6 +36,17 @@ function init() {
             masterJson.push(childSnap.toJSON());
         });
         masterJson.shift();
+
+        //タグの連想配列を普通の配列に変換
+        masterJson.forEach(function (arr) {
+            if(arr["dataType"] === 2){
+                var newArr = [];
+                Object.values(arr["data"]).forEach(function (value) {
+                    newArr.push(value);
+                });
+                arr["data"] = newArr;
+            }
+        });
         console.log(masterJson);
 
         if (!snapshot.exists()) {
@@ -126,22 +141,25 @@ function init() {
             mixier.sort("order:asc");
         });
 
-        dragula([document.querySelector("#card_wrapper")], {
-            moves: function (el, container, handle) {
-                return handle.classList.contains('drag_bars');
-            }
-        }).on('drop', function (el) {
-            var cards = $(".card");
-            var prevPos = el.getAttribute("data-order");
-            var currentPos = cards.index(el);
-            masterJson = swap(masterJson, prevPos, currentPos);
-            el.setAttribute("data-order", currentPos);
-            cards.eq(prevPos).attr("data-order", prevPos);
-        });
-
+        initCardDragging();
         initModal();
         // document.getElementById("place-holder").style.display = "none";
         // document.getElementById("page-content-wrapper").style.display = "inline";
+    });
+}
+
+function initCardDragging() {
+    dragula([document.querySelector("#card_wrapper")], {
+        moves: function (el, container, handle) {
+            return handle.classList.contains('drag_bars');
+        }
+    }).on('drop', function (el) {
+        var cards = $(".card");
+        var prevPos = el.getAttribute("data-order");
+        var currentPos = cards.index(el);
+        masterJson = swap(masterJson, prevPos, currentPos);
+        el.setAttribute("data-order", currentPos);
+        cards.eq(prevPos).attr("data-order", prevPos);
     });
 }
 
@@ -333,7 +351,19 @@ function operateAs2(doc, childSnap) {
         count++;
     });
 
-    dragula([pool]);
+    var dragedPos;
+    dragula([pool]).on('drag', function (el) {
+        dragedPos = $(el).index();
+        console.log(dragedPos);
+    }).on('drop', function (el) {
+        var currentPos = $(el).index();
+        console.log(currentPos);
+        var dataPos = parseInt($(pool).parent().attr("data-order"));
+        masterJson[dataPos]["data"].move(dragedPos, currentPos);
+        console.log(masterJson);
+        // swap(masterJson[dataPos]["data"], dragedPos, currentPos);
+        // console.log(masterJson);
+    });
     doc.append(pool);
 }
 
@@ -378,6 +408,8 @@ function operateAs3(doc, childSnap, dataNum) {
             moves: function (el, container, handle) {
                 return handle.classList.contains('.drag_btn_i');
             }
+        }).on('drop', function (el) {
+            //todo params並び替え
         });
 
         doc.appendChild(ul);
