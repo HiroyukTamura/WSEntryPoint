@@ -282,9 +282,9 @@ function operateAs2(doc, childSnap) {
         clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
         // clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[2]);
         if(splited[2] === "false"){
-            clone.getElementsByClassName("chips_btn")[1].style.display = "none";
-        } else if (splited[2] === "true"){
             clone.getElementsByClassName("chips_btn")[0].style.display = "none";
+        } else if (splited[2] === "true"){
+            clone.getElementsByClassName("chips_btn")[1].style.display = "none";
         } else {
             console.log(splited);
         }
@@ -300,10 +300,20 @@ function operateAs2(doc, childSnap) {
             var order = pool.parentElement.getAttribute("data-order");
             var index = clone.getAttribute("index");
             var splited = masterJson[parseInt(order)]["data"][index].split("9mVSv");
-            $('#modal-input').attr('value', splited[0]);
-            
+            console.log(splited[0]);
+            console.log(splited[1]);
+
+            $('#modal_input').attr('value', splited[0]);
+            $('#modal-row1')
+                .find(".modal-circle-w")
+                .eq(parseInt(splited[1]))
+                .append("<i class=\"fas fa-check modal-circle-check\" data-fa-transform=\"shrink-8\"></i>");
+
+            if(splited[2] === "true"){
+                document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
+            }
+
             showModal();
-            // splited[0]
         };
 
         pool.append(clone);
@@ -377,14 +387,27 @@ function operateAs4(doc, childSnap) {
 
 function initModal() {
     var modal = $('#exampleModal');
+    var input = $('#modal_input');
 
     /* blur on modal open, unblur on close */
     modal.on('show.bs.modal', function () {
         $('.container').addClass('blur');
+        if(input.attr("value")){
+            console.log("てってれー");
+            // document.getElementById("modal_input")[0].MaterialTextfield.focus();
+            input.parent().addClass('is-dirty');
+            // $('.mdl-textfield').eq(0).focus();
+            // input.parentNode.focus();
+            // input.attr("class", "is-focused");
+        }
     });
 
     modal.on('hide.bs.modal', function () {
         $('.container').removeClass('blur');
+        $('.modal-circle-check').remove();
+        input.removeAttr("value");
+        document.getElementById('checkbox-modal-label').MaterialCheckbox.uncheck();
+        input.parent().removeClass('is-dirty');
     });
 }
 
