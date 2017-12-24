@@ -437,6 +437,11 @@ body {
     font-size: 14px;
 }
 
+.event_title {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
 .ele_header_button {
     float: right;
     color: #BCBCBC;

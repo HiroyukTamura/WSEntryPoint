@@ -41,7 +41,7 @@ function init() {
 
         for (var i=0; i<masterJson.length; i++){
             var childSnap = masterJson[i];
-            var doc = createElementWithHeader(i);
+            var doc = createElementWithHeader(i, childSnap["dataType"]);
 
             switch (childSnap["dataType"]){
                 case 0:
@@ -65,8 +65,9 @@ function init() {
                     break;
             }
 
-            setHeaderTitle(doc, childSnap);
+            setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
             document.getElementById('card_wrapper').appendChild(doc);
+
         }
 
         var mixier = mixitup('#card_wrapper', {
@@ -202,15 +203,18 @@ function  getCommentAsNullable(childSnap) {
 }
 
 function setHeaderTitle(doc, childSnap) {
-    var title;
     var titleInput = $(doc).find(".card_title_input").eq(0);
     if(childSnap["dataType"] !== 1){
-        title = childSnap["dataName"];
+        titleInput.attr("value", childSnap["dataName"]);
+        titleInput.keyup(function (e) {
+            console.log(titleInput.val());
+            var order = $(doc).attr("data-order");
+            masterJson[parseInt(order)]["dataName"] = titleInput.val();//このとき、不正な値が代入されるかもしれないこと（例えばnullなど）に注意してください!!
+            console.log(masterJson);
+        });
     } else {
-        title = "イベント";
-        titleInput.attr('disabled', false);
+        titleInput.html("イベント");
     }
-    titleInput.attr("value", title);
 }
 
 function createTable() {
@@ -539,30 +543,56 @@ function setElementAsMdl(clone) {
 
 //region *****************html生成系**************
 
-function createElementWithHeader(dataNum) {
+function createElementWithHeader(dataNum, dataType) {
     var doc = document.createElement('div');
     doc.setAttribute("class", "card mix");
     doc.setAttribute("data-order", dataNum.toString());
     var id = "card_title_" + dataNum;
-    doc.innerHTML =
-        '<span class="ele_header">' +
-            '<i class="fas fa-bars drag_bars"></i>'+
+    var pre = '<span class="ele_header">' +
+                    '<i class="fas fa-bars drag_bars"></i>';
+    var input =     '<span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title">' +
+                        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade card_title_input" type="text" id="'+ id +'">' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ id +'"></label>' +
+                        '<span class="mdl-textfield__error">入力してください</span>' +
+                    '</span>';
+    var span =     '<span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title_input event_title"></span>';
+    var post =     '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
+                        '<i class="fas fa-times mdl-pre-upgrade"></i>' +
+                    '</button>' +
+                    '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">' +
+                        '<i class="fas fa-angle-down"></i>' +
+                    '</button>' +
+                    '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
+                        '<i class="fas fa-angle-up"></i>' +
+                    '</button>' +
+                '</span>';
 
-            '<span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title">' +
-                '<input class="mdl-textfield__input input_eve mdl-pre-upgrade card_title_input" type="text" id="'+ id +'">' +
-                '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ id +'"></label>' +
-            '</span>' +
+    if(dataType === 1){
+        doc.innerHTML = pre + span + post;
+    } else {
+        doc.innerHTML = pre + input + post;
+    }
 
-            '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
-                '<i class="fas fa-times mdl-pre-upgrade"></i>' +
-            '</button>' +
-            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">' +
-                '<i class="fas fa-angle-down"></i>' +
-            '</button>' +
-            '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
-                '<i class="fas fa-angle-up"></i>' +
-            '</button>' +
-        '</span>';
+
+    // doc.innerHTML =
+    //     '<span class="ele_header">' +
+    //         '<i class="fas fa-bars drag_bars"></i>'+
+    //
+    //         '<span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title">' +
+    //             '<input class="mdl-textfield__input input_eve mdl-pre-upgrade card_title_input" type="text" id="'+ id +'">' +
+    //             '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ id +'"></label>' +
+    //         '</span>' +
+    //
+    //         '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
+    //             '<i class="fas fa-times mdl-pre-upgrade"></i>' +
+    //         '</button>' +
+    //         '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">' +
+    //             '<i class="fas fa-angle-down"></i>' +
+    //         '</button>' +
+    //         '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
+    //             '<i class="fas fa-angle-up"></i>' +
+    //         '</button>' +
+    //     '</span>';
         // '<div class="seem_wrapper">' +
         //     '<div class="seem"></div>' +
         // '</div>';
