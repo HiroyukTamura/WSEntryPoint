@@ -418,6 +418,7 @@ body {
     font-size: 24px;
     color: white;
     text-align: center;
+    display: none;
 }
 
 #modal-circle-w {
@@ -586,11 +587,15 @@ td {
 
 #modal-row1{
     margin-top: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 #modal-row3{
     margin-top: 20px;/*depends on padding of {.mdl-textfield}*/
+}
+
+.modal-body{
+    padding-left: 30px;
 }
 
 .modal-footer{

@@ -1,4 +1,9 @@
+const delimiter = "9mVSv";
+
 var masterJson;
+var modalDataNum;
+var modalTipNum;
+var clickedColor;
 
 function init() {
     // document.getElementById("place-holder").style.height = screen.availHeight + "px";
@@ -276,7 +281,7 @@ function operateAs2(doc, childSnap) {
 
     var count = 0;
     Object.keys(childSnap["data"]).forEach(function (key) {
-        var splited = childSnap["data"][key].split("9mVSv");
+        var splited = childSnap["data"][key].split(delimiter);
         var clone = createHtmlAs2();
 
         clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
@@ -297,21 +302,22 @@ function operateAs2(doc, childSnap) {
         // console.log(order);
 
         clone.getElementsByClassName("mdl-chip")[0].onclick = function (ev) {
-            var order = pool.parentElement.getAttribute("data-order");
-            var index = clone.getAttribute("index");
-            var splited = masterJson[parseInt(order)]["data"][index].split("9mVSv");
-            console.log(splited[0]);
-            console.log(splited[1]);
+            modalDataNum = parseInt(pool.parentElement.getAttribute("data-order"));
+            modalTipNum = clone.getAttribute("index");
+            var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
+            clickedColor = parseInt(splited[1]);
 
             $('#modal_input').attr('value', splited[0]);
-            $('#modal-row1')
-                .find(".modal-circle-w")
-                .eq(parseInt(splited[1]))
-                .append("<i class=\"fas fa-check modal-circle-check\" data-fa-transform=\"shrink-8\"></i>");
+            $('.modal-circle-check').eq(parseInt(splited[1])).css("display", "inline");
+                // .find(".modal-circle-w")
+                // .eq(parseInt(splited[1]))
+                // .append("<i class=\"fas fa-check modal-circle-check\" data-fa-transform=\"shrink-8\"></i>");
 
             if(splited[2] === "true"){
                 document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
             }
+
+           // setCircleHoverEvent(index);
 
             showModal();
         };
@@ -335,7 +341,7 @@ function operateAs3(doc, childSnap, dataNum) {
         console.log(childSnap["data"]);
 
         for (var i=0; i<keys.length; i++){
-            var splited = childSnap["data"][keys[i]].split("9mVSv");
+            var splited = childSnap["data"][keys[i]].split(delimiter);
             console.log(splited);
             var witch = splited[0];
             // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
@@ -394,21 +400,55 @@ function initModal() {
         $('.container').addClass('blur');
         if(input.attr("value")){
             console.log("てってれー");
-            // document.getElementById("modal_input")[0].MaterialTextfield.focus();
             input.parent().addClass('is-dirty');
-            // $('.mdl-textfield').eq(0).focus();
-            // input.parentNode.focus();
-            // input.attr("class", "is-focused");
         }
     });
 
     modal.on('hide.bs.modal', function () {
         $('.container').removeClass('blur');
-        $('.modal-circle-check').remove();
+        $('.modal-circle-check').css("display", "none");
         input.removeAttr("value");
         document.getElementById('checkbox-modal-label').MaterialCheckbox.uncheck();
         input.parent().removeClass('is-dirty');
     });
+
+    //todo タイトルなしor重複の際にエラー処理 それともtextWatcher?
+    $('.modal-footer-btn').eq(1).click(function (ev) {
+        var title = $('#modal_input').attr("value");
+
+        var show = $('#checkbox-modal-label').hasClass('is-checked');
+        masterJson[modalDataNum]["data"][modalTipNum] = title + delimiter + clickedColor + delimiter + show;
+        console.log(masterJson);
+        modal.modal('hide');
+    });
+
+    // $('.modal-footer-btn').eq(1).on('click', function(){
+    //
+    //
+    //     masterJson[modalDataNum]["data"][modalTipNum]
+    // });
+}
+
+function setCircleHoverEvent(circleNum) {
+    // var circle = $('.modal-circle-i');
+    //
+    // for(var i=0; i<circle.length; i++){
+    //     if(i === circleNum)
+    //        break;
+    //
+    //     circle.mouseenter(function (e) {
+    //         $(this).next().css('display', "inline");
+    //     });
+    //     circle.mouseleave(function (e) {
+    //         $(this).next().css('display', "none");
+    //     });
+    // }
+    //
+    // $('.modal-footer-btn').eq(1).onclick(function (ev) {
+    //     var title = $('#modal_input').attr("value");
+    //
+    //     masterJson[modalDataNum]["data"][modalTipNum]
+    // });
 }
 
 /**
