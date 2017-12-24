@@ -61,7 +61,8 @@ function init() {
             }
 
             setHeaderTitle(doc, childSnap);
-            document.getElementById('card_wrapper').appendChild(doc);
+            // document.getElementById('card_wrapper').appendChild(doc);
+            $('#card_wrapper').append(doc);
         }
 
         var mixier = mixitup('#card_wrapper', {
@@ -158,17 +159,22 @@ function getColor(num) {
 
 function changeTimeColor(block, value) {
     //時刻の色を変える
-    var coloreds = block.getElementsByClassName("colored");
+    var coloreds = $(block).find(".colored");
+    // var coloreds = block.getElementsByClassName("colored");
     var color = getColor(value["colorNum"]);
     for (var i=0; i<coloreds.length; i++){
-        coloreds[i].style.color = color;
+        coloreds.eq(i).css("color", color);
+        // coloreds[i].style.color = color;
     }
 }
 
 function setEveInputValues(inputs, value) {
-    inputs[0].setAttribute("value", format0to00(value["cal"]["hourOfDay"]));
-    inputs[1].setAttribute("value", format0to00(value["cal"]["minute"]));
-    inputs[2].setAttribute("value", value["name"]);
+    inputs.eq(0).attr("value", format0to00(value["cal"]["hourOfDay"]));
+    inputs.eq(1).attr("value", format0to00(value["cal"]["minute"]));
+    inputs.eq(2).attr("value", value["name"]);
+    // inputs[0].setAttribute("value", format0to00(value["cal"]["hourOfDay"]));
+    // inputs[1].setAttribute("value", format0to00(value["cal"]["minute"]));
+    // inputs[2].setAttribute("value", value["name"]);
 }
 
 function format0to00(value) {
@@ -202,42 +208,49 @@ function setHeaderTitle(doc, childSnap) {
     } else {
         title = "イベント";
     }
-    doc.getElementsByClassName("card_title_input")[0].setAttribute("value", title);
+    $(doc).find(".card_title_input").eq(0).attr("value", title);
+    // doc.getElementsByClassName("card_title_input")[0].setAttribute("value", title);
 }
 
 function createTable() {
-    var table = document.createElement("table");
-    table.setAttribute("class", "card_block");
-    table.innerHTML = "<tbody></tbody>";
+    var table = $("<table>", {class: "card_block"});
+    // var table = document.createElement("table");
+    // table.setAttribute("class", "card_block");
+    table.html("<tbody></tbody>");
+    // table.innerHTML = "<tbody></tbody>";
     return table;
 }
 
 //region **************operate系*******************
 function operateAs1(doc, childSnap) {
-    doc.appendChild(createTable());
+    doc.append(createTable());
 
     var json = JSON.parse(childSnap["data"]["0"]);
 
     if(json["eventList"]){
         json["eventList"].forEach(function (value) {
             var block = createHtmlAs1Eve();
-            var inputs = block.getElementsByClassName("mdl-textfield__input");
+            var inputs = $(block).find(".mdl-textfield__input");
+            // var inputs = block.getElementsByClassName("mdl-textfield__input");
             setEveInputValues(inputs, value);
 
             //時刻の色を変える
-            var coloreds = block.getElementsByClassName("colored");
+            var coloreds = $(block).find(".colored");
+            // var coloreds = block.getElementsByClassName("colored");
             var color = getColor(value["colorNum"]);
             console.log(coloreds.length);
             for (var i=0; i<coloreds.length; i++){
                 console.log(i);
-                coloreds[i].style.color = color;
+                coloreds.eq(i).css("color", color);
+                // coloreds[i].style.color = color;
             }
             changeTimeColor(block, value);
             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
             // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
 
             setElementAsMdl(block);
-            doc.children[1].children[0].appendChild(block);
+            // doc.children[1].children[0].appendChild(block);
+            $(doc).find("tbody").append(block);
         });
     }
 
@@ -248,22 +261,24 @@ function operateAs1(doc, childSnap) {
             blocks[0] = createHtmlAs1Eve();
             blocks[1] = craeteHtmlAs1Row();
             blocks[2] = createHtmlAs1Eve();
-            var startInputs = blocks[0].getElementsByClassName("mdl-textfield__input");
+            // var startInputs = blocks[0].getElementsByClassName("mdl-textfield__input");
+            var startInputs = $(blocks[0]).find(".mdl-textfield__input");
             setEveInputValues(startInputs, value["start"]);
-            var endInputs = blocks[2].getElementsByClassName("mdl-textfield__input");
+            var endInputs = $(blocks[2]).find(".mdl-textfield__input");
             setEveInputValues(endInputs, value["end"]);
 
             // blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
             changeTimeColor(blocks[0], value);
             changeTimeColor(blocks[2], value);
             // blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-            blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
+            // blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
+            $(blocks).eq(1).find(".icon_down").eq(0).css("color", getColor(value["colorNum"]));
 
-            console.log(blocks.length);
             for(var i=0; i<blocks.length; i++){
-                var element = blocks[i].cloneNode(true);
-                setElementAsMdl(element);
-                doc.children[1].children[0].appendChild(element);
+                // var element = blocks[i].cloneNode(true);
+                setElementAsMdl(blocks[i]);
+                $(doc).find("tbody").append(blocks[i]);
+                // doc.children[1].children[0].appendChild(element);
             }
         });
     }
@@ -277,16 +292,20 @@ function operateAs2(doc, childSnap) {
         var splited = childSnap["data"][key].split("9mVSv");
         var clone = createHtmlAs2();
 
-        clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
+        $(clone).find('.mdl-chip__text').eq(0).html(splited[0]);
+        // clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
         // clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[2]);
         if(splited[2] === "false"){
-            clone.getElementsByClassName("chips_btn")[1].style.display = "none";
+            $(clone).find(".chips_btn").eq(1).css("display", "none");
+            // clone.getElementsByClassName("chips_btn")[1].style.display = "none";
         } else if (splited[2] === "true"){
-            clone.getElementsByClassName("chips_btn")[0].style.display = "none";
+            $(clone).find(".chips_btn").eq(0).css("display", "none");
+            // clone.getElementsByClassName("chips_btn")[0].style.display = "none";
         } else {
             console.log(splited);
         }
-        clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
+        $(clone).find(".chips_btn_circle").eq(0).css("color", getColor(parseInt(splited[1])));
+        // clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
 
         setElementAsMdl(clone);
 
@@ -392,7 +411,8 @@ function swap(arr,x,y){
 }
 
 function setElementAsMdl(clone) {
-    var ele = clone.getElementsByClassName("mdl-pre-upgrade");
+    var ele = $(clone).find("mdl-pre-upgrade");
+    // var ele = clone.getElementsByClassName("mdl-pre-upgrade");
     for (var i=0; i<ele.length; i++){
         componentHandler.upgradeElement(ele[i]);
     }
@@ -401,11 +421,13 @@ function setElementAsMdl(clone) {
 //region *****************html生成系**************
 
 function createElementWithHeader(dataNum) {
-    var doc = document.createElement('div');
-    doc.setAttribute("class", "card mix");
-    doc.setAttribute("data-order", dataNum.toString());
+    var doc = $('<div>', {class: 'card mix'});
+    doc.attr("data-order", dataNum.toString());
+    // var doc = document.createElement('div');
+    // doc.setAttribute("class", "card mix");
+    // doc.setAttribute("data-order", dataNum.toString());
     var id = "card_title_" + dataNum;
-    doc.innerHTML =
+    doc.html(
         '<span class="ele_header">' +
             '<i class="fas fa-bars drag_bars"></i>'+
 
@@ -423,7 +445,8 @@ function createElementWithHeader(dataNum) {
             '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
                 '<i class="fas fa-angle-up"></i>' +
             '</button>' +
-        '</span>';
+        '</span>'
+    );
         // '<div class="seem_wrapper">' +
         //     '<div class="seem"></div>' +
         // '</div>';
@@ -432,8 +455,10 @@ function createElementWithHeader(dataNum) {
 }
 
 function createHtmlAs1Eve() {
-    var clone = document.createElement('tr');
-    clone.innerHTML =
+    // var clone = document.createElement('tr');
+    var clone = $("tr");
+    clone.html(
+    // clone.innerHTML =
     // '<td class="circle_wrapper">' +
     // '<div class="circle">' +'</div>' +
     // '</td>' +
@@ -470,19 +495,21 @@ function createHtmlAs1Eve() {
                 '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample3">イベント名</label>' +
             '</div>' +
         '</form>' +
-    '</td>';
+    '</td>'
+    );
 
     return clone;
 }
 
 function craeteHtmlAs1Row() {
-    var clone = document.createElement("tr");
-    clone.innerHTML =
+    // var clone = document.createElement("tr");
+    var clone = $("<tr>");
+    clone.html(
         '<tr>' +
             '<td colspan="3">' +
                 '<i class="fas fa-angle-double-down fa-2x icon_down">' +'</i>' +
             '</td>' +
-        '</tr>';
+        '</tr>');
     return clone;
 }
 
@@ -512,11 +539,14 @@ function createHtmlAs2() {
 }
 
 function createHtmlAs3(id) {
-    var clone = document.createElement("ul");
-    clone.setAttribute("class", "demo-list-item mdl-list mdl-pre-upgrade");
+    var clone = $("<ul>", {
+       class:  "demo-list-item mdl-list mdl-pre-upgrade"
+    });
+    // var clone = document.createElement("ul");
+    // clone.setAttribute("class", "demo-list-item mdl-list mdl-pre-upgrade");
     var checkId = "checkId" + id;
     var inputId = "inputId" + id;
-    clone.innerHTML =
+    clone.html(
         '<li class="mdl-list__item mdl-pre-upgrade">'+
             '<i class="fas fa-bars drag_btn_i"></i>'+
 
@@ -538,7 +568,8 @@ function createHtmlAs3(id) {
             '<p class="slider_wrapper params_slider" style="width:300px">'+
                 '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" id="s1" min="0" max="5" value="3" step="1">'+
             '</p>'+
-        '</li>';
+        '</li>'
+    );
     return clone;
 }
 
