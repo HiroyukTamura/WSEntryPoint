@@ -307,7 +307,7 @@ function operateAs2(doc, childSnap) {
             var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
             clickedColor = parseInt(splited[1]);
 
-            $('#modal_input').attr('value', splited[0]);
+            $('#modal_input').attr('value', splited[0]).val(splited[0]);
             $('.modal-circle-check').eq(parseInt(splited[1])).css("display", "inline");
                 // .find(".modal-circle-w")
                 // .eq(parseInt(splited[1]))
@@ -394,6 +394,7 @@ function operateAs4(doc, childSnap) {
 function initModal() {
     var modal = $('#exampleModal');
     var input = $('#modal_input');
+    var errorSpan = $('.mdl-textfield__error');
 
     /* blur on modal open, unblur on close */
     modal.on('show.bs.modal', function () {
@@ -404,23 +405,66 @@ function initModal() {
         }
     });
 
-    modal.on('hide.bs.modal', function () {
+    modal.on('hidden.bs.modal', function () {
         $('.container').removeClass('blur');
         $('.modal-circle-check').css("display", "none");
         input.removeAttr("value");
+        input.val('');
         document.getElementById('checkbox-modal-label').MaterialCheckbox.uncheck();
         input.parent().removeClass('is-dirty');
+        input.parent().removeClass('is-invalid');
     });
 
-    //todo タイトルなしor重複の際にエラー処理 それともtextWatcher?
     $('.modal-footer-btn').eq(1).click(function (ev) {
-        var title = $('#modal_input').attr("value");
+        var title = input.val();
+
+        if(!title){
+            errorSpan.html("タグ名を入力してください");
+            input.parent().addClass('is-invalid');
+            return;
+        }
+
+        var arr = masterJson[modalDataNum]["data"];
+        var keys = Object.keys(arr);
+        for(var i=0; i<keys.length; i++){
+            if(title === arr[keys[i]].split(delimiter)[0]){
+                errorSpan.html("タグ名が重複しています");
+                input.parent().addClass('is-invalid');
+                return;
+            }
+        }
 
         var show = $('#checkbox-modal-label').hasClass('is-checked');
         masterJson[modalDataNum]["data"][modalTipNum] = title + delimiter + clickedColor + delimiter + show;
         console.log(masterJson);
         modal.modal('hide');
     });
+
+    // input.keyup(function () {
+    //     var val = $(this).val();
+    //     console.log(val);
+    //     var arr = masterJson[modalDataNum]["data"];
+    //     var keys = Object.keys(arr);
+    //
+    //     for(var i=0; i<keys.length; i++){
+    //         if(parseInt(keys[i]) === modalTipNum)
+    //             continue;
+    //
+    //         if(!val){
+    //             errorSpan.html("タグ名を入力してください");
+    //             input.parent().addClass('is-invalid');
+    //             return;
+    //         }
+    //
+    //         if(val === arr[keys[i]].split(delimiter)[0]){
+    //             errorSpan.html("タグ名が重複しています");
+    //             input.parent().addClass('is-invalid');
+    //             return;
+    //         }
+    //     }
+    //
+    //     input.parent().removeClass('is-invalid');
+    // });
 
     // $('.modal-footer-btn').eq(1).on('click', function(){
     //
@@ -450,6 +494,19 @@ function setCircleHoverEvent(circleNum) {
     //     masterJson[modalDataNum]["data"][modalTipNum]
     // });
 }
+
+// function generateRegexp () {
+//     var arr = [];
+//     $.extend(arr, masterJson[modalDataNum]["data"], true);//doing deep copy
+//     delete arr[modalTipNum];
+//     var regexp = "(";
+//     arr.forEach(function (tipVal) {
+//         regexp += "^"+ tipVal.split(delimiter)[0] +"$|";
+//     });
+//     regexp = regexp.slice(0, -1) + ")/i";//最後の"|"を削除して、そこに")/i"を付加する iはignore caseのフラグ
+//     console.log(regexp);
+//     return regexp;
+// }
 
 /**
  *
