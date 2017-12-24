@@ -133,6 +133,7 @@ function init() {
             cards.eq(prevPos).attr("data-order", prevPos);
         });
 
+        initModal();
         // document.getElementById("place-holder").style.display = "none";
         // document.getElementById("page-content-wrapper").style.display = "inline";
     });
@@ -273,6 +274,7 @@ function operateAs2(doc, childSnap) {
     var pool = document.createElement("div");
     pool.setAttribute("class", "tag_pool");
 
+    var count = 0;
     Object.keys(childSnap["data"]).forEach(function (key) {
         var splited = childSnap["data"][key].split("9mVSv");
         var clone = createHtmlAs2();
@@ -288,12 +290,25 @@ function operateAs2(doc, childSnap) {
         }
         clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
 
+        clone.setAttribute("index", count);
         setElementAsMdl(clone);
+        // var order = clone.closest($(".card")).attr("data-order");
+        // var order = clone.parentNode.parentNode.
+        // console.log(order);
 
-        var order = clone.closest($(".card")).attr("data-order");
-        console.log(order);
+        clone.getElementsByClassName("mdl-chip")[0].onclick = function (ev) {
+            var order = pool.parentElement.getAttribute("data-order");
+            var index = clone.getAttribute("index");
+            var splited = masterJson[parseInt(order)]["data"][index].split("9mVSv");
+            $('#modal-input').attr('value', splited[0]);
+            
+            showModal();
+            // splited[0]
+        };
 
         pool.append(clone);
+
+        count++;
     });
 
     dragula([pool]);
@@ -343,17 +358,6 @@ function operateAs3(doc, childSnap, dataNum) {
             }
         });
 
-        var modal = $('#exampleModal');
-
-        /* blur on modal open, unblur on close */
-        modal.on('show.bs.modal', function () {
-            $('.container').addClass('blur');
-        });
-
-        modal.on('hide.bs.modal', function () {
-            $('.container').removeClass('blur');
-        });
-
         doc.appendChild(ul);
     }
 }
@@ -370,6 +374,19 @@ function operateAs4(doc, childSnap) {
     doc.appendChild(clone);
 }
 //endregion
+
+function initModal() {
+    var modal = $('#exampleModal');
+
+    /* blur on modal open, unblur on close */
+    modal.on('show.bs.modal', function () {
+        $('.container').addClass('blur');
+    });
+
+    modal.on('hide.bs.modal', function () {
+        $('.container').removeClass('blur');
+    });
+}
 
 /**
  *
@@ -491,8 +508,10 @@ function showModal() {
 }
 
 function createHtmlAs2() {
-    var clone = $("div", {class: "tag_wrapper"});
-    clone.html(
+    var clone = document.createElement("div");
+    clone.setAttribute("class", "tag_wrapper");
+    // var clone = $("div", {class: "tag_wrapper"});
+    clone.innerHTML =
         '<a href="#">'+
             '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
                 '<span class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">' +
@@ -505,8 +524,7 @@ function createHtmlAs2() {
                 '<span class="mdl-chip__text"></span>' +
                 // '<a href="#" class="mdl-chip__action mdl-pre-upgrade a_remove_btn"><i class="fas fa-times remove_btn"></i></a>'+
             '</span>' +
-        '</a>'
-    );
+        '</a>';
         // '<div class="mdl-tooltip" for="tooltip_delete"></div>';
     return clone;
 }

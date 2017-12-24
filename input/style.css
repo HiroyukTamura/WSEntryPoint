@@ -580,6 +580,10 @@ td {
     display: inline-block;
 }
 
+#modal_input{
+    font-size: 14px;
+}
+
 #modal-row1{
     margin-top: 8px;
     margin-bottom: 8px;
