@@ -203,12 +203,14 @@ function  getCommentAsNullable(childSnap) {
 
 function setHeaderTitle(doc, childSnap) {
     var title;
+    var titleInput = $(doc).find(".card_title_input").eq(0);
     if(childSnap["dataType"] !== 1){
         title = childSnap["dataName"];
     } else {
         title = "イベント";
+        titleInput.attr('disabled', false);
     }
-    doc.getElementsByClassName("card_title_input")[0].setAttribute("value", title);
+    titleInput.attr("value", title);
 }
 
 function createTable() {
