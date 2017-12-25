@@ -106,7 +106,7 @@ function init() {
             var dataNum = Math.floor(index/3);//小数切り捨て
             console.log("dataNum: "+dataNum);
             var selectedCard = $("[data-order=" + dataNum + "]");
-            var elements = $(".card");
+            // var elements = $(".card");
             switch (index%3){
                 case 0:
                     delete masterJson[dataNum];
@@ -332,10 +332,7 @@ function operateAs2(doc, childSnap) {
             clickedColor = parseInt(splited[1]);
 
             $('#modal_input').attr('value', splited[0]).val(splited[0]);
-            $('.modal-circle-check').eq(parseInt(splited[1])).css("display", "inline");
-                // .find(".modal-circle-w")
-                // .eq(parseInt(splited[1]))
-                // .append("<i class=\"fas fa-check modal-circle-check\" data-fa-transform=\"shrink-8\"></i>");
+            $('.modal-circle-check').eq(parseInt(splited[1])).addClass("show");
 
             if(splited[2] === "true"){
                 document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
@@ -351,13 +348,9 @@ function operateAs2(doc, childSnap) {
         count++;
     });
 
-    var dragedPos;
-    dragula([pool]).on('drag', function (el) {
-        dragedPos = $(el).index();
-        console.log(dragedPos);
-    }).on('drop', function (el) {
+    dragula([pool]).on('drop', function (el) {
         var currentPos = $(el).index();
-        console.log(currentPos);
+        var dragedPos = $(el).attr("index");
         var dataPos = parseInt($(pool).parent().attr("data-order"));
         masterJson[dataPos]["data"].move(dragedPos, currentPos);
         console.log(masterJson);
@@ -445,7 +438,7 @@ function initModal() {
 
     modal.on('hidden.bs.modal', function () {
         $('.container').removeClass('blur');
-        $('.modal-circle-check').css("display", "none");
+        $('.modal-circle-check.show').removeClass("show");
         input.removeAttr("value");
         input.val('');
         document.getElementById('checkbox-modal-label').MaterialCheckbox.uncheck();
@@ -463,9 +456,13 @@ function initModal() {
         }
 
         var arr = masterJson[modalDataNum]["data"];
-        var keys = Object.keys(arr);
-        for(var i=0; i<keys.length; i++){
-            if(title === arr[keys[i]].split(delimiter)[0]){
+        var val = Object.values(arr);
+        console.log(modalTipNum);
+        for(var i=0; i<val.length; i++){
+            if(i.toString() === modalTipNum)
+                continue;
+
+            if(title === val[i].split(delimiter)[0]){
                 errorSpan.html("タグ名が重複しています");
                 input.parent().addClass('is-invalid');
                 return;
@@ -476,6 +473,12 @@ function initModal() {
         masterJson[modalDataNum]["data"][modalTipNum] = title + delimiter + clickedColor + delimiter + show;
         console.log(masterJson);
         modal.modal('hide');
+    });
+
+    $(".modal-circle-i").click(function () {
+        $(".modal-circle-check.show").removeClass("show");
+        $(this).next().addClass("show");
+        clickedColor = $(this).parent().index();
     });
 
     // input.keyup(function () {

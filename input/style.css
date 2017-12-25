@@ -421,6 +421,10 @@ body {
     display: none;
 }
 
+.show {
+    display: inline;
+}
+
 #modal-circle-w {
     vertical-align: middle;
 }
