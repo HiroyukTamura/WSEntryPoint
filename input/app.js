@@ -308,16 +308,7 @@ function operateAs2(doc, childSnap) {
         var splited = childSnap["data"][key].split(delimiter);
         var clone = createHtmlAs2();
 
-        clone.getElementsByClassName("mdl-chip__text")[0].innerHTML = splited[0];
-        // clone.getElementsByClassName("mdl-tooltip")[0].innerHTML = convertToDisplayLetters(splited[2]);
-        if(splited[2] === "false"){
-            clone.getElementsByClassName("chips_btn")[0].style.display = "none";
-        } else if (splited[2] === "true"){
-            clone.getElementsByClassName("chips_btn")[1].style.display = "none";
-        } else {
-            console.log(splited);
-        }
-        clone.getElementsByClassName("chips_btn_circle")[0].style.color = getColor(parseInt(splited[1]));
+        setTagUi(clone, splited);
 
         clone.setAttribute("index", count);
         setElementAsMdl(clone);
@@ -422,6 +413,22 @@ function operateAs4(doc, childSnap) {
 }
 //endregion
 
+function setTagUi(clone, splited) {
+    $(clone).find(".mdl-chip__text").eq(0).html(splited[0]);
+
+    var chipsBtn = $(clone).find(".chips_btn");
+    if(splited[2] === "false"){
+        chipsBtn.eq(0).css("display", "none");
+        chipsBtn.eq(1).css("display", "inline");
+    } else if (splited[2] === "true"){
+        chipsBtn.eq(1).css("display", "none");
+        chipsBtn.eq(0).css("display", "inline");
+    } else {
+        console.log(splited);
+    }
+    $(clone).find(".chips_btn_circle").eq(0).css("color", getColor(parseInt(splited[1])));
+}
+
 function initModal() {
     var modal = $('#exampleModal');
     var input = $('#modal_input');
@@ -434,6 +441,12 @@ function initModal() {
             console.log("てってれー");
             input.parent().addClass('is-dirty');
         }
+    });
+
+    modal.on('hide.bs.modal', function () {
+        var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
+        var tip = $('.card').eq(modalDataNum).find(".tag_wrapper").eq(modalTipNum);
+        setTagUi(tip, splited);
     });
 
     modal.on('hidden.bs.modal', function () {
@@ -476,6 +489,7 @@ function initModal() {
     });
 
     $(".modal-circle-i").click(function () {
+        console.log("てってれー");
         $(".modal-circle-check.show").removeClass("show");
         $(this).next().addClass("show");
         clickedColor = $(this).parent().index();
