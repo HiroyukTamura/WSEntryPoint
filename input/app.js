@@ -409,18 +409,26 @@ function operateAs3(doc, childSnap, dataNum) {
                         console.log(masterJson[dataNum]["data"][index]);
                     });
 
-                    // todo toolTipうまくいかない
-                    var toolTip = $('div', {class: 'mdl-tooltip'});
-                    toolTip.html("最大値を変更");
+                    // var toolTip = $('div', {class: 'mdl-tooltip'});
+                    // toolTip.html("最大値を変更");
                     var maxBtn = $(clone).find(".max_btn").eq(0).parent();
                     var id = "max_btn_" + dataNum + "_" + $(maxBtn).closest("li").index();
-                    console.log(id);
                     maxBtn.attr("id", id);
-                    toolTip.attr("data-mdl-for", id);
-                    maxBtn.click(function () {
-                        console.log("clicked");
-                    });
-                    $(clone.children[0]).append(toolTip);
+                    // toolTip.attr("data-mdl-for", id);
+                    // maxBtn.click(function () {
+                    //     console.log("clicked");
+                    // });
+                    // $(clone.children[0]).append(toolTip);
+                    var dropDown = $(
+                        '<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">' +
+                    '<li class="mdl-menu__item">Some Action</li>' +
+                '<li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>' +
+                '<li disabled class="mdl-menu__item">Disabled Action</li>' +
+                '<li class="mdl-menu__item">Yet Another Action</li>' +
+                '</ul>'
+                );
+                    document.body.appendChild(dropDown[0]);
+                    // $("body").append(dropDown);
                     break;
             }
 
