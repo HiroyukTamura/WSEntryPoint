@@ -502,6 +502,11 @@ td {
     display: none;
 }
 
+.params_slider {
+    vertical-align: middle;
+    margin: 0;
+}
+
 .mdl-button{
     padding: 0;
 }
@@ -613,6 +618,14 @@ td {
 
 .modal-footer-btn{
     cursor: pointer;
+}
+
+/*--------------ボタン追加系------------------*/
+#add_btn_w{
+    padding-top: 30px;
+    padding-bottom: 30px;
+    width: 100%;
+    text-align: center;
 }
 
 /*.remove_btn{*/

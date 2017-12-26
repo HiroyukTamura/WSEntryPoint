@@ -352,7 +352,7 @@ function operateAs2(doc, childSnap) {
 }
 
 function operateAs3(doc, childSnap, dataNum) {
-    if(childSnap["data"]){
+    // if(childSnap["data"]){
         var ul = document.createElement("ul");
         ul.setAttribute("class", "demo-list-item mdl-list");
 
@@ -366,7 +366,13 @@ function operateAs3(doc, childSnap, dataNum) {
             var witch = splited[0];
             // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
             var clone = createHtmlAs3(dataNum + "_" + keys[i]);
-            clone.getElementsByClassName("params_title")[0].setAttribute("value", splited[1]);
+            var paramsTitle = $(clone).find(".params_title").eq(0);
+            paramsTitle.attr("value", splited[1]);
+            paramsTitle.keyup(function (e) {
+                var index = $(this).closest("li").index();
+                masterJson[dataNum]["data"][index] = $(this).val();
+            });
+
             switch(witch){
                 case "0":
                     clone.getElementsByClassName("params_slider")[0].style.display = "none";
@@ -388,16 +394,15 @@ function operateAs3(doc, childSnap, dataNum) {
 
         setElementAsMdl(ul);
 
+        doc.appendChild(ul);
+
         dragula([ul], {
             moves: function (el, container, handle) {
-                return handle.classList.contains('.drag_btn_i');
+                return handle.classList.contains('drag_btn_i');
             }
         }).on('drop', function (el) {
-            //todo params並び替え
-        });
 
-        doc.appendChild(ul);
-    }
+        });
 }
 
 function operateAs4(doc, childSnap) {
