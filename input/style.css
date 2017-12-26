@@ -141,144 +141,6 @@ body {
     color: #66615b;
 }
 
-/*#wrapper {*/
-    /*padding-left: 0;*/
-    /*-webkit-transition: all 0.5s ease;*/
-    /*-moz-transition: all 0.5s ease;*/
-    /*-o-transition: all 0.5s ease;*/
-    /*transition: all 0.5s ease;*/
-/*}*/
-
-/*#wrapper.toggled {*/
-    /*padding-left: 250px;*/
-/*}*/
-
-/*#sidebar-wrapper {*/
-    /*z-index: 1000;*/
-    /*position: fixed;*/
-    /*left: 250px;*/
-    /*width: 0;*/
-    /*height: 100%;*/
-    /*margin-left: -250px;*/
-    /*overflow-y: auto;*/
-    /*background: #fff;*/
-    /*-webkit-transition: all 0.5s ease;*/
-    /*-moz-transition: all 0.5s ease;*/
-    /*-o-transition: all 0.5s ease;*/
-    /*transition: all 0.5s ease;*/
-/*}*/
-
-/*#wrapper.toggled #sidebar-wrapper {*/
-    /*width: 250px;*/
-/*}*/
-
-/*#page-content-wrapper {*/
-    /*width: 100%;*/
-    /*position: absolute;*/
-    /*padding: 15px;*/
-/*}*/
-
-/*#wrapper.toggled #page-content-wrapper {*/
-    /*position: absolute;*/
-    /*margin-right: -250px;*/
-/*}*/
-
-
-/*!* Sidebar Styles *!*/
-
-/*.sidebar-nav {*/
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*width: 250px;*/
-    /*margin: 0;*/
-    /*padding: 0;*/
-    /*list-style: none;*/
-/*}*/
-
-/*.sidebar-nav li {*/
-    /*text-indent: 20px;*/
-    /*line-height: 50px;*/
-    /*height: 50px;*/
-    /*margin-top: 5px;*/
-    /*margin-bottom: 5px;*/
-/*}*/
-
-/*.sidebar-nav li a {*/
-    /*display: block;*/
-    /*text-decoration: none;*/
-    /*color: #777777;*/
-    /*font-size: medium;*/
-/*}*/
-
-/*.sidebar-nav li a:hover {*/
-    /*text-decoration: none;*/
-    /*color: #333333;*/
-    /*background: #F4F3EF;*/
-/*}*/
-
-/*.sidebar-nav li a:active, .sidebar-nav li a:focus {*/
-    /*text-decoration: none;*/
-/*}*/
-
-/*.sidebar-nav>.sidebar-brand {*/
-    /*height: 75px;*/
-    /*line-height: 70px;*/
-    /*margin-top: 0;*/
-    /*margin-bottom: 0;*/
-/*}*/
-
-/*.sidebar-nav>.sidebar-brand a {*/
-    /*color: #333333;*/
-    /*font-size: 22px;*/
-/*}*/
-
-/*.sidebar-nav>.sidebar-brand a:hover {*/
-    /*background: #fff;*/
-/*}*/
-
-/*@media(min-width:768px) {*/
-    /*#wrapper {*/
-        /*padding-left: 0;*/
-    /*}*/
-    /*#wrapper.toggled {*/
-        /*padding-left: 250px;*/
-    /*}*/
-    /*#sidebar-wrapper {*/
-        /*width: 0;*/
-    /*}*/
-    /*#wrapper.toggled #sidebar-wrapper {*/
-        /*width: 250px;*/
-    /*}*/
-    /*#page-content-wrapper {*/
-        /*padding: 20px;*/
-        /*position: relative;*/
-    /*}*/
-    /*#wrapper.toggled #page-content-wrapper {*/
-        /*position: relative;*/
-        /*margin-right: 0;*/
-    /*}*/
-/*}*/
-
-/*#bland_img{*/
-    /*height: 40px;*/
-    /*margin: 12px 12px 12px 0;*/
-/*}*/
-
-/*.sidebar_icon{*/
-    /*margin-right: 20px;*/
-/*}*/
-
-/*.seem {*/
-    /*height: 1px;*/
-    /*width: 100%;*/
-    /*background-color: #F1EAE0;*/
-/*}*/
-
-/*.seem_wrapper {*/
-    /*margin-right: 10px;*/
-    /*margin-left: 10px;*/
-/*}*/
-
 .card {
     margin: 10px 20px;
     border: 0;
@@ -639,6 +501,13 @@ td {
 /*}*/
 
 /*---------------ローディング画面系-------------*/
+#progress {
+    width: 100%;
+}
+
+#post_load {
+    display: none;
+}
 /*#page-content-wrapper {*/
     /*display: none;*/
 /*}*/

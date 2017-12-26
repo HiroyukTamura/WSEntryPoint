@@ -145,6 +145,9 @@ function init() {
         initModal();
         // document.getElementById("place-holder").style.display = "none";
         // document.getElementById("page-content-wrapper").style.display = "inline";
+
+        $('#progress').css("display", "none");
+        $('#post_load').css("display", "inline");
     });
 }
 
