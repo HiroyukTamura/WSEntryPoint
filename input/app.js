@@ -375,7 +375,9 @@ function operateAs3(doc, childSnap, dataNum) {
 
             switch(witch){
                 case "0":
-                    clone.getElementsByClassName("params_slider")[0].style.display = "none";
+                    $(clone).find(".params_slider").eq(0).css("display", "none");
+                    // clone.getElementsByClassName("params_slider")[0].style.display = "none";
+                    $(clone).find(".max_btn").eq(0).css("display", "none");
                     var checkBox = $(clone).find(".mdl-checkbox__input");
 
                     if(splited[2] === "true"){
@@ -406,6 +408,19 @@ function operateAs3(doc, childSnap, dataNum) {
                         masterJson[dataNum]["data"][index] = values.join(delimiter);
                         console.log(masterJson[dataNum]["data"][index]);
                     });
+
+                    // todo toolTipうまくいかない
+                    var toolTip = $('div', {class: 'mdl-tooltip'});
+                    toolTip.html("最大値を変更");
+                    var maxBtn = $(clone).find(".max_btn").eq(0).parent();
+                    var id = "max_btn_" + dataNum + "_" + $(maxBtn).closest("li").index();
+                    console.log(id);
+                    maxBtn.attr("id", id);
+                    toolTip.attr("data-mdl-for", id);
+                    maxBtn.click(function () {
+                        console.log("clicked");
+                    });
+                    $(clone.children[0]).append(toolTip);
                     break;
             }
 
@@ -769,14 +784,14 @@ function createHtmlAs3(id) {
         '<li class="mdl-list__item mdl-pre-upgrade">'+
             '<i class="fas fa-bars drag_btn_i"></i>'+
 
-        '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-            '<form action="#">' +
-                '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
-                    '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
-                    '<label class="mdl-textfield__label" for="'+inputId+'"></label>' +
-                '</div>' +
-            '</form>' +
-        '</span>'+
+            '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                '<form action="#">' +
+                    '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
+                        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
+                        '<label class="mdl-textfield__label" for="'+inputId+'"></label>' +
+                    '</div>' +
+                '</form>' +
+            '</span>'+
 
             '<span class="mdl-list__item-secondary-action params_check">'+
                 '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + checkId +'">'+
@@ -787,6 +802,10 @@ function createHtmlAs3(id) {
             '<p class="slider_wrapper params_slider" style="width:300px">'+
                 '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" id="s1" min="0" max="5" value="3" step="1">'+
             '</p>'+
+
+            '<button class="mdl-button mdl-js-button mdl-button--icon">' +
+                '<i class="fas fa-arrows-alt-h max_btn"></i>' +
+            '</button>'+
         '</li>';
     return clone;
 }
