@@ -117,3 +117,24 @@ body {
 .mdl-layout__header .mdl-layout__drawer-button {
     color: #66615b;
 }
+
+/*----------------login---------------*/
+#login-grid{
+    text-align: center;
+}
+
+#login-logo{
+    width: 100%;
+    max-width: 200px;
+}
+
+#login_w{
+    width: 100%;
+}
+
+#login_title{
+    color: #E57C3E;
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 100px;
+}
