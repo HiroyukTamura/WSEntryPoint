@@ -39,7 +39,7 @@ function init() {
 
         //タグの連想配列を普通の配列に変換
         masterJson.forEach(function (arr) {
-            if(arr["dataType"] === 2){
+            if(arr["dataType"] === 2 || arr["dataType"] === 3){
                 var newArr = [];
                 Object.values(arr["data"]).forEach(function (value) {
                     newArr.push(value);
@@ -396,12 +396,17 @@ function operateAs3(doc, childSnap, dataNum) {
 
         doc.appendChild(ul);
 
+        var oldPos;
         dragula([ul], {
             moves: function (el, container, handle) {
                 return handle.classList.contains('drag_btn_i');
             }
         }).on('drop', function (el) {
-
+            var currentPos = $(el).index();
+            masterJson[dataNum]["data"].move(oldPos, currentPos);
+            console.log(masterJson);
+        }).on('drag', function (el) {
+            oldPos = $(el).index();
         });
 }
 
