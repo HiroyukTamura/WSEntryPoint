@@ -18,17 +18,7 @@ body > .container {
     padding-left: 15px;
 }
 
-.navbar-brand {
-    display: flex;
-    align-items: center;
-}
-.navbar-brand>img {
-    padding: 7px 14px;
-    width: 64px;
-}
-
-
-
+/*todo css共通化できるところするべきでは？*/
 
 /*!
  * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)

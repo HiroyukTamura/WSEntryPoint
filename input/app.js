@@ -28,8 +28,9 @@ function init() {
     };
     var defaultApp = firebase.initializeApp(config);
     var defaultDatabase = defaultApp.database();
+    var uid = getUid();
 
-    defaultDatabase.ref("/userData/" + getUid() + "/template").once('value').then(function(snapshot) {
+    defaultDatabase.ref("/userData/" + uid + "/template").once('value').then(function(snapshot) {
 
         masterJson = [];
         snapshot.forEach(function (childSnap) {
@@ -149,6 +150,9 @@ function init() {
         $('#progress').css("display", "none");
         $('#post_load').css("display", "inline");
     });
+
+    var url = "../analytics/index.html?uid=" + uid;
+    $('.mdl-navigation__link').eq(2).attr("href", url);
 }
 
 function initCardDragging() {
