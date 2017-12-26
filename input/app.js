@@ -357,15 +357,15 @@ function operateAs3(doc, childSnap, dataNum) {
         ul.setAttribute("class", "demo-list-item mdl-list");
 
         // var liNum = 0;
-        var keys = Object.keys(childSnap["data"]);
+        var values = Object.values(childSnap["data"]);
         console.log(childSnap["data"]);
 
-        for (var i=0; i<keys.length; i++){
-            var splited = childSnap["data"][keys[i]].split(delimiter);
+        for (var i=0; i<values.length; i++){
+            var splited = values[i].split(delimiter);
             console.log(splited);
             var witch = splited[0];
             // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
-            var clone = createHtmlAs3(dataNum + "_" + keys[i]);
+            var clone = createHtmlAs3(dataNum + "_" + i);
             var paramsTitle = $(clone).find(".params_title").eq(0);
             paramsTitle.attr("value", splited[1]);
             paramsTitle.keyup(function (e) {
@@ -376,16 +376,36 @@ function operateAs3(doc, childSnap, dataNum) {
             switch(witch){
                 case "0":
                     clone.getElementsByClassName("params_slider")[0].style.display = "none";
-                    // if(splited[2] == true){//==でstring型をbooleanに内部変換してもらえる
-                    //     clone.getElementsByClassName("mdl-checkbox__input")[0].setAttribute("checked", "");
-                    console.log("こっち");
-                    // }
+                    var checkBox = $(clone).find(".mdl-checkbox__input");
+
+                    if(splited[2] === "true"){
+                        checkBox.attr("checked", "");
+                    }
+
+                    //checkBox event
+                    checkBox.change(function () {
+                        var index = $(this).closest("li").index();
+                        var values = masterJson[dataNum]["data"][index].split(delimiter);
+                        values[2] = $(this).is(':checked').toString();
+                        masterJson[dataNum]["data"][index] = values.join(delimiter);
+                        console.log(masterJson[dataNum]["data"][index]);
+                    });
                     break;
+
                 case "1":
-                    clone.getElementsByClassName("params_check")[0].style.display = "none";
-                    var slider = clone.getElementsByClassName("mdl-slider")[0];
-                    slider.setAttribute("value", splited[2]);
-                    slider.setAttribute("max", splited[3]);
+                    $(clone).find(".params_check").eq(0).css("display", "none");
+                    // clone.getElementsByClassName("params_check")[0].style.display = "none";
+                    var slider = $(clone).find(".mdl-slider").eq(0);
+                    // var slider = clone.getElementsByClassName("mdl-slider")[0];
+                    slider.attr("value", splited[2]);
+                    slider.attr("max", splited[3]);
+                    slider.change(function () {
+                        var index = $(this).closest("li").index();
+                        var values = masterJson[dataNum]["data"][index].split(delimiter);
+                        values[2] = $(this).val();
+                        masterJson[dataNum]["data"][index] = values.join(delimiter);
+                        console.log(masterJson[dataNum]["data"][index]);
+                    });
                     break;
             }
 
