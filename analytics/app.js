@@ -1,6 +1,8 @@
 var defaultApp;
 var masterJson = {};
 var myChart;
+var MODE_WEEK = 7;
+const wodList = ["日", "月", "火", "水", "木", "金", "土"];
 
 function init() {
     var config = {
@@ -114,14 +116,17 @@ function onLoginSuccess(uid) {
 
 function displayTest() {
     //dataType === 1のものを集計する。
-    chart(6);
+    var keys = Object.keys(masterJson);
+    chart(MODE_WEEK, keys[0]);
 
-    Object.keys(masterJson).forEach(function (key) {
+    var date = 0;
+    keys.forEach(function (key) {
         if(masterJson[key]){
             masterJson[key].forEach(function (data) {
                 if(data["dataType"] === 1){
                     var json = JSON.parse(data["data"]["0"]);
-                    var date = moment(key, "YYYYMMDD").hour();
+                    console.log(json);
+                    // var date = moment(key, "YYYYMMDD").date();
                     json.rangeList.forEach(function (entry) {
                         console.log(entry);
 
@@ -164,11 +169,35 @@ function displayTest() {
                 }
             });
         }
+
+        date++;
     });
 }
 
-function chart(lastDate) {
+function chart(mode, firstCal) {
     var ctx = $('#chart_div')[0].getContext("2d");
+    var dates = [];
+    var cal = moment(firstCal);
+    for(var n=0; n<mode; n++){
+        dates.push(cal.format('YYYYMMDD'));
+        cal.add(1, 'd');
+    }
+
+    cal = moment(firstCal);
+    var yAxis = [];
+    var month;
+    for(var i=0; i<mode; i++){
+        var value;
+        if(i === 0 || cal.month() !== month){
+            month = cal.month();
+            value = cal.format('MM/DD');
+        } else {
+            value = cal.format('DD');
+        }
+        yAxis.push(value +"("+ wodList[cal.day()] +")");
+        cal.add(1, 'd');
+    }
+
     myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -181,14 +210,53 @@ function chart(lastDate) {
                 yAxes: [{
                     ticks: {
                         suggestedMin: 0,
-                        suggestedMax: lastDate+1,
+                        suggestedMax: mode,
                         reverse: true,
-                        stepSize: 1
+                        stepSize: 1,
+                        callback: function(value, index, values) {
+                            if(index === mode)
+                                return null;
+
+                            return yAxis[value];
+                        }
                     }
                 }]
             },
             legend: {
                 display: false
+            },
+            tooltips: {
+                callbacks: {
+                    title: function (toolTips, data) {
+                        var arr = data["datasets"][0]["data"];
+                        var dateVal = dates[toolTips[0]["yLabel"]];
+                        console.log(arr, dateVal);
+                        var start;
+                        var end;
+                        for(var i=0; i<arr.length; i++){
+                            if(!start && arr[i]){
+                                start = i;
+                            } else if(start && !end && !arr[i]){
+                                end = i-1;
+                                break;
+                            }
+                        }
+
+                        for(var m=0; m<masterJson[dateVal].length; m++){
+                            var child = masterJson[dateVal][i];
+                            if(child["dataType"] !== 1)
+                                continue;
+
+                            var json = JSON.parse(child["data"]["0"]);
+                            for(var n=0; n<json.rangeList.length; n++){
+                                var entry = json.rangeList[n];
+                                if(start === getTime(entry.start) && end === getTime(entry.end)){
+                                    return entry.start.name + " → " + entry.end.name;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     });
@@ -209,6 +277,7 @@ function getTime(entryC) {
 }
 
 function pushData(arr, date) {
+    console.log(arr, date);
     myChart.data.datasets.push({
         data: arr,
         pointRadius: setRadius(arr, date),
@@ -237,7 +306,7 @@ function getRangeArr(date, start, end, offset) {
     var arrC = [];
     date = date + offset;
     for(var n=0; n<=24; n++){
-        if (start<n && n<end){
+        if (start<=n && n<=end){
             arrC.push(date);
         } else {
             arrC.push(null);
