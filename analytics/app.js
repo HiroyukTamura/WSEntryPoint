@@ -11,47 +11,56 @@ function init() {
     };
     defaultApp = firebase.initializeApp(config);
 
-    var user = firebase.auth().currentUser;
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            console.log("ユーザログインしてます");
+            onLoginSuccess(user.uid);
+        } else {
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                .then(function() {
+                    var uiConfig = {
+                        signInOptions: [
+                            // Leave the lines as is for the providers you want to offer your users.
+                            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+                            firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                            firebase.auth.PhoneAuthProvider.PROVIDER_ID
+                        ],
+                        // Terms of service url.
+                        tosUrl: 'sampleTosUrl',
+                        'callbacks': {
+                            // Called when the user has been successfully signed in.
+                            'signInSuccess': function(user, credential, redirectUrl) {
+                                console.log(user.uid);
+                                //urlとは別のuidのユーザとしてログインすることもある。
+                                if(user.uid !== getUid()){
+                                    var currentUrl = $(location).attr('href');
+                                    window.location.href = currentUrl.substring(0, currentUrl.indexOf("?"));
+                                } else {
+                                    onLoginSuccess(user.uid);
+                                }
+                                return false;
+                            }
+                        }
+                    };
 
-    if (user) {
-
-    } else {
-        var uiConfig = {
-            signInOptions: [
-                // Leave the lines as is for the providers you want to offer your users.
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-                firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                firebase.auth.PhoneAuthProvider.PROVIDER_ID
-            ],
-            // Terms of service url.
-            tosUrl: 'sampleTosUrl',
-            'callbacks': {
-                // Called when the user has been successfully signed in.
-                'signInSuccess': function(user, credential, redirectUrl) {
-                    console.log(user.uid);
-                    //urlとは別のuidのユーザとしてログインすることもある。
-                    if(user.uid !== getUid()){
-                        var currentUrl = $(location).attr('href');
-                        window.location.href = currentUrl.substring(0, currentUrl.indexOf("?"));
-                    } else {
-                        onLoginSuccess(user.uid);
-                    }
-                    return false;
-                }
-            }
-        };
-
-        var ui = new firebaseui.auth.AuthUI(firebase.auth());
-        $('#progress').css('display', "none");
-        ui.start('#firebaseui-auth-container', uiConfig);
-    }
+                    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                    $('#progress').css('display', "none");
+                    ui.start('#firebaseui-auth-container', uiConfig);
+                }).catch(function(error) {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log(errorCode, errorMessage);
+                    //todo エラー時の処理
+            });
+        }
+    });
 }
 
-function getUid() {
-    var url = new URL(window.location.href);
-    return url.searchParams.get("uid");
-}
+// function getUid() {
+//     var url = new URL(window.location.href);
+//     return url.searchParams.get("uid");
+// }
 
 function getDaysOfWeek() {
     var now = moment();

@@ -24,14 +24,20 @@ var uiConfig = {
         // Called when the user has been successfully signed in.
         'signInSuccess': function(user, credential, redirectUrl) {
             console.log(user.uid);
-            redirectUrl = '../input/index.html' + "?uid=" + user.uid;
-            window.location.href = redirectUrl;
+            window.location.href = '../input/index.html' + "?uid=" + user.uid;
             return false;
         }
     }
 };
 
-// Initialize the FirebaseUI Widget using Firebase.
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
-// The start method will wait until the DOM is loaded.
-ui.start('#firebaseui-auth-container', uiConfig);
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(function() {
+        console.log("こっち");
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start('#firebaseui-auth-container', uiConfig);
+    }).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        $('#about').css("display", "hide");
+    });

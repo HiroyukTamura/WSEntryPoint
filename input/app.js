@@ -30,129 +30,137 @@ function init() {
     var defaultDatabase = defaultApp.database();
     var uid = getUid();
 
-    defaultDatabase.ref("/userData/" + uid + "/template").once('value').then(function(snapshot) {
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
 
-        masterJson = [];
-        snapshot.forEach(function (childSnap) {
-            masterJson.push(childSnap.toJSON());
-        });
-        masterJson.shift();
-
-        //タグの連想配列を普通の配列に変換
-        masterJson.forEach(function (arr) {
-            if(arr["dataType"] === 2 || arr["dataType"] === 3){
-                var newArr = [];
-                Object.values(arr["data"]).forEach(function (value) {
-                    newArr.push(value);
+            defaultDatabase.ref("/userData/" + uid + "/template").once('value').then(function(snapshot) {
+                masterJson = [];
+                snapshot.forEach(function (childSnap) {
+                    masterJson.push(childSnap.toJSON());
                 });
-                arr["data"] = newArr;
-            }
-        });
-        console.log(masterJson);
+                masterJson.shift();
 
-        if (!snapshot.exists()) {
-            console.log("テンプレ存在せず！うわー！");
-            return;
+                //タグの連想配列を普通の配列に変換
+                masterJson.forEach(function (arr) {
+                    if(arr["dataType"] === 2 || arr["dataType"] === 3){
+                        var newArr = [];
+                        Object.values(arr["data"]).forEach(function (value) {
+                            newArr.push(value);
+                        });
+                        arr["data"] = newArr;
+                    }
+                });
+                console.log(masterJson);
+
+                if (!snapshot.exists()) {
+                    console.log("テンプレ存在せず！うわー！");
+                    return;
+                }
+
+                for (var i=0; i<masterJson.length; i++){
+                    var childSnap = masterJson[i];
+                    var doc = createElementWithHeader(i, childSnap["dataType"]);
+
+                    switch (childSnap["dataType"]){
+                        case 0:
+                            continue;
+                        case 1:
+                            operateAs1(doc, childSnap);
+                            break;
+                        case 2:
+                            operateAs2(doc, childSnap);
+                            break;
+                        case 3:
+                            var element = operateAs3(doc, childSnap, i);
+                            if(element){
+                                createElementWithHeader(i).appendChild(element);
+                            } else {
+                                //todo エラー時処理？？
+                            }
+                            break;
+                        case 4:
+                            operateAs4(doc, childSnap);
+                            break;
+                    }
+
+                    setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
+                    document.getElementById('card_wrapper').appendChild(doc);
+
+                }
+
+                var mixier = mixitup('#card_wrapper', {
+                    // load: {
+                    //     sort: 'order:asc'
+                    // },
+                    animation: {
+                        duration: 250,
+                        nudge: true,
+                        reverseOut: false,
+                        effects: "fade translateZ(-100px)"
+                    },
+                    selectors: {
+                        target: '.card'
+                    }
+                });
+
+                $(".ele_header_button").click(function(e) {
+                    e.preventDefault();
+                    var index = $('.ele_header_button').index(this);
+                    var dataNum = Math.floor(index/3);//小数切り捨て
+                    console.log("dataNum: "+dataNum);
+                    var selectedCard = $("[data-order=" + dataNum + "]");
+                    // var elements = $(".card");
+                    switch (index%3){
+                        case 0:
+                            delete masterJson[dataNum];
+                            masterJson.splice(dataNum, 1);
+                            selectedCard.remove();
+
+                            for(var i=dataNum+1; i<masterJson.length+1; i++){
+                                console.log("ueeee");
+                                $("[data-order=" + i + "]").attr("data-order", i-1);
+                            }
+                            break;
+                        case 1:
+                            //最後尾は後ろにずらせない
+                            if(dataNum+1 < masterJson.length){
+                                masterJson = swap(masterJson, dataNum, dataNum+1);
+                                var nextCard = $("[data-order="+ (dataNum+1) +"]");
+                                selectedCard.attr("data-order", dataNum+1);
+                                nextCard.attr("data-order", dataNum);
+                            }
+                            break;
+                        case 2:
+                            //最初の要素は前にずらせない masterJsonの先頭はダミー
+                            if(dataNum-1 >= 0){
+                                masterJson = swap(masterJson, dataNum, dataNum-1);
+                                var prevCard = $("[data-order=" + (dataNum-1) + "]");
+                                selectedCard.attr("data-order", dataNum-1);
+                                prevCard.attr("data-order", dataNum);
+                            }
+                            break;
+                    }
+                    console.log(masterJson);
+                    mixier.sort("order:asc");
+                });
+
+                initCardDragging();
+                initModal();
+                // document.getElementById("place-holder").style.display = "none";
+                // document.getElementById("page-content-wrapper").style.display = "inline";
+
+                $('#progress').css("display", "none");
+                $('#post_load').css("display", "inline");
+            });
+
+            var url = "../analytics/index.html?uid=" + uid;
+            $('.mdl-navigation__link').eq(2).attr("href", url);
+
+        } else {
+            console.log("ユーザはログアウトしたっす。");
+            //todo ログアウト時の動作
         }
-
-        for (var i=0; i<masterJson.length; i++){
-            var childSnap = masterJson[i];
-            var doc = createElementWithHeader(i, childSnap["dataType"]);
-
-            switch (childSnap["dataType"]){
-                case 0:
-                    continue;
-                case 1:
-                    operateAs1(doc, childSnap);
-                    break;
-                case 2:
-                    operateAs2(doc, childSnap);
-                    break;
-                case 3:
-                    var element = operateAs3(doc, childSnap, i);
-                    if(element){
-                        createElementWithHeader(i).appendChild(element);
-                    } else {
-                        //todo エラー時処理？？
-                    }
-                    break;
-                case 4:
-                    operateAs4(doc, childSnap);
-                    break;
-            }
-
-            setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
-            document.getElementById('card_wrapper').appendChild(doc);
-
-        }
-
-        var mixier = mixitup('#card_wrapper', {
-            // load: {
-            //     sort: 'order:asc'
-            // },
-            animation: {
-                duration: 250,
-                nudge: true,
-                reverseOut: false,
-                effects: "fade translateZ(-100px)"
-            },
-            selectors: {
-                target: '.card'
-            }
-        });
-
-        $(".ele_header_button").click(function(e) {
-            e.preventDefault();
-            var index = $('.ele_header_button').index(this);
-            var dataNum = Math.floor(index/3);//小数切り捨て
-            console.log("dataNum: "+dataNum);
-            var selectedCard = $("[data-order=" + dataNum + "]");
-            // var elements = $(".card");
-            switch (index%3){
-                case 0:
-                    delete masterJson[dataNum];
-                    masterJson.splice(dataNum, 1);
-                    selectedCard.remove();
-
-                    for(var i=dataNum+1; i<masterJson.length+1; i++){
-                        console.log("ueeee");
-                        $("[data-order=" + i + "]").attr("data-order", i-1);
-                    }
-                    break;
-                case 1:
-                    //最後尾は後ろにずらせない
-                    if(dataNum+1 < masterJson.length){
-                        masterJson = swap(masterJson, dataNum, dataNum+1);
-                        var nextCard = $("[data-order="+ (dataNum+1) +"]");
-                        selectedCard.attr("data-order", dataNum+1);
-                        nextCard.attr("data-order", dataNum);
-                    }
-                    break;
-                case 2:
-                    //最初の要素は前にずらせない masterJsonの先頭はダミー
-                    if(dataNum-1 >= 0){
-                        masterJson = swap(masterJson, dataNum, dataNum-1);
-                        var prevCard = $("[data-order=" + (dataNum-1) + "]");
-                        selectedCard.attr("data-order", dataNum-1);
-                        prevCard.attr("data-order", dataNum);
-                    }
-                    break;
-            }
-            console.log(masterJson);
-            mixier.sort("order:asc");
-        });
-
-        initCardDragging();
-        initModal();
-        // document.getElementById("place-holder").style.display = "none";
-        // document.getElementById("page-content-wrapper").style.display = "inline";
-
-        $('#progress').css("display", "none");
-        $('#post_load').css("display", "inline");
     });
-
-    var url = "../analytics/index.html?uid=" + uid;
-    $('.mdl-navigation__link').eq(2).attr("href", url);
 }
 
 function initCardDragging() {
