@@ -138,3 +138,16 @@ body {
     margin-top: 8px;
     margin-bottom: 100px;
 }
+
+body {
+    overflow-x: hidden;
+    background-color: #F4F3EF;
+}
+
+#page-content{
+}
+
+#chart_div{
+    padding-top: 30px;
+    margin: 0 auto;
+}
