@@ -145,9 +145,40 @@ body {
 }
 
 #page-content{
+
 }
 
 #chart_div{
-    padding-top: 30px;
+    padding: 48px 32px 0 32px;
     width: 100%;
+}
+
+.card{
+    margin: 10px 20px;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    padding: 30px;
+}
+
+#card-wrapper{
+    width: 100%;
+}
+
+/*------------chartHeader系---------------*/
+#chart_header{
+    vertical-align: middle;
+}
+
+#chart_title{
+    text-align: center;
+}
+
+#next_btn{
+    color: #E57C3E;
+    float: right;
+}
+
+#prev_btn{
+    color: #E57C3E;
 }

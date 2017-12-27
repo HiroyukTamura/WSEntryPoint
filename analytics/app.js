@@ -117,6 +117,7 @@ function onLoginSuccess(uid) {
 function displayTest() {
     //dataType === 1のものを集計する。
     var keys = Object.keys(masterJson);
+    setTitle(MODE_WEEK, keys[0]);
     chart(MODE_WEEK, keys[0]);
 
     var date = 0;
@@ -130,38 +131,35 @@ function displayTest() {
                     json.rangeList.forEach(function (entry) {
                         console.log(entry);
 
-                        if (entry.start.name === "就寝" && entry.end.name === "起床"){
+                        var start = getTime(entry.start);
+                        var end = getTime(entry.end);
 
-                            var start = getTime(entry.start);
-                            var end = getTime(entry.end);
+                        if (entry.start.offset === entry.end.offset){
 
-                            if (entry.start.offset === entry.end.offset){
+                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.start.offset);
 
-                                pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.start.offset);
+                        } else if (entry.start.offset - entry.end.offset === 1){
 
-                            } else if (entry.start.offset - entry.end.offset === 1){
+                            date -= entry.start.offset;
+                            pushData(getRangeStart(date, start), date);
+                            date += 1;
+                            pushData(getRangeEnd(date, end), date);
 
-                                date -= entry.start.offset;
-                                pushData(getRangeStart(date, start), date);
-                                date += 1;
-                                pushData(getRangeEnd(date, end), date);
+                        } else if (entry.start.offset - entry.end.offset === 2){
 
-                            } else if (entry.start.offset - entry.end.offset === 2){
+                            date -= entry.start.offset;
+                            pushData(getRangeStart(date, start), date);
 
-                                date -= entry.start.offset;
-                                pushData(getRangeStart(date, start), date);
-
-                                date += 1;
-                                var arrH = [];
-                                for(var i=0; i<=24; i++){
-                                    arrH.push(date);
-                                }
-
-                                pushData(arrH, date);
-
-                                date += 1;
-                                pushData(getRangeEnd(date, start), date);
+                            date += 1;
+                            var arrH = [];
+                            for(var i=0; i<=24; i++){
+                                arrH.push(date);
                             }
+
+                            pushData(arrH, date);
+
+                            date += 1;
+                            pushData(getRangeEnd(date, start), date);
                         }
 
                         myChart.update();
@@ -172,6 +170,17 @@ function displayTest() {
 
         date++;
     });
+}
+
+// todo 次作業ここからです
+function setTitle(mode, firstDate) {
+    console.log(firstDate);
+    var moment = moment(firstDate, "YYYYMMDD");
+    var start = moment.format('MM.DD');
+    moment.add(mode, 'd');
+    var end = moment.format('MM.DD');
+    var title = start +" → "+ end;
+    $('#chart_title').html(title);
 }
 
 function chart(mode, firstCal) {
@@ -227,30 +236,33 @@ function chart(mode, firstCal) {
             },
             tooltips: {
                 callbacks: {
+                    intersect: false,
                     title: function (toolTips, data) {
+                        console.log(toolTips, data);
                         var arr = data["datasets"][0]["data"];
                         var dateVal = dates[toolTips[0]["yLabel"]];
-                        console.log(arr, dateVal);
-                        var start;
-                        var end;
-                        for(var i=0; i<arr.length; i++){
-                            if(!start && arr[i]){
-                                start = i;
-                            } else if(start && !end && !arr[i]){
-                                end = i-1;
-                                break;
-                            }
-                        }
+                        var xAxis = parseInt(toolTips[0]["xLabel"]);
+                        // var start, end;
+                        // for(var i=0; i<arr.length; i++){
+                        //     if(!start && arr[i]){
+                        //         start = i;
+                        //     } else if(start && !end && !arr[i]){
+                        //         end = i-1;
+                        //         break;
+                        //     }
+                        // }
 
                         for(var m=0; m<masterJson[dateVal].length; m++){
-                            var child = masterJson[dateVal][i];
+                            var child = masterJson[dateVal][m];
                             if(child["dataType"] !== 1)
                                 continue;
 
                             var json = JSON.parse(child["data"]["0"]);
+                            //まずeve, 次にrangeListからぶっこ抜いていく。
                             for(var n=0; n<json.rangeList.length; n++){
+                                //todo オフセット判定とか考えるべきやね
                                 var entry = json.rangeList[n];
-                                if(start === getTime(entry.start) && end === getTime(entry.end)){
+                                if(getTime(entry.start) <= xAxis &&  xAxis <= getTime(entry.end)){
                                     return entry.start.name + " → " + entry.end.name;
                                 }
                             }
@@ -262,6 +274,7 @@ function chart(mode, firstCal) {
     });
 }
 
+/*---------------描画まわり-------------*/
 function makeXaxis() {
     var arr = [];
     for (var i=0; i<=24; i++){
@@ -314,3 +327,4 @@ function getRangeArr(date, start, end, offset) {
     }
     return arrC;
 }
+/*---------------描画まわりここまで-------------*/

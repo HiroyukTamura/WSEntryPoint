@@ -88,12 +88,24 @@
 
         <main class="mdl-layout__content">
             <div class="page-content">
-                <div class="mdl-grid" id="chart_grid">
-                    <div class="mdl-cell mdl-cell--3-col"></div>
-                    <div class="mdl-cell mdl-cell--6-col">
-                        <canvas id="chart_div" ></canvas>
-                    </div>
-                    <div class="mdl-cell mdl-cell--3-col"></div>
+                <div id="card-wrapper">
+                <!--<div class="mdl-grid" id="chart_grid">-->
+                    <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col"></div>-->
+                    <!--<div class="mdl-cell mdl-cell&#45;&#45;10-col">-->
+                        <div class="card">
+                            <span id="chart_header">
+                                <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="prev_btn">
+                                    <i class="fas fa-angle-left fa-lg"></i>
+                                </button>
+                                <span id="chart_title"></span>
+                                <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="next_btn">
+                                    <i class="fas fa-angle-right fa-lg"></i>
+                                </button>
+                            </span>
+                            <canvas id="chart_div"></canvas>
+                        </div>
+                    <!--</div>-->
+                    <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col"></div>-->
                 </div>
                 <!-- Your content goes here -->
             </div>
