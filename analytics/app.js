@@ -1,7 +1,9 @@
 var defaultApp;
 var masterJson = {};
 var myChart;
-var MODE_WEEK = 7;
+const MODE_WEEK = 7;
+const MODE_MONTH = 0;
+var displayMode;
 const wodList = ["日", "月", "火", "水", "木", "金", "土"];
 
 function init() {
@@ -74,11 +76,49 @@ function getDaysOfWeek() {
     return days;
 }
 
+function getDaysOfMonth() {
+    var now = moment();
+    var end = now.endOf('month').date();
+    var days = [];
+    for(var i=0; i<end; i++){
+        days.push(now.format('YYYYMMDD'));
+        now.add(1, 'd');
+    }
+    return days;
+}
+
 function onLoginSuccess(uid) {
     var defaultDatabase = defaultApp.database();
     var getCount = 0;
 
-    getDaysOfWeek().forEach(function (day) {
+    if(!displayMode){
+        $('#dpdn-week').on({"click": function (ev) {
+                if(displayMode !== MODE_WEEK){
+                    displayMode = MODE_WEEK;
+                    //todo レンダリング
+                }
+                return false;
+            }});
+        $('#dpdn-month').on({"click": function (ev) {
+                if(displayMode !== MODE_MONTH){
+                    displayMode = MODE_MONTH;
+                    //todo レンダリング
+                }
+                return false;
+            }});
+    }
+
+    var dates;
+    switch (displayMode){
+        case MODE_WEEK:
+            dates = getDaysOfWeek();
+            break;
+        case MODE_MONTH:
+            dates = getDaysOfMonth();
+            break;
+    }
+
+    dates.forEach(function (day) {
         console.log(day);
         var node = "usersParam/" + uid + "/" + day;
         defaultDatabase.ref(node).once('value').then(function(snapshot) {
@@ -117,8 +157,8 @@ function onLoginSuccess(uid) {
 function displayTest() {
     //dataType === 1のものを集計する。
     var keys = Object.keys(masterJson);
-    setTitle(MODE_WEEK, keys[0]);
-    chart(MODE_WEEK, keys[0]);
+    setTitle(displayMode, keys[0]);
+    chart(displayMode, keys[0]);
 
     var date = 0;
     keys.forEach(function (key) {
@@ -136,19 +176,19 @@ function displayTest() {
 
                         if (entry.start.offset === entry.end.offset){
 
-                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.start.offset);
+                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.start.offset, entry.colorNum);
 
                         } else if (entry.start.offset - entry.end.offset === 1){
 
                             date -= entry.start.offset;
-                            pushData(getRangeStart(date, start), date);
+                            pushData(getRangeStart(date, start), date, entry.colorNum);
                             date += 1;
-                            pushData(getRangeEnd(date, end), date);
+                            pushData(getRangeEnd(date, end), date, entry.colorNum);
 
                         } else if (entry.start.offset - entry.end.offset === 2){
 
                             date -= entry.start.offset;
-                            pushData(getRangeStart(date, start), date);
+                            pushData(getRangeStart(date, start), date, entry.colorNum);
 
                             date += 1;
                             var arrH = [];
@@ -159,7 +199,7 @@ function displayTest() {
                             pushData(arrH, date);
 
                             date += 1;
-                            pushData(getRangeEnd(date, start), date);
+                            pushData(getRangeEnd(date, start), date, entry.colorNum);
                         }
 
                         myChart.update();
@@ -172,15 +212,28 @@ function displayTest() {
     });
 }
 
-// todo 次作業ここからです
 function setTitle(mode, firstDate) {
     console.log(firstDate);
-    var momentO = moment(firstDate.toString(), "YYYYMMDD");
-    var start = momentO.format('MM.DD');
-    momentO.add(mode, 'd');
-    var end = momentO.format('MM.DD');
-    var title = start +" → "+ end;
-    $('#chart_title').html(title);
+    var titleMonth = $('#chart_title_w_month');
+    var titleWeek = $('#chart_title_w');
+    switch (mode){
+        case MODE_WEEK:
+            var momentO = moment(firstDate.toString(), "YYYYMMDD");
+            var start = momentO.format('MM.DD') + "("+ wodList[0] +")";
+            momentO.add(mode-1, 'd');
+            var end = momentO.format('MM.DD') + "("+ wodList[MODE_WEEK-1] +")";
+            console.log(end);
+            $('#chart_title_start').html(start);
+            $('#chart_title_end').html(end);
+            titleMonth.css('display', 'none');
+            titleWeek.css('display', 'inline');
+            break;
+        case MODE_MONTH:
+            //todo 次はここから
+            titleMonth.css('display', 'inline');
+            titleWeek.css('display', 'none');
+            break;
+    }
 }
 
 function chart(mode, firstCal) {
@@ -214,7 +267,7 @@ function chart(mode, firstCal) {
             datasets: []
         },
         options: {
-            responsive: false,
+            responsive: true,
             scales: {
                 yAxes: [{
                     ticks: {
@@ -239,18 +292,8 @@ function chart(mode, firstCal) {
                     intersect: false,
                     title: function (toolTips, data) {
                         console.log(toolTips, data);
-                        var arr = data["datasets"][0]["data"];
                         var dateVal = dates[toolTips[0]["yLabel"]];
                         var xAxis = parseInt(toolTips[0]["xLabel"]);
-                        // var start, end;
-                        // for(var i=0; i<arr.length; i++){
-                        //     if(!start && arr[i]){
-                        //         start = i;
-                        //     } else if(start && !end && !arr[i]){
-                        //         end = i-1;
-                        //         break;
-                        //     }
-                        // }
 
                         for(var m=0; m<masterJson[dateVal].length; m++){
                             var child = masterJson[dateVal][m];
@@ -267,6 +310,11 @@ function chart(mode, firstCal) {
                                 }
                             }
                         }
+                    },
+                    // todo toolTipのレイアウトどうするか考えること
+                    label: function (tooltipItem, data) {
+                        console.log(tooltipItem, data);
+                        return "ふがふが";
                     }
                 }
             }
@@ -289,13 +337,13 @@ function getTime(entryC) {
     return hour + min/60
 }
 
-function pushData(arr, date) {
-    console.log(arr, date);
+function pushData(arr, date, colorNum) {
+    var color = getColor(colorNum);
     myChart.data.datasets.push({
         data: arr,
         pointRadius: setRadius(arr, date),
-        backgroundColor: "#00897B",
-        borderColor: "#00897B",
+        backgroundColor: color,
+        borderColor: color,
         fill: false
     });
 }
@@ -326,5 +374,18 @@ function getRangeArr(date, start, end, offset) {
         }
     }
     return arrC;
+}
+
+function getColor(num) {
+    switch(num){
+        case 0:
+            return "#C0504D";
+        case 1:
+            return "#9BBB59";
+        case 2:
+            return "#1F497D";
+        case 3:
+            return "#8064A2";
+    }
 }
 /*---------------描画まわりここまで-------------*/

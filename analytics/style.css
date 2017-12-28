@@ -176,16 +176,17 @@ body {
     vertical-align: middle;
 }
 
-#chart_title_k{
-
-}
-
 #chart_title_h{
     height: 100%;
     text-align: center;
 }
 
 #chart_title_w{
+    color: #66615b;
+    display: none;
+}
+
+#chart_title_w_month{
     color: #66615b;
 }
 
@@ -199,10 +200,6 @@ body {
     font-size: 20px;
 }
 
-.fa-angle-double-right{
-    color: #E57C3E;
-}
-
 #next_btn{
     color: #E57C3E;
 }
@@ -213,4 +210,14 @@ body {
 
 .fa-chevron-circle-down{
     color: #E57C3E;
+}
+
+#angle{
+    color: #E57C3E;
+    margin: 0 20px;
+}
+
+#header-dpdn{
+    margin: 0 10px;
+    font-size: 16px;
 }
