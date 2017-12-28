@@ -175,10 +175,10 @@ function displayTest() {
 // todo 次作業ここからです
 function setTitle(mode, firstDate) {
     console.log(firstDate);
-    var moment = moment(firstDate, "YYYYMMDD");
-    var start = moment.format('MM.DD');
-    moment.add(mode, 'd');
-    var end = moment.format('MM.DD');
+    var momentO = moment(firstDate.toString(), "YYYYMMDD");
+    var start = momentO.format('MM.DD');
+    momentO.add(mode, 'd');
+    var end = momentO.format('MM.DD');
     var title = start +" → "+ end;
     $('#chart_title').html(title);
 }

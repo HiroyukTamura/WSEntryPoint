@@ -93,15 +93,31 @@
                     <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col"></div>-->
                     <!--<div class="mdl-cell mdl-cell&#45;&#45;10-col">-->
                         <div class="card">
-                            <span id="chart_header">
-                                <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="prev_btn">
-                                    <i class="fas fa-angle-left fa-lg"></i>
-                                </button>
-                                <span id="chart_title"></span>
-                                <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="next_btn">
-                                    <i class="fas fa-angle-right fa-lg"></i>
-                                </button>
-                            </span>
+                            <div class="mdl-grid" id="chart_header">
+                                <div class="mdl-cell mdl-cell--1-col">
+                                    <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="prev_btn">
+                                        <i class="fas fa-angle-left fa-lg"></i>
+                                    </button>
+                                </div>
+                                <div class="mdl-cell mdl-cell--10-col" id="chart_title_h">
+                                    <div id="chart_title_k">
+                                        <span id="chart_title_w">
+                                            <span id="chart_title_start"></span>
+                                            <i class="fas fa-angle-double-right fa-lg"></i>
+                                            <span id="chart_title_end"></span>
+                                        </span>
+                                    </div>
+
+                                    <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon header-btn">-->
+                                        <!--<i class="fas fa-chevron-circle-down"></i>-->
+                                    <!--</button>-->
+                                </div>
+                                <div class="mdl-cell mdl-cell--1-col">
+                                    <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="next_btn">
+                                        <i class="fas fa-angle-right fa-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <canvas id="chart_div"></canvas>
                         </div>
                     <!--</div>-->
