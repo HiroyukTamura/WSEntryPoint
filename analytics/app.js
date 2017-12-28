@@ -64,6 +64,10 @@ function init() {
     });
 }
 
+function setDisplayMode(mode) {
+    displayMode = mode;
+}
+
 function getDaysOfWeek() {
     var now = moment();
     var dayOfWeek = now.day();
@@ -78,11 +82,12 @@ function getDaysOfWeek() {
 
 function getDaysOfMonth() {
     var now = moment();
+    var start = now.startOf('month');
     var end = now.endOf('month').date();
     var days = [];
     for(var i=0; i<end; i++){
         days.push(now.format('YYYYMMDD'));
-        now.add(1, 'd');
+        start.add(1, 'd');
     }
     return days;
 }
@@ -107,6 +112,8 @@ function onLoginSuccess(uid) {
                 return false;
             }});
     }
+
+    setDisplayMode(MODE_MONTH);
 
     var dates;
     switch (displayMode){
@@ -216,9 +223,9 @@ function setTitle(mode, firstDate) {
     console.log(firstDate);
     var titleMonth = $('#chart_title_w_month');
     var titleWeek = $('#chart_title_w');
+    var momentO = moment(firstDate.toString(), "YYYYMMDD");
     switch (mode){
         case MODE_WEEK:
-            var momentO = moment(firstDate.toString(), "YYYYMMDD");
             var start = momentO.format('MM.DD') + "("+ wodList[0] +")";
             momentO.add(mode-1, 'd');
             var end = momentO.format('MM.DD') + "("+ wodList[MODE_WEEK-1] +")";
@@ -229,7 +236,7 @@ function setTitle(mode, firstDate) {
             titleWeek.css('display', 'inline');
             break;
         case MODE_MONTH:
-            //todo 次はここから
+            titleMonth.html(momentO.month());
             titleMonth.css('display', 'inline');
             titleWeek.css('display', 'none');
             break;
@@ -247,10 +254,11 @@ function chart(mode, firstCal) {
 
     cal = moment(firstCal);
     var yAxis = [];
-    var month;
-    for(var i=0; i<mode; i++){
+    var month = null;
+    var maximum = getMaximumFromMode(mode);
+    for(var i=0; i<maximum; i++){
         var value;
-        if(i === 0 || cal.month() !== month){
+        if(mode === MODE_WEEK && (i === 0 || cal.month() !== month)){
             month = cal.month();
             value = cal.format('MM/DD');
         } else {
@@ -272,11 +280,11 @@ function chart(mode, firstCal) {
                 yAxes: [{
                     ticks: {
                         suggestedMin: 0,
-                        suggestedMax: mode,
+                        suggestedMax: maximum,
                         reverse: true,
                         stepSize: 1,
                         callback: function(value, index, values) {
-                            if(index === mode)
+                            if(index === maximum)
                                 return null;
 
                             return yAxis[value];
@@ -320,6 +328,15 @@ function chart(mode, firstCal) {
             }
         }
     });
+}
+
+function getMaximumFromMode(mode) {
+    switch (mode){
+        case MODE_WEEK:
+            return 7;
+        case MODE_MONTH:
+            return moment().endOf('month').date();
+    }
 }
 
 /*---------------描画まわり-------------*/
