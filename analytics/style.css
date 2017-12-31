@@ -150,7 +150,14 @@ body {
 
 #chart_div{
     padding: 48px 32px 0 32px;
-    width: 100%;
+    /*width: 100%;*/
+    /*box-sizing: content-box;*/
+}
+
+#chart_w{
+    /*width: 100%;*/
+    position: relative;
+    /*height: 500px;*/
 }
 
 .card{
@@ -162,7 +169,7 @@ body {
 }
 
 #card-wrapper{
-    width: 100%;
+    /*width: 100%;*/
 }
 
 /*------------chartHeader系---------------*/

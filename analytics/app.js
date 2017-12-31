@@ -82,11 +82,11 @@ function getDaysOfWeek() {
 
 function getDaysOfMonth() {
     var now = moment();
-    var start = now.startOf('month');
+    var start = moment(now).startOf('month');
     var end = now.endOf('month').date();
     var days = [];
     for(var i=0; i<end; i++){
-        days.push(now.format('YYYYMMDD'));
+        days.push(start.format('YYYYMMDD'));
         start.add(1, 'd');
     }
     return days;
@@ -125,8 +125,8 @@ function onLoginSuccess(uid) {
             break;
     }
 
+    console.log(dates);
     dates.forEach(function (day) {
-        console.log(day);
         var node = "usersParam/" + uid + "/" + day;
         defaultDatabase.ref(node).once('value').then(function(snapshot) {
             if(!snapshot.exists()){
@@ -150,7 +150,7 @@ function onLoginSuccess(uid) {
             getCount++;
 
             //最後のデータかどうかをチェック
-            if(getCount === 7){
+            if(getCount === dates.length){
                 console.log(masterJson);
                 displayTest();
 
@@ -236,39 +236,26 @@ function setTitle(mode, firstDate) {
             titleWeek.css('display', 'inline');
             break;
         case MODE_MONTH:
-            titleMonth.html(momentO.month());
+            titleMonth.html((momentO.month()+1) + "月");
             titleMonth.css('display', 'inline');
             titleWeek.css('display', 'none');
             break;
     }
 }
 
-function chart(mode, firstCal) {
-    var ctx = $('#chart_div')[0].getContext("2d");
-    var dates = [];
-    var cal = moment(firstCal);
-    for(var n=0; n<mode; n++){
-        dates.push(cal.format('YYYYMMDD'));
-        cal.add(1, 'd');
-    }
-
-    cal = moment(firstCal);
-    var yAxis = [];
-    var month = null;
+function chart(mode, firstKey) {
     var maximum = getMaximumFromMode(mode);
-    for(var i=0; i<maximum; i++){
-        var value;
-        if(mode === MODE_WEEK && (i === 0 || cal.month() !== month)){
-            month = cal.month();
-            value = cal.format('MM/DD');
-        } else {
-            value = cal.format('DD');
-        }
-        yAxis.push(value +"("+ wodList[cal.day()] +")");
-        cal.add(1, 'd');
+    var startCal = getStartCal(mode, firstKey);
+
+    // var dates = getDateYmds(mode, startCal, maximum);
+    var yAxis = getYaxis(mode, startCal, maximum);
+    var ctx = $('#chart_div');
+    if(mode === MODE_MONTH){
+        $('#chart_w').css('height', 1000);
     }
 
-    myChart = new Chart(ctx, {
+    var keys = Object.keys(masterJson);
+    myChart = new Chart(ctx[0].getContext("2d"), {
         type: 'line',
         data: {
             labels: makeXaxis(),
@@ -276,6 +263,7 @@ function chart(mode, firstCal) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 yAxes: [{
                     ticks: {
@@ -300,7 +288,7 @@ function chart(mode, firstCal) {
                     intersect: false,
                     title: function (toolTips, data) {
                         console.log(toolTips, data);
-                        var dateVal = dates[toolTips[0]["yLabel"]];
+                        var dateVal = keys[toolTips[0]["yLabel"]];
                         var xAxis = parseInt(toolTips[0]["xLabel"]);
 
                         for(var m=0; m<masterJson[dateVal].length; m++){
@@ -329,6 +317,45 @@ function chart(mode, firstCal) {
         }
     });
 }
+
+function getStartCal(mode, firstKey) {
+    var cal = moment(firstKey, 'YYYYMMDD');
+    if(mode === MODE_MONTH){
+        cal = cal.startOf('month');
+        console.log("getStartCal", "こっち");
+    }
+    return cal;
+}
+
+function getYaxis(mode, firstCal, maximum) {
+    var cal = moment(firstCal);
+    var yAxis = [];
+    var month = null;
+    for(var i=0; i<maximum; i++){
+        var value;
+        if(mode === MODE_WEEK && (i === 0 || cal.month() !== month)){
+            month = cal.month();
+            value = cal.format('MM/DD');
+        } else {
+            value = cal.format('DD');
+        }
+        yAxis.push(value +"("+ wodList[cal.day()] +")");
+        cal.add(1, 'd');
+    }
+
+    return yAxis;
+}
+
+// function getDateYmds(mode, firstCal, maximum) {
+//     var dates = [];
+//     var cal = moment(firstCal);
+//     for(var n=0; n<maximum; n++){
+//         dates.push(cal.format('YYYYMMDD'));
+//         cal.add(1, 'd');
+//     }
+//
+//     return dates;
+// }
 
 function getMaximumFromMode(mode) {
     switch (mode){
