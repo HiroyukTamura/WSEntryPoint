@@ -149,9 +149,7 @@ body {
 }
 
 #chart_div{
-    padding: 48px 32px 0 32px;
-    /*width: 100%;*/
-    /*box-sizing: content-box;*/
+    padding: 48px 32px;
 }
 
 #chart_w{
@@ -227,4 +225,48 @@ body {
 #header-dpdn{
     margin: 0 10px;
     font-size: 16px;
+}
+
+/*********************分析時間*********************/
+#sub_chart{
+    margin: 48px 32px;
+}
+
+#average{
+    color: #66615b;
+    font-size: 20px;
+}
+
+.ave-digit-td{
+    /*padding-left: 6px;*/
+    /*border-left: 3px solid #66615b;*/
+    height: 30px;
+    font-size: 20px;
+    width:1%;
+}
+
+.range-title{
+    font-size: 20px;
+    height: 30px;
+}
+
+.chart-ave{
+    width: 100%;
+}
+
+.ave-angle{
+    margin: 0 10px;
+    text-align: center;
+}
+
+.caption{
+    font-size: 14px;
+}
+
+.no-wrap{
+    white-space:nowrap;
+}
+
+.chart-ave td{
+    padding: 0 24px;
 }

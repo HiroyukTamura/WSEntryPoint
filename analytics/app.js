@@ -113,7 +113,7 @@ function onLoginSuccess(uid) {
             }});
     }
 
-    setDisplayMode(MODE_MONTH);
+    setDisplayMode(MODE_WEEK);
 
     var dates;
     switch (displayMode){
@@ -263,7 +263,7 @@ function chart(mode, firstKey) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: mode !== MODE_MONTH,
             scales: {
                 yAxes: [{
                     ticks: {
