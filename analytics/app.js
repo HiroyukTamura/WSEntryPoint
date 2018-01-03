@@ -1,3 +1,5 @@
+"use strict";
+
 var defaultApp;
 var masterJson = {};
 var myChart;
@@ -81,7 +83,7 @@ function getDaysOfWeek() {
 }
 
 function getDaysOfMonth() {
-    var now = moment();
+    var now = moment().add(-1, 'M');//todo これテスト用なので直すこと
     var start = moment(now).startOf('month');
     var end = now.endOf('month').date();
     var days = [];
@@ -113,7 +115,7 @@ function onLoginSuccess(uid) {
             }});
     }
 
-    setDisplayMode(MODE_WEEK);
+    setDisplayMode(MODE_MONTH);
 
     var dates;
     switch (displayMode){
@@ -176,26 +178,26 @@ function displayTest() {
                     console.log(json);
                     // var date = moment(key, "YYYYMMDD").date();
                     json.rangeList.forEach(function (entry) {
-                        console.log(entry);
 
                         var start = getTime(entry.start);
                         var end = getTime(entry.end);
+                        var label = entry.start.name + " → " + entry.end.name;
 
                         if (entry.start.offset === entry.end.offset){
 
-                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.start.offset, entry.colorNum);
+                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.colorNum, label);
 
                         } else if (entry.start.offset - entry.end.offset === 1){
 
                             date -= entry.start.offset;
-                            pushData(getRangeStart(date, start), date, entry.colorNum);
+                            pushData(getRangeStart(date, start), date, entry.colorNum, label);
                             date += 1;
-                            pushData(getRangeEnd(date, end), date, entry.colorNum);
+                            pushData(getRangeEnd(date, end), date, entry.colorNum, label);
 
                         } else if (entry.start.offset - entry.end.offset === 2){
 
                             date -= entry.start.offset;
-                            pushData(getRangeStart(date, start), date, entry.colorNum);
+                            pushData(getRangeStart(date, start), date, entry.colorNum, label);
 
                             date += 1;
                             var arrH = [];
@@ -206,11 +208,16 @@ function displayTest() {
                             pushData(arrH, date);
 
                             date += 1;
-                            pushData(getRangeEnd(date, start), date, entry.colorNum);
+                            pushData(getRangeEnd(date, start), date, entry.colorNum, label);
                         }
-
-                        myChart.update();
                     });
+
+                    json.eventList.forEach(function (entry) {
+                        var time = getTime(entry);
+                        pushData(getRangeArr(date, time, time+1, 0), date, entry.colorNum, entry.name);
+                    });
+
+                    myChart.update();
                 }
             });
         }
@@ -286,31 +293,14 @@ function chart(mode, firstKey) {
             tooltips: {
                 callbacks: {
                     intersect: false,
+                    mode: 'point',
                     title: function (toolTips, data) {
-                        console.log(toolTips, data);
-                        var dateVal = keys[toolTips[0]["yLabel"]];
-                        var xAxis = parseInt(toolTips[0]["xLabel"]);
-
-                        for(var m=0; m<masterJson[dateVal].length; m++){
-                            var child = masterJson[dateVal][m];
-                            if(child["dataType"] !== 1)
-                                continue;
-
-                            var json = JSON.parse(child["data"]["0"]);
-                            //まずeve, 次にrangeListからぶっこ抜いていく。
-                            for(var n=0; n<json.rangeList.length; n++){
-                                //todo オフセット判定とか考えるべきやね
-                                var entry = json.rangeList[n];
-                                if(getTime(entry.start) <= xAxis &&  xAxis <= getTime(entry.end)){
-                                    return entry.start.name + " → " + entry.end.name;
-                                }
-                            }
-                        }
+                        return null;
                     },
                     // todo toolTipのレイアウトどうするか考えること
                     label: function (tooltipItem, data) {
                         console.log(tooltipItem, data);
-                        return "ふがふが";
+                        return data["datasets"][tooltipItem.datasetIndex]["label"];
                     }
                 }
             }
@@ -381,12 +371,16 @@ function getTime(entryC) {
     return hour + min/60
 }
 
-function pushData(arr, date, colorNum) {
+function pushData(arr, date, colorNum, label) {
     var color = getColor(colorNum);
+    var radiuses = setRadius(arr, date);
     myChart.data.datasets.push({
         data: arr,
-        pointRadius: setRadius(arr, date),
+        label: label,
+        pointRadius: radiuses,
+        pointHoverRadius: radiuses,
         backgroundColor: color,
+        pointHoverBackgroundColor: color,
         borderColor: color,
         fill: false
     });
@@ -432,4 +426,21 @@ function getColor(num) {
             return "#8064A2";
     }
 }
+
+function getHighLightedColor(num) {
+    switch (num){
+        case 0:
+            return "#D79599";
+        case 1:
+            return "#C5D79D";
+        case 2:
+            return "#5C8BBF";
+        case 3:
+            return "#AEA3C5";
+    }
+}
 /*---------------描画まわりここまで-------------*/
+// #AEA3C5
+// #5C8BBF
+// #C5D79D
+// #D79599
