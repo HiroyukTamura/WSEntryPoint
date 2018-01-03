@@ -231,8 +231,12 @@ body {
     font-size: 16px;
 }
 
+#chart_title_k{
+    font-size: 20px;
+}
+
 /*********************分析時間*********************/
-#sub_chart{
+.sub_chart{
     margin: 48px 32px;
 }
 
@@ -240,7 +244,7 @@ body {
     margin-top: 48px;
 }
 
-#average{
+.average{
     color: #66615b;
     font-size: 20px;
 }

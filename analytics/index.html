@@ -40,7 +40,7 @@
 <div id="post_load">
 
     <!--header-->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
 
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
@@ -56,7 +56,80 @@
                     <a class="mdl-navigation__link" href="">Link</a>
                 </nav>
             </div>
+
+            <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+                <a href="#fixed-tab-1" class="mdl-layout__tab is-active">Tab 1</a>
+                <a href="#fixed-tab-2" class="mdl-layout__tab">Tab 2</a>
+            </div>
         </header>
+
+        <main class="mdl-layout__content">
+            <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+                <div class="page-content">
+                    <!-- Your content goes here -->
+
+                    <div class="card">
+                        <div class="mdl-grid" id="chart_header">
+                            <div class="mdl-cell mdl-cell--1-col">
+                                <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="prev_btn">
+                                    <i class="fas fa-angle-left fa-lg"></i>
+                                </button>
+                            </div>
+                            <div class="mdl-cell mdl-cell--10-col" id="chart_title_h">
+                                <div id="chart_title_k">
+                                        <span id="chart_title_w">
+                                            <span id="chart_title_start"></span>
+                                            <i class="fas fa-angle-double-right fa-lg" id="angle"></i>
+                                            <span id="chart_title_end"></span>
+                                        </span>
+                                    <span id="chart_title_w_month"></span>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon" id="header-dpdn">
+                                        <i class="fas fa-chevron-circle-down"></i>
+                                    </button>
+                                    <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="header-dpdn">
+                                        <li class="mdl-menu__item" id="dpdn-week">1週間</li>
+                                        <li class="mdl-menu__item" id="dpdn-month">1ヶ月</li>
+                                        <!--<li class="mdl-menu__item mdl-menu__item&#45;&#45;full-bleed-divider">1ヶ月</li>-->
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="mdl-cell mdl-cell--1-col">
+                                <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="next_btn">
+                                    <i class="fas fa-angle-right fa-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="chart_w">
+                            <canvas id="chart_div"></canvas>
+                        </div>
+                        <div class="sub_chart">
+                            <h2 class="average">
+                                <i class="fas fa-chart-line average-icon"></i>
+                                平均時間
+                            </h2>
+                            <table class="chart-ave">
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="sub_chart">
+                            <h2 class="average">
+                                <i class="fas fa-table"></i>
+                                図表
+                            </h2>
+                        </div>
+                        <table class="chart-ave" id="table-others">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+                <div class="page-content"><!-- Your content goes here --></div>
+            </section>
+        </main>
 
         <div class="mdl-layout__drawer">
             <!--<span class="mdl-layout-title">Title</span>-->
@@ -86,91 +159,103 @@
             </nav>
         </div>
 
-        <main class="mdl-layout__content">
-            <div class="page-content">
-                <div id="card-wrapper">
+        <!--<main class="mdl-layout__content">-->
+            <!--<div class="page-content">-->
+                <!--<div id="card-wrapper">-->
                 <!--<div class="mdl-grid" id="chart_grid">-->
                     <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col"></div>-->
                     <!--<div class="mdl-cell mdl-cell&#45;&#45;10-col">-->
-                        <div class="card">
-                            <div class="mdl-grid" id="chart_header">
-                                <div class="mdl-cell mdl-cell--1-col">
-                                    <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="prev_btn">
-                                        <i class="fas fa-angle-left fa-lg"></i>
-                                    </button>
-                                </div>
-                                <div class="mdl-cell mdl-cell--10-col" id="chart_title_h">
-                                    <div id="chart_title_k">
-                                        <span id="chart_title_w">
-                                            <span id="chart_title_start"></span>
-                                            <i class="fas fa-angle-double-right fa-lg" id="angle"></i>
-                                            <span id="chart_title_end"></span>
-                                        </span>
-                                        <span id="chart_title_w_month"></span>
-                                        <button class="mdl-button mdl-js-button mdl-button--icon" id="header-dpdn">
-                                            <i class="fas fa-chevron-circle-down"></i>
-                                        </button>
-                                        <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="header-dpdn">
-                                            <li class="mdl-menu__item" id="dpdn-week">1週間</li>
-                                            <li class="mdl-menu__item" id="dpdn-month">1ヶ月</li>
-                                            <!--<li class="mdl-menu__item mdl-menu__item&#45;&#45;full-bleed-divider">1ヶ月</li>-->
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="mdl-cell mdl-cell--1-col">
-                                    <button class="mdl-button mdl-js-button mdl-button--icon header-btn" id="next_btn">
-                                        <i class="fas fa-angle-right fa-lg"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="chart_w">
-                                <canvas id="chart_div"></canvas>
-                            </div>
-                            <div id="sub_chart">
-                                <h2 id="average">
-                                    <i class="fas fa-chart-line average-icon"></i>
-                                    平均時間
-                                </h2>
-                                <table class="chart-ave">
-                                    <tbody>
-                                        <!--<tr class="ave-digit">-->
-                                            <!--<td class="range-title" rowspan="2">-->
-                                                <!--就寝→起床-->
-                                            <!--</td>-->
-                                            <!--<td class="ave-digit-td no-wrap">-->
-                                                <!--22:00（前日）-->
-                                            <!--</td>-->
-                                            <!--<td class="ave-digit-td ave-angle no-wrap" rowspan="2">-->
-                                                <!--<i class="fas fa-angle-double-right fa-lg"></i>-->
-                                            <!--</td>-->
-                                            <!--<td class="ave-digit-td no-wrap">-->
-                                                <!--6:44-->
-                                            <!--</td>-->
-                                            <!--<td class="ave-digit-td no-wrap">-->
-                                                <!--8.4h-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
-                                        <!--<tr class="caption">-->
-                                            <!--<td class="no-wrap">-->
-                                                <!--先週より+2h15min-->
-                                            <!--</td>-->
-                                            <!--<td class="no-wrap">-->
-                                                <!--先週より-45min-->
-                                            <!--</td>-->
-                                            <!--<td class="no-wrap">-->
-                                                <!--先週より+2h15min-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <!--<div class="card">-->
+                            <!--<div class="mdl-grid" id="chart_header">-->
+                                <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col">-->
+                                    <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon header-btn" id="prev_btn">-->
+                                        <!--<i class="fas fa-angle-left fa-lg"></i>-->
+                                    <!--</button>-->
+                                <!--</div>-->
+                                <!--<div class="mdl-cell mdl-cell&#45;&#45;10-col" id="chart_title_h">-->
+                                    <!--<div id="chart_title_k">-->
+                                        <!--<span id="chart_title_w">-->
+                                            <!--<span id="chart_title_start"></span>-->
+                                            <!--<i class="fas fa-angle-double-right fa-lg" id="angle"></i>-->
+                                            <!--<span id="chart_title_end"></span>-->
+                                        <!--</span>-->
+                                        <!--<span id="chart_title_w_month"></span>-->
+                                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon" id="header-dpdn">-->
+                                            <!--<i class="fas fa-chevron-circle-down"></i>-->
+                                        <!--</button>-->
+                                        <!--<ul class="mdl-menu mdl-menu&#45;&#45;bottom-left mdl-js-menu mdl-js-ripple-effect" for="header-dpdn">-->
+                                            <!--<li class="mdl-menu__item" id="dpdn-week">1週間</li>-->
+                                            <!--<li class="mdl-menu__item" id="dpdn-month">1ヶ月</li>-->
+                                            <!--&lt;!&ndash;<li class="mdl-menu__item mdl-menu__item&#45;&#45;full-bleed-divider">1ヶ月</li>&ndash;&gt;-->
+                                        <!--</ul>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col">-->
+                                    <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon header-btn" id="next_btn">-->
+                                        <!--<i class="fas fa-angle-right fa-lg"></i>-->
+                                    <!--</button>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div id="chart_w">-->
+                                <!--<canvas id="chart_div"></canvas>-->
+                            <!--</div>-->
+                            <!--<div class="sub_chart">-->
+                                <!--<h2 class="average">-->
+                                    <!--<i class="fas fa-chart-line average-icon"></i>-->
+                                    <!--平均時間-->
+                                <!--</h2>-->
+                                <!--<table class="chart-ave">-->
+                                    <!--<tbody>-->
+                                        <!--&lt;!&ndash;<tr class="ave-digit">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<td class="range-title" rowspan="2">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;就寝→起床&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<td class="ave-digit-td no-wrap">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;22:00（前日）&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<td class="ave-digit-td ave-angle no-wrap" rowspan="2">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<i class="fas fa-angle-double-right fa-lg"></i>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<td class="ave-digit-td no-wrap">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;6:44&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<td class="ave-digit-td no-wrap">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;8.4h&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<tr class="caption">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<td class="no-wrap">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;先週より+2h15min&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<td class="no-wrap">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;先週より-45min&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<td class="no-wrap">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;先週より+2h15min&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                                    <!--</tbody>-->
+                                <!--</table>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                    <!--<div class="card">-->
+                        <!--<div class="sub_chart">-->
+                            <!--<h2 class="average">-->
+                                <!--<i class="fas fa-table"></i>-->
+                                <!--図表-->
+                            <!--</h2>-->
+                        <!--</div>-->
+                        <!--<table class="chart-ave" id="table-others">-->
+                            <!--<tbody></tbody>-->
+                        <!--</table>-->
+                    <!--</div>-->
                     <!--</div>-->
                     <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col"></div>-->
-                </div>
+                <!--</div>-->
                 <!-- Your content goes here -->
-            </div>
-        </main>
+            <!--</div>-->
+        <!--</main>-->
     </div>
 </div>
 

@@ -7,6 +7,8 @@ const MODE_WEEK = 7;
 const MODE_MONTH = 0;
 var displayMode;
 const wodList = ["日", "月", "火", "水", "木", "金", "土"];
+var menuMon = $('#dpdn-month');
+var menuWeek = $('#dpdn-week');
 
 function init() {
     var config = {
@@ -67,6 +69,14 @@ function init() {
 }
 
 function setDisplayMode(mode) {
+    switch (mode){
+        case MODE_WEEK:
+            menuMon.attr('disabled', '');
+            break;
+        case MODE_MONTH:
+            menuWeek.attr('disabled', '');
+            break;
+    }
     displayMode = mode;
 }
 
@@ -99,16 +109,20 @@ function onLoginSuccess(uid) {
     var getCount = 0;
 
     if(!displayMode){
-        $('#dpdn-week').on({"click": function (ev) {
+        menuWeek.on({"click": function (ev) {
                 if(displayMode !== MODE_WEEK){
                     displayMode = MODE_WEEK;
+                    $(this).attr('disabled', '');
+                    menuMon.removeAttr('disabled');
                     //todo レンダリング
                 }
                 return false;
             }});
-        $('#dpdn-month').on({"click": function (ev) {
+        menuMon.on({"click": function (ev) {
                 if(displayMode !== MODE_MONTH){
                     displayMode = MODE_MONTH;
+                    $(this).attr('disabled', '');
+                    menuWeek.removeAttr('disabled');
                     //todo レンダリング
                 }
                 return false;
@@ -301,7 +315,7 @@ function chart(mode, firstKey) {
                     title: function (toolTips, data) {
                         console.log(toolTips, data);
                         var time = toolTips[0]["index"] + ":00";
-                        return yAxis[toolTips[0]["yLabel"]] + time;
+                        return yAxis[toolTips[0]["yLabel"]] + " " +time;
                     },
                     // todo toolTipの時刻表示するべき
                     label: function (tooltipItem, data) {
@@ -452,7 +466,7 @@ function getHighLightedColor(num) {
 function showAverage(timeData) {
    var ranges = generateAveArr(timeData);
    var count = 0;
-   var tbody = $(".chart-ave").find('tbody');
+   var tbody = $(".chart-ave").eq(0).find('tbody');
    for(var key in ranges){
        if(ranges.hasOwnProperty(key)){
            var aveStart = getAverage(ranges[key]["start"]);
