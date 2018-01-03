@@ -236,6 +236,10 @@ body {
     margin: 48px 32px;
 }
 
+#chart-ave-eve{
+    margin-top: 48px;
+}
+
 #average{
     color: #66615b;
     font-size: 20px;

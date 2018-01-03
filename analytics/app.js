@@ -299,11 +299,12 @@ function chart(mode, firstKey) {
                     intersect: false,
                     mode: 'point',
                     title: function (toolTips, data) {
-                        return null;
+                        console.log(toolTips, data);
+                        var time = toolTips[0]["index"] + ":00";
+                        return yAxis[toolTips[0]["yLabel"]] + time;
                     },
-                    // todo toolTipのレイアウトどうするか考えること
+                    // todo toolTipの時刻表示するべき
                     label: function (tooltipItem, data) {
-                        console.log(tooltipItem, data);
                         return data["datasets"][tooltipItem.datasetIndex]["label"];
                     }
                 }
@@ -447,10 +448,11 @@ function getHighLightedColor(num) {
 
 /*---------------分析画面系ここから-------------*/
 // todo これ計算あってるかどうか、必ずサンプルをいくつか用意して確かめてください
+//todo ここで、イベント及びrangeの判別はnameのみで、色は判別に使われていません。つまり、「nameは同じだが色は違う」というのは同じとして扱う必要があります！！
 function showAverage(timeData) {
    var ranges = generateAveArr(timeData);
-   console.log(timeData);
    var count = 0;
+   var tbody = $(".chart-ave").find('tbody');
    for(var key in ranges){
        if(ranges.hasOwnProperty(key)){
            var aveStart = getAverage(ranges[key]["start"]);
@@ -484,11 +486,39 @@ function showAverage(timeData) {
                row1.find('i').addClass("color-orange");
            }
            // var seem = generateTableBorder("table-seem");
-           $(".chart-ave").find('tbody')
-               .append(space)
+           tbody.append(space)
                .append(row1)
                .append(row2)
                .append(space.clone(true));
+
+           count++;
+       }
+   }
+
+   var eveList = generateAveArrEve(timeData);
+   for(var eveKey in eveList){
+       if(eveList.hasOwnProperty(eveKey)){
+           var average = min2HHMM(getAverage(eveList[eveKey]));
+           var row = $(
+               '<tr class="ave-digit">'+
+                   '<td class="range-title" rowspan="2">'+ eveKey +'</td>'+
+                   '<td class="ave-digit-td no-wrap centering" colspan="4">'+ average +'</td>'+
+               '</tr>'+
+               '<tr class="caption">'+
+                    '<td class="no-wrap centering" colspan="4">先週より+2h15min</td>'+
+               '</tr>');
+
+           var space0 = space.clone(true);
+           var space1 = space.clone(true);
+           if(count %2 === 1){
+               space0.addClass("back-orange");
+               space1.addClass("back-orange");
+               row.addClass("back-orange");
+           }
+
+           tbody.append(space0)
+               .append(row)
+               .append(space1);
 
            count++;
        }
@@ -514,6 +544,21 @@ function generateAveArr(timeData) {
         }
     }
     return ranges;
+}
+
+function generateAveArrEve(timeData) {
+    var eves = {};
+    for(var key in timeData){
+        if(timeData.hasOwnProperty(key)){
+            timeData[key]["eventList"].forEach(function (event) {
+                if(!eves.hasOwnProperty(event.name)){
+                    eves[event.name] = [];
+                }
+                eves[event.name].push(event.cal.hourOfDay *60 + event.cal.minute);
+            });
+        }
+    }
+    return eves;
 }
 
 function getAverage(arr) {
