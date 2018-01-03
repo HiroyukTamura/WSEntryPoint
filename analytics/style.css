@@ -222,6 +222,10 @@ body {
     margin: 0 20px;
 }
 
+.color-orange{
+    color: #E57C3E;
+}
+
 #header-dpdn{
     margin: 0 10px;
     font-size: 16px;
@@ -269,4 +273,16 @@ body {
 
 .chart-ave td{
     padding: 0 24px;
+}
+
+.chart-ave .table-space{
+    height: 12px;
+}
+
+.chart-ave .table-seem{
+    height: 1px;
+}
+
+.chart-ave .back-orange{
+    background-color: #FFFCF5;
 }

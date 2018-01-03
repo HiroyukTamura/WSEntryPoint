@@ -166,6 +166,7 @@ function onLoginSuccess(uid) {
 function displayTest() {
     //dataType === 1のものを集計する。
     var keys = Object.keys(masterJson);
+    var timeData = {};
     setTitle(displayMode, keys[0]);
     chart(displayMode, keys[0]);
 
@@ -176,6 +177,7 @@ function displayTest() {
                 if(data["dataType"] === 1){
                     var json = JSON.parse(data["data"]["0"]);
                     console.log(json);
+                    timeData[key] = json;
                     // var date = moment(key, "YYYYMMDD").date();
                     json.rangeList.forEach(function (entry) {
 
@@ -216,14 +218,16 @@ function displayTest() {
                         var time = getTime(entry);
                         pushData(getRangeArr(date, time, time+1, 0), date, entry.colorNum, entry.name);
                     });
-
-                    myChart.update();
                 }
             });
         }
 
         date++;
     });
+
+    myChart.update();
+
+    showAverage(timeData);
 }
 
 function setTitle(mode, firstDate) {
@@ -440,7 +444,104 @@ function getHighLightedColor(num) {
     }
 }
 /*---------------描画まわりここまで-------------*/
-// #AEA3C5
-// #5C8BBF
-// #C5D79D
-// #D79599
+
+/*---------------分析画面系ここから-------------*/
+// todo これ計算あってるかどうか、必ずサンプルをいくつか用意して確かめてください
+function showAverage(timeData) {
+   var ranges = generateAveArr(timeData);
+   console.log(timeData);
+   var count = 0;
+   for(var key in ranges){
+       if(ranges.hasOwnProperty(key)){
+           var aveStart = getAverage(ranges[key]["start"]);
+           var aveEnd = getAverage(ranges[key]["end"]);
+           var aveLen = roundWithDigit(Math.abs(aveStart - aveEnd)/60, 10) + "h";
+           //DOMを挿入
+           var dom =
+               '<tr class="ave-digit">' +
+                   '<td class="range-title" rowspan="2">'+ key +'</td>' +
+                   '<td class="ave-digit-td no-wrap">'+ min2HHMM(aveStart)+'</td>' +
+                   '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' +
+                        '<i class="fas fa-angle-double-right fa-lg"></i>' +
+                   '</td>' +
+                   '<td class="ave-digit-td no-wrap">'+ min2HHMM(aveEnd) +'</td>' +
+                   '<td class="ave-digit-td no-wrap">'+ aveLen +'</td>' +
+               '</tr>';
+           var row1 = $(dom);
+           row1.find('.fa-angle-double-right').css('color', getColor(ranges[key]['colorNum']));
+           var caption =
+               '<tr class="caption">' +
+                   '<td class="no-wrap">先週より+2h15min</td>' +
+                   '<td class="no-wrap">先週より-45min</td>' +
+                   '<td class="no-wrap">先週より+2h15min</td>' +
+               '</tr>';
+           var row2 = $(caption);
+           var space = generateTableBorder("table-space");
+           if(count %2 === 1){
+               space.addClass("back-orange");
+               row1.addClass("back-orange");
+               row2.addClass("back-orange");
+               row1.find('i').addClass("color-orange");
+           }
+           // var seem = generateTableBorder("table-seem");
+           $(".chart-ave").find('tbody')
+               .append(space)
+               .append(row1)
+               .append(row2)
+               .append(space.clone(true));
+
+           count++;
+       }
+   }
+}
+
+function generateAveArr(timeData) {
+    var ranges = {};
+    for(var key in timeData){
+        if(timeData.hasOwnProperty(key)){
+            timeData[key]["rangeList"].forEach(function (range) {
+                var name = range.start.name + " → " + range.end.name;
+                if(!ranges.hasOwnProperty(name)){
+                    ranges[name] = {};
+                    ranges[name].start = [];
+                    ranges[name].end = [];
+                }
+                var startTime = range.start.cal.hourOfDay *60 + range.start.cal.minute + range.end.offset *24*60;
+                var endTime = range.end.cal.hourOfDay *60 + range.end.cal.minute + range.end.offset *24*60;
+                ranges[name].start.push(startTime);
+                ranges[name].end.push(endTime);
+            });
+        }
+    }
+    return ranges;
+}
+
+function getAverage(arr) {
+    var sum = 0;
+    arr.forEach(function (time) {
+        sum += time;
+    });
+    if(sum){
+        var aveStart = sum / (arr.length);
+        sum = Math.round(aveStart);
+    }
+    return sum;
+}
+
+function roundWithDigit(num, digit) {
+    return Math.round(num*digit)/digit;
+}
+
+function min2HHMM(min) {
+    var m = moment();
+    m.minute(min);
+    return m.format('HH:MM');
+}
+
+function generateTableBorder(className) {
+    var td = ($('<td>', {
+        class: className,
+        colspan: 5
+    }));
+    return $('<tr>').append(td);
+}
