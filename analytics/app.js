@@ -9,6 +9,7 @@ var displayMode;
 const wodList = ["日", "月", "火", "水", "木", "金", "土"];
 var menuMon = $('#dpdn-month');
 var menuWeek = $('#dpdn-week');
+const delimiter = '9mVSv';
 
 function init() {
     var config = {
@@ -242,6 +243,8 @@ function displayTest() {
     myChart.update();
 
     showAverage(timeData);
+
+    initTabLayout2();
 }
 
 function setTitle(mode, firstDate) {
@@ -354,17 +357,6 @@ function getYaxis(mode, firstCal, maximum) {
 
     return yAxis;
 }
-
-// function getDateYmds(mode, firstCal, maximum) {
-//     var dates = [];
-//     var cal = moment(firstCal);
-//     for(var n=0; n<maximum; n++){
-//         dates.push(cal.format('YYYYMMDD'));
-//         cal.add(1, 'd');
-//     }
-//
-//     return dates;
-// }
 
 function getMaximumFromMode(mode) {
     switch (mode){
@@ -603,4 +595,48 @@ function generateTableBorder(className) {
         colspan: 5
     }));
     return $('<tr>').append(td);
+}
+
+/*-----------------------tabLayout2--------------------------*/
+function initTabLayout2() {
+    var bgParam = $('#bg-param');
+    var smParam = $('#sm-param');
+    var bgColumns = [];
+    var smColumns = {};
+    for(var key in masterJson){
+        if(masterJson.hasOwnProperty(key) && masterJson[key]){
+            masterJson[key].forEach(function (data) {
+                switch (data.dataType){
+                    case 0:
+                    case 1:
+                        break;
+                    case 2:
+                        if(bgColumns.indexOf(data.dataName) === -1){
+                            $('<td>', {
+                                colspan: data.data.length
+                            }).html(data.dataName)
+                                .appendTo(bgParam);
+                            bgColumns.push(data.dataName);
+                        }
+                        data.data.forEach(function (value) {
+                            var html = value.split(delimiter)[0];
+                            if(!smColumns[data.dataName]){
+                                smColumns[data.dataName] = [];
+                            }
+                            if(smColumns[data.dataName].indexOf(html) === -1){
+                                $('<td>').html(html)
+                                    .appendTo(smParam);
+                                if(smColumns)
+                                    smColumns[data.dataName].push(html);
+                            }
+                        });
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                }
+            });
+        }
+    }
 }

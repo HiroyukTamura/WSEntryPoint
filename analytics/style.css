@@ -118,6 +118,10 @@ body {
     color: #66615b;
 }
 
+.mdl-layout__tab{
+    background-color: white;
+}
+
 /*----------------login---------------*/
 #login-grid{
     text-align: center;
@@ -153,17 +157,18 @@ body {
 }
 
 #chart_w{
-    /*width: 100%;*/
+    max-width: 900px;
+    margin: 20px auto;
     position: relative;
-    /*height: 500px;*/
 }
 
 .card{
-    margin: 10px 20px;
+    margin: 40px auto;
     border: 0;
     border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
     padding: 30px;
+    max-width: 900px;
 }
 
 #card-wrapper{
@@ -237,7 +242,7 @@ body {
 
 /*********************分析時間*********************/
 .sub_chart{
-    margin: 48px 32px;
+    margin: 0 32px 48px 32px;
 }
 
 #chart-ave-eve{
