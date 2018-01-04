@@ -603,6 +603,9 @@ function initTabLayout2() {
     var smParam = $('#sm-param');
     var bgColumns = [];
     var smColumns = {};
+    $('<td>', {rowspan: 2})
+        .html("日付です")
+        .appendTo(bgParam);
     for(var key in masterJson){
         if(masterJson.hasOwnProperty(key) && masterJson[key]){
             masterJson[key].forEach(function (data) {
@@ -624,8 +627,11 @@ function initTabLayout2() {
     }
 
     fixBgColumnSpan(bgParam, smColumns);
+
+    addRowsToTable(smParam, bgParam, bgColumns, smColumns);
 }
 
+/*----------------thead系--------------*/
 function addNormalColumn(bgColumns, bgParam, data) {
     if(bgColumns.indexOf(data.dataName) === -1){
         $('<td>', {
@@ -663,6 +669,58 @@ function fixBgColumnSpan(bgParam, smColumns) {
     for(var key in smColumns){
         if(smColumns.hasOwnProperty(key)){
             bgParam.find("td:contains("+ key +")").attr('colspan', smColumns[key].length);
+        }
+    }
+}
+
+/*----------------------tbody系-----------------------*/
+function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
+
+    var smVals = Object.values(smColumns);
+    var tbody = $('#table-others').find('tbody');
+    for(var key in masterJson){
+        if(masterJson.hasOwnProperty(key)){
+            var tr = $('<tr>');
+            var len = smParam.closest("table").prop('rows').length;
+            for (var i = 0; i<len; i++) {
+                tr.append($('<td>'));
+            }
+            tr.find('td').eq(0).html(key);
+
+            if(masterJson[key]){
+                masterJson[key].forEach(function (data) {
+                    if(data.data && data.dataType === 0 || data.dataType === 1)
+                        return;
+
+                    // var bgColumn = bgParam.find("td:contains(" + data.dataName + ")").eq(0);
+                    // var colSpan = bgColumn.attr('colspan');
+                    var bgIndex = bgColumns.indexOf(data.dataName);
+                    var count = 0;
+                    for(var n=0; n<bgIndex; n++){
+                        count += smVals[n].length;
+                    }
+                    count++;//日付カラムの分
+                    // console.log(data.dataName + "は" + count + "の並びにあります");
+
+                    switch (data.dataType) {
+                        case 2:
+                            for(var m=0; m<data.data.length; m++){
+                                var pos = count+m;
+                                var html = data.data[m].split(delimiter)[2];
+                                tr.find('td').eq(pos).html(html);
+                            }
+                            break;
+                        case 3:
+                            // smVals[bgIndex].indexOf(da)
+                            break;
+                        case 4:
+                            tr.find('td').eq(count).html(data.data);
+                            break;
+                    }
+                });
+            }
+
+            tbody.append(tr);
         }
     }
 }
