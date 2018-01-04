@@ -171,6 +171,16 @@ body {
     max-width: 900px;
 }
 
+#table-others-w{
+    margin: 36px auto;
+    padding: 30px;
+    min-width: 800px;/*todo これは端末の画面サイズなどによって変える？？*/
+}
+
+.mdl-layout__content{
+    overflow-x: auto;
+}
+
 #card-wrapper{
     /*width: 100%;*/
 }
@@ -298,4 +308,17 @@ body {
 
 .chart-ave .back-orange{
     background-color: #FFFCF5;
+}
+
+/********************タブ2ページ目系***********************/
+#bg-param{
+    text-align: center;
+}
+
+#table-others thead td{
+    height: 36px;
+    background-color: #FFFCF5;
+    font-size: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }

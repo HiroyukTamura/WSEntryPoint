@@ -607,36 +607,62 @@ function initTabLayout2() {
         if(masterJson.hasOwnProperty(key) && masterJson[key]){
             masterJson[key].forEach(function (data) {
                 switch (data.dataType){
-                    case 0:
-                    case 1:
-                        break;
                     case 2:
-                        if(bgColumns.indexOf(data.dataName) === -1){
-                            $('<td>', {
-                                colspan: data.data.length
-                            }).html(data.dataName)
-                                .appendTo(bgParam);
-                            bgColumns.push(data.dataName);
-                        }
-                        data.data.forEach(function (value) {
-                            var html = value.split(delimiter)[0];
-                            if(!smColumns[data.dataName]){
-                                smColumns[data.dataName] = [];
-                            }
-                            if(smColumns[data.dataName].indexOf(html) === -1){
-                                $('<td>').html(html)
-                                    .appendTo(smParam);
-                                if(smColumns)
-                                    smColumns[data.dataName].push(html);
-                            }
-                        });
+                        addBgColumn(bgColumns, bgParam, data);
+                        addSmColumn(smColumns, smParam, data, 0);
                         break;
                     case 3:
+                        addBgColumn(bgColumns, bgParam, data);
+                        addSmColumn(smColumns, smParam, data, 1);
                         break;
                     case 4:
+                        addNormalColumn(bgColumns, bgParam, data);
                         break;
                 }
             });
+        }
+    }
+
+    fixBgColumnSpan(bgParam, smColumns);
+}
+
+function addNormalColumn(bgColumns, bgParam, data) {
+    if(bgColumns.indexOf(data.dataName) === -1){
+        $('<td>', {
+            rowspan: 2
+        }).html(data.dataName)
+            .appendTo(bgParam);
+        bgColumns.push(data.dataName);
+    }
+}
+
+function addBgColumn(bgColumns, bgParam, data) {
+    if(bgColumns.indexOf(data.dataName) === -1){
+        $('<td>').html(data.dataName)
+            .appendTo(bgParam);
+        bgColumns.push(data.dataName);
+    }
+}
+
+function addSmColumn(smColumns, smParam, data, valuePos) {
+    data.data.forEach(function (value) {
+        var html = value.split(delimiter)[valuePos];
+        if(!smColumns[data.dataName]){
+            smColumns[data.dataName] = [];
+        }
+        if(smColumns[data.dataName].indexOf(html) === -1){
+            $('<td>').html(html)
+                .appendTo(smParam);
+            if(smColumns)
+                smColumns[data.dataName].push(html);
+        }
+    });
+}
+
+function fixBgColumnSpan(bgParam, smColumns) {
+    for(var key in smColumns){
+        if(smColumns.hasOwnProperty(key)){
+            bgParam.find("td:contains("+ key +")").attr('colspan', smColumns[key].length);
         }
     }
 }
