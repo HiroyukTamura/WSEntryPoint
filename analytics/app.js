@@ -699,7 +699,8 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
             var cal = moment(masterKeys[k], "YYYYMMDD");
             var date = cal.date();
             var title = date +"日("+ wodList[cal.day()] +")";
-            tr.find('td').eq(0).html(title);
+            var rowHead = tr.find('td').eq(0);
+            rowHead.html(title);
 
             if(masterJson[masterKeys[k]]){
                 masterJson[masterKeys[k]].forEach(function (data) {
@@ -718,8 +719,6 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                     switch (data.dataType) {
                         case 2:
                             var td0 = tr.find('td').eq(count);
-                            td0.css('padding-top', '4px');
-                            td0.css('padding-bottom', '4px');
                             setTagInCell(td0, data);
                             break;
                         case 3:
@@ -740,20 +739,26 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                         case 4:
                             // todo 本来は"comment"ノードに格納されているので、実装後この点を修正すること
                             var td = tr.find('td').eq(count);
-                            if(data.data.length <= 100){
+                            if(data.data.length <= 100) {
                                 td.html(data.data);
                             } else {
-                                var value = data.data.substring(0, 80) + "...";
+                                // todo ここら辺の改行とかの動作、もうちょっとうまくやれるはず
+                                var value = null;
+                                if(data.data.indexOf("\n") === data.data.lastIndexOf("\n")){
+                                    //改行が2箇所以上ある場合
+                                    value = data.data.substring(0, 80) + "...";
+                                } else {
+                                    var first = data.data.indexOf("\n");
+                                    var second = data.data.substring(first).indexOf("\n");
+                                    value = data.data.substring(0, second);
+                                }
+                                value = value.replace(/(?:\r\n|\r|\n)/g, '<br />');
                                 td.attr("full-txt", data.data);
                                 td.html(value);
                                 var dropDownBtn = $('<i>', {
                                     class: "fas fa-caret-down fa-lg color-orange",
                                     onclick: "expandText(this)"
                                 });
-                                // dropDownBtn.on({"click": function (ev) {
-                                //     console.log("くりっくされたよね");
-                                //     td.html(data.data);
-                                // }});
                                 td.append(dropDownBtn);
                             }
                             break;
@@ -789,7 +794,9 @@ function setTagInCell(td, data) {
 function expandText(ele) {
     console.log("expandText called");
     var td = $(ele).closest('td');
-    td.html(td.attr("full-txt"));
+    var txt = td.attr("full-txt");
+    txt = txt.replace(/(?:\r\n|\r|\n)/g, '<br />');
+    td.html(txt);
 }
 
 function setElementAsMdl(clone) {

@@ -148,10 +148,6 @@ body {
     background-color: #F4F3EF;
 }
 
-#page-content{
-
-}
-
 #chart_div{
     padding: 48px 32px;
 }
@@ -173,7 +169,7 @@ body {
 
 #table-others-w{
     margin: 36px auto;
-    padding: 30px;
+    padding: 36px 72px;
     min-width: 800px;/*todo これは端末の画面サイズなどによって変える？？*/
 }
 
@@ -321,6 +317,7 @@ body {
     font-size: 16px;
     padding-top: 8px;
     padding-bottom: 8px;
+    white-space:nowrap;
 }
 
 #table-others tbody tr{
@@ -335,7 +332,8 @@ body {
 #table-others tbody td{
     vertical-align: middle;
     text-align: center;
-    max-height: 120px;
+    padding-bottom: 4px;
+    padding-top: 4px;
 }
 
 #table-others .mdl-chip{
@@ -344,6 +342,7 @@ body {
 
 #table-others .row-head{
     white-space: nowrap;
+    border-right: 1px solid #dbdad7;
 }
 
 #table-others .text{
