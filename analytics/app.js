@@ -377,6 +377,15 @@ function chart(mode, firstKey) {
 
     // var dates = getDateYmds(mode, startCal, maximum);
     var yAxis = getYaxis(mode, startCal, maximum);
+    // var fontColors = [];
+    // yAxis.forEach(function (value) {
+    //    if(value.indexOf('日')){
+    //        fontColors.push('#dd3734');
+    //    } else {
+    //        fontColors.push(null);
+    //    }
+    // });
+
     var ctx = $('#chart_div');
     switch (mode){
         case MODE_MONTH:
@@ -404,6 +413,7 @@ function chart(mode, firstKey) {
                         suggestedMax: maximum,
                         reverse: true,
                         stepSize: 1,
+                        // fontColor: fontColors,
                         callback: function (value, index, values) {
                             if (index === maximum)
                                 return null;
@@ -857,99 +867,105 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
 
     var masterKeys = Object.keys(masterJson);
     for(var k=0; k<masterKeys.length; k++){
-            var tr = $('<tr>');
-            for (var i = 0; i<len; i++) {
-                var td = $('<td>');
-                tr.append(td);
-                if(i === 0){
-                    td.addClass('row-head');
-                }
-            }
-            var cal = moment(masterKeys[k], "YYYYMMDD");
-            var date = cal.date();
-            var title = date +"日("+ wodList[cal.day()] +")";
-            var rowHead = tr.find('td').eq(0);
-            rowHead.html(title);
 
-            if(masterJson[masterKeys[k]]){
-                masterJson[masterKeys[k]].forEach(function (data) {
-                    if(!data.data || data.dataType === 0 || data.dataType === 1)
-                        return;
-
-                    var count = bgColumns.indexOf(data.dataName);
-                    var keyLen = smColumnKeys.indexOf(data.dataName);
-                    count -= keyLen;
-                    for(var n=0; n<keyLen; n++){
-                        count += smColumnVals[n].length;
-                    }
-                    // count++;//日付カラムの分
-                    // console.log(data.dataName + "は" + count + "の並びにあります");
-
-                    switch (data.dataType) {
-                        case 2:
-                            var td0 = tr.find('td').eq(count);
-                            var titleVal = data.dataName +" "+ title;
-                            setTagInCell(td0, data, titleVal);
-                            break;
-                        case 3:
-                            for(var m=0; m<data.data.length; m++){
-                                var pos = count+m+1;
-                                var vals = data.data[m].split(delimiter);
-                                var tdE = tr.find('td').eq(pos);
-                                var titleValE = data.dataName + " : "+ vals[1] +" "+ title;
-                                if(vals[0] === "0"){
-                                    var span = $('<span>', {
-                                        title:  titleValE
-                                    });
-                                    if(vals[2] === "true"){
-                                        span.html('<i class="fas fa-check color-orange"></i>').appendTo(tdE);
-                                    } else if(vals[2] === "false"){
-                                        span.html('<i class="fas fa-times color-disable"></i>').appendTo(tdE);
-                                    }
-                                } else if(vals[0] === "1"){
-                                    $('<span>', {
-                                        title: titleValE
-                                    }).html(vals[2]).appendTo(tdE);
-                                }
-                            }
-                            break;
-                        case 4:
-                            // todo 本来は"comment"ノードに格納されているので、実装後この点を修正すること
-                            var td = tr.find('td').eq(count);
-                            if(data.data.length <= 100) {
-                                td.html(data.data);
-                            } else {
-                                // todo ここら辺の改行とかの動作、もうちょっとうまくやれるはず
-                                var value = null;
-                                if(data.data.indexOf("\n") === data.data.lastIndexOf("\n")){
-                                    //改行が2箇所以上ある場合
-                                    value = data.data.substring(0, 80) + "...";
-                                } else {
-                                    var first = data.data.indexOf("\n");
-                                    var second = data.data.substring(first).indexOf("\n");
-                                    value = data.data.substring(0, second);
-                                }
-                                value = value.replace(/(?:\r\n|\r|\n)/g, '<br />');
-                                td.attr("full-txt", data.data);
-                                td.html(value);
-                                var dropDownBtn = $('<i>', {
-                                    class: "fas fa-caret-down fa-lg color-orange",
-                                    onclick: "expandText(this)",
-                                    title: data.dataName +" "+ title
-                                });
-                                td.append($('<br />')).append(dropDownBtn);
-                            }
-                            break;
-                    }
-                });
-            }
-
-            if(k%2){
-                tr.css('background-color', "#f9f9f7");
-            }
-
-            tbody.append(tr);
+        var tr = $('<tr>');
+        if(k%2){
+            tr.css('background-color', "#f9f9f7");
         }
+
+        for (var i = 0; i<len; i++) {
+            var td = $('<td>');
+            tr.append(td);
+            if(i === 0){
+                td.addClass('row-head');
+            }
+        }
+        var cal = moment(masterKeys[k], "YYYYMMDD");
+        var date = cal.date();
+        var title = date +"日("+ wodList[cal.day()] +")";
+        var rowHead = tr.find('td').eq(0);
+        rowHead.html(title);
+        if(cal.day() === 0 && k !== 0){
+            tr.addClass('holiday');
+            // if(displayMode === MODE_MONTH)
+            //     tr.css('border-top', '1px solid #dbdad7');
+        }
+
+        if(masterJson[masterKeys[k]]){
+            masterJson[masterKeys[k]].forEach(function (data) {
+                if(!data.data || data.dataType === 0 || data.dataType === 1)
+                    return;
+
+                var count = bgColumns.indexOf(data.dataName);
+                var keyLen = smColumnKeys.indexOf(data.dataName);
+                count -= keyLen;
+                for(var n=0; n<keyLen; n++){
+                    count += smColumnVals[n].length;
+                }
+                // count++;//日付カラムの分
+                // console.log(data.dataName + "は" + count + "の並びにあります");
+
+                switch (data.dataType) {
+                    case 2:
+                        var td0 = tr.find('td').eq(count);
+                        var titleVal = data.dataName +" "+ title;
+                        setTagInCell(td0, data, titleVal);
+                        break;
+                    case 3:
+                        for(var m=0; m<data.data.length; m++){
+                            var pos = count+m+1;
+                            var vals = data.data[m].split(delimiter);
+                            var tdE = tr.find('td').eq(pos);
+                            var titleValE = data.dataName + " : "+ vals[1] +" "+ title;
+                            if(vals[0] === "0"){
+                                var span = $('<span>', {
+                                    title:  titleValE
+                                });
+                                if(vals[2] === "true"){
+                                    span.html('<i class="fas fa-check color-orange"></i>').appendTo(tdE);
+                                } else if(vals[2] === "false"){
+                                    span.html('<i class="fas fa-times color-disable"></i>').appendTo(tdE);
+                                }
+                            } else if(vals[0] === "1"){
+                                $('<span>', {
+                                    title: titleValE
+                                }).html(vals[2]).appendTo(tdE);
+                            }
+                        }
+                        break;
+                    case 4:
+                        // todo 本来は"comment"ノードに格納されているので、実装後この点を修正すること
+                        var td = tr.find('td').eq(count);
+                        if(data.data.length <= 100) {
+                            td.html(data.data);
+                        } else {
+                            // todo ここら辺の改行とかの動作、もうちょっとうまくやれるはず
+                            var value = null;
+                            if(data.data.indexOf("\n") === data.data.lastIndexOf("\n")){
+                                //改行が2箇所以上ある場合
+                                value = data.data.substring(0, 80) + "...";
+                            } else {
+                                var first = data.data.indexOf("\n");
+                                var second = data.data.substring(first).indexOf("\n");
+                                value = data.data.substring(0, second);
+                            }
+                            value = value.replace(/(?:\r\n|\r|\n)/g, '<br />');
+                            td.attr("full-txt", data.data);
+                            td.html(value);
+                            var dropDownBtn = $('<i>', {
+                                class: "fas fa-caret-down fa-lg color-orange",
+                                onclick: "expandText(this)",
+                                title: data.dataName +" "+ title
+                            });
+                            td.append($('<br />')).append(dropDownBtn);
+                        }
+                        break;
+                }
+            });
+        }
+
+        tbody.append(tr);
+    }
 
     setElementAsMdl(tbody);
     tippy('[title]', {

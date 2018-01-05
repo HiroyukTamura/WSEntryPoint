@@ -363,6 +363,10 @@ body {
     vertical-align: middle;
 }
 
+#table-others tbody .holiday .row-head{
+    color: #dd3734;
+}
+
 #table-others tbody td{
     vertical-align: middle;
     text-align: center;
