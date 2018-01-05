@@ -604,15 +604,15 @@ function initTabLayout2() {
     var bgColumns = [];
     var smColumns = {};
     $('<td>', {rowspan: 2})
-        .html("日付です")
         .appendTo(bgParam);
     for(var key in masterJson){
         if(masterJson.hasOwnProperty(key) && masterJson[key]){
             masterJson[key].forEach(function (data) {
                 switch (data.dataType){
                     case 2:
-                        addBgColumn(bgColumns, bgParam, data);
-                        addSmColumn(smColumns, smParam, data, 0);
+                        // addBgColumn(bgColumns, bgParam, data);
+                        // addSmColumn(smColumns, smParam, data, 0);
+                        addNormalColumn(bgColumns, bgParam, data);
                         break;
                     case 3:
                         addBgColumn(bgColumns, bgParam, data);
@@ -678,49 +678,123 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
 
     var smVals = Object.values(smColumns);
     var tbody = $('#table-others').find('tbody');
-    for(var key in masterJson){
-        if(masterJson.hasOwnProperty(key)){
-            var tr = $('<tr>');
-            var len = smParam.closest("table").prop('rows').length;
-            for (var i = 0; i<len; i++) {
-                tr.append($('<td>'));
-            }
-            tr.find('td').eq(0).html(key);
+    var totalLen = 0;
+    var smColumnVals = Object.values(smColumns);
+    var smColumnKeys = Object.keys(smColumns);
+    smColumnVals.forEach(function (arr) {
+        totalLen += arr.length;
+    });
+    var len = bgColumns.length + totalLen - smColumnVals.length +1;//+1は日付の分
 
-            if(masterJson[key]){
-                masterJson[key].forEach(function (data) {
-                    if(data.data && data.dataType === 0 || data.dataType === 1)
+    var masterKeys = Object.keys(masterJson);
+    for(var k=0; k<masterKeys.length; k++){
+            var tr = $('<tr>');
+            for (var i = 0; i<len; i++) {
+                var td = $('<td>');
+                tr.append(td);
+                if(i === 0){
+                    td.addClass('row-head');
+                }
+            }
+            var cal = moment(masterKeys[k], "YYYYMMDD");
+            var date = cal.date();
+            var title = date +"日("+ wodList[cal.day()] +")";
+            tr.find('td').eq(0).html(title);
+
+            if(masterJson[masterKeys[k]]){
+                masterJson[masterKeys[k]].forEach(function (data) {
+                    if(!data.data || data.dataType === 0 || data.dataType === 1)
                         return;
 
-                    // var bgColumn = bgParam.find("td:contains(" + data.dataName + ")").eq(0);
-                    // var colSpan = bgColumn.attr('colspan');
-                    var bgIndex = bgColumns.indexOf(data.dataName);
-                    var count = 0;
-                    for(var n=0; n<bgIndex; n++){
-                        count += smVals[n].length;
+                    var count = bgColumns.indexOf(data.dataName);
+                    var keyLen = smColumnKeys.indexOf(data.dataName);
+                    count -= keyLen;
+                    for(var n=0; n<keyLen; n++){
+                        count += smColumnVals[n].length;
                     }
-                    count++;//日付カラムの分
+                    // count++;//日付カラムの分
                     // console.log(data.dataName + "は" + count + "の並びにあります");
 
                     switch (data.dataType) {
                         case 2:
-                            for(var m=0; m<data.data.length; m++){
-                                var pos = count+m;
-                                var html = data.data[m].split(delimiter)[2];
-                                tr.find('td').eq(pos).html(html);
-                            }
+                            var td0 = tr.find('td').eq(count);
+                            td0.css('padding-top', '4px');
+                            td0.css('padding-bottom', '4px');
+                            setTagInCell(td0, data);
                             break;
                         case 3:
-                            // smVals[bgIndex].indexOf(da)
+                            for(var m=0; m<data.data.length; m++){
+                                var pos = count+m+1;
+                                var vals = data.data[m].split(delimiter);
+                                if(vals[0] === "0"){
+                                    if(vals[2] === "true"){
+                                        tr.find('td').eq(pos).html('<i class="fas fa-check color-orange"></i>');
+                                    } else if(vals[2] === "false"){
+                                        tr.find('td').eq(pos).html('<i class="fas fa-times color-disable"></i>');
+                                    }
+                                } else if(vals[0] === "1"){
+                                    tr.find('td').eq(pos).html(vals[2]);
+                                }
+                            }
                             break;
                         case 4:
-                            tr.find('td').eq(count).html(data.data);
+                            // todo 本来は"comment"ノードに格納されているので、実装後この点を修正すること
+                            var td = tr.find('td').eq(count);
+                            if(data.data.length <= 100){
+                                td.html(data.data);
+                            } else {
+                                var value = data.data.substring(0, 80) + "...";
+                                td.attr("full-txt", data.data);
+                                td.html(value);
+                                var dropDownBtn = $('<i>', {
+                                    class: "fas fa-caret-down fa-lg color-orange",
+                                    onclick: "expandText(this)"
+                                });
+                                // dropDownBtn.on({"click": function (ev) {
+                                //     console.log("くりっくされたよね");
+                                //     td.html(data.data);
+                                // }});
+                                td.append(dropDownBtn);
+                            }
                             break;
                     }
                 });
             }
 
+            if(k%2){
+                tr.css('background-color', "#f9f9f7");
+            }
+
             tbody.append(tr);
         }
+    setElementAsMdl(tbody);
+}
+
+function setTagInCell(td, data) {
+    for(var m=0; m<data.data.length; m++){
+        var vals = data.data[m].split(delimiter);
+        if(vals[2] === "true")
+            continue;
+
+        var color = getHighLightedColor(parseInt(vals[1]));
+        var chipsHtml = $(
+            '<span class="mdl-chip mdl-pre-upgrade" style="background-color: '+ color +'">'+
+                '<span class="mdl-chip__text">'+vals[0]+'</span>'+
+            '</span>');
+        td.append(chipsHtml);
+    }
+}
+
+//todo アニメーションつけられると尚良し
+function expandText(ele) {
+    console.log("expandText called");
+    var td = $(ele).closest('td');
+    td.html(td.attr("full-txt"));
+}
+
+function setElementAsMdl(clone) {
+    var ele = clone.find(".mdl-pre-upgrade");
+    for (var i=0; i<ele.length; i++){
+        componentHandler.upgradeElement(ele.eq(i)[0]);
     }
 }

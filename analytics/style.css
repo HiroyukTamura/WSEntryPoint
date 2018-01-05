@@ -322,3 +322,38 @@ body {
     padding-top: 8px;
     padding-bottom: 8px;
 }
+
+#table-others tbody tr{
+    height: 36px;
+    /*border-bottom: 1px solid #CCC5B9;*/
+    font-size: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    vertical-align: middle;
+}
+
+#table-others tbody td{
+    vertical-align: middle;
+    text-align: center;
+    max-height: 120px;
+}
+
+#table-others .mdl-chip{
+    margin: 2px;
+}
+
+#table-others .row-head{
+    white-space: nowrap;
+}
+
+#table-others .text{
+    text-align: start;
+}
+
+#table-others .fa-caret-down{
+    cursor: pointer;
+}
+
+.color-disable {
+    color: #CCC5B9;
+}
