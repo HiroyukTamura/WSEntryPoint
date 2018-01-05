@@ -122,6 +122,10 @@ body {
     background-color: white;
 }
 
+.mdl-layout__header-row{
+    padding-right: 20px;
+}
+
 /*----------------login---------------*/
 #login-grid{
     text-align: center;
@@ -218,6 +222,7 @@ body {
 
 #next_btn{
     color: #E57C3E;
+    float: right;
 }
 
 #prev_btn{
@@ -311,6 +316,10 @@ body {
     text-align: center;
 }
 
+#table-others thead{
+    border-bottom: 1px solid #dbdad7;
+}
+
 #table-others thead td{
     height: 36px;
     background-color: #FFFCF5;
@@ -356,3 +365,21 @@ body {
 .color-disable {
     color: #CCC5B9;
 }
+
+/*tippy jsのthemeの変え方がわからない・・・*/
+/*.tippy-tooltip.translucent-theme {*/
+    /*!* Your styling here. Example: *!*/
+    /*background-color: rgba(0, 0, 0, 0.01);*/
+    /*border: 0;*/
+    /*color: gray;*/
+/*}*/
+
+/*.tippy-tooltip.honeybee-theme .tippy-content {*/
+    /*!* Your styling here. Example: *!*/
+    /*color: rgba(0, 0, 0, 0.01);*/
+/*}*/
+
+/*.tippy-popper[x-placement^=top] .tippy-tooltip.honeybee-theme .tippy-arrow {*/
+    /*!* Your arrow styling here. *!*/
+
+/*}*/

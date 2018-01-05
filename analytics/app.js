@@ -72,10 +72,10 @@ function init() {
 function setDisplayMode(mode) {
     switch (mode){
         case MODE_WEEK:
-            menuMon.attr('disabled', '');
+            menuWeek.attr('disabled', '');
             break;
         case MODE_MONTH:
-            menuWeek.attr('disabled', '');
+            menuMon.attr('disabled', '');
             break;
     }
     displayMode = mode;
@@ -719,20 +719,28 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                     switch (data.dataType) {
                         case 2:
                             var td0 = tr.find('td').eq(count);
-                            setTagInCell(td0, data);
+                            var titleVal = data.dataName +" "+ title;
+                            setTagInCell(td0, data, titleVal);
                             break;
                         case 3:
                             for(var m=0; m<data.data.length; m++){
                                 var pos = count+m+1;
                                 var vals = data.data[m].split(delimiter);
+                                var tdE = tr.find('td').eq(pos);
+                                var titleValE = data.dataName + " : "+ vals[1] +" "+ title;
                                 if(vals[0] === "0"){
+                                    var span = $('<span>', {
+                                        title:  titleValE
+                                    });
                                     if(vals[2] === "true"){
-                                        tr.find('td').eq(pos).html('<i class="fas fa-check color-orange"></i>');
+                                        span.html('<i class="fas fa-check color-orange"></i>').appendTo(tdE);
                                     } else if(vals[2] === "false"){
-                                        tr.find('td').eq(pos).html('<i class="fas fa-times color-disable"></i>');
+                                        span.html('<i class="fas fa-times color-disable"></i>').appendTo(tdE);
                                     }
                                 } else if(vals[0] === "1"){
-                                    tr.find('td').eq(pos).html(vals[2]);
+                                    $('<span>', {
+                                        title: titleValE
+                                    }).html(vals[2]).appendTo(tdE);
                                 }
                             }
                             break;
@@ -759,7 +767,7 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                                     class: "fas fa-caret-down fa-lg color-orange",
                                     onclick: "expandText(this)"
                                 });
-                                td.append(dropDownBtn);
+                                td.append($('<br />')).append(dropDownBtn);
                             }
                             break;
                     }
@@ -772,10 +780,12 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
 
             tbody.append(tr);
         }
+
     setElementAsMdl(tbody);
+    tippy('[title]');
 }
 
-function setTagInCell(td, data) {
+function setTagInCell(td, data, title) {
     for(var m=0; m<data.data.length; m++){
         var vals = data.data[m].split(delimiter);
         if(vals[2] === "true")
@@ -783,7 +793,7 @@ function setTagInCell(td, data) {
 
         var color = getHighLightedColor(parseInt(vals[1]));
         var chipsHtml = $(
-            '<span class="mdl-chip mdl-pre-upgrade" style="background-color: '+ color +'">'+
+            '<span class="mdl-chip mdl-pre-upgrade" style="background-color: '+ color +'" title="'+ title +'">'+
                 '<span class="mdl-chip__text">'+vals[0]+'</span>'+
             '</span>');
         td.append(chipsHtml);
