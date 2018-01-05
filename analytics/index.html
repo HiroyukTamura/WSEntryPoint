@@ -23,7 +23,7 @@
 
 <body>
 
-<div id="progress" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+<div id="progress" class="mdl-spinner mdl-js-spinner is-active"></div>
 
 <div id="login_w">
     <div class="mdl-grid" id="login-grid">
@@ -95,6 +95,7 @@
 
         <main class="mdl-layout__content">
             <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+                <!--<div class="mdl-spinner mdl-js-spinner is-active inner-progress"></div>-->
                 <div class="page-content">
                     <!-- Your content goes here -->
                     <!--<div class="card">-->
@@ -111,11 +112,15 @@
                             <table class="chart-ave">
                                 <tbody></tbody>
                             </table>
+                            <div class="err-non-data">
+                                <h3>データがありません</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
             <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+                <!--<div class="mdl-spinner mdl-js-spinner is-active inner-progress"></div>-->
                 <div class="page-content">
                     <!-- Your content goes here -->
                     <!--<div class="card">-->
@@ -127,6 +132,9 @@
                             </thead>
                             <tbody></tbody>
                         </table>
+                        <div class="err-non-data">
+                            <h3>データがありません</h3>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -1,9 +1,19 @@
 /*---------------ローディング画面系-------------*/
 #progress {
-    width: 100%;
+    position: fixed;
+    height: 4em;
+    width: 4em;
+    top: 50%;
+    left: 50%;
+    margin-top: -2em;
+    margin-left: -2em;
 }
 
 #post_load {
+    display: none;
+}
+
+.page-content{
     display: none;
 }
 
@@ -138,6 +148,7 @@ body {
 
 #login_w{
     width: 100%;
+    display: none;
 }
 
 #login_title{
@@ -309,6 +320,17 @@ body {
 
 .chart-ave .back-orange{
     background-color: #FFFCF5;
+}
+
+.err-non-data {
+    color: #CCC5B9;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+.err-non-data h3{
+    margin: 0;
 }
 
 /********************タブ2ページ目系***********************/

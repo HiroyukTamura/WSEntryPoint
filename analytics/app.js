@@ -9,6 +9,20 @@ var displayMode;
 const wodList = ["日", "月", "火", "水", "木", "金", "土"];
 var menuMon = $('#dpdn-month');
 var menuWeek = $('#dpdn-week');
+var currentMoment = moment();
+var bgParam = $('#bg-param');
+var smParam = $('#sm-param');
+var tbody = $(".chart-ave").eq(0).find('tbody');
+var chartWrapper = $('#chart_w');
+var errNonData = $('.err-non-data');
+
+/*---------loading系------*/
+var postLoad = $('#post_load');
+var headerBtnEnable = false;//これがfalseのとき、ヘッダボタンを押しても動作させない。
+var progress = $('#progress');
+var pageContent = $('.page-content');
+// var innerProgress =$('.inner-progress');
+
 const delimiter = '9mVSv';
 
 function init() {
@@ -25,7 +39,7 @@ function init() {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             console.log("ユーザログインしてます");
-            $('#progress').css("display", "none");
+            // progress.css("display", "none");
             onLoginSuccess(user.uid);
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -45,19 +59,23 @@ function init() {
                             'signInSuccess': function(user, credential, redirectUrl) {
                                 console.log(user.uid);
                                 //urlとは別のuidのユーザとしてログインすることもある。
-                                if(user.uid !== getUid()){
-                                    var currentUrl = $(location).attr('href');
-                                    window.location.href = currentUrl.substring(0, currentUrl.indexOf("?"));
-                                } else {
-                                    onLoginSuccess(user.uid);
-                                }
+                                // if(user.uid !== getUid()){
+                                //     var currentUrl = $(location).attr('href');
+                                //     window.location.href = currentUrl.substring(0, currentUrl.indexOf("?"));
+                                // } else {
+                                //     onLoginSuccess(user.uid);
+                                // }
+                                progress.css('display', "none");
+                                $('#login_w').css('display', "none");
+                                onLoginSuccess(user.uid);
                                 return false;
                             }
                         }
                     };
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    $('#progress').css('display', "none");
+                    progress.css('display', "none");
+                    $('#login_w').css('display', "inline");
                     ui.start('#firebaseui-auth-container', uiConfig);
                 }).catch(function(error) {
                     var errorCode = error.code;
@@ -82,7 +100,7 @@ function setDisplayMode(mode) {
 }
 
 function getDaysOfWeek() {
-    var now = moment();
+    var now = moment(currentMoment);
     var dayOfWeek = now.day();
     now.add( -dayOfWeek, 'd');
     var days = [];
@@ -94,7 +112,7 @@ function getDaysOfWeek() {
 }
 
 function getDaysOfMonth() {
-    var now = moment().add(-1, 'M');//todo これテスト用なので直すこと
+    var now = moment(currentMoment).add(-1, 'M');//todo これテスト用なので直すこと
     var start = moment(now).startOf('month');
     var end = now.endOf('month').date();
     var days = [];
@@ -106,43 +124,92 @@ function getDaysOfMonth() {
 }
 
 function onLoginSuccess(uid) {
-    var defaultDatabase = defaultApp.database();
-    var getCount = 0;
-
     if(!displayMode){
         menuWeek.on({"click": function (ev) {
-                if(displayMode !== MODE_WEEK){
+                if(displayMode !== MODE_WEEK && headerBtnEnable){
+                    headerBtnEnable = false;
                     displayMode = MODE_WEEK;
                     $(this).attr('disabled', '');
                     menuMon.removeAttr('disabled');
-                    //todo レンダリング
+                    setDisplayMode(MODE_WEEK);
+
+                    pageContent.css('display', 'none');
+                    // innerProgress.css('display', "inline");
+                    restUi();
+                    showData(uid);
                 }
                 return false;
             }});
+
         menuMon.on({"click": function (ev) {
-                if(displayMode !== MODE_MONTH){
+                if(displayMode !== MODE_MONTH && headerBtnEnable){
+                    headerBtnEnable = false;
                     displayMode = MODE_MONTH;
                     $(this).attr('disabled', '');
                     menuWeek.removeAttr('disabled');
-                    //todo レンダリング
+                    setDisplayMode(MODE_MONTH);
+
+                    pageContent.css('display', 'none');
+                    // innerProgress.css('display', "inline");
+                    restUi();
+                    showData(uid);
                 }
                 return false;
             }});
+
+        $('#prev_btn').on({"click": function (ev) {
+            if(!headerBtnEnable)
+                return false;
+
+            switch (displayMode){
+                case MODE_WEEK:
+                    currentMoment.add(7, 'd');
+                    break;
+                case MODE_MONTH:
+                    currentMoment.add(1, 'm');
+                    break;
+            }
+
+            return false;
+        }});
+
+        $('#next_btn').on({"click": function (ev) {
+            if(!headerBtnEnable)
+                return false;
+
+            switch (displayMode){
+                case MODE_WEEK:
+                    currentMoment.add(-7, 'd');
+                    break;
+                case MODE_MONTH:
+                    currentMoment.add(-1, 'm');
+                    break;
+            }
+
+            return false;
+        }});
     }
 
     setDisplayMode(MODE_MONTH);
 
+    showData(uid);
+}
+
+function showData(uid) {
     var dates;
     switch (displayMode){
         case MODE_WEEK:
-            dates = getDaysOfWeek();
+            dates = getDaysOfWeek(moment());
             break;
         case MODE_MONTH:
-            dates = getDaysOfMonth();
+            dates = getDaysOfMonth(moment());
             break;
     }
 
+    var getCount = 0;
     console.log(dates);
+    var defaultDatabase = defaultApp.database();
+
     dates.forEach(function (day) {
         var node = "usersParam/" + uid + "/" + day;
         defaultDatabase.ref(node).once('value').then(function(snapshot) {
@@ -170,12 +237,25 @@ function onLoginSuccess(uid) {
             if(getCount === dates.length){
                 console.log(masterJson);
                 displayTest();
-
-                $('#login_w').css('display', "none");
-                $('#post_load').css('display', 'inline');
             }
         });
     });
+}
+
+function restUi() {
+    bgParam.html("");
+    smParam.html("");
+    bgParam.parent().next().html("");
+    var children = chartWrapper.children("*");
+    for(var i=0; i<children.length; i++){
+        children.eq(i).remove();
+    }
+    $('<canvas>', {
+       id: 'chart_div'
+    }).appendTo(chartWrapper);
+    tbody.html("");
+    myChart = null;
+    masterJson = {};
 }
 
 function displayTest() {
@@ -240,11 +320,18 @@ function displayTest() {
         date++;
     });
 
-    myChart.update();
-
     showAverage(timeData);
 
     initTabLayout2();
+
+    // innerProgress.css('display', "none");
+    progress.css('display', "none");
+    pageContent.css('display', 'inline');
+    postLoad.css('display', 'inline');
+
+    myChart.update();
+
+    headerBtnEnable = true;
 }
 
 function setTitle(mode, firstDate) {
@@ -278,11 +365,16 @@ function chart(mode, firstKey) {
     // var dates = getDateYmds(mode, startCal, maximum);
     var yAxis = getYaxis(mode, startCal, maximum);
     var ctx = $('#chart_div');
-    if(mode === MODE_MONTH){
-        $('#chart_w').css('height', 1000);
+    switch (mode){
+        case MODE_MONTH:
+            chartWrapper.css('height', 1000);//todo これはこれでいいのか？
+            break;
+        case MODE_WEEK:
+            chartWrapper.removeAttr('style');
+            break;
     }
 
-    var keys = Object.keys(masterJson);
+    // var keys = Object.keys(masterJson);
     myChart = new Chart(ctx[0].getContext("2d"), {
         type: 'line',
         data: {
@@ -458,7 +550,6 @@ function getHighLightedColor(num) {
 function showAverage(timeData) {
    var ranges = generateAveArr(timeData);
    var count = 0;
-   var tbody = $(".chart-ave").eq(0).find('tbody');
    for(var key in ranges){
        if(ranges.hasOwnProperty(key)){
            var aveStart = getAverage(ranges[key]["start"]);
@@ -529,6 +620,17 @@ function showAverage(timeData) {
            count++;
        }
    }
+
+   //データが皆無であればその旨を表示
+    var tableOhters = $('#table-others');
+    if(count === 0){
+        errNonData.css('display', "inline");
+        tableOhters.css('display', "none");
+    } else {
+        errNonData.css('display', "none");
+        tableOhters.css('display', "inline");
+    }
+
 }
 
 function generateAveArr(timeData) {
@@ -599,8 +701,6 @@ function generateTableBorder(className) {
 
 /*-----------------------tabLayout2--------------------------*/
 function initTabLayout2() {
-    var bgParam = $('#bg-param');
-    var smParam = $('#sm-param');
     var bgColumns = [];
     var smColumns = {};
     $('<td>', {rowspan: 2})
