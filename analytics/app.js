@@ -163,12 +163,17 @@ function onLoginSuccess(uid) {
 
             switch (displayMode){
                 case MODE_WEEK:
-                    currentMoment.add(7, 'd');
+                    currentMoment.add(-7, 'd');
                     break;
                 case MODE_MONTH:
-                    currentMoment.add(1, 'm');
+                    currentMoment.add(-1, 'M');
                     break;
             }
+
+            pageContent.css('display', 'none');
+            // innerProgress.css('display', "inline");
+            restUi();
+            showData(uid);
 
             return false;
         }});
@@ -179,12 +184,17 @@ function onLoginSuccess(uid) {
 
             switch (displayMode){
                 case MODE_WEEK:
-                    currentMoment.add(-7, 'd');
+                    currentMoment.add(7, 'd');
                     break;
                 case MODE_MONTH:
-                    currentMoment.add(-1, 'm');
+                    currentMoment.add(1, 'M');
                     break;
             }
+
+            pageContent.css('display', 'none');
+            // innerProgress.css('display', "inline");
+            restUi();
+            showData(uid);
 
             return false;
         }});
@@ -865,7 +875,8 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                                 td.html(value);
                                 var dropDownBtn = $('<i>', {
                                     class: "fas fa-caret-down fa-lg color-orange",
-                                    onclick: "expandText(this)"
+                                    onclick: "expandText(this)",
+                                    title: data.dataName +" "+ title
                                 });
                                 td.append($('<br />')).append(dropDownBtn);
                             }
