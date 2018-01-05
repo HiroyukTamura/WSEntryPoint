@@ -288,23 +288,25 @@ function displayTest() {
 
                         var start = getTime(entry.start);
                         var end = getTime(entry.end);
+                        var timeVal = getTimeVal(entry.start) + " → " + getTimeVal(entry.end);
+                        console.log(entry.start);
                         var label = entry.start.name + " → " + entry.end.name;
 
                         if (entry.start.offset === entry.end.offset){
 
-                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.colorNum, label);
+                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.colorNum, label, timeVal);
 
                         } else if (entry.start.offset - entry.end.offset === 1){
 
                             date -= entry.start.offset;
-                            pushData(getRangeStart(date, start), date, entry.colorNum, label);
+                            pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal);
                             date += 1;
-                            pushData(getRangeEnd(date, end), date, entry.colorNum, label);
+                            pushData(getRangeEnd(date, end), date, entry.colorNum, label, timeVal);
 
                         } else if (entry.start.offset - entry.end.offset === 2){
 
                             date -= entry.start.offset;
-                            pushData(getRangeStart(date, start), date, entry.colorNum, label);
+                            pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal);
 
                             date += 1;
                             var arrH = [];
@@ -315,13 +317,14 @@ function displayTest() {
                             pushData(arrH, date);
 
                             date += 1;
-                            pushData(getRangeEnd(date, start), date, entry.colorNum, label);
+                            pushData(getRangeEnd(date, start), date, entry.colorNum, label, timeVal);
                         }
                     });
 
                     json.eventList.forEach(function (entry) {
                         var time = getTime(entry);
-                        pushData(getRangeArr(date, time, time+1, 0), date, entry.colorNum, entry.name);
+                        var timeVal = getTimeVal(entry);
+                        pushData(getRangeArr(date, time, time, 0), date, entry.colorNum, entry.name, timeVal);
                     });
                 }
             });
@@ -401,13 +404,25 @@ function chart(mode, firstKey) {
                         suggestedMax: maximum,
                         reverse: true,
                         stepSize: 1,
-                        callback: function(value, index, values) {
-                            if(index === maximum)
+                        callback: function (value, index, values) {
+                            if (index === maximum)
                                 return null;
 
                             return yAxis[value];
                         }
                     }
+                }],
+                xAxes: [{
+                    ticks: {
+                        callback: function(value, index, values) {
+                            if(value)
+                                return value;
+                        },
+                        autoSkip: true,
+                        maxRotation: 0,
+                        minRotation: 0
+                    },
+                    display: true
                 }]
             },
             legend: {
@@ -419,12 +434,11 @@ function chart(mode, firstKey) {
                     mode: 'point',
                     title: function (toolTips, data) {
                         console.log(toolTips, data);
-                        var time = toolTips[0]["index"] + ":00";
-                        return yAxis[toolTips[0]["yLabel"]] + " " +time;
+                        return yAxis[toolTips[0]["yLabel"]];
                     },
-                    // todo toolTipの時刻表示するべき
                     label: function (tooltipItem, data) {
-                        return data["datasets"][tooltipItem.datasetIndex]["label"];
+                        var arr = data["datasets"][tooltipItem.datasetIndex];
+                        return arr.label +" "+ arr.timeVal;
                     }
                 }
             }
@@ -472,8 +486,15 @@ function getMaximumFromMode(mode) {
 /*---------------描画まわり-------------*/
 function makeXaxis() {
     var arr = [];
-    for (var i=0; i<=24; i++){
-        arr.push(i);
+    var limit = 24*4;
+    for (var i=0; i<=limit; i++){
+        if(i === 0) {
+            arr.push(i);
+        } else if(i%8 === 0) {
+            arr.push(i/4);
+        } else {
+            arr.push(null);
+        }
     }
     return arr;
 }
@@ -484,7 +505,16 @@ function getTime(entryC) {
     return hour + min/60
 }
 
-function pushData(arr, date, colorNum, label) {
+function getTimeVal(entryC) {
+    var hour = entryC.cal.hourOfDay;
+    var min = entryC.cal.minute;
+    var time = moment();
+    time.hour(hour);
+    time.minute(min);
+    return time.format('HH:mm');
+}
+
+function pushData(arr, date, colorNum, label, timeVal) {
     var color = getColor(colorNum);
     var radiuses = setRadius(arr, date);
     myChart.data.datasets.push({
@@ -495,7 +525,8 @@ function pushData(arr, date, colorNum, label) {
         backgroundColor: color,
         pointHoverBackgroundColor: color,
         borderColor: color,
-        fill: false
+        fill: false,
+        timeVal: timeVal
     });
 }
 
@@ -517,14 +548,40 @@ function setRadius(dataArr, date) {
 function getRangeArr(date, start, end, offset) {
     var arrC = [];
     date = date + offset;
-    for(var n=0; n<=24; n++){
-        if (start<=n && n<=end){
+    var limit = 24*4;
+    for(var n=0; n<=limit; n++){
+        if (start*4<=n && n<=end*4){
             arrC.push(date);
         } else {
             arrC.push(null);
         }
     }
     return arrC;
+}
+
+function getRangeStart(date, start) {
+    var arrD = [];
+    for (var n=0; n<=24*4; n++){
+        if (start*4 < n){
+            arrD.push(date);
+        } else {
+            arrD.push(null);
+        }
+    }
+    return arrD;
+}
+
+function getRangeEnd(date, end) {
+    var arrE = [];
+    for (var n=0; n<=24*4; n++){
+        if (n*4 < end){
+            arrE.push(date);
+        } else {
+            arrE.push(null);
+        }
+    }
+    console.log(arrE);
+    return arrE;
 }
 
 function getColor(num) {
@@ -571,7 +628,7 @@ function showAverage(timeData) {
                    '<td class="range-title" rowspan="2">'+ key +'</td>' +
                    '<td class="ave-digit-td no-wrap">'+ min2HHMM(aveStart)+'</td>' +
                    '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' +
-                        '<i class="fas fa-angle-double-right fa-lg"></i>' +
+                        '<i class="fas fa-angle-double-right fa-lg color-orange"></i>' +
                    '</td>' +
                    '<td class="ave-digit-td no-wrap">'+ min2HHMM(aveEnd) +'</td>' +
                    '<td class="ave-digit-td no-wrap">'+ aveLen +'</td>' +
@@ -590,7 +647,9 @@ function showAverage(timeData) {
                space.addClass("back-orange");
                row1.addClass("back-orange");
                row2.addClass("back-orange");
-               row1.find('i').addClass("color-orange");
+               // row1.find('i').addClass("color-orange");
+           // } else {
+           //     row1.find('i').addClass("color-disable");
            }
            // var seem = generateTableBorder("table-seem");
            tbody.append(space)
@@ -648,7 +707,7 @@ function generateAveArr(timeData) {
     for(var key in timeData){
         if(timeData.hasOwnProperty(key)){
             timeData[key]["rangeList"].forEach(function (range) {
-                var name = range.start.name + " → " + range.end.name;
+                var name = range.start.name + '  <i class="fas fa-angle-double-right color-orange"></i>  ' + range.end.name;
                 if(!ranges.hasOwnProperty(name)){
                     ranges[name] = {};
                     ranges[name].start = [];
@@ -698,7 +757,7 @@ function roundWithDigit(num, digit) {
 function min2HHMM(min) {
     var m = moment();
     m.minute(min);
-    return m.format('HH:MM');
+    return m.format('HH:mm');
 }
 
 function generateTableBorder(className) {
@@ -893,7 +952,16 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
         }
 
     setElementAsMdl(tbody);
-    tippy('[title]');
+    tippy('[title]', {
+        updateDuration: 0,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: {
+                    enabled: false
+                }
+            }
+        }
+    });
 }
 
 function setTagInCell(td, data, title) {
