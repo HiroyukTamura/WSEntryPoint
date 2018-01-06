@@ -123,7 +123,7 @@ function getDaysOfWeek() {
 }
 
 function getDaysOfMonth() {
-    var now = moment(currentMoment).add(-1, 'M');//todo これテスト用なので直すこと
+    var now = moment(currentMoment);//todo これテスト用なので直すこと
     var start = moment(now).startOf('month');
     var end = now.endOf('month').date();
     var days = [];
