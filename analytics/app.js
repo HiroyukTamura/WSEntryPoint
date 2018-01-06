@@ -957,6 +957,7 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
             rowHead.addClass('holiday');
         }
 
+
         if(masterJson[masterKeys[k]]){
             masterJson[masterKeys[k]].forEach(function (data) {
                 if(!data.data || data.dataType === 0 || data.dataType === 1)
