@@ -95,55 +95,7 @@ function init() {
     };
     defaultApp = firebase.initializeApp(config);
 
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            console.log("ユーザログインしてます");
-            // progress.css("display", "none");
-            onLoginSuccess(user.uid);
-        } else {
-            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-                .then(function() {
-                    var uiConfig = {
-                        signInOptions: [
-                            // Leave the lines as is for the providers you want to offer your users.
-                            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-                            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                            firebase.auth.PhoneAuthProvider.PROVIDER_ID
-                        ],
-                        // Terms of service url.
-                        tosUrl: 'sampleTosUrl',
-                        'callbacks': {
-                            // Called when the user has been successfully signed in.
-                            'signInSuccess': function(user, credential, redirectUrl) {
-                                console.log(user.uid);
-                                //urlとは別のuidのユーザとしてログインすることもある。
-                                // if(user.uid !== getUid()){
-                                //     var currentUrl = $(location).attr('href');
-                                //     window.location.href = currentUrl.substring(0, currentUrl.indexOf("?"));
-                                // } else {
-                                //     onLoginSuccess(user.uid);
-                                // }
-                                progress.css('display', "none");
-                                $('#login_w').css('display', "none");
-                                onLoginSuccess(user.uid);
-                                return false;
-                            }
-                        }
-                    };
-
-                    var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.css('display', "none");
-                    $('#login_w').css('display', "inline");
-                    ui.start('#firebaseui-auth-container', uiConfig);
-                }).catch(function(error) {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    console.log(errorCode, errorMessage);
-                    //todo エラー時の処理
-            });
-        }
-    });
+    onLoginSuccess("1JLRZXEkNuPSzC1iIWrJFmPd9ry2");
 }
 
 function setDisplayMode(mode) {
@@ -706,9 +658,9 @@ function showAverage(timeData) {
            row1.find('.fa-angle-double-right').css('color', getColor(ranges[key]['colorNum']));
            var caption =
                '<tr class="caption">' +
-                   '<td class="no-wrap">先週より+2h15min</td>' +
-                   '<td class="no-wrap">先週より-45min</td>' +
-                   '<td class="no-wrap">先週より+2h15min</td>' +
+                   '<td class="no-wrap"></td>' +
+                   '<td class="no-wrap"></td>' +
+                   '<td class="no-wrap"></td>' +
                '</tr>';
            var row2 = $(caption);
            var space = generateTableBorder("table-space");
@@ -740,7 +692,7 @@ function showAverage(timeData) {
                    '<td class="ave-digit-td no-wrap centering" colspan="4">'+ average +'</td>'+
                '</tr>'+
                '<tr class="caption">'+
-                    '<td class="no-wrap centering" colspan="4">先週より+2h15min</td>'+
+                    '<td class="no-wrap centering" colspan="4"></td>'+
                '</tr>');
 
            var space0 = space.clone(true);
