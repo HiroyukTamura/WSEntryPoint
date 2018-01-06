@@ -186,3 +186,80 @@ body {
     -webkit-flex-wrap: wrap; /* Safari */
     flex-wrap:         wrap;
 }
+
+/*-----------------group------------------*/
+.demo-card-image.mdl-card {
+    width: 160px;
+    height: 160px;
+    background: url('img/icon.png') center / cover;
+    min-height: 0;
+    margin: 24px;
+}
+
+.demo-card-image > .mdl-card__actions {
+    height: 52px;
+    padding: 0 8px 0 16px;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    box-sizing:border-box;
+    align-items: center;
+}
+
+.demo-card-image__filename {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.mdl-layout-spacer{
+    min-width: 4px;
+}
+
+.fa-calendar-alt{
+    font-size: 22px;
+}
+
+.group-w-title{
+    color: #757575;
+    font-size: 14px;
+    padding: 0 24px;
+    margin: 0;
+}
+
+.wrapper-g{
+    padding: 0 16px;
+}
+
+.group-wrapper {
+    display: -webkit-flex; /* Safari */
+    display: flex;
+    -webkit-flex-wrap: wrap; /* Safari */
+    flex-wrap:         wrap;
+}
+
+.user-image{
+    height: 100px;
+    width: 100%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    min-height: 0;
+}
+
+.user-image-i{
+    height: 100px;
+    width: 100%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.user-img-w{
+    margin: 24px;
+    width: 100px;
+}
+
+.user-name {
+    margin-top: 12px;
+    color: #E57C3E;
+    width: 100%;
+    text-align: center;
+}
