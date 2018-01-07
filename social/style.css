@@ -160,11 +160,11 @@ body {
 
 /*----------------card---------------*/
 .card {
-    margin: 40px;
+    margin: 24px;
     border: 0;
     border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
-    padding: 24px 28px 20px 28px;
+    padding: 24px 28px 24px 28px;
     /*max-width: 1200px;*/
     width: fit-content;
 }
@@ -240,12 +240,12 @@ body {
 .group-w-title{
     color: #757575;
     font-size: 14px;
-    padding: 0 24px;
-    margin: 0;
+    padding: 0 40px;
+    margin: 32px 0 0 0;
 }
 
 .wrapper-g{
-    margin: 0 16px 16px 16px;
+    margin: 44px 32px 16px 32px;
 }
 
 .group-wrapper {
@@ -279,9 +279,24 @@ body {
 
 .user-name {
     margin: 12px 0;
-    color: #E57C3E;
+    color: #757575;
     width: 100%;
     text-align: center;
+}
+
+#add-btn-w{
+    margin: 24px;
+    height: 160px;
+    width: 100px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+#add-btn-w button {
+    background-color: #E57C3E;
+    color: white;
 }
 
 /*-------------クイックアクセス--------------*/
@@ -335,7 +350,7 @@ body {
 /*}*/
 
 .wrapper-access {
-    margin-bottom: 32px;
+    margin: 16px 0 32px 0;
 }
 
 /*.quick-access .demo-card-image__filename {*/
@@ -343,3 +358,53 @@ body {
     /*font-size: 12px;*/
     /*font-weight: 500;*/
 /*}*/
+
+/*--------プロフィール-------------*/
+#profile {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+#inner {
+    display: inline-block;
+}
+
+#profile img {
+    height: 100px;
+    width: 100px;
+    margin-right: 24px;
+}
+
+#profile-w {
+    height: fit-content;
+}
+
+#profile-w h3 {
+    margin: 0 0 12px 0;
+    font-size: 24px;
+}
+
+#profile-w .fa-user {
+    color: #E57C3E;
+}
+
+#user-w {
+    display: flex;
+}
+
+#edit-prof{
+    width: 100%;
+    text-align: center;
+}
+
+#edit-prof button {
+    color: #E57C3E;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+#user-w-w {
+    padding-top: 16px;
+}
