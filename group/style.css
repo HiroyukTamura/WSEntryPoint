@@ -131,6 +131,17 @@ body {
     padding-right: 20px;
 }
 
+#group-img {
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+#group-drp-btn {
+    margin-left: 12px;
+}
+
 /*----------------login---------------*/
 #login-grid{
     text-align: center;
@@ -153,7 +164,83 @@ body {
     margin-bottom: 100px;
 }
 
-body {
-    overflow-x: hidden;
+/*------------Card Header--------------*/
+.card {
+    margin: 10px 20px;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    max-width: 524px;/*イベントのカードの横幅default値*/
+}
+
+.average{
+    color: #66615b;
+    font-size: 20px;
+    margin: 0;
+}
+
+.ele_header {
+    padding: 10px 16px 6px 16px;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+}
+
+.ele_header_button {
+    float: right;
+    color: #BCBCBC;
+    font-size: 16px;
+}
+
+.event_title {
+    font-size: 16px;
+    margin: 0 16px 0 8px;
+}
+
+.ele-icon {
+    color: #66615b;
+}
+
+.seem {
+    margin: 0;
     background-color: #F4F3EF;
+    border: 0;
+}
+
+.flex-box {
+    display: -webkit-flex; /* Safari */
+    display: flex;
+    -webkit-flex-wrap: wrap; /* Safari */
+    flex-wrap:         wrap;
+}
+
+.user-image-i{
+    height: 100px;
+    width: 100%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.user-img-w{
+    margin: 16px 24px 0 24px;
+    width: 100px;
+}
+
+.user-name {
+    margin: 12px 0;
+    color: #757575;
+    width: 100%;
+    text-align: center;
+}
+
+.user-image{
+    height: 100px;
+    width: 100%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    min-height: 0;
+}
+
+.card-cont {
+    margin: 8px 0 16px 0;
 }

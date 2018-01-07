@@ -44,17 +44,17 @@
 
                 <header class="mdl-layout__header">
                     <div class="mdl-layout__header-row">
+                        <img src="img/icon.png" alt="group-image" id="group-img">
                         <!-- Title -->
-                        <span class="mdl-layout-title">共有</span>
-                        <!-- Add spacer, to align navigation to the right -->
-                        <div class="mdl-layout-spacer"></div>
-                        <!-- Navigation. We hide it in small screens. -->
-                        <nav class="mdl-navigation mdl-layout--large-screen-only">
-                            <!--<a class="mdl-navigation__link" href="">Link</a>-->
-                            <!--<a class="mdl-navigation__link" href="">Link</a>-->
-                            <!--<a class="mdl-navigation__link" href="">Link</a>-->
-                            <!--<a class="mdl-navigation__link" href="">Link</a>-->
-                        </nav>
+                        <span class="mdl-layout-title">陽和病院</span>
+                        <button id="group-drp-btn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons" role="presentation">arrow_drop_down</i>
+                            <span class="visuallyhidden">Accounts</span>
+                        </button>
+                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="group-drp-btn">
+                            <li class="mdl-menu__item">家族</li>
+                            <li class="mdl-menu__item">田中貴金属総務課</li>
+                        </ul>
                     </div>
                 </header>
 
@@ -93,11 +93,58 @@
                     <div class="page-content">
                         <!-- Your content goes here -->
                         <div id="wrapper">
-
+                            <div class="card">
+                                <div class="ele_header">
+                                    <i class="fas fa-users fa-lg ele-icon"></i>
+                                    <span class="event_title">メンバー</span>
+                                    <div class="mdl-layout-spacer"></div>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button">
+                                        <i class="fas fa-angle-down"></i>
+                                    </button>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">
+                                        <i class="fas fa-angle-up"></i>
+                                    </button>
+                                </div>
+                                <hr class="seem">
+                                <div class="card-cont flex-box">
+                                    <div class="user-img-w">
+                                        <div class="user-image">
+                                            <img src="img/icon.png" class="user-image-i">
+                                        </div>
+                                        <p class="user-name">田村ピロシキfafafafa</p>
+                                    </div>
+                                    <div class="user-img-w">
+                                        <div class="user-image">
+                                            <img src="img/icon.png" class="user-image-i">
+                                        </div>
+                                        <p class="user-name">田村ピロシキfafafafa</p>
+                                    </div>
+                                    <div class="user-img-w">
+                                        <div class="user-image">
+                                            <img src="img/icon.png" class="user-image-i">
+                                        </div>
+                                        <p class="user-name">田村ピロシキfafafafa</p>
+                                    </div>
+                                    <div class="user-img-w">
+                                        <div class="user-image">
+                                            <img src="img/icon.png" class="user-image-i">
+                                        </div>
+                                        <p class="user-name">田村ピロシキfafafafa</p>
+                                    </div>
+                                    <div class="user-img-w">
+                                        <div class="user-image">
+                                            <img src="img/icon.png" class="user-image-i">
+                                        </div>
+                                        <p class="user-name">田村ピロシキfafafafa</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </main>
-
             </div>
         </div>
 
