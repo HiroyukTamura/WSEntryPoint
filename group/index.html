@@ -171,39 +171,48 @@
                                         <ul class="demo-list-three mdl-list">
                                             <li class="mdl-list__item mdl-list__item--two-line">
                                                 <span class="mdl-list__item-primary-content">
-                                                    <img src="img/icon.png" alt="userA" class="mdl-list__item-icon"><!--todo imgのaltは動的にユーザ名を挿入すること-->
+                                                    <img src="img/icon.png" alt="userA" class="mdl-list__item-icon">
+                                                    <!--todo imgのaltは動的にユーザ名を挿入すること-->
                                                     <span>Bryan Cranston</span>
                                                     <span class="mdl-list__item-sub-title">2017.01.08</span>
                                                 </span>
                                             </li>
                                         </ul>
                                         <div class="comment-cont">
-                                            <p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、 これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>
+                                            <p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、
+                                                これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>
                                             <p>　しかもこの「Z」がさらに『右手のあいつ』の歌詞の内容にリンクしているなど、自己言及もやりたい放題に炸裂している。</p>
                                         </div>
                                     </div>
                                     <hr class="seem">
-                                    <div class="comment-follow flex-box space-horizontal">
-                                        <img src="img/icon.png" alt="userA" class="mdl-list__item-icon author-left"><!--todo imgのaltは動的にユーザ名を挿入すること-->
+                                    <div class="comment-follow">
+                                        <header class="flex-box">
+                                            <!--todo imgのaltは動的にユーザ名を挿入すること-->
+                                            <img src="img/icon.png" alt="userA" class="mdl-list__item-icon author-left">
+                                            <div>
+                                                <p class="comment-author">田村ピロシキ</p>
+                                                <p class="comment-time">2017.11.15</p>
+                                            </div>
+                                        </header>
                                         <div class="comment-cont">
-                                            <header class="flex-box">
-                                                <h6 class="comment-author">田村ピロシキ</h6>
-                                                <div class="mdl-layout-spacer"></div>
-                                                <span class="comment-time">2017.11.15</span>
-                                            </header>
-                                            <p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、 これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>
+                                            <p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、
+                                                これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>
                                             <p>　しかもこの「Z」がさらに『右手のあいつ』の歌詞の内容にリンクしているなど、自己言及もやりたい放題に炸裂している。</p>
                                         </div>
                                     </div>
-                                    <div class="comment-follow flex-box space-horizontal author-right">
-                                        <img src="img/icon.png" alt="userA" class="mdl-list__item-icon author-right"><!--todo imgのaltは動的にユーザ名を挿入すること-->
+                                    <hr class="seem">
+                                    <div class="comment-follow author-right">
+                                        <header class="flex-box">
+                                            <!--todo imgのaltは動的にユーザ名を挿入すること-->
+                                            <img src="img/icon.png" alt="userA" class="mdl-list__item-icon author-left">
+                                            <div>
+                                                <p class="comment-author">田村ピロシキ</p>
+                                                <p class="comment-time">2017.11.15</p>
+                                            </div>
+                                        </header>
                                         <div class="comment-cont">
-                                            <header class="flex-box">
-                                                <h6 class="comment-author">田村ピロシキ</h6>
-                                                <div class="mdl-layout-spacer"></div>
-                                                <span class="comment-time">2017.11.15</span>
-                                            </header>
-                                            <p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、 これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>
+                                            <p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、
+                                                これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>
                                             <p>　しかもこの「Z」がさらに『右手のあいつ』の歌詞の内容にリンクしているなど、自己言及もやりたい放題に炸裂している。</p>
                                         </div>
                                     </div>
@@ -213,6 +222,61 @@
                                         <i class="fas fa-caret-down"></i>
                                     </button>
                                 </div>
+                            </div>
+
+                            <div class="card user-list">
+                                <div class="ele_header">
+                                    <i class="fas fa-users fa-lg ele-icon"></i>
+                                    <span class="event_title">メンバー</span>
+                                    <div class="mdl-layout-spacer"></div>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button">
+                                        <i class="fas fa-angle-down"></i>
+                                    </button>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">
+                                        <i class="fas fa-angle-up"></i>
+                                    </button>
+                                </div>
+
+                                <hr class="seem">
+
+                                <div class="card-cont">
+                                    <ul class="mdl-list">
+                                        <li class="mdl-list__item">
+                                            <span class="mdl-list__item-primary-content">
+                                                <!--todo 動的にaltをここで書き入れること-->
+                                                <img src="img/icon.png" alt="group-name">
+                                                <span>陽和病院</span>
+                                            </span>
+                                            <span class="mdl-list__item-secondary-action">
+                                            <!--todo 動的にidを作成すること-->
+                                            <button id="hogehoge" class="mdl-button mdl-js-button mdl-button--icon">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <!--todo 動的にidを作成すること-->
+                                            </span>
+                                        </li>
+                                        <li class="mdl-list__item">
+                                            <span class="mdl-list__item-primary-content">
+                                                <img src="img/icon.png" alt="group-name">
+                                                <span>陽和病院</span>
+                                            </span>
+                                        </li>
+                                        <li class="mdl-list__item">
+                                            <span class="mdl-list__item-primary-content">
+                                                <img src="img/icon.png" alt="group-name">
+                                                <span>陽和病院</span>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="hogehoge">
+                                    <li class="mdl-menu__item">Some Action</li>
+                                    <li class="mdl-menu__item">Another Action</li>
+                                </ul>
                             </div>
                         </div>
                     </div>

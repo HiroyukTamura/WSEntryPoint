@@ -170,7 +170,8 @@ body {
     border: 0;
     border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
-    max-width: 524px;/*イベントのカードの横幅default値*/
+    max-width: 1000px;/*イベントのカードの横幅default値*/
+    width: fit-content;
 }
 
 .average{
@@ -213,6 +214,8 @@ body {
     -webkit-flex-wrap: wrap; /* Safari */
     flex-wrap:         wrap;
 }
+
+/*----------user--------------*/
 
 .user-image-i{
     height: 100px;
@@ -258,23 +261,43 @@ body {
     color: #66615b;
 }
 
+/*---------user ver.2----------*/
+.average{
+    color: #66615b;
+    font-size: 20px;
+    margin: 0 0 8px 0;
+    vertical-align: middle;
+}
+
+.card.user-list img{
+    width: 40px;
+    height: 40px;
+    margin-right: 32px;
+}
+
 /*--------------ディスカッション------------*/
 .comments .card-cont {
 
 }
 
-.comment-first img, .comment-follow img{
+.comment-first img{
     height: 40px;
     width: 40px;
     border-radius: 50%;
 }
 
+.comment-follow img{
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+}
+
 .comment-follow .author-right{
-    margin-left: 24px;
+    margin-left: 16px;
 }
 
 .comment-follow .author-left {
-    margin-right: 24px;
+    margin-right: 16px;
 }
 
 .comment-first .mdl-list__item--two-line .mdl-list__item-primary-content .mdl-list__item-icon {
@@ -290,7 +313,7 @@ body {
 }
 
 .comment-first {
-    margin-bottom: 24px;
+    margin-bottom: 36px;
 }
 
 .comment-first .comment-cont p, .comment-follow .comment-cont p {
@@ -305,23 +328,42 @@ body {
     margin-bottom: 8px;
 }
 
+.comment-first .comment-cont {
+    margin-top: 8px;
+}
+
+.comment-follow .comment-cont {
+    margin-top: 20px;
+}
+
 .comment-follow {
-    padding-top: 32px;
-    padding-bottom: 24px;
+    padding: 36px 96px;
 }
 
 .comment-follow.flex-box {
     flex-wrap: nowrap;
 }
 
-.comment-author {
+.comment-first .comment-author {
     margin: 0;
     font-size: 16px;
 }
 
+.comment-follow .comment-author {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.comment-follow .comment-time {
+    margin: 0;
+    font-size: 13px;
+    line-height: 18px;
+}
+
 .comment-follow header {
     flex-wrap: nowrap;
-    margin-bottom: 8px;
+    align-items: center;
 }
 
 .comment-follow.author-right header {
