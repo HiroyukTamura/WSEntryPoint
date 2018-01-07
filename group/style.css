@@ -390,3 +390,29 @@ body {
     padding-right: 24px;
     padding-left: 24px;
 }
+
+/*-----------ファイル-------------*/
+.file {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    max-width: 400px;
+    width: fit-content;
+    display: block;
+}
+
+.file-icon {
+    margin-top: 28px;
+    margin-left: 16px;
+    width: 40px;
+    height: 40px;
+}
+
+.file .mdl-list {
+    flex: 1;
+}
+
+.show-img{
+    max-width: 100%;
+    height: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
