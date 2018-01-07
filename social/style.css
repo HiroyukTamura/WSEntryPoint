@@ -205,10 +205,28 @@ body {
     align-items: center;
 }
 
-.demo-card-image__filename {
+.demo-card-image .demo-card-image__filename {
     color: #fff;
     font-size: 12px;
     font-weight: 500;
+}
+
+.demo-card-image .mdl-card__title{
+    margin: 0;
+}
+
+/*.demo-card-image .mdl-badge {*/
+    /*top: 19px; !*= 11 + 22/2*!*/
+    /*right: 8px;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*!*color: #E57C3E;*!*/
+/*}*/
+
+.mdl-badge[data-badge]:after {
+    top: 8px !important;
+    right: 8px !important;
+    background-color: #E57C3E;
 }
 
 .mdl-layout-spacer{
@@ -227,7 +245,7 @@ body {
 }
 
 .wrapper-g{
-    padding: 0 16px;
+    margin: 0 16px 16px 16px;
 }
 
 .group-wrapper {
@@ -236,6 +254,8 @@ body {
     -webkit-flex-wrap: wrap; /* Safari */
     flex-wrap:         wrap;
 }
+
+/*---------------ユーザ-----------------*/
 
 .user-image{
     height: 100px;
@@ -253,13 +273,73 @@ body {
 }
 
 .user-img-w{
-    margin: 24px;
+    margin: 16px 24px;
     width: 100px;
 }
 
 .user-name {
-    margin-top: 12px;
+    margin: 12px 0;
     color: #E57C3E;
     width: 100%;
     text-align: center;
 }
+
+/*-------------クイックアクセス--------------*/
+
+.quick-access.mdl-card {
+    width: 256px;
+    margin: 24px;
+    /*height: 160px;*/
+    /*background: url('img/icon.png') center / cover;*/
+    min-height: 0;
+    /*min-width: 0;*/
+    /*margin: 24px;*/
+}
+
+.quick-access > .mdl-card__title {
+    color: #fff;
+    height: 120px;
+    background: url('img/icon.png') center / cover;
+}
+
+.quick-access .filename-w {
+    padding: 8px 16px;
+}
+
+.quick-access .filename {
+    margin-bottom: 0;
+    text-overflow: ellipsis;
+    font-size: 16px;
+}
+
+.quick-access .file-caption {
+    color: rgba(0,0,0,.54);
+    margin-bottom: 0;
+    text-overflow: ellipsis;
+    font-size: 13px;
+}
+
+.mdl-card__menu {
+    right: 8px;
+    top: 4px;
+    color: #E57C3E;
+}
+
+    /*.quick-access > .mdl-card__actions {*/
+    /*height: 52px;*/
+    /*padding: 0 8px 0 16px;*/
+    /*background: rgba(255, 255, 255, 0.7);*/
+    /*display: flex;*/
+    /*box-sizing:border-box;*/
+    /*align-items: center;*/
+/*}*/
+
+.wrapper-access {
+    margin-bottom: 32px;
+}
+
+/*.quick-access .demo-card-image__filename {*/
+    /*color: #757575;*/
+    /*font-size: 12px;*/
+    /*font-weight: 500;*/
+/*}*/
