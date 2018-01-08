@@ -164,6 +164,12 @@ body {
     margin-bottom: 100px;
 }
 
+/*------------frame work---------------*/
+#wrapper {
+    margin: 0 auto;
+    max-width: 1100px;
+}
+
 /*------------Card Header--------------*/
 .card {
     margin: 10px 20px;
@@ -171,7 +177,6 @@ body {
     border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
     max-width: 1000px;/*イベントのカードの横幅default値*/
-    width: fit-content;
 }
 
 .average{
@@ -273,6 +278,15 @@ body {
     width: 40px;
     height: 40px;
     margin-right: 32px;
+}
+
+.user-list {
+    width: auto;
+}
+
+.card.user-list {
+    margin-right: 0;
+    margin-left: 0;
 }
 
 /*--------------ディスカッション------------*/
@@ -395,14 +409,12 @@ body {
 .file {
     flex-direction: row;
     flex-wrap: nowrap;
-    max-width: 400px;
-    width: fit-content;
     display: block;
 }
 
 .file-icon {
-    margin-top: 28px;
-    margin-left: 16px;
+    display: block;
+    margin: 8px 0 0 16px;
     width: 40px;
     height: 40px;
 }
@@ -412,7 +424,31 @@ body {
 }
 
 .show-img{
-    max-width: 100%;
+    height: 400px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+.show-img img {
+    height: 400px;
+    width: 400px;
+    margin: 0 auto;
+    display: block;
+}
+
+.file .ele_header {
+    padding-bottom: 0;
+}
+
+.file li {
+    padding: 0 16px 8px 16px;
     height: auto;
-    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.file ul {
+    margin-bottom: 16px;
+}
+
+.file-wrapper {
+    margin-top: 8px;
 }
