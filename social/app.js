@@ -89,33 +89,35 @@ function onLoginSuccess() {
             if(childSnap.key === DEFAULT)
                 return;
 
-            var userName = childSnap.child("name").val();
-            if(userName === "null"){
-                userName = "ユーザ名未設定";
-            }
+            var userName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
+
+            var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), 'img/icon.png');
+            photoUrl = "url('"+ photoUrl + "') center / cover";
 
             // todo 未読を記録するnodeを作らないとね
-            var html =
+            var html = $(
                 '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
                     '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
                         '<div class="mdl-card__actions mdl-pre-upgrade">'+
                             '<span class="demo-card-image__filename mdl-pre-upgrade">'+userName+'</span>'+
                         '</div>'+
                     '</div>'+
-                '</div>';
+                '</div>');
 
             // $('#group #add-btn-w').insertBefore($(html));
-            $(html).insertBefore($('#group #add-btn-w'));
+            html.css('background', photoUrl);
+            html.insertBefore($('#group #add-btn-w'));
         });
 
         //プロフィール欄を表示
         $('#profile-w h3').html('<i class="fas fa-user"></i>' + "&nbsp;&nbsp;" + snapshot.child('displayName').val());
-        var userEmail = snapshot.child('email').val();
-        if(userEmail === "null"){
-            userEmail = "アドレス未設定";
-        }
 
+        var userEmail = avoidNullValue(snapshot.child('email').val(), "アドレス未設定");
         $('#user-email').html(userEmail);
+
+        var photoUrl = avoidNullValue(snapshot.child("photoUrl").val());
+        if(photoUrl)
+            $('#profile').find('img').attr("src", photoUrl);
 
         showAll();
     });
@@ -138,11 +140,12 @@ function retrieveFriendSnap() {
             if(childSnap.key === DEFAULT)
                 return;
 
-            var userName = avoidNullUserName(childSnap.child("name").val());
+            var userName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
+            var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), "img/icon.png");
             var ele = $(
                 '<div class="user-img-w">'+
                     '<div class="mdl-card mdl-shadow--2dp user-image mdl-pre-upgrade">'+
-                        '<img src="img/icon.png" class="user-image-i">'+
+                        '<div ="'+ photoUrl +'" class="user-image-i">'+
                     '</div>'+
                     '<p class="user-name">'+ userName +'</p>'+
                 '</div>'
@@ -157,12 +160,11 @@ function retrieveFriendSnap() {
     });
 }
 
-function avoidNullUserName(userName) {
-    if(userName === "null"){
-        return "ユーザ名未設定";
-    } else {
-        return userName;
-    }
+function avoidNullValue(photoUrl, onErrVal) {
+    if(photoUrl === "null")
+        return onErrVal;
+    else
+        return photoUrl;
 }
 
 function setOnClickListeners() {
