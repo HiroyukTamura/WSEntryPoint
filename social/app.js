@@ -1,5 +1,12 @@
+"use strict";
+
 const postLoad = $('#post_load');
-var progress = $('#progress');
+const DEFAULT = "DEFAULT";
+const progress = $('#progress');
+var defaultApp;
+var defaultDatabase;
+var user;
+var fbCoumpleteCount = 0;
 
 function init() {
     var config = {
@@ -11,12 +18,14 @@ function init() {
         messagingSenderId: "60633268871"
     };
     defaultApp = firebase.initializeApp(config);
+    defaultDatabase = defaultApp.database();
 
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
+    firebase.auth().onAuthStateChanged(function(userObject) {
+        if (userObject) {
             console.log("ユーザログインしてます");
             // progress.css("display", "none");
-            onLoginSuccess(user.uid);
+            user = userObject;
+            onLoginSuccess();
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
@@ -32,11 +41,10 @@ function init() {
                         tosUrl: 'sampleTosUrl',
                         'callbacks': {
                             // Called when the user has been successfully signed in.
-                            'signInSuccess': function(user, credential, redirectUrl) {
-                                console.log(user.uid);
+                            'signInSuccess': function(userObject, credential, redirectUrl) {
+                                user = userObject;
                                 progress.css('display', "none");
                                 $('#login_w').css('display', "none");
-                                onLoginSuccess(user.uid);
                                 return false;
                             }
                         }
@@ -56,6 +64,139 @@ function init() {
     });
 }
 
-function onLoginSuccess(uid) {
-    console.log("onLoginSuccess:", uid);
+function onLoginSuccess() {
+    console.log("onLoginSuccess:", user);
+
+    defaultDatabase.ref("userData/" + user.uid).once("value").then(function (snapshot) {
+
+        if(!snapshot.exists()){
+            // todo エラー処理
+            console.log("snapShot存在せず" + snapshot);
+            return;
+        }
+
+        //グループに参加していない場合
+        if(snapshot.child("group").numChildren() === 1){
+            $("#group .group-w-title-w p").css('display', 'inline');
+        }
+
+        snapshot.child("group").forEach(function (childSnap) {
+            console.log("groupKey", childSnap.key);
+
+            if(childSnap.key === DEFAULT)
+                return;
+
+            var userName = childSnap.child("name").val();
+            if(userName === "null"){
+                userName = "ユーザ名未設定";
+            }
+
+            // todo 未読を記録するnodeを作らないとね
+            var html =
+                '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
+                    '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
+                        '<div class="mdl-card__actions mdl-pre-upgrade">'+
+                            '<span class="demo-card-image__filename mdl-pre-upgrade">'+userName+'</span>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>';
+
+            // $('#group #add-btn-w').insertBefore($(html));
+            $(html).insertBefore($('#group #add-btn-w'));
+        });
+
+        //プロフィール欄を表示
+        $('#profile-w h3').html('<i class="fas fa-user"></i>' + "&nbsp;&nbsp;" + snapshot.child('displayName').val());
+        var userEmail = snapshot.child('email').val();
+        if(userEmail === "null"){
+            userEmail = "アドレス未設定";
+        }
+
+        $('#user-email').html(userEmail);
+
+        showAll();
+    });
+
+    //友達のユーザを表示
+    retrieveFriendSnap();
+}
+
+function retrieveFriendSnap() {
+    defaultDatabase.ref("friend/" + user.uid).once("value").then(function (snapshot) {
+        if(!snapshot.exists()){
+            // todo エラー処理
+            console.log("snapShot存在せず" + snapshot);
+            return;
+        }
+
+        var pool = $("#other-users");
+
+        snapshot.forEach(function (childSnap) {
+            if(childSnap.key === DEFAULT)
+                return;
+
+            var userName = avoidNullUserName(childSnap.child("name").val());
+            var ele = $(
+                '<div class="user-img-w">'+
+                    '<div class="mdl-card mdl-shadow--2dp user-image mdl-pre-upgrade">'+
+                        '<img src="img/icon.png" class="user-image-i">'+
+                    '</div>'+
+                    '<p class="user-name">'+ userName +'</p>'+
+                '</div>'
+            );
+
+            pool.append(ele);
+
+            console.log("おともだち", userName);
+        });
+
+        showAll();
+    });
+}
+
+function avoidNullUserName(userName) {
+    if(userName === "null"){
+        return "ユーザ名未設定";
+    } else {
+        return userName;
+    }
+}
+
+function setOnClickListeners() {
+    $('#group #add-btn-w').on("click", function (ev) {
+        console.log("groupAddBtn clicked");
+    });
+
+    $('#edit-prof').on("click", function (ev) {
+        console.log("edit-prof clicked");
+    })
+}
+
+function showAll() {
+    if(fbCoumpleteCount !== 1){
+        fbCoumpleteCount++;
+        return;
+    }
+
+    setOnClickListeners();
+
+    setElementAsMdl($("body"));
+
+    tippy('[title]', {
+        updateDuration: 0,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: {
+                    enabled: false
+                }
+            }
+        }
+    });
+}
+
+function setElementAsMdl(clone) {
+    var ele = clone.find(".mdl-pre-upgrade");
+    for (var i=0; i<ele.length; i++){
+        componentHandler.upgradeElement(ele.eq(i)[0]);
+    }
 }
