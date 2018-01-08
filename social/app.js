@@ -7,6 +7,7 @@ var defaultApp;
 var defaultDatabase;
 var user;
 var fbCoumpleteCount = 0;
+var userDataJson;
 
 function init() {
     var config = {
@@ -74,6 +75,8 @@ function onLoginSuccess() {
             console.log("snapShot存在せず" + snapshot);
             return;
         }
+
+        userDataJson = snapshot.toJSON();
 
         //グループに参加していない場合
         if(snapshot.child("group").numChildren() === 1){
@@ -169,7 +172,44 @@ function setOnClickListeners() {
 
     $('#edit-prof').on("click", function (ev) {
         console.log("edit-prof clicked");
-    })
+    });
+
+    var clickedAndMovePage = false;
+    var dialog = $('#add-group-dialog')[0];
+    if(!dialog.showModal){
+        dialogPolyfill.registerDialog(dialog);
+    }
+
+    $('.close').on("click", function (ev) {
+        dialog.close();
+    });
+    $('#add-group-btn').on("click", function (ev) {
+        dialog.close();
+        console.log("参加するってよ！");
+    });
+
+    $('#group .demo-card-image').on("click", function (ev) {
+
+        var groupKeys = Object.keys(userDataJson["group"]);
+        var index = $(this).index();
+        var groupKey = groupKeys[index];
+        if(groupKey === DEFAULT){
+            groupKey = groupKeys[index + 1];
+        }
+
+        console.log(groupKey, userDataJson["group"]);
+        if(userDataJson["group"][groupKey]["added"]){
+            if(clickedAndMovePage){
+               clickedAndMovePage = true;
+            } else {
+                window.location.href = "../group/index.html?key=" + groupKey;
+            }
+        } else {
+            if(!dialog.showModal){
+                dialog.showModal();
+            }
+        }
+    });
 }
 
 function showAll() {
