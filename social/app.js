@@ -142,10 +142,11 @@ function retrieveFriendSnap() {
 
             var userName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
             var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), "img/icon.png");
+            console.log(photoUrl);
             var ele = $(
                 '<div class="user-img-w">'+
                     '<div class="mdl-card mdl-shadow--2dp user-image mdl-pre-upgrade">'+
-                        '<div ="'+ photoUrl +'" class="user-image-i">'+
+                        '<img src="'+ photoUrl +'" class="user-image-i">'+
                     '</div>'+
                     '<p class="user-name">'+ userName +'</p>'+
                 '</div>'
