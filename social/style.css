@@ -126,6 +126,10 @@
     padding-right: 20px;
 }
 
+#group-drp-btn {
+    display: none;
+}
+
 /*----------------login---------------*/
 #login-grid{
     text-align: center;

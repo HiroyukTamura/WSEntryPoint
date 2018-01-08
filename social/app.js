@@ -73,6 +73,7 @@ function onLoginSuccess() {
         if(!snapshot.exists()){
             // todo エラー処理
             console.log("snapShot存在せず" + snapshot);
+            fbCoumpleteCount++;
             return;
         }
 
@@ -131,6 +132,7 @@ function retrieveFriendSnap() {
         if(!snapshot.exists()){
             // todo エラー処理
             console.log("snapShot存在せず" + snapshot);
+            fbCoumpleteCount++;
             return;
         }
 
