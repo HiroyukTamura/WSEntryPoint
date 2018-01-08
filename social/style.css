@@ -156,7 +156,7 @@
 }
 
 body {
-    overflow-x: auto;
+    overflow-x: scroll;
     background-color: #F4F3EF;
     min-width: 760px;
 }
@@ -271,6 +271,11 @@ body {
     margin: 72px 32px 16px 32px;
 }
 
+#spacer {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
 .group-wrapper {
     display: -webkit-flex; /* Safari */
     display: flex;
@@ -382,10 +387,13 @@ body {
 
 .wrapper-access {
     margin: 0 0 32px 0;
+    background: #524b4b;
 }
 
 .wrapper-access > .group-wrapper {
-    background: #524b4b;
+    max-width: 1000px;
+
+    margin: 0 auto;
 }
 
 /*.quick-access .demo-card-image__filename {*/

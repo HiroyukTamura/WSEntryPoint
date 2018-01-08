@@ -1,5 +1,9 @@
 const postLoad = $('#post_load');
 var progress = $('#progress');
+var defaultApp;
+var defaultDatabase;
+var user;
+var groupJson;
 
 function init() {
     var config = {
@@ -11,12 +15,14 @@ function init() {
         messagingSenderId: "60633268871"
     };
     defaultApp = firebase.initializeApp(config);
+    defaultDatabase = defaultApp.database();
 
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
+    firebase.auth().onAuthStateChanged(function(userObject) {
+        if (userObject) {
             console.log("ユーザログインしてます");
             // progress.css("display", "none");
-            onLoginSuccess(user.uid);
+            user = userObject;
+            onLoginSuccess();
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
@@ -32,11 +38,12 @@ function init() {
                         tosUrl: 'sampleTosUrl',
                         'callbacks': {
                             // Called when the user has been successfully signed in.
-                            'signInSuccess': function(user, credential, redirectUrl) {
-                                console.log(user.uid);
+                            'signInSuccess': function(userObject, credential, redirectUrl) {
+                                console.log(userObject);
+                                user = userObject;
                                 progress.css('display', "none");
                                 $('#login_w').css('display', "none");
-                                onLoginSuccess(user.uid);
+                                onLoginSuccess();
                                 return false;
                             }
                         }
@@ -56,6 +63,23 @@ function init() {
     });
 }
 
-function onLoginSuccess(uid) {
-    console.log("onLoginSuccess:", uid);
+function onLoginSuccess() {
+    var groupKey = getGroupKey();
+    console.log("onLoginSuccess:", user, groupKey);
+
+    defaultDatabase.ref("group/" + groupKey).once("value").then(function (snapshot) {
+        if(!snapshot.exists()){
+            // todo エラー処理
+            console.log("snapShot存在せず" + snapshot);
+            return;
+        }
+
+        groupJson = snapshot.toJSON();
+        console.log(groupJson);
+    });
+}
+
+function getGroupKey() {
+    var url = new URL(window.location.href);
+    return url.searchParams.get("key");
 }
