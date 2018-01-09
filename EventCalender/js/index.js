@@ -319,7 +319,7 @@
   }
 }();
 
-!function() {
+// !function() {
   var data = [
     { eventName: 'Lunch Meeting w/ Mark', calendar: 'Work', color: 'orange' },
     { eventName: 'Interview - Jr. Web Developer', calendar: 'Work', color: 'orange' },
@@ -345,9 +345,19 @@
   
 
   function addDate(ev) {
-    
+    data.push(ev);
+    calendar.renderEvents()
   }
 
   var calendar = new Calendar('#calendar', data);
+// }();
 
-}();
+
+
+function onClickBtn() {
+    console.log("btn clicked");
+    var newData = {
+        eventName: '全く新しい予定', calendar: 'Work', color: 'orange'
+    };
+    addDate(newData);
+}
