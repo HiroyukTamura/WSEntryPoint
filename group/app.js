@@ -12,6 +12,64 @@ var groupNodeJson;
 var groupKey;
 var isModalOpen = false;
 const DELIMITER = '9mVSv';
+const holidays = {
+    "2017-01-01": "元日",
+    "2017-01-02": "元日 振替休日",
+    "2017-01-09": "成人の日",
+    "2017-02-11": "建国記念の日",
+    "2017-03-20": "春分の日",
+    "2017-04-29": "昭和の日",
+    "2017-05-03": "憲法記念日",
+    "2017-05-04": "みどりの日",
+    "2017-05-05": "こどもの日",
+    "2017-07-17": "海の日",
+    "2017-08-11": "山の日",
+    "2017-09-18": "敬老の日",
+    "2017-09-23": "秋分の日",
+    "2017-10-09": "体育の日",
+    "2017-11-03": "文化の日",
+    "2017-11-23": "勤労感謝の日",
+    "2017-12-23": "天皇誕生日",
+    "2018-01-01": "元日",
+    "2018-01-08": "成人の日",
+    "2018-02-11": "建国記念の日",
+    "2018-02-12": "建国記念の日 振替休日",
+    "2018-03-21": "春分の日",
+    "2018-04-29": "昭和の日",
+    "2018-04-30": "昭和の日 振替休日",
+    "2018-05-03": "憲法記念日",
+    "2018-05-04": "みどりの日",
+    "2018-05-05": "こどもの日",
+    "2018-07-16": "海の日",
+    "2018-08-11": "山の日",
+    "2018-09-17": "敬老の日",
+    "2018-09-23": "秋分の日",
+    "2018-09-24": "秋分の日 振替休日",
+    "2018-10-08": "体育の日",
+    "2018-11-03": "文化の日",
+    "2018-11-23": "勤労感謝の日",
+    "2018-12-23": "天皇誕生日",
+    "2018-12-24": "天皇誕生日 振替休日",
+    "2019-01-01": "元日",
+    "2019-01-14": "成人の日",
+    "2019-02-11": "建国記念の日",
+    "2019-03-21": "春分の日",
+    "2019-04-29": "昭和の日",
+    "2019-05-03": "憲法記念日",
+    "2019-05-04": "みどりの日",
+    "2019-05-05": "こどもの日",
+    "2019-05-06": "こどもの日 振替休日",
+    "2019-07-15": "海の日",
+    "2019-08-11": "山の日",
+    "2019-08-12": "山の日 振替休日",
+    "2019-09-16": "敬老の日",
+    "2019-09-23": "秋分の日",
+    "2019-10-14": "体育の日",
+    "2019-11-03": "文化の日",
+    "2019-11-04": "文化の日 振替休日",
+    "2019-11-23": "勤労感謝の日",
+    "2019-12-23": "天皇誕生日"
+};
 
 /////////////////EventCalendar(手を加えていない部分)////////////////////
 !function() {
@@ -64,7 +122,7 @@ const DELIMITER = '9mVSv';
             this.el.appendChild(this.header);
         }
 
-        this.title.innerHTML = this.current.format('MMMM YYYY');
+        this.title.innerHTML = this.current.format('YYYY.MM');
     }
 
     Calendar.prototype.drawMonth = function() {
@@ -151,6 +209,12 @@ const DELIMITER = '9mVSv';
 
         //Day Name
         var name = createElement('div', 'day-name', day.format('ddd'));
+        if(day.day() === 0){
+            name.classList.add("sunday");
+        }
+        if(Object.keys(holidays).indexOf(day.format('YYYY-MM-DD')) !== -1) {
+            name.classList.add("holiday");
+        }
 
         //Day Number
         var number = createElement('div', 'day-number', day.format('DD'));
@@ -574,14 +638,14 @@ function initContents() {
                 appendContentAsDoc(contentData, key);
                 break;
             case "image/jpeg":
-                new appendContentAsImg(contentData, key);
+                new ContentAppenderForImg(contentData, key, timeline);
                 break;
         }
     }
 }
 
 //todo 複数人数が話したときの用意
-var appendContentAsDoc = function (contentData, key) {
+function appendContentAsDoc(contentData, key) {
     // var userName = groupJson["member"][contentData.whose]["name"];//todo 辞めた人間はどうする？？
     var json = JSON.parse(contentData.comment);
     var ymd = moment(contentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
@@ -605,41 +669,49 @@ var appendContentAsDoc = function (contentData, key) {
     }
 
     timeline.append(element);
-};
+}
 
-var appendContentAsImg = function(contentData, key) {
-    var ymd = moment(contentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
-    var userName = groupJson["member"][contentData.lastEditor]["name"];//todo 辞めた人間はどうする？？
-    var comment = contentData.comment.replace(/(?:\r\n|\r|\n)/g, "<br />");
-    var ele = createHtmlAsData(userName + " at " + ymd, contentData.contentName, comment);
+(function() {
+    function ContentAppenderForImg (contentData, key, timeline) {
+        this.mContentData = contentData;
+        this.mKey = key;
+        this.mTmeline = timeline;
 
-    timeline.append(ele);
-    var img = ele.find('.show-img img');
-    firebase.storage().ref("shareFile/" + groupKey +"/"+ key).getDownloadURL().then(function(url) {
-        // Insert url into an <img> tag to "download"
-        img.attr("src", url);
-    }).catch(function(error) {
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
-        //todo エラー処理
-        switch (error.code) {
-            case 'storage/object_not_found':
-                // File doesn't exist
-                break;
+        var ymd = moment(this.mContentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
+        var userName = groupJson["member"][this.mContentData.lastEditor]["name"];//todo 辞めた人間はどうする？？
+        var comment = this.mContentData.comment.replace(/(?:\r\n|\r|\n)/g, "<br />");
+        var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment);
 
-            case 'storage/unauthorized':
-                // User doesn't have permission to access the object
-                break;
+        this.mTmeline.append(ele);
+        var img = ele.find('.show-img img');
+        firebase.storage().ref("shareFile/" + groupKey +"/"+ this.mKey).getDownloadURL().then(function(url) {
+            // Insert url into an <img> tag to "download"
+            img.attr("src", url);
+        }).catch(function(error) {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            //todo エラー処理
+            switch (error.code) {
+                case 'storage/object_not_found':
+                    // File doesn't exist
+                    break;
 
-            case 'storage/canceled':
-                // User canceled the upload
-                break;
-            case 'storage/unknown':
-                // Unknown error occurred, inspect the server response
-                break;
-        }
-    });
-};
+                case 'storage/unauthorized':
+                    // User doesn't have permission to access the object
+                    break;
+
+                case 'storage/canceled':
+                    // User canceled the upload
+                    break;
+                case 'storage/unknown':
+                    // Unknown error occurred, inspect the server response
+                    break;
+            }
+        });
+    }
+
+    window.ContentAppenderForImg = ContentAppenderForImg;
+})();
 
 function createHtmlAsData(header, title, comment) {
     var ele =  $(
