@@ -836,3 +836,16 @@ function showAll() {
         }
     });
 }
+
+function getColor(num) {
+    switch(num){
+        case 0:
+            return "#C0504D";
+        case 1:
+            return "#9BBB59";
+        case 2:
+            return "#1F497D";
+        case 3:
+            return "#8064A2";
+    }
+}
