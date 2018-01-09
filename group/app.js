@@ -2,13 +2,16 @@ const postLoad = $('#post_load');
 const DEFAULT = 'DEFAULT';
 var progress = $('#progress');
 const dialog = $('dialog')[0];
+const timeline = $(".mdl-cell.mdl-cell--9-col");
 var asyncCount = 0;
 var defaultApp;
 var defaultDatabase;
 var user;
 var groupJson;
 var groupNodeJson;
+var groupKey;
 var isModalOpen = false;
+var imgUrlMap = {};
 
 function init() {
 
@@ -74,7 +77,7 @@ function onLoginSuccess() {
         dialogPolyfill.registerDialog(dialog);
     }
 
-    var groupKey = getGroupKey();
+    groupKey = getGroupKey();
     console.log("onLoginSuccess:", user, groupKey);
 
     defaultDatabase.ref("group/" + groupKey).once("value").then(function (snapshot) {
@@ -112,6 +115,7 @@ function onGetGroupSnap(snapshot) {
     console.log(groupJson);
     
     initUserList();
+    initContents();
 
     showAll();
 }
@@ -179,8 +183,101 @@ function initUserList() {
     });
 }
 
-function initContets() {
-    // todo 次ここから
+function initContents() {
+    if(!groupJson.contents){
+        //todo データがない旨表示
+        return;
+    }
+
+    for (var key in groupJson.contents){
+        if(!groupJson.contents.hasOwnProperty(key))
+            return;
+
+        var contentData = groupJson["contents"][key];
+        console.log(contentData);
+        switch (contentData.type){
+            case "image/jpeg":
+                new initContentsAsImg(contentData, key);
+                break;
+        }
+    }
+}
+
+var initContentsAsImg = function(contentData, key) {
+    var ele = createHtmlAsData();
+    var ymd = moment(contentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
+    var userName = groupJson["member"][contentData.lastEditor]["name"];//todo 辞めた人間はどうする？？
+    ele.find('.event_title').html(userName + " at " + ymd);
+    var liText = ele.find(".mdl-list__item-primary-content");
+    liText.eq(0).html(contentData.contentName);
+    if(contentData.comment){
+        liText.eq(1).html(contentData.comment);
+    }
+    timeline.append(ele);
+    var img = ele.find('.show-img img');
+    firebase.storage().ref("shareFile/" + groupKey +"/"+ key).getDownloadURL().then(function(url) {
+        // Insert url into an <img> tag to "download"
+        img.attr("src", url);
+    }).catch(function(error) {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+            case 'storage/object_not_found':
+                // File doesn't exist
+                break;
+
+            case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                break;
+
+            case 'storage/canceled':
+                // User canceled the upload
+                break;
+            case 'storage/unknown':
+                // Unknown error occurred, inspect the server response
+                break;
+        }
+    });
+};
+
+function createHtmlAsData() {
+    return $(
+        '<div class="card file">'+
+            '<div class="ele_header">'+
+                '<i class="fas fa-comments fa-lg ele-icon"></i>'+
+                '<span class="event_title">田村ピロシキ at 2017.4.5</span>'+
+                '<div class="mdl-layout-spacer mdl-pre-upgrade"></div>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">'+
+                    '<i class="fas fa-times"></i>'+
+                '</button>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">'+
+                    '<i class="fas fa-angle-down">'+'</i>'+
+                '</button>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">'+
+                    '<i class="fas fa-angle-up"></i>'+
+                '</button>'+
+            '</div>'+
+
+            '<div class="flex-box file-wrapper">'+
+                '<img class="file-icon" src="img/icon.png" alt="file-icon">'+
+                '<ul class="demo-list-three mdl-list mdl-pre-upgrade">'+
+                    '<li class="mdl-list__item mdl-list__item--three-line mdl-pre-upgrade">'+
+                        '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                            '<span>image.jpg</span>'+
+                            '<span class="mdl-list__item-text-body mdl-pre-upgrade">事務所の地図あげておきます</span>'+
+                        '</span>'+
+                        '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
+                            '<button id="hogehogeef" class="mdl-button mdl-js-button mdl-button--ico mdl-pre-upgrade">'+
+                                '<i class="material-icons">more_ver</i>'+
+                            '</button>'+
+                        '</span>'+
+                    '</li>'+
+                '</ul>'+
+            '</div>'+
+            '<div class="show-img">'+
+                '<img src="img/icon.png" alt="file-icon">'+
+            '</div>'+
+        '</div>');
 }
 
 function closeDialog() {

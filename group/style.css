@@ -296,7 +296,11 @@ body {
     margin-left: 24px;
 }
 
-/*--------------ディスカッション------------*/
+.card.user-list .mdl-list__item-primary-content span {
+    cursor: text;
+}
+
+    /*--------------ディスカッション------------*/
 .comments .card-cont {
 
 }
