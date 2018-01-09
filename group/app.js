@@ -11,6 +11,7 @@ var groupJson;
 var groupNodeJson;
 var groupKey;
 var isModalOpen = false;
+var calendar;
 const DELIMITER = '9mVSv';
 const holidays = {
     "2017-01-01": "元日",
@@ -77,6 +78,7 @@ const holidays = {
     var today = moment();
 
     function Calendar(selector, events) {
+        console.log(events);
         this.el = document.querySelector(selector);
         this.events = events;
         this.current = moment().date(1);
@@ -97,7 +99,7 @@ const holidays = {
         //Draw Month
         this.drawMonth();
 
-        this.drawLegend();
+        // this.drawLegend();
     }
 
     Calendar.prototype.drawHeader = function() {
@@ -128,10 +130,9 @@ const holidays = {
     Calendar.prototype.drawMonth = function() {
         var self = this;
 
-        this.events.forEach(function(ev) {
-            ev.date = self.current.clone().date(Math.random() * (29 - 1) + 1);
-        });
-
+        // this.events.forEach(function(ev) {
+        //     ev.date = self.current.clone().date(Math.random() * (29 - 1) + 1);
+        // });
 
         if(this.month) {
             this.oldMonth = this.month;
@@ -232,17 +233,32 @@ const holidays = {
 
     Calendar.prototype.drawEvents = function(day, element) {
         if(day.month() === this.current.month()) {
-            var todaysEvents = this.events.reduce(function(memo, ev) {
-                if(ev.date.isSame(day, 'day')) {
-                    memo.push(ev);
-                }
-                return memo;
-            }, []);
+            // var todaysEvents = this.events.reduce(function(memo, ev) {
+            //     if(ev.date.isSame(day, 'day')) {
+            //         memo.push(ev);
+            //     }
+            //     return memo;
+            // }, []);
+            //
+            // todaysEvents.forEach(function(ev) {
+            //     var evSpan = createElement('span', ev.color);
+            //     element.appendChild(evSpan);
+            // });
 
-            todaysEvents.forEach(function(ev) {
-                var evSpan = createElement('span', ev.color);
+            var monthlyData = this.events[day.format('YYYYMM')];
+            if(!monthlyData) return;
+
+            var dailyData = monthlyData[day.date()];
+            if(!dailyData) return;
+
+            for (var scheduleKey in dailyData) {
+                if(dailyData.hasOwnProperty(scheduleKey))
+                    continue;
+
+                var colorNum = "colorNum" + dailyData[scheduleKey]['colorNum'];
+                var evSpan = createElement('span', colorNum);
                 element.appendChild(evSpan);
-            });
+            }
         }
     }
 
@@ -263,12 +279,12 @@ const holidays = {
 
         var currentOpened = document.querySelector('.details');
 
-        //Check to see if there is an open detais box on the current row
+        //Check to see if there is an open details box on the current row
         if(currentOpened && currentOpened.parentNode === el.parentNode) {
             details = currentOpened;
             arrow = document.querySelector('.arrow');
         } else {
-            //Close the open events on differnt week row
+            //Close the open events on different week row
             //currentOpened && currentOpened.parentNode.removeChild(currentOpened);
             if(currentOpened) {
                 currentOpened.addEventListener('webkitAnimationEnd', function() {
@@ -298,12 +314,20 @@ const holidays = {
             el.parentNode.appendChild(details);
         }
 
-        var todaysEvents = this.events.reduce(function(memo, ev) {
-            if(ev.date.isSame(day, 'day')) {
-                memo.push(ev);
+        // var todaysEvents = this.events.reduce(function(memo, ev) {
+        //     if(ev.date.isSame(day, 'day')) {
+        //         memo.push(ev);
+        //     }
+        //     return memo;
+        // }, []);
+        var todaysEvents = null;
+        var monthlyData = this.events[day.format('YYYYMM')];
+        if(monthlyData) {
+            var dailyData = monthlyData[day.date()];
+            if(dailyData){
+                todaysEvents = dailyData;
             }
-            return memo;
-        }, []);
+        }
 
         this.renderEvents(todaysEvents, details);
 
@@ -315,23 +339,34 @@ const holidays = {
         var currentWrapper = ele.querySelector('.events');
         var wrapper = createElement('div', 'events in' + (currentWrapper ? ' new' : ''));
 
-        events.forEach(function(ev) {
-            var div = createElement('div', 'event');
-            var square = createElement('div', 'event-category ' + ev.color);
-            var span = createElement('span', '', ev.eventName);
+        // events.forEach(function(ev) {
+        //     // var div = createElement('div', 'event');
+        //     // var square = createElement('div', 'event-category ' + ev.color);
+        //     // var span = createElement('span', '', ev.eventName);
+        //     //
+        //     // div.appendChild(square);
+        //     // div.appendChild(span);
+        //     var chips = createChips(ev.eventName, ev.color);
+        //     wrapper.appendChild(chips);
+        // });
 
-            div.appendChild(square);
-            div.appendChild(span);
-            wrapper.appendChild(div);
-        });
+        if(events) {
+            for(var eventKey in events) {
+                if (!events.hasOwnProperty(eventKey)) continue;
+                var colorNum = 'colorNum' + events.colorNum;
+                var chips = createChips(events.title, colorNum);
+                wrapper.appendChild(chips);
+            }
 
-        if(!events.length) {
+        } else {
             var div = createElement('div', 'event empty');
             var span = createElement('span', '', 'No Events');
 
             div.appendChild(span);
             wrapper.appendChild(div);
         }
+
+        wrapper.appendChild(createChipAddBtn());
 
         if(currentWrapper) {
             currentWrapper.className = 'events out';
@@ -397,6 +432,23 @@ const holidays = {
         }
         return ele;
     }
+
+    function createChips(innerText, color) {
+        var ele = document.createElement('span');
+        ele.className = "mdl-chip mdl-chip--deletable mdl-pre-upgrade";
+        ele.style.backgroundColor = color;
+        ele.innerHTML =
+            '<span class="mdl-chip__text mdl-pre-upgrade mdl-color-text--white">'+ innerText +'</span>'+
+            '<a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>';
+        return ele;
+    }
+    
+    function createChipAddBtn() {
+        var ele = document.createElement('button');
+        ele.className = 'mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade';
+        ele.innerHTML = '<i class="material-icons">add_circle</i>';
+        return ele;
+    }
 }();
 
 // !function() {
@@ -417,7 +469,7 @@ const holidays = {
         { eventName: 'Ice Cream Night', calendar: 'Kids', color: 'yellow' },
 
         { eventName: 'Free Tamale Night', calendar: 'Other', color: 'green' },
-        { eventName: 'Bowling Team', calendar: 'Other', color: 'green' },
+        { eventName: 'Bowling Team', calendar: 'Other', color: '0' },
         { eventName: 'Teach Kids to Code', calendar: 'Other', color: 'green' },
         { eventName: 'Startup Weekend', calendar: 'Other', color: 'green' }
     ];
@@ -427,8 +479,6 @@ const holidays = {
         data.push(ev);
         calendar.renderEvents()
     }
-
-    var calendar = new Calendar('#calendar', data);
 // }();
 
 function onClickBtn() {
@@ -514,6 +564,11 @@ function onLoginSuccess() {
 
     defaultDatabase.ref("userData/" + user.uid + "/group").once("value").then(function (snapshot) {
        onGetSnapOfGroupNode(snapshot);
+    });
+
+    //カレンダーデータごっそりとっちゃう！すごいね！
+    defaultDatabase.ref('calendar/' + groupKey).once("value").then(function (snapshot) {
+        calendar = new Calendar('#calendar', snapshot.toJSON());
     });
 
     //init dialog

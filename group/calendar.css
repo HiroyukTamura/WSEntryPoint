@@ -232,6 +232,11 @@
   -webkit-animation-delay: .3s;
   -moz-animation-delay: .3s;
   animation-delay: .3s;
+
+  padding-right: 5px;
+  padding-left: 5px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .details.out .events {
@@ -299,10 +304,23 @@
   left: 14px;
 }
 
+#calendar .mdl-chip {
+  margin: 4px 5px;
+}
+
+#calendar .mdl-button {
+  margin: 4px 5px;
+}
+
 .entry.blue:after { background: rgba(156, 202, 235, 1); }
 .entry.orange:after { background: rgba(247, 167, 0, 1); }
 .entry.green:after { background: rgba(153, 198, 109, 1); }
 .entry.yellow:after { background: rgba(249, 233, 0, 1); }
+
+.entry.colorNum0 {background: #C0504D}
+.entry.colorNum0 {background: #9BBB59}
+.entry.colorNum0 {background: #1F497D}
+.entry.colorNum0 {background: #8064A2}
 
 /* Animations are cool!  */
 @-webkit-keyframes moveFromTopFade {
