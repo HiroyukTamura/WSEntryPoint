@@ -178,6 +178,10 @@ body {
     cursor: text;
 }
 
+#column2 {
+
+}
+
 /*------------Card Header--------------*/
 .card {
     margin: 10px 20px;
@@ -291,7 +295,10 @@ body {
 
 .card.user-list {
     flex: border-box;
-    min-width: 256px;
+    /*min-width: 256px;*/
+    width: 420px;
+    margin-right: 8px;
+    margin-left: 8px;
 }
 
 .card.user-list .mdl-list__item-secondary-action {
@@ -529,3 +536,5 @@ body {
     max-width: 80%;
     width: fit-content;
 }
+
+/*------------Calendar---------*/
