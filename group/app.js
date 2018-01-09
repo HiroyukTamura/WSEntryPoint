@@ -142,26 +142,24 @@ function initUserList() {
             '<li class="mdl-list__item mdl-pre-upgrade">'+
                 '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                     '<img src="'+ photoUrl +'" alt="user-image">'+
-                        '<span>'+ member.name +'</span>'+
+                    '<span>'+ member.name +'</span>'+
                 '</span>'+
                 '<span class="mdl-list__item-secondary-action">'+
-                    '<button class="mdl-button mdl-js-button mdl-button--icon helth-rec-btn" title="体調記録を表示">'+
-                        '<i class="material-icons">insert_chart</i>'+
-                    '</button>'+
-                    '<button id="'+ key +'" class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade">'+
-                        '<i class="material-icons">more_vert</i>'+
-                    '</button>'+
+                    '<span class="mdl-chip health-rec-btn">'+
+                        '<span class="mdl-chip__text">体調記録&nbsp;&nbsp;<i class="fas fa-external-link-square-alt fa-lg"></i></span>'+
+                    '</span>'+
                 '</span>'+
             '</li>'
         );
 
         if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
-            li.find('.mdl-list__item-secondary-action').remove();
-            li.css('background-color', "#f9e4d8");
-            li.attr("title", "招待中");
+            li.find('.health-rec-btn').removeClass('health-rec-btn').addClass('invited').find('.mdl-chip__text').html("招待中");
+            // li.find('.mdl-list__item-secondary-action').remove();
+            // li.find('div').addClass("mdl-badge").addClass('mdl-pre-upgrade').attr('data-badge', " ");
+            // li.attr("title", "招待中");
         } else {
 
-            li.find(".helth-rec-btn").on('click', function (ev) {
+            li.find(".health-rec-btn").on('click', function (ev) {
                 var userUid = sortedKeys[$(this).index()];
                 console.log('clicked uid:' + userUid);
             });
