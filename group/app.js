@@ -2,7 +2,7 @@ const postLoad = $('#post_load');
 const DEFAULT = 'DEFAULT';
 var progress = $('#progress');
 const dialog = $('dialog')[0];
-const timeline = $(".mdl-cell.mdl-cell--9-col");
+const timeline = $('#left-pain');
 var asyncCount = 0;
 var defaultApp;
 var defaultDatabase;
@@ -12,6 +12,7 @@ var groupNodeJson;
 var groupKey;
 var isModalOpen = false;
 var imgUrlMap = {};
+const DELIMITER = '9mVSv';
 
 function init() {
 
@@ -127,10 +128,13 @@ function initUserList() {
     var keys = Object.keys(groupJson.member);
     var img = $(dialog).find('img');
     var userName = $(dialog).find('h4');
+    var sortedKeys = [];
 
     keys.forEach(function (key) {
         if(key === DEFAULT || key === user.uid)
             return;
+
+        sortedKeys.push(key);
 
         var member = groupJson["member"][key];
         var photoUrl = avoidNullValue(member.photoUrl, 'img/icon.png');
@@ -141,8 +145,11 @@ function initUserList() {
                         '<span>'+ member.name +'</span>'+
                 '</span>'+
                 '<span class="mdl-list__item-secondary-action">'+
+                    '<button class="mdl-button mdl-js-button mdl-button--icon helth-rec-btn" title="体調記録を表示">'+
+                        '<i class="material-icons">insert_chart</i>'+
+                    '</button>'+
                     '<button id="'+ key +'" class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade">'+
-                        '<I class="material-icons">more_vert</i>'+
+                        '<i class="material-icons">more_vert</i>'+
                     '</button>'+
                 '</span>'+
             '</li>'
@@ -153,9 +160,15 @@ function initUserList() {
             li.css('background-color', "#f9e4d8");
             li.attr("title", "招待中");
         } else {
+
+            li.find(".helth-rec-btn").on('click', function (ev) {
+                var userUid = sortedKeys[$(this).index()];
+                console.log('clicked uid:' + userUid);
+            });
+
             var dropDown = $(
                 '<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" for="'+ key +'">'+
-                '<li class="mdl-menu__item mdl-pre-upgrade">グループから退会させる</li>'+
+                    '<li class="mdl-menu__item mdl-pre-upgrade">グループから退会させる</li>'+
                 '</ul>'
             );
 
@@ -196,23 +209,49 @@ function initContents() {
         var contentData = groupJson["contents"][key];
         console.log(contentData);
         switch (contentData.type){
+            case "document":
+                appendContentAsDoc(contentData, key);
+                break;
             case "image/jpeg":
-                new initContentsAsImg(contentData, key);
+                new appendContentAsImg(contentData, key);
                 break;
         }
     }
 }
 
-var initContentsAsImg = function(contentData, key) {
-    var ele = createHtmlAsData();
+//todo 複数人数が話したときの用意
+var appendContentAsDoc = function (contentData, key) {
+    // var userName = groupJson["member"][contentData.whose]["name"];//todo 辞めた人間はどうする？？
+    var json = JSON.parse(contentData.comment);
+    var ymd = moment(contentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
+    var element = null;
+
+    for(var i=0; i<json.eleList.length; i++){
+        console.log(json["eleList"][i]);
+        var comments = json["eleList"][i]["content"].replace(/(?:\r\n|\r|\n)/g, DELIMITER).split(DELIMITER);
+        var comment = '<p>'+ comments.join('</p><p>') +'</p>';
+        var userName = json["eleList"][i]['user']['name'];
+        var userUid = json["eleList"][i]['user']['userUid'];
+        var userPhotoUrl = avoidNullValue(json["eleList"][i]['user']['photoUrl'], 'img/icon.png');
+        if(i === 0) {
+            element = createHtmlAsDoc(contentData.contentName, ymd, userName, comment, userPhotoUrl);
+            setAsMyComment(element, userUid);
+        } else {
+            var cardCont = createHtmlAsDocFollower(userName, ymd, comment, userPhotoUrl);
+            setAsMyComment(cardCont, userUid);
+            element.append(cardCont);
+        }
+    }
+
+    timeline.append(element);
+};
+
+var appendContentAsImg = function(contentData, key) {
     var ymd = moment(contentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
     var userName = groupJson["member"][contentData.lastEditor]["name"];//todo 辞めた人間はどうする？？
-    ele.find('.event_title').html(userName + " at " + ymd);
-    var liText = ele.find(".mdl-list__item-primary-content");
-    liText.eq(0).html(contentData.contentName);
-    if(contentData.comment){
-        liText.eq(1).html(contentData.comment);
-    }
+    var comment = contentData.comment.replace(/(?:\r\n|\r|\n)/g, "<br />");
+    var ele = createHtmlAsData(userName + " at " + ymd, contentData.contentName, comment);
+
     timeline.append(ele);
     var img = ele.find('.show-img img');
     firebase.storage().ref("shareFile/" + groupKey +"/"+ key).getDownloadURL().then(function(url) {
@@ -221,6 +260,7 @@ var initContentsAsImg = function(contentData, key) {
     }).catch(function(error) {
         // A full list of error codes is available at
         // https://firebase.google.com/docs/storage/web/handle-errors
+        //todo エラー処理
         switch (error.code) {
             case 'storage/object_not_found':
                 // File doesn't exist
@@ -240,12 +280,12 @@ var initContentsAsImg = function(contentData, key) {
     });
 };
 
-function createHtmlAsData() {
-    return $(
+function createHtmlAsData(header, title, comment) {
+    var ele =  $(
         '<div class="card file">'+
             '<div class="ele_header">'+
                 '<i class="fas fa-comments fa-lg ele-icon"></i>'+
-                '<span class="event_title">田村ピロシキ at 2017.4.5</span>'+
+                '<span class="event_title">'+ header +'</span>'+
                 '<div class="mdl-layout-spacer mdl-pre-upgrade"></div>'+
                 '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">'+
                     '<i class="fas fa-times"></i>'+
@@ -260,17 +300,17 @@ function createHtmlAsData() {
 
             '<div class="flex-box file-wrapper">'+
                 '<img class="file-icon" src="img/icon.png" alt="file-icon">'+
-                '<ul class="demo-list-three mdl-list mdl-pre-upgrade">'+
-                    '<li class="mdl-list__item mdl-list__item--three-line mdl-pre-upgrade">'+
+                '<ul class="mdl-list mdl-pre-upgrade">'+
+                    '<li class="mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
                         '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                            '<span>image.jpg</span>'+
-                            '<span class="mdl-list__item-text-body mdl-pre-upgrade">事務所の地図あげておきます</span>'+
+                            '<span>'+ title +'</span>'+
+                            '<span class="mdl-list__item-sub-title mdl-pre-upgrade">' +comment+ '</span>'+
                         '</span>'+
-                        '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
-                            '<button id="hogehogeef" class="mdl-button mdl-js-button mdl-button--ico mdl-pre-upgrade">'+
-                                '<i class="material-icons">more_ver</i>'+
-                            '</button>'+
-                        '</span>'+
+                        // '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
+                        //     '<button id="hogehogeef" class="mdl-button mdl-js-button mdl-button--ico mdl-pre-upgrade">'+
+                        //         '<i class="material-icons">more_ver</i>'+
+                        //     '</button>'+
+                        // '</span>'+
                     '</li>'+
                 '</ul>'+
             '</div>'+
@@ -278,6 +318,85 @@ function createHtmlAsData() {
                 '<img src="img/icon.png" alt="file-icon">'+
             '</div>'+
         '</div>');
+
+    if(!comment){
+        ele.find('.mdl-list__item-sub-title').remove();
+        ele.find(".mdl-list__item--two-line").removeClass('mdl-list__item--two-line');
+    }
+
+    return ele;
+}
+
+function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
+    return $(
+        '<div class="card comments">'+
+            '<div class="ele_header">'+
+                '<i class="fas fa-comments fa-lg ele-icon"></i>'+
+                '<span class="event_title">'+ title +'</span>'+
+                '<div class="mdl-layout-spacer"></div>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">'+
+                    '<i class="fas fa-times">'+'</i>'+
+                '</button>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button">'+
+                    '<i class="fas fa-angle-down">'+'</i>'+
+                '</button>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">'+
+                    '<i class="fas fa-angle-up">'+'</i>'+
+                '</button>'+
+            '</div>'+
+
+            '<hr class="seem">'+
+
+            '<div class="card-cont">'+
+                '<div class="comment-first space-horizontal">'+
+                    '<ul class="demo-list-three mdl-list">'+
+                        '<li class="mdl-list__item mdl-list__item--two-line">'+
+                            '<span class="mdl-list__item-primary-content">'+
+                                '<img src="'+ photoUrl +'" alt="userA" class="mdl-list__item-icon">'+
+                                '<span>'+ whose +'</span>'+
+                                '<span class="mdl-list__item-sub-title">'+ ymd +'</span>'+
+                            '</span>'+
+                        '</li>'+
+                    '</ul>'+
+                '<div class="comment-cont">'+ comment +'</div>'+
+            '</div>'+
+
+            // '<hr class="seem">'+
+
+            // '<div class="comment-follow">'+
+            //     '<header class="flex-box">'+
+            //         '<img src="img/icon.png" alt="userA" class="mdl-list__item-icon author-left">'+
+            //         '<div>'+
+            //             '<p class="comment-author">田村ピロシキ</p>'+
+            //             '<p class="comment-time">2017.11.15</p>'+
+            //         '</div>'+
+            //     '</header>'+
+            // '<div class="comment-cont">'+
+            //     '<p>流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、</p>'+
+            // '</div>'+
+        '</div>');
+}
+
+function createHtmlAsDocFollower(userName, ymd, comment, userPhotoUrl) {
+    return $(
+        '<div>'+
+            '<hr class="seem">'+
+            '<div class="comment-follow">'+
+            '<header class="flex-box">'+
+                '<img src="'+ userPhotoUrl +'" alt="userA" class="mdl-list__item-icon author-left">'+
+                '<div>'+
+                    '<p class="comment-author">'+ userName +'</p>'+
+                    '<p class="comment-time">'+ ymd +'</p>'+
+                '</div>'+
+            '</header>'+
+            '<div class="comment-cont">'+ comment +'</div>'+
+        '</div>');
+}
+
+function setAsMyComment(element, userUid) {
+    if (userUid === user.uid) {
+        element.find('.comment-first, comment-follow').addClass('author-right');
+    }
 }
 
 function closeDialog() {

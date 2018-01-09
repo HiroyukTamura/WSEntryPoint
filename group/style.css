@@ -174,6 +174,10 @@ body {
     min-width: 600px;
 }
 
+.mdl-list__item-primary-content span {
+    cursor: text;
+}
+
 /*------------Card Header--------------*/
 .card {
     margin: 10px 20px;
@@ -285,19 +289,16 @@ body {
 }
 
 .card.user-list {
-    margin-right: 0;
-    margin-left: 0;
     flex: border-box;
-    width: fit-content;
     min-width: 256px;
 }
 
-.card.user-list .mdl-list__item button {
+.card.user-list .mdl-list__item-secondary-action {
     margin-left: 24px;
 }
 
-.card.user-list .mdl-list__item-primary-content span {
-    cursor: text;
+.card.user-list .mdl-button {
+    color: #66615b;
 }
 
     /*--------------ディスカッション------------*/
@@ -402,6 +403,12 @@ body {
     background-color: #f9e4d8;
 }
 
+.comment-first.author-right {
+    -webkit-flex-direction: row-reverse; /* Safari */
+    flex-direction:         row-reverse;
+    background-color: #f9e4d8;
+}
+
 .comment-follow .comment-time {
     color: rgba(0,0,0,.54);
 }
@@ -432,6 +439,14 @@ body {
 
 .file .mdl-list {
     flex: 1;
+}
+
+.file .mdl-list__item-primary-content {
+    height: auto;
+}
+
+.file .mdl-list__item-sub-title {
+    margin-top: 4px;
 }
 
 .show-img{
