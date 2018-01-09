@@ -392,16 +392,17 @@
             </div>
         </div>
 
-        <dialog class="mdl-dialog">
-            <h4 class="mdl-dialog__title">Allow data collection?</h4>
+        <dialog class="mdl-dialog" id="add-group-dialog">
             <div class="mdl-dialog__content">
-                <p>
-                    Allowing us to collect data will let us get you the information you want faster.
-                </p>
+                <div id="dialog-img-w">
+                    <img alt="group-image">
+                    <h4></h4>
+                    <p>このユーザを本当に退会させますか？</p>
+                </div>
             </div>
             <div class="mdl-dialog__actions">
-                <button type="button" class="mdl-button" id="positive-btn">Agree</button>
-                <button type="button" class="mdl-button close">Disagree</button>
+                <button type="button" class="mdl-button" id="add-group-btn">退会させる</button>
+                <button type="button" class="mdl-button close">キャンセル</button>
             </div>
         </dialog>
 
@@ -421,6 +422,7 @@
         <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js"></script>
+        <script src="https://unpkg.com/tippy.js@2.0.8/dist/tippy.all.min.js"></script>
 
         <script src="app.js"></script>
 

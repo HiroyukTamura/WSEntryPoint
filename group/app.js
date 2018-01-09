@@ -8,6 +8,7 @@ var defaultDatabase;
 var user;
 var groupJson;
 var groupNodeJson;
+var isModalOpen = false;
 
 function init() {
 
@@ -86,12 +87,18 @@ function onLoginSuccess() {
 
     //init dialog
     $(dialog).find(".close").on("click", function (e) {
-        dialog.close();
+        closeDialog();
     });
     $(dialog).find('#positive-btn').on("click", function (e) {
         console.log("click", "positive-btn");
-        dialog.close();
+        closeDialog();
     });
+    window.onclick = function(event) {
+        console.log("window.onclick");
+        if (event.target == dialog) {
+            closeDialog();
+        }
+    }
 }
 
 function onGetGroupSnap(snapshot) {
@@ -103,10 +110,19 @@ function onGetGroupSnap(snapshot) {
 
     groupJson = snapshot.toJSON();
     console.log(groupJson);
+    
+    initUserList();
 
+    showAll();
+}
+
+function initUserList() {
+    //userListを整備
     var userList = $('.card.user-list .mdl-list');
     var dpList = $('#dp-list');
     var keys = Object.keys(groupJson.member);
+    var img = $(dialog).find('img');
+    var userName = $(dialog).find('h4');
 
     keys.forEach(function (key) {
         if(key === DEFAULT || key === user.uid)
@@ -118,7 +134,7 @@ function onGetGroupSnap(snapshot) {
             '<li class="mdl-list__item mdl-pre-upgrade">'+
                 '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                     '<img src="'+ photoUrl +'" alt="user-image">'+
-                    '<span>'+ member.name +'</span>'+
+                        '<span>'+ member.name +'</span>'+
                 '</span>'+
                 '<span class="mdl-list__item-secondary-action">'+
                     '<button id="'+ key +'" class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade">'+
@@ -127,24 +143,54 @@ function onGetGroupSnap(snapshot) {
                 '</span>'+
             '</li>'
         );
-        userList.append(li);
 
-        var dropDown = $(
-            '<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" for="'+ key +'">'+
+        if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
+            li.find('.mdl-list__item-secondary-action').remove();
+            li.css('background-color', "#f9e4d8");
+            li.attr("title", "招待中");
+        } else {
+            var dropDown = $(
+                '<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" for="'+ key +'">'+
                 '<li class="mdl-menu__item mdl-pre-upgrade">グループから退会させる</li>'+
-            '</ul>'
-        );
+                '</ul>'
+            );
 
-        dropDown.find('.mdl-menu__item').on("click", function (e) {
-            console.log('click', dialog.showModal);
-            if(!dialog.showModal)
-                dialog.showModal();
-        });
+            dropDown.find('.mdl-menu__item').on("click", function (e) {
+                if(!isModalOpen){
+                    var index = $(this).index();
+                    for(index; index < keys.length; index++){
+                        if(keys[index] === DEFAULT || keys[index] ===  user.uid)
+                            continue;
+                        break;
+                    }
+                    var photoUrl = groupJson['member'][keys[index]]['photoUrl'];
+                    img.attr('src', avoidNullValue(photoUrl, 'img/icon.png'));
+                    var userNameVal = groupJson['member'][keys[index]]['name'];
+                    userName.html(avoidNullValue(userNameVal, "ユーザ名未設定"));
 
-        dpList.append(dropDown);
+                    openDialog();
+                }
+            });
+
+            dpList.append(dropDown);
+        }
+
+        userList.append(li);
     });
+}
 
-    showAll();
+function initContets() {
+    // todo 次ここから
+}
+
+function closeDialog() {
+    dialog.close();
+    isModalOpen = false;
+}
+
+function openDialog() {
+    isModalOpen = true;
+    dialog.showModal();
 }
 
 function getGroupKey() {
@@ -201,4 +247,15 @@ function showAll() {
     }
 
     setElementAsMdl($('body'));
+
+    tippy('[title]', {
+        updateDuration: 0,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: {
+                    enabled: false
+                }
+            }
+        }
+    });
 }

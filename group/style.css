@@ -281,7 +281,7 @@ body {
 .card.user-list img{
     width: 40px;
     height: 40px;
-    margin-right: 32px;
+    margin-right: 24px;
 }
 
 .card.user-list {
@@ -290,6 +290,10 @@ body {
     flex: border-box;
     width: fit-content;
     min-width: 256px;
+}
+
+.card.user-list .mdl-list__item button {
+    margin-left: 24px;
 }
 
 /*--------------ディスカッション------------*/
@@ -459,4 +463,34 @@ body {
 
 .file-wrapper {
     margin-top: 8px;
+}
+
+/*--------dialog------------*/
+.mdl-dialog__title {
+    font-size: 14px;
+    color: #757575;
+}
+
+#dialog-img-w {
+    width: 100%;
+    text-align: center;
+    object-fit: contain;
+}
+
+.mdl-dialog__content img{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.mdl-dialog__content h4 {
+    font-size: 18px;
+    margin: 8px 0 8px 0;
+}
+
+.mdl-dialog {
+    min-width: 280px;
+    max-width: 80%;
+    width: fit-content;
 }

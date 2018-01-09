@@ -22,4 +22,6 @@
 * Web使用者はどうやって友人を登録する？Idをつけるべきでは？
 
 * 謎の横スクロール問題
+* isCheckedなのかisAddedなのか問題
+* groupのcontentsにtimeStampが必要なのでは？？
 
