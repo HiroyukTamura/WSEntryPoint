@@ -233,17 +233,6 @@ const holidays = {
 
     Calendar.prototype.drawEvents = function(day, element) {
         if(day.month() === this.current.month()) {
-            // var todaysEvents = this.events.reduce(function(memo, ev) {
-            //     if(ev.date.isSame(day, 'day')) {
-            //         memo.push(ev);
-            //     }
-            //     return memo;
-            // }, []);
-            //
-            // todaysEvents.forEach(function(ev) {
-            //     var evSpan = createElement('span', ev.color);
-            //     element.appendChild(evSpan);
-            // });
 
             var monthlyData = this.events[day.format('YYYYMM')];
             if(!monthlyData) return;
@@ -251,9 +240,13 @@ const holidays = {
             var dailyData = monthlyData[day.date()];
             if(!dailyData) return;
 
+            console.log(dailyData);
+
             for (var scheduleKey in dailyData) {
-                if(dailyData.hasOwnProperty(scheduleKey))
+                if(!dailyData.hasOwnProperty(scheduleKey))
                     continue;
+
+                console.log("ほげほげ");
 
                 var colorNum = "colorNum" + dailyData[scheduleKey]['colorNum'];
                 var evSpan = createElement('span', colorNum);
@@ -351,16 +344,17 @@ const holidays = {
         // });
 
         if(events) {
+            console.log(events);
             for(var eventKey in events) {
                 if (!events.hasOwnProperty(eventKey)) continue;
-                var colorNum = 'colorNum' + events.colorNum;
-                var chips = createChips(events.title, colorNum);
+                var colorNum = 'colorNum' + events[eventKey]["colorNum"];
+                var chips = createChips(events[eventKey]["title"], colorNum);
                 wrapper.appendChild(chips);
             }
 
         } else {
             var div = createElement('div', 'event empty');
-            var span = createElement('span', '', 'No Events');
+            var span = createElement('span', '', 'スケジュールがありません');
 
             div.appendChild(span);
             wrapper.appendChild(div);
@@ -435,8 +429,7 @@ const holidays = {
 
     function createChips(innerText, color) {
         var ele = document.createElement('span');
-        ele.className = "mdl-chip mdl-chip--deletable mdl-pre-upgrade";
-        ele.style.backgroundColor = color;
+        ele.className = "mdl-chip mdl-chip--deletable mdl-pre-upgrade " + color;
         ele.innerHTML =
             '<span class="mdl-chip__text mdl-pre-upgrade mdl-color-text--white">'+ innerText +'</span>'+
             '<a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>';
@@ -445,7 +438,8 @@ const holidays = {
     
     function createChipAddBtn() {
         var ele = document.createElement('button');
-        ele.className = 'mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade';
+        ele.className = 'mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade schedule-add';
+        ele.setAttribute('title', 'スケジュールを追加');
         ele.innerHTML = '<i class="material-icons">add_circle</i>';
         return ele;
     }

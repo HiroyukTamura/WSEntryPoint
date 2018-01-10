@@ -261,6 +261,13 @@
 
 .event.empty {
   /*color: #eee;*/
+  height: 32px;
+  margin: 4px;
+  font-size: 14px;
+  vertical-align: middle;
+  line-height: 32px;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .event-category {
@@ -310,6 +317,7 @@
 
 #calendar .mdl-button {
   margin: 4px 5px;
+  color: rgba(160, 159, 160, 1);
 }
 
 .entry.blue:after { background: rgba(156, 202, 235, 1); }
@@ -317,10 +325,10 @@
 .entry.green:after { background: rgba(153, 198, 109, 1); }
 .entry.yellow:after { background: rgba(249, 233, 0, 1); }
 
-.entry.colorNum0 {background: #C0504D}
-.entry.colorNum0 {background: #9BBB59}
-.entry.colorNum0 {background: #1F497D}
-.entry.colorNum0 {background: #8064A2}
+.colorNum0 {background: #C0504D}
+.colorNum1 {background: #9BBB59}
+.colorNum2 {background: #1F497D}
+.colorNum3 {background: #8064A2}
 
 /* Animations are cool!  */
 @-webkit-keyframes moveFromTopFade {
