@@ -176,21 +176,21 @@ const holidays = {
 
         if(!dayOfWeek) { return; }
 
-        clone.subtract('days', dayOfWeek+1);
+        clone.subtract(dayOfWeek+1, 'days');
 
         for(var i = dayOfWeek; i > 0 ; i--) {
-            this.drawDay(clone.add('days', 1));
+            this.drawDay(clone.add(1, 'days'));
         }
     }
 
     Calendar.prototype.fowardFill = function() {
-        var clone = this.current.clone().add('months', 1).subtract('days', 1);
+        var clone = this.current.clone().add(1, 'months').subtract(1, 'days');
         var dayOfWeek = clone.day();
 
         if(dayOfWeek === 6) { return; }
 
         for(var i = dayOfWeek; i < 6 ; i++) {
-            this.drawDay(clone.add('days', 1));
+            this.drawDay(clone.add(1, 'days'));
         }
     }
 
@@ -199,7 +199,7 @@ const holidays = {
 
         while(clone.month() === this.current.month()) {
             this.drawDay(clone);
-            clone.add('days', 1);
+            clone.add(1, 'days');
         }
     }
 
@@ -367,9 +367,9 @@ const holidays = {
                         if($('.events.in').children().length === 1){
                             $(createEmptySpan()).insertBefore($('#add-schedule'));
                         }
-                        //todo 「削除しました」的なメッセージをだすべき
                     }).catch(function (err) {
                         console.log('foirebase err', err);
+                        showNotification('処理に失敗しました', 'danger');
                     });
                 });
                 wrapper.appendChild(chips);
@@ -627,19 +627,23 @@ function onLoginSuccess() {
         if(isModalOpen === dialogAddSch){
             addSchedule();
         } else if (isModalOpen === dialogRemoveContents) {
+
             var scheme = makeRefScheme(['group', groupKey, "contents", removeContentsKey]);
             defaultDatabase.ref(scheme).set(null).then(function (value) {
                 delete groupJson['contents'][removeContentsKey];
                 $('.card[key="' + removeContentsKey + '"]').remove();
             }).catch(function (err) {
-                //todo エラー処理
+                showNotification('処理に失敗しました', 'danger');
                 console.log(err);
             });
+
         } else if (isModalOpen === dialogExclude){
             //todo ユーザ削除動作
         } else if (isModalOpen === dialogEditComment) {
+
             var schemeE = makeRefScheme(['group', groupKey, "contents", removeContentsKey, "comment"]);
             var inputVal = $('#edit-comment-dialog').val();
+
             defaultDatabase.ref(schemeE).set(inputVal).then(function (value) {
                 console.log("よろしい");
                 var card = $('.file[key="'+ removeContentsKey +'"]');
@@ -652,11 +656,11 @@ function onLoginSuccess() {
                     card.find('.mdl-list__item').addClass('mdl-list__item--two-line');
                     // insertEle.append(card.find('.mdl-list__item-primary-content'));
                     setElementAsMdl(insertEle);
-                    console.log("こっち");
                 }
                 groupJson['contents'][removeContentsKey]['comment'] = inputVal;
+
             }).catch(function (err) {
-                //todo エラー処理
+                showNotification('処理に失敗しました', 'danger');
                 console.log(err);
             });
         }
@@ -727,6 +731,7 @@ function addSchedule() {
 
     }).catch(function (err) {
         console.log('firebase update err', err);
+        showNotification('処理に失敗しました', 'danger');
     });
 }
 
@@ -1142,9 +1147,6 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
                 '<i class="fas fa-comments fa-lg ele-icon"></i>'+
                 '<span class="event_title">'+ title +'</span>'+
                 '<div class="mdl-layout-spacer"></div>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button mdl-pre-upgrade">'+
-                    '<i class="fas fa-comment"></i>'+
-                '</button>'+
                 '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">'+
                     '<i class="fas fa-times"></i>'+
                 '</button>'+
@@ -1272,20 +1274,35 @@ function onGetSnapOfGroupNode(snapshot) {
     groupNodeJson = snapshot.toJSON();
     var ul = $("#group-dp-ul");
     var count = 0;
-    Object.values(groupNodeJson).forEach(function (value) {
-        if(value === DEFAULT || !value.added)
+    console.log(groupNodeJson);
+    var liGroupKeys = [];
+    Object.keys(groupNodeJson).forEach(function (key) {
+        if(key === DEFAULT || !groupNodeJson[key]["added"])//todo 招待中のグループはどうする？
             return;
 
-        $('<li>', {
-            class: "mdl-menu__item"
-        }).html(value.name).appendTo(ul);
+        if(key === groupKey) {
+            $('.mdl-layout__header-row .mdl-layout-title').html(groupNodeJson[key]['name']);
+            $('.mdl-layout__header-row img').attr('src', avoidNullValue(groupNodeJson[key]['photoUrl'], 'img/icon.png'));
+        } else {
+            var li = $('<li>', {
+                class: "mdl-menu__item"
+            }).html(value.name);
 
-        count++;
+            li.on('click', function (ev) {
+                var index = $(this).index();
+                window.location.href = 'WSEntryPoint/group/index.html?key=' + liGroupKeys[index];//todo ここリリース時は変更してね
+                return false;
+            });
+
+            li.appendTo(ul);
+
+            liGroupKeys.push(key);
+            count++;
+        }
     });
 
-    if(count !== 0){
-        $("#group-drp-btn").css('display', '');
-    }
+    if(count === 0)
+        $("#group-drp-btn").hide();
 
     showAll();
 }
@@ -1318,5 +1335,14 @@ function showAll() {
                 }
             }
         }
+    });
+}
+
+function showNotification(msg, type) {
+    $.notify({
+        title: '<i class="fas fa-info-circle fa-lg"></i>',
+        message: '  ' + msg
+    },{
+        type: type
     });
 }
