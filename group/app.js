@@ -473,9 +473,9 @@ const holidays = {
     
     function createMonthBtn(direction) {
         var btn = $('<button>', {
-            class: "mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade"
+            class: "mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade " + direction
         });
-        btn.html('<i class="fas fa-caret-'+ direction + " "  + direction +'"></i>');
+        btn.html('<i class="fas fa-caret-'+ direction +'"></i>');
         return btn[0];
     }
 }();
