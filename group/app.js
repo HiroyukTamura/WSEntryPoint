@@ -1,7 +1,15 @@
 const postLoad = $('#post_load');
 const DEFAULT = 'DEFAULT';
 var progress = $('#progress');
+
+/////////dialogまわり////////
 const dialog = $('dialog')[0];
+const dialogAddSch = $('#add-sch-cnt');
+const dialogExclude = $('#dialog-img-w');
+const dialogPositibeBtn = $('#add-group-btn');
+var clickedColor = 0;
+var inputVal = null;
+
 const timeline = $('#left-pain');
 var asyncCount = 0;
 var defaultApp;
@@ -210,15 +218,20 @@ const holidays = {
 
         //Day Name
         var name = createElement('div', 'day-name', day.format('ddd'));
-        if(day.day() === 0){
-            name.classList.add("sunday");
-        }
-        if(Object.keys(holidays).indexOf(day.format('YYYY-MM-DD')) !== -1) {
-            name.classList.add("holiday");
-        }
 
         //Day Number
         var number = createElement('div', 'day-number', day.format('DD'));
+
+        if(day.month() === this.current.month()) {
+            if(day.day() === 0){
+                name.classList.add("sunday");
+                number.classList.add("sunday");
+            }
+            if(Object.keys(holidays).indexOf(day.format('YYYY-MM-DD')) !== -1) {
+                name.classList.add("holiday");
+                number.classList.add("holiday");
+            }
+        }
 
 
         //Events
@@ -361,6 +374,7 @@ const holidays = {
         }
 
         wrapper.appendChild(createChipAddBtn());
+        wrapper.appendChild(createTooltip());
 
         if(currentWrapper) {
             currentWrapper.className = 'events out';
@@ -439,8 +453,17 @@ const holidays = {
     function createChipAddBtn() {
         var ele = document.createElement('button');
         ele.className = 'mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade schedule-add';
-        ele.setAttribute('title', 'スケジュールを追加');
+        // ele.setAttribute('title', 'スケジュールを追加');
+        ele.setAttribute('id', 'add-schedule');
         ele.innerHTML = '<i class="material-icons">add_circle</i>';
+        return ele;
+    }
+
+    function createTooltip() {
+        var ele = document.createElement('div');
+        ele.className = "mdl-tooltip mdl-pre-upgrade";
+        ele.setAttribute("data-mdl-for", "add-schedule");
+        ele.innerHTML = 'スケジュールを追加';
         return ele;
     }
 }();
@@ -562,23 +585,52 @@ function onLoginSuccess() {
 
     //カレンダーデータごっそりとっちゃう！すごいね！
     defaultDatabase.ref('calendar/' + groupKey).once("value").then(function (snapshot) {
-        calendar = new Calendar('#calendar', snapshot.toJSON());
+        if(snapshot.exists()){
+            calendar = new Calendar('#calendar', snapshot.toJSON());
+        } else {
+            //todo エラー処理
+        }
+        showAll();
     });
 
     //init dialog
     $(dialog).find(".close").on("click", function (e) {
         closeDialog();
     });
-    $(dialog).find('#positive-btn').on("click", function (e) {
-        console.log("click", "positive-btn");
+    $(dialog).find('#add-group-btn').on("click", function (e) {
+        console.log("click", "add-group-btn");
+        if(isModalOpen === dialogAddSch){
+            addSchedule();
+        }
         closeDialog();
     });
+
     window.onclick = function(event) {
-        console.log("window.onclick");
         if (event.target == dialog) {
             closeDialog();
+        } else if($(event.target).hasClass('schedule-add') || $(event.target).parent().hasClass('schedule-add')){
+            console.log("schedule-add");
+            openDialog(dialogAddSch);
         }
-    }
+    };
+
+    $(".modal-circle-i").click(function () {
+        $(".modal-circle-check.show").removeClass("show");
+        $(this).next().addClass("show");
+        clickedColor = $(this).parent().index();
+    });
+
+    $('#modal_input').keyup(function () {
+        inputVal = $(this).val();
+        if(inputVal && dialogPositibeBtn.attr('disabled')){
+            dialogPositibeBtn.removeAttr('disabled');
+        }
+    })
+}
+
+function addSchedule() {
+    console.log(clickedColor, inputVal, calendar.current.format('YYYYMMDD'));
+    // todo 整備
 }
 
 function onGetGroupSnap(snapshot) {
@@ -647,20 +699,18 @@ function initUserList() {
             );
 
             dropDown.find('.mdl-menu__item').on("click", function (e) {
-                if(!isModalOpen){
-                    var index = $(this).index();
-                    for(index; index < keys.length; index++){
-                        if(keys[index] === DEFAULT || keys[index] ===  user.uid)
-                            continue;
-                        break;
-                    }
-                    var photoUrl = groupJson['member'][keys[index]]['photoUrl'];
-                    img.attr('src', avoidNullValue(photoUrl, 'img/icon.png'));
-                    var userNameVal = groupJson['member'][keys[index]]['name'];
-                    userName.html(avoidNullValue(userNameVal, "ユーザ名未設定"));
-
-                    openDialog();
+                var index = $(this).index();
+                for(index; index < keys.length; index++){
+                    if(keys[index] === DEFAULT || keys[index] ===  user.uid)
+                        continue;
+                    break;
                 }
+                var photoUrl = groupJson['member'][keys[index]]['photoUrl'];
+                img.attr('src', avoidNullValue(photoUrl, 'img/icon.png'));
+                var userNameVal = groupJson['member'][keys[index]]['name'];
+                userName.html(avoidNullValue(userNameVal, "ユーザ名未設定"));
+
+                openDialog(dialogExclude);
             });
 
             dpList.append(dropDown);
@@ -886,8 +936,23 @@ function closeDialog() {
     isModalOpen = false;
 }
 
-function openDialog() {
-    isModalOpen = true;
+function openDialog(toShowEle) {
+    if(isModalOpen)
+        return;
+
+    isModalOpen = toShowEle;
+    toShowEle.css('display', 'inline');
+
+    if(toShowEle === dialogAddSch){
+        dialogPositibeBtn.html('追加');
+        dialogPositibeBtn.attr('disabled', '');
+        dialogExclude.css('display', 'none');
+        $('#modal_input').val('');
+    } else if (toShowEle === dialogExclude){
+        dialogPositibeBtn.html('退会させる');
+        dialogAddSch.css('display', 'none');
+    }
+
     dialog.showModal();
 }
 
@@ -939,7 +1004,8 @@ function setElementAsMdl(clone) {
 }
 
 function showAll() {
-    if(asyncCount !== 1){
+    console.log("showAll()");
+    if(asyncCount !== 2){
         asyncCount++;
         return;
     }
@@ -956,17 +1022,4 @@ function showAll() {
             }
         }
     });
-}
-
-function getColor(num) {
-    switch(num){
-        case 0:
-            return "#C0504D";
-        case 1:
-            return "#9BBB59";
-        case 2:
-            return "#1F497D";
-        case 3:
-            return "#8064A2";
-    }
 }

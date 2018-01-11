@@ -325,10 +325,10 @@
 .entry.green:after { background: rgba(153, 198, 109, 1); }
 .entry.yellow:after { background: rgba(249, 233, 0, 1); }
 
-.colorNum0 {background: #C0504D}
-.colorNum1 {background: #9BBB59}
-.colorNum2 {background: #1F497D}
-.colorNum3 {background: #8064A2}
+.colorNum0 {background: #D79599}
+.colorNum1 {background: #C5D79D}
+.colorNum2 {background: #5C8BBF}
+.colorNum3 {background: #AEA3C5}
 
 /* Animations are cool!  */
 @-webkit-keyframes moveFromTopFade {
