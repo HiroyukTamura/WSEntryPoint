@@ -4,6 +4,7 @@ var masterJson;
 var modalDataNum;
 var modalTipNum;
 var clickedColor;
+var loginedUser;
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
@@ -28,12 +29,12 @@ function init() {
     };
     var defaultApp = firebase.initializeApp(config);
     var defaultDatabase = defaultApp.database();
-    var uid = getUid();
 
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
+            loginedUser = user;
 
-            defaultDatabase.ref("/userData/" + uid + "/template").once('value').then(function(snapshot) {
+            defaultDatabase.ref("/userData/" + user.uid + "/template").once('value').then(function(snapshot) {
                 masterJson = [];
                 snapshot.forEach(function (childSnap) {
                     masterJson.push(childSnap.toJSON());
@@ -59,7 +60,8 @@ function init() {
 
                 for (var i=0; i<masterJson.length; i++){
                     var childSnap = masterJson[i];
-                    var doc = createElementWithHeader(i, childSnap["dataType"]);
+                    var cardWrapper = createElementWithHeader(i, childSnap["dataType"]);
+                    var doc = cardWrapper.children[1];
 
                     switch (childSnap["dataType"]){
                         case 0:
@@ -84,7 +86,7 @@ function init() {
                     }
 
                     setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
-                    document.getElementById('card_wrapper').appendChild(doc);
+                    document.getElementById('card_wrapper').appendChild(cardWrapper);
 
                 }
 
@@ -153,7 +155,7 @@ function init() {
                 $('#post_load').css("display", "inline");
             });
 
-            var url = "../analytics/index.html?uid=" + uid;
+            var url = "../analytics/index.html?uid=" + user.uid;
             $('.mdl-navigation__link').eq(2).attr("href", url);
 
         } else {
@@ -176,11 +178,6 @@ function initCardDragging() {
         el.setAttribute("data-order", currentPos);
         cards.eq(prevPos).attr("data-order", prevPos);
     });
-}
-
-function getUid() {
-    var url = new URL(window.location.href);
-    return url.searchParams.get("uid");
 }
 
 function getColor(num) {
@@ -661,9 +658,10 @@ function setElementAsMdl(clone) {
 //region *****************html生成系**************
 
 function createElementWithHeader(dataNum, dataType) {
-    var doc = document.createElement('div');
-    doc.setAttribute("class", "card mix");
-    doc.setAttribute("data-order", dataNum.toString());
+    var doc = $('<div>', {
+        class: "card mix",
+        "data-order": dataNum.toString()
+    });
     var id = "card_title_" + dataNum;
     var pre = '<span class="ele_header">' +
                     '<i class="fas fa-bars drag_bars"></i>';
@@ -685,36 +683,26 @@ function createElementWithHeader(dataNum, dataType) {
                 '</span>';
 
     if(dataType === 1){
-        doc.innerHTML = pre + span + post;
+        doc.html(pre + span + post);
     } else {
-        doc.innerHTML = pre + input + post;
+        doc.html(pre + input + post);
     }
 
+    var wrapper = $('<div>', {
+        class: 'card-wrapper-i',
+        "data-order": dataNum.toString()
+    });
 
-    // doc.innerHTML =
-    //     '<span class="ele_header">' +
-    //         '<i class="fas fa-bars drag_bars"></i>'+
-    //
-    //         '<span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title">' +
-    //             '<input class="mdl-textfield__input input_eve mdl-pre-upgrade card_title_input" type="text" id="'+ id +'">' +
-    //             '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ id +'"></label>' +
-    //         '</span>' +
-    //
-    //         '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
-    //             '<i class="fas fa-times mdl-pre-upgrade"></i>' +
-    //         '</button>' +
-    //         '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">' +
-    //             '<i class="fas fa-angle-down"></i>' +
-    //         '</button>' +
-    //         '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">' +
-    //             '<i class="fas fa-angle-up"></i>' +
-    //         '</button>' +
-    //     '</span>';
-        // '<div class="seem_wrapper">' +
-        //     '<div class="seem"></div>' +
-        // '</div>';
-    setElementAsMdl(doc);
-    return doc;
+    var circleNum = $(
+        '<div class="maru size_normal pink1">'+
+            '<div class="letter3">1</div>'+
+        '</div>'
+    );
+    wrapper.append(circleNum);
+    wrapper.append(doc);
+
+    setElementAsMdl(wrapper[0]);
+    return wrapper[0];
 }
 
 function createHtmlAs1Eve() {

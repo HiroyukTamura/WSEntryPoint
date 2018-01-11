@@ -133,10 +133,12 @@ body {
 
 .card {
     margin: 10px 20px;
+    padding: 8px;
     border: 0;
     border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
     max-width: 524px;/*イベントのカードの横幅default値*/
+    display: inline-block;
 }
 
 #card_wrapper{
@@ -145,6 +147,10 @@ body {
     display: flex;
     -webkit-flex-wrap: wrap; /* Safari */
     flex-wrap:         wrap;
+}
+
+.card-wrapper-i {
+    vertical-align: top;
 }
 
 /****************** time events *******************/
@@ -317,7 +323,7 @@ body {
 }
 
 .ele_header {
-    padding: 10px 16px;
+    padding: 10px 8px;
 }
 
 td {
@@ -347,6 +353,32 @@ td {
 
 .comment > .mdl-textfield__input {
     width: 100%;
+}
+
+/*-------------Card Header-----------*/
+.maru {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    flex-flow: column;
+    vertical-align: middle;
+}
+/* 円の大きさ */
+.size_normal{
+    width: 20px;
+    height: 20px;
+    margin: 4px;
+}
+/* 文字の大きさ */
+.letter3 {
+    font-size: 14px;
+    /*line-height: 1.5em;*/
+}
+/* 円と文字の色 */
+.pink1 {
+    background-color: #E57C3E;
+    color: white;
 }
 
 /*------prams系--------*/
