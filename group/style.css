@@ -363,7 +363,9 @@ body {
 }
 
 .comment-first {
-    margin-bottom: 36px;
+    padding-bottom: 36px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .comment-first .comment-cont p, .comment-follow .comment-cont p {
@@ -388,6 +390,8 @@ body {
 
 .comment-follow {
     padding: 36px 96px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .comment-follow.flex-box {
@@ -421,17 +425,21 @@ body {
     /*flex-direction:         row-reverse;*/
 /*}*/
 
-.comment-follow.author-right{
+.author-right{
     /*-webkit-flex-direction: row-reverse; !* Safari *!*/
     /*flex-direction:         row-reverse;*/
     background-color: #FFFCF5;
 }
 
-.comment-first.author-right {
+/*.comment-first.author-right {*/
     /*-webkit-flex-direction: row-reverse; !* Safari *!*/
     /*flex-direction:         row-reverse;*/
-    background-color: #FFFCF5;
-}
+    /*background-color: #FFFCF5;*/
+/*}*/
+
+/*.ele_header.author-right {*/
+    /*background-color: #FFFCF5;*/
+/*}*/
 
 .comment-follow .comment-time {
     color: rgba(0,0,0,.54);
@@ -477,6 +485,9 @@ body {
     height: 400px;
     width: 100%;
     background-color: rgba(0, 0, 0, .3);
+    border: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .show-img img {

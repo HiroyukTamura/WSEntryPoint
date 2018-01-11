@@ -822,13 +822,27 @@ function appendContentAsDoc(contentData, key) {
         var userPhotoUrl = avoidNullValue(json["eleList"][i]['user']['photoUrl'], 'img/icon.png');
         if(i === 0) {
             element = createHtmlAsDoc(contentData.contentName, ymd, userName, comment, userPhotoUrl);
-            setAsMyComment(element, userUid);
+            element.addClass('author-right');
+            element.find('.comment-first').addClass('author-right');
+            // setAsMyComment(element, userUid);
         } else {
             var cardCont = createHtmlAsDocFollower(userName, ymd, comment, userPhotoUrl);
-            setAsMyComment(cardCont, userUid);
+            // setAsMyComment(cardCont, userUid);
+            element.find('comment-follow').addClass('author-right');
             element.append(cardCont);
         }
     }
+
+    element.find('.remove_btn ').on('click', function (ev) {
+        var scheme = makeRefScheme(['group', groupKey, "contents", key]);
+        defaultDatabase.ref(scheme).set(null).then(function (value) {
+            delete groupJson['contents'][key];
+            element.remove();
+        }).catch(function (err) {
+            console.log(err);
+        });
+        return false;
+    });
 
     timeline.append(element);
 }
@@ -910,7 +924,7 @@ function createHtmlAsData(header, title, comment) {
                 '</ul>'+
             '</div>'+
             '<div class="show-img">'+
-                '<img src="img/icon.png" alt="file-icon">'+
+                '<img alt="file-icon">'+
             '</div>'+
         '</div>');
 
@@ -932,12 +946,12 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
                 '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">'+
                     '<i class="fas fa-times">'+'</i>'+
                 '</button>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button">'+
-                    '<i class="fas fa-angle-down">'+'</i>'+
-                '</button>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">'+
-                    '<i class="fas fa-angle-up">'+'</i>'+
-                '</button>'+
+                // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button">'+
+                //     '<i class="fas fa-angle-down">'+'</i>'+
+                // '</button>'+
+                // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">'+
+                //     '<i class="fas fa-angle-up">'+'</i>'+
+                // '</button>'+
             '</div>'+
 
             '<hr class="seem">'+
@@ -988,11 +1002,11 @@ function createHtmlAsDocFollower(userName, ymd, comment, userPhotoUrl) {
         '</div>');
 }
 
-function setAsMyComment(element, userUid) {
-    if (userUid === user.uid) {
-        element.find('.comment-first, comment-follow').addClass('author-right');
-    }
-}
+// function setAsMyComment(element, userUid) {
+//     if (userUid === user.uid) {
+//         element.find('.comment-first, comment-follow').addClass('author-right');
+//     }
+// }
 
 function closeDialog() {
     dialog.close();
