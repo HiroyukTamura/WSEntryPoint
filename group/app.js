@@ -234,7 +234,6 @@ const holidays = {
             }
         }
 
-
         //Events
         var events = createElement('div', 'day-events');
         this.drawEvents(day, events);
@@ -346,17 +345,7 @@ const holidays = {
         //Remove any events in the current details element
         var currentWrapper = ele.querySelector('.events');
         var wrapper = createElement('div', 'events in' + (currentWrapper ? ' new' : ''));
-
-        // events.forEach(function(ev) {
-        //     // var div = createElement('div', 'event');
-        //     // var square = createElement('div', 'event-category ' + ev.color);
-        //     // var span = createElement('span', '', ev.eventName);
-        //     //
-        //     // div.appendChild(square);
-        //     // div.appendChild(span);
-        //     var chips = createChips(ev.eventName, ev.color);
-        //     wrapper.appendChild(chips);
-        // });
+        var self = this;
 
         if(events) {
             console.log(events);
@@ -364,15 +353,26 @@ const holidays = {
                 if (!events.hasOwnProperty(eventKey)) continue;
                 var colorNum = 'colorNum' + events[eventKey]["colorNum"];
                 var chips = this.createChips(events[eventKey]["title"], colorNum);
+                $(chips).find('i').on('click', function (ev) {
+                    var toolTip = $(this).parent().parent();
+                    var chipsNum = toolTip.index();
+                    var clickedEventKey = Object.keys(events)[chipsNum];
+                    var scheme = makeRefScheme(['calendar', groupKey, self.openedDay.format('YYYYMM'), self.openedDay.date(), clickedEventKey]);
+                    defaultDatabase.ref(scheme).set(null).then(function (value) {
+                        delete events[clickedEventKey];
+                        toolTip.remove();
+                        if($('.events.in').children().length === 1){
+                            $(createEmptySpan()).insertBefore($('#add-schedule'));
+                        }
+                    }).catch(function (err) {
+                        console.log('foirebase err', err);
+                    });
+                });
                 wrapper.appendChild(chips);
             }
 
         } else {
-            var div = createElement('div', 'event empty');
-            var span = createElement('span', '', 'スケジュールがありません');
-
-            div.appendChild(span);
-            wrapper.appendChild(div);
+            wrapper.appendChild(createEmptySpan());
         }
 
         wrapper.appendChild(createChipAddBtn());
@@ -477,6 +477,13 @@ const holidays = {
         });
         btn.html('<i class="fas fa-caret-'+ direction +'"></i>');
         return btn[0];
+    }
+
+    function createEmptySpan() {
+        var div = createElement('div', 'event empty');
+        var span = createElement('span', '', 'スケジュールがありません');
+        div.appendChild(span);
+        return div;
     }
 }();
 

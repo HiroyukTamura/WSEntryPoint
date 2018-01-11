@@ -190,7 +190,7 @@
   position: relative;
   width: 420px;
   height: 75px;
-  background: #FFFCF5;;
+  background: #FFFCF5;
   margin-top: 5px;
   border-radius: 4px;
 }
@@ -326,7 +326,7 @@
 }
 
 #calendar .mdl-chip__action .material-icons {
-  color: rgba(160, 159, 160, 1);
+  color: white;
 }
 
 #calendar .header .left {
