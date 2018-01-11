@@ -90,6 +90,7 @@ const holidays = {
         this.el = document.querySelector(selector);
         this.events = events;
         this.current = moment().date(1);
+        this.openedDay = moment();
         this.draw();
         var current = document.querySelector('.today');
         if(current) {
@@ -119,16 +120,16 @@ const holidays = {
 
             this.title = createElement('h1');
 
-            var right = createElement('div', 'right');
+            var right = createMonthBtn('right');
             right.addEventListener('click', function() { self.nextMonth(); });
 
-            var left = createElement('div', 'left');
+            var left = createMonthBtn('left');
             left.addEventListener('click', function() { self.prevMonth(); });
 
             //Append the Elements
+            this.header.appendChild(left);
             this.header.appendChild(this.title);
             this.header.appendChild(right);
-            this.header.appendChild(left);
             this.el.appendChild(this.header);
         }
 
@@ -282,6 +283,7 @@ const holidays = {
         var details, arrow;
         var dayNumber = +el.querySelectorAll('.day-number')[0].innerText || +el.querySelectorAll('.day-number')[0].textContent;
         var day = this.current.clone().date(dayNumber);
+        this.openedDay.date(dayNumber);
 
         var currentOpened = document.querySelector('.details');
 
@@ -361,7 +363,7 @@ const holidays = {
             for(var eventKey in events) {
                 if (!events.hasOwnProperty(eventKey)) continue;
                 var colorNum = 'colorNum' + events[eventKey]["colorNum"];
-                var chips = createChips(events[eventKey]["title"], colorNum);
+                var chips = this.createChips(events[eventKey]["title"], colorNum);
                 wrapper.appendChild(chips);
             }
 
@@ -417,15 +419,26 @@ const holidays = {
     }
 
     Calendar.prototype.nextMonth = function() {
-        this.current.add('months', 1);
+        this.current.add(1, 'months');
+        this.openedDay.add(1, 'months');
         this.next = true;
         this.draw();
     }
 
     Calendar.prototype.prevMonth = function() {
-        this.current.subtract('months', 1);
+        this.current.subtract(1, 'months');
+        this.openedDay.subtract(1, 'months');
         this.next = false;
         this.draw();
+    }
+
+    Calendar.prototype.createChips = function (innerText, color) {
+        var ele = document.createElement('span');
+        ele.className = "mdl-chip mdl-chip--deletable mdl-pre-upgrade " + color;
+        ele.innerHTML =
+            '<span class="mdl-chip__text mdl-pre-upgrade mdl-color-text--white">'+ innerText +'</span>'+
+            '<a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>';
+        return ele;
     }
 
     window.Calendar = Calendar;
@@ -438,15 +451,6 @@ const holidays = {
         if(innerText) {
             ele.innderText = ele.textContent = innerText;
         }
-        return ele;
-    }
-
-    function createChips(innerText, color) {
-        var ele = document.createElement('span');
-        ele.className = "mdl-chip mdl-chip--deletable mdl-pre-upgrade " + color;
-        ele.innerHTML =
-            '<span class="mdl-chip__text mdl-pre-upgrade mdl-color-text--white">'+ innerText +'</span>'+
-            '<a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>';
         return ele;
     }
     
@@ -465,6 +469,14 @@ const holidays = {
         ele.setAttribute("data-mdl-for", "add-schedule");
         ele.innerHTML = 'スケジュールを追加';
         return ele;
+    }
+    
+    function createMonthBtn(direction) {
+        var btn = $('<button>', {
+            class: "mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade"
+        });
+        btn.html('<i class="fas fa-caret-'+ direction + " "  + direction +'"></i>');
+        return btn[0];
     }
 }();
 
@@ -596,6 +608,7 @@ function onLoginSuccess() {
     //init dialog
     $(dialog).find(".close").on("click", function (e) {
         closeDialog();
+        return false;
     });
     $(dialog).find('#add-group-btn').on("click", function (e) {
         console.log("click", "add-group-btn");
@@ -603,34 +616,77 @@ function onLoginSuccess() {
             addSchedule();
         }
         closeDialog();
+        return false;
     });
 
+    $(".modal-circle-i").on("click", function (e){
+        onClickModalCircleI($(this));
+        return false;
+    });
+
+
+}
+
+function setLisnters() {
     window.onclick = function(event) {
         if (event.target == dialog) {
             closeDialog();
         } else if($(event.target).hasClass('schedule-add') || $(event.target).parent().hasClass('schedule-add')){
             console.log("schedule-add");
             openDialog(dialogAddSch);
+        } else if ($(event.target).parent().parent().hasClass("modal-circle-i")) {
+            onClickModalCircleI($(event.target).parent().parent());
         }
+        console.log($(event.target).parent().parent());
+        return false;
     };
-
-    $(".modal-circle-i").click(function () {
-        $(".modal-circle-check.show").removeClass("show");
-        $(this).next().addClass("show");
-        clickedColor = $(this).parent().index();
-    });
 
     $('#modal_input').keyup(function () {
         inputVal = $(this).val();
         if(inputVal && dialogPositibeBtn.attr('disabled')){
             dialogPositibeBtn.removeAttr('disabled');
         }
-    })
+    });
+}
+
+function onClickModalCircleI(target) {
+    $(".modal-circle-check.show").removeClass("show");
+    target.next().addClass("show");
+    clickedColor = target.parent().index();
+    console.log("さーくるくりっく！");
 }
 
 function addSchedule() {
-    console.log(clickedColor, inputVal, calendar.current.format('YYYYMMDD'));
-    // todo 整備
+    console.log(clickedColor, inputVal, calendar.openedDay.format('YYYYMMDD'));
+    var ym = calendar.openedDay.format('YYYYMM');
+    var scheme = makeRefScheme(["calendar", groupKey, ym, calendar.openedDay.date()]);
+    var eventKey = defaultDatabase.ref(scheme).push().key;
+    var newData = {
+        'colorNum' : clickedColor,
+        'title' : inputVal
+    };
+    defaultDatabase.ref(makeRefScheme([scheme, eventKey])).update(newData).then(function () {
+        if(!calendar.events[ym])
+            calendar.events[ym] = {};
+        if(!calendar.events[ym][calendar.openedDay.date()])
+            calendar.events[ym][calendar.openedDay.date()] = {};
+
+        calendar.events[ym][calendar.openedDay.date()][eventKey] = newData;
+        var chips = calendar.createChips(inputVal, 'colorNum' + clickedColor);
+        var eventEmpty = $('.events.in').find('.event.empty');
+        if(eventEmpty){
+            eventEmpty.remove();
+        }
+        $(chips).insertBefore($('#add-schedule'));
+        console.log(calendar.events);
+
+    }).catch(function (err) {
+        console.log('firebase update err', err);
+    });
+}
+
+function makeRefScheme(parasArr) {
+    return parasArr.join('/');
 }
 
 function onGetGroupSnap(snapshot) {
@@ -1009,6 +1065,8 @@ function showAll() {
         asyncCount++;
         return;
     }
+
+    setLisnters();
 
     setElementAsMdl($('body'));
 
