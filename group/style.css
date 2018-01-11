@@ -202,6 +202,7 @@ body {
     vertical-align: middle;
     display: flex;
     align-items: center;
+    height: 42px;
 }
 
 .ele_header_button {
@@ -215,8 +216,15 @@ body {
     margin: 0 16px 0 8px;
 }
 
-.ele-icon {
+.file .ele-icon {
     color: #66615b;
+}
+
+.file .user-icon {
+    height: 32px;
+    width: 32px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .seem {
@@ -541,6 +549,7 @@ body {
 .mdl-dialog__content h4 {
     font-size: 18px;
     margin: 8px 0 8px 0;
+    color: black;
 }
 
 .mdl-dialog {
@@ -568,7 +577,7 @@ body {
 #modal-circle-w {
     vertical-align: middle;
 }
-#modal_input{
+#modal_input, #edit-comment-dialog{
     font-size: 14px;
 }
 

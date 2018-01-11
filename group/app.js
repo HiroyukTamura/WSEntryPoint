@@ -6,9 +6,12 @@ var progress = $('#progress');
 const dialog = $('dialog')[0];
 const dialogAddSch = $('#add-sch-cnt');
 const dialogExclude = $('#dialog-img-w');
+const dialogRemoveContents = $('#remove-contents');
+const dialogEditComment = $('#edit-comment');
 const dialogPositibeBtn = $('#add-group-btn');
 var clickedColor = 0;
 var inputVal = null;
+var removeContentsKey;//これモーダルまわりで触る際にcontentKeyをぶち込みます　変数名変えるべきかも
 
 const timeline = $('#left-pain');
 var asyncCount = 0;
@@ -364,6 +367,7 @@ const holidays = {
                         if($('.events.in').children().length === 1){
                             $(createEmptySpan()).insertBefore($('#add-schedule'));
                         }
+                        //todo 「削除しました」的なメッセージをだすべき
                     }).catch(function (err) {
                         console.log('foirebase err', err);
                     });
@@ -617,10 +621,31 @@ function onLoginSuccess() {
         closeDialog();
         return false;
     });
-    $(dialog).find('#add-group-btn').on("click", function (e) {
+
+    dialogPositibeBtn.on("click", function (e) {
         console.log("click", "add-group-btn");
         if(isModalOpen === dialogAddSch){
             addSchedule();
+        } else if (isModalOpen === dialogRemoveContents) {
+            var scheme = makeRefScheme(['group', groupKey, "contents", removeContentsKey]);
+            defaultDatabase.ref(scheme).set(null).then(function (value) {
+                delete groupJson['contents'][removeContentsKey];
+                $('.card[key="' + removeContentsKey + '"]').remove();
+            }).catch(function (err) {
+                //todo エラー処理
+                console.log(err);
+            });
+        } else if (isModalOpen === dialogExclude){
+            //todo ユーザ削除動作
+        } else if (isModalOpen === dialogEditComment) {
+            var schemeE = makeRefScheme(['group', groupKey, "contents", removeContentsKey, "comment"]);
+            var inputVal = $('#edit-comment-dialog').val();
+            defaultDatabase.ref(schemeE).set(inputVal).then(function (value) {
+                $('.file[key="'+ removeContentsKey +'"]').find(".mdl-list__item-sub-title").html(inputVal);
+            }).catch(function (err) {
+                //todo エラー処理
+                console.log(err);
+            });
         }
         closeDialog();
         return false;
@@ -791,7 +816,7 @@ function initContents() {
 
     for (var key in groupJson.contents){
         if(!groupJson.contents.hasOwnProperty(key))
-            return;
+            continue;
 
         var contentData = groupJson["contents"][key];
         console.log(contentData);
@@ -800,6 +825,8 @@ function initContents() {
                 appendContentAsDoc(contentData, key);
                 break;
             case "image/jpeg":
+            case "image/png":
+            case "image/gif":
                 new ContentAppenderForImg(contentData, key, timeline);
                 break;
         }
@@ -822,6 +849,7 @@ function appendContentAsDoc(contentData, key) {
         var userPhotoUrl = avoidNullValue(json["eleList"][i]['user']['photoUrl'], 'img/icon.png');
         if(i === 0) {
             element = createHtmlAsDoc(contentData.contentName, ymd, userName, comment, userPhotoUrl);
+            element.attr('key', key);
             element.addClass('author-right');
             element.find('.comment-first').addClass('author-right');
             // setAsMyComment(element, userUid);
@@ -834,13 +862,8 @@ function appendContentAsDoc(contentData, key) {
     }
 
     element.find('.remove_btn ').on('click', function (ev) {
-        var scheme = makeRefScheme(['group', groupKey, "contents", key]);
-        defaultDatabase.ref(scheme).set(null).then(function (value) {
-            delete groupJson['contents'][key];
-            element.remove();
-        }).catch(function (err) {
-            console.log(err);
-        });
+        removeContentsKey = key;
+        openDialog(dialogRemoveContents, contentData.contentName);
         return false;
     });
 
@@ -855,8 +878,36 @@ function appendContentAsDoc(contentData, key) {
 
         var ymd = moment(this.mContentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
         var userName = groupJson["member"][this.mContentData.lastEditor]["name"];//todo 辞めた人間はどうする？？
-        var comment = this.mContentData.comment.replace(/(?:\r\n|\r|\n)/g, "<br />");
+        var commentPre = this.mContentData.comment;
+        var comment = commentPre.replace(/(?:\r\n|\r|\n)/g, "<br />");
         var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment);
+        var photoUrl = avoidNullValue(groupJson["member"][this.mContentData.whose]["photoUrl"], 'img/icon.png');
+        ele.find('.user-icon').attr('src', photoUrl);
+
+        var fileUrl = null;
+        switch (contentData.type){
+            case "image/jpeg":
+                fileUrl = 'img/jpg.png';
+                break;
+            case "image/png":
+                fileUrl = 'img/png.png';
+                break;
+            case "image/gif":
+                fileUrl = 'img/file.png';
+                break;
+        }
+        ele.find('.file-icon').attr('src', fileUrl);
+
+        if (contentData.whose === user.uid) {
+            ele.on('click', function (ev) {
+                console.log(commentPre);
+                dialogEditComment.find('#edit-comment-dialog').val(commentPre);
+                openDialog(dialogEditComment);
+                return false;
+            });
+        } else {
+            ele.find('.edit-comment').hide();
+        }
 
         this.mTmeline.append(ele);
         var img = ele.find('.show-img img');
@@ -893,27 +944,30 @@ function createHtmlAsData(header, title, comment) {
     var ele =  $(
         '<div class="card file">'+
             '<div class="ele_header">'+
-                '<i class="fas fa-comments fa-lg ele-icon"></i>'+
+                '<img class="user-icon" alt="user-icon">'+
                 '<span class="event_title">'+ header +'</span>'+
                 '<div class="mdl-layout-spacer mdl-pre-upgrade"></div>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button">'+
+                    '<i class="fas fa-comment"></i>'+
+                '</button>'+
                 '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">'+
                     '<i class="fas fa-times"></i>'+
                 '</button>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">'+
-                    '<i class="fas fa-angle-down">'+'</i>'+
-                '</button>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">'+
-                    '<i class="fas fa-angle-up"></i>'+
-                '</button>'+
+                // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">'+
+                //     '<i class="fas fa-angle-down">'+'</i>'+
+                // '</button>'+
+                // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">'+
+                //     '<i class="fas fa-angle-up"></i>'+
+                // '</button>'+
             '</div>'+
 
             '<div class="flex-box file-wrapper">'+
-                '<img class="file-icon" src="img/icon.png" alt="file-icon">'+
+                '<img class="file-icon" alt="file-icon">'+
                 '<ul class="mdl-list mdl-pre-upgrade">'+
                     '<li class="mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
                         '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                             '<span>'+ title +'</span>'+
-                            '<span class="mdl-list__item-sub-title mdl-pre-upgrade">' +comment+ '</span>'+
+                            '<span class="mdl-list__item-sub-title mdl-pre-upgrade">'+ comment +'</span>'+
                         '</span>'+
                         // '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
                         //     '<button id="hogehogeef" class="mdl-button mdl-js-button mdl-button--ico mdl-pre-upgrade">'+
@@ -943,12 +997,12 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
                 '<i class="fas fa-comments fa-lg ele-icon"></i>'+
                 '<span class="event_title">'+ title +'</span>'+
                 '<div class="mdl-layout-spacer"></div>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">'+
-                    '<i class="fas fa-times">'+'</i>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button">'+
+                    '<i class="fas fa-comment"></i>'+
                 '</button>'+
-                // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button">'+
-                //     '<i class="fas fa-angle-down">'+'</i>'+
-                // '</button>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">'+
+                    '<i class="fas fa-times"></i>'+
+                '</button>'+
                 // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">'+
                 //     '<i class="fas fa-angle-up">'+'</i>'+
                 // '</button>'+
@@ -1013,7 +1067,7 @@ function closeDialog() {
     isModalOpen = false;
 }
 
-function openDialog(toShowEle) {
+function openDialog(toShowEle, fileName) {
     if(isModalOpen)
         return;
 
@@ -1023,11 +1077,26 @@ function openDialog(toShowEle) {
     if(toShowEle === dialogAddSch){
         dialogPositibeBtn.html('追加');
         dialogPositibeBtn.attr('disabled', '');
-        dialogExclude.css('display', 'none');
+        dialogExclude.hide();
+        dialogRemoveContents.hide();
+        dialogEditComment.hide();
         $('#modal_input').val('');
     } else if (toShowEle === dialogExclude){
         dialogPositibeBtn.html('退会させる');
-        dialogAddSch.css('display', 'none');
+        dialogAddSch.hide();
+        dialogRemoveContents.hide();
+        dialogEditComment.hide();
+    } else if (toShowEle === dialogRemoveContents){
+        dialogPositibeBtn.html('削除する');
+        dialogExclude.hide();
+        dialogAddSch.hide();
+        dialogEditComment.hide();
+        dialogRemoveContents.find('p').html("本当に「" + fileName + "」を削除しますか？");
+    } else if (toShowEle === dialogEditComment) {
+        dialogPositibeBtn.html('OK');
+        dialogExclude.hide();
+        dialogRemoveContents.hide();
+        dialogAddSch.hide();
     }
 
     dialog.showModal();
