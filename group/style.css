@@ -205,6 +205,10 @@ body {
     height: 42px;
 }
 
+.card.comments .ele_header .fa-comments {
+    color: #E57C3E;
+}
+
 .ele_header_button {
     float: right;
     color: #BCBCBC;
@@ -321,7 +325,7 @@ body {
     font-size: 16px;
 }
 
-.card.user-list .health-rec-btn {
+.card.user-list .health-rec-btn, .show-file{
     cursor: pointer;
     color: white;
     background-color: #E57C3E;
@@ -496,6 +500,7 @@ body {
     border: 0;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    cursor: pointer;
 }
 
 .show-img img {

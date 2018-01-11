@@ -641,7 +641,20 @@ function onLoginSuccess() {
             var schemeE = makeRefScheme(['group', groupKey, "contents", removeContentsKey, "comment"]);
             var inputVal = $('#edit-comment-dialog').val();
             defaultDatabase.ref(schemeE).set(inputVal).then(function (value) {
-                $('.file[key="'+ removeContentsKey +'"]').find(".mdl-list__item-sub-title").html(inputVal);
+                console.log("よろしい");
+                var card = $('.file[key="'+ removeContentsKey +'"]');
+                var subTitle = card.find(".mdl-list__item-sub-title");
+                if(subTitle.length !== 0){
+                    subTitle.html(inputVal);
+                } else {
+                    var insertEle = $('<span class="mdl-list__item-sub-title mdl-pre-upgrade">'+ inputVal +'</span>');
+                    card.find('.mdl-list__item-primary-content').append(insertEle);
+                    card.find('.mdl-list__item').addClass('mdl-list__item--two-line');
+                    // insertEle.append(card.find('.mdl-list__item-primary-content'));
+                    setElementAsMdl(insertEle);
+                    console.log("こっち");
+                }
+                groupJson['contents'][removeContentsKey]['comment'] = inputVal;
             }).catch(function (err) {
                 //todo エラー処理
                 console.log(err);
@@ -829,6 +842,16 @@ function initContents() {
             case "image/gif":
                 new ContentAppenderForImg(contentData, key, timeline);
                 break;
+            case "data":
+                break;
+            case "text/plain":
+            case "text/txt":
+            case "text/html":
+            case "text/css":
+            case "text/xml":
+            case "application/pdf":
+                new ContentAppenderAsOtherFile(contentData, key, timeline);
+                break;
         }
     }
 }
@@ -879,10 +902,9 @@ function appendContentAsDoc(contentData, key) {
         var ymd = moment(this.mContentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
         var userName = groupJson["member"][this.mContentData.lastEditor]["name"];//todo 辞めた人間はどうする？？
         var commentPre = this.mContentData.comment;
-        var comment = commentPre.replace(/(?:\r\n|\r|\n)/g, "<br />");
-        var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment);
+        var comment = commentPre ?
+            commentPre.replace(/(?:\r\n|\r|\n)/g, "<br />") : null;
         var photoUrl = avoidNullValue(groupJson["member"][this.mContentData.whose]["photoUrl"], 'img/icon.png');
-        ele.find('.user-icon').attr('src', photoUrl);
 
         var fileUrl = null;
         switch (contentData.type){
@@ -896,11 +918,14 @@ function appendContentAsDoc(contentData, key) {
                 fileUrl = 'img/file.png';
                 break;
         }
-        ele.find('.file-icon').attr('src', fileUrl);
+        // ele.find('.file-icon').attr('src', fileUrl);
+        console.log("fileUrl: ", fileUrl);
+        var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment, key, photoUrl, fileUrl);
 
         if (contentData.whose === user.uid) {
-            ele.on('click', function (ev) {
+            ele.find('.edit-comment').on('click', function (ev) {
                 console.log(commentPre);
+                removeContentsKey = key;
                 dialogEditComment.find('#edit-comment-dialog').val(commentPre);
                 openDialog(dialogEditComment);
                 return false;
@@ -914,10 +939,22 @@ function appendContentAsDoc(contentData, key) {
         firebase.storage().ref("shareFile/" + groupKey +"/"+ this.mKey).getDownloadURL().then(function(url) {
             // Insert url into an <img> tag to "download"
             img.attr("src", url);
+            img.on('click', function (ev) {
+                window.open(url);
+            });
         }).catch(function(error) {
+            var errIcon = $(
+                '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
+                    '<i class="material-icons" title="画像を取得できませんでした">sms_failed</i>'+
+                '</span>'
+                );
+
+            ele.find('li.mdl-list__item').append(errIcon);
+            setElementAsMdl(ele);
+
             // A full list of error codes is available at
             // https://firebase.google.com/docs/storage/web/handle-errors
-            //todo エラー処理
+            //todo ここ未デバッグなんでデバッグして
             switch (error.code) {
                 case 'storage/object_not_found':
                     // File doesn't exist
@@ -934,20 +971,128 @@ function appendContentAsDoc(contentData, key) {
                     // Unknown error occurred, inspect the server response
                     break;
             }
+
+            console.log(error);
         });
     }
 
     window.ContentAppenderForImg = ContentAppenderForImg;
 })();
 
-function createHtmlAsData(header, title, comment) {
+
+(function () {
+    function ContentAppenderAsOtherFile(contentData, key, timeline) {
+        this.mContentData = contentData;
+        this.mKey = key;
+        this.mTmeline = timeline;
+
+        var ymd = moment(this.mContentData.lastEdit, "YYYYMMDD").format("YYYY.MM.DD");
+        var userName = groupJson["member"][this.mContentData.lastEditor]["name"];//todo 辞めた人間はどうする？？
+        var commentPre = this.mContentData.comment;
+        var comment = commentPre ?
+            commentPre.replace(/(?:\r\n|\r|\n)/g, "<br />") : null;
+        var photoUrl = avoidNullValue(groupJson["member"][this.mContentData.whose]["photoUrl"], 'img/icon.png');
+
+        var fileUrl = null;
+        switch (contentData.type){
+            case "text/plain":
+            case "text/txt":
+                fileUrl = 'img/txt.png';
+                break;
+            case "text/html":
+                fileUrl = 'img/html.png';
+                break;
+            case "text/css":
+                fileUrl = 'img/css.png';
+                break;
+            case "text/xml":
+                fileUrl = 'img/xml.png';
+                break;
+            case "application/pdf":
+                fileUrl = 'img/pdf.png';
+                break;
+        }
+
+        var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment, key, photoUrl, fileUrl);
+
+        if (contentData.whose === user.uid) {
+            ele.find('.edit-comment').on('click', function (ev) {
+                console.log(commentPre);
+                removeContentsKey = key;
+                dialogEditComment.find('#edit-comment-dialog').val(commentPre);
+                openDialog(dialogEditComment);
+                return false;
+            });
+        } else {
+            ele.find('.edit-comment').hide();
+        }
+
+        ele.find('.show-img').hide();
+
+        this.mTmeline.append(ele);
+
+        firebase.storage().ref("shareFile/" + groupKey +"/"+ this.mKey).getDownloadURL().then(function(url) {
+            var openFileIcon = $(
+                '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
+                    '<span class="mdl-chip mdl-pre-upgrade show-file">'+
+                        '<span class="mdl-chip__text mdl-pre-upgrade">ファイルを表示&nbsp;&nbsp;<i class="fas fa-external-link-square-alt fa-lg"></i></span>'+
+                    '</span>'+
+                '</span>'
+            );
+            ele.find('li.mdl-list__item').append(openFileIcon);
+
+            setElementAsMdl(ele);
+
+            openFileIcon.on('click', function (ev) {
+                window.open(url);
+                return false;
+            });
+
+        }).catch(function(error) {
+            var errIcon = $(
+                '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
+                    '<i class="material-icons" title="ファイルを取得できませんでした">sms_failed</i>'+
+                '</span>'
+            );
+
+            ele.find('.mdl-list__item').append(errIcon);
+            setElementAsMdl(ele);
+
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            //todo ここ未デバッグなんでデバッグして
+            switch (error.code) {
+                case 'storage/object_not_found':
+                    // File doesn't exist
+                    break;
+
+                case 'storage/unauthorized':
+                    // User doesn't have permission to access the object
+                    break;
+
+                case 'storage/canceled':
+                    // User canceled the upload
+                    break;
+                case 'storage/unknown':
+                    // Unknown error occurred, inspect the server response
+                    break;
+            }
+
+            console.log(error);
+        });
+    }
+
+    window.ContentAppenderAsOtherFile = ContentAppenderAsOtherFile;
+})();
+
+function createHtmlAsData(header, title, comment, key, photoUrl, fileUrl) {
     var ele =  $(
-        '<div class="card file">'+
+        '<div class="card file" key="'+ key +'">'+
             '<div class="ele_header">'+
-                '<img class="user-icon" alt="user-icon">'+
+                '<img class="user-icon" src="'+ photoUrl +'" alt="user-icon">'+
                 '<span class="event_title">'+ header +'</span>'+
                 '<div class="mdl-layout-spacer mdl-pre-upgrade"></div>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button">'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button mdl-pre-upgrade">'+
                     '<i class="fas fa-comment"></i>'+
                 '</button>'+
                 '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">'+
@@ -962,7 +1107,7 @@ function createHtmlAsData(header, title, comment) {
             '</div>'+
 
             '<div class="flex-box file-wrapper">'+
-                '<img class="file-icon" alt="file-icon">'+
+                '<img class="file-icon" src="'+ fileUrl +'" alt="file-icon">'+
                 '<ul class="mdl-list mdl-pre-upgrade">'+
                     '<li class="mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
                         '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
@@ -997,10 +1142,10 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
                 '<i class="fas fa-comments fa-lg ele-icon"></i>'+
                 '<span class="event_title">'+ title +'</span>'+
                 '<div class="mdl-layout-spacer"></div>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button">'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button mdl-pre-upgrade">'+
                     '<i class="fas fa-comment"></i>'+
                 '</button>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button">'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">'+
                     '<i class="fas fa-times"></i>'+
                 '</button>'+
                 // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">'+
@@ -1013,11 +1158,11 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
             '<div class="card-cont">'+
                 '<div class="comment-first space-horizontal">'+
                     '<ul class="demo-list-three mdl-list">'+
-                        '<li class="mdl-list__item mdl-list__item--two-line">'+
-                            '<span class="mdl-list__item-primary-content">'+
-                                '<img src="'+ photoUrl +'" alt="userA" class="mdl-list__item-icon">'+
+                        '<li class="mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
+                            '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                                '<img src="'+ photoUrl +'" alt="userA" class="mdl-list__item-icon mdl-pre-upgrade">'+
                                 '<span>'+ whose +'</span>'+
-                                '<span class="mdl-list__item-sub-title">'+ ymd +'</span>'+
+                                '<span class="mdl-list__item-sub-title mdl-pre-upgrade">'+ ymd +'</span>'+
                             '</span>'+
                         '</li>'+
                     '</ul>'+
@@ -1086,13 +1231,16 @@ function openDialog(toShowEle, fileName) {
         dialogAddSch.hide();
         dialogRemoveContents.hide();
         dialogEditComment.hide();
+        dialogPositibeBtn.removeAttr('disabled');
     } else if (toShowEle === dialogRemoveContents){
         dialogPositibeBtn.html('削除する');
+        dialogPositibeBtn.removeAttr('disabled');
         dialogExclude.hide();
         dialogAddSch.hide();
         dialogEditComment.hide();
         dialogRemoveContents.find('p').html("本当に「" + fileName + "」を削除しますか？");
     } else if (toShowEle === dialogEditComment) {
+        dialogPositibeBtn.removeAttr('disabled');
         dialogPositibeBtn.html('OK');
         dialogExclude.hide();
         dialogRemoveContents.hide();
@@ -1162,6 +1310,7 @@ function showAll() {
 
     tippy('[title]', {
         updateDuration: 0,
+        dynamicTitle: false,
         popperOptions: {
             modifiers: {
                 preventOverflow: {
