@@ -132,7 +132,7 @@ body {
 }
 
 .card {
-    margin: 10px 20px;
+    margin-left: 20px;
     padding: 8px;
     border: 0;
     border-radius: 10px;
@@ -142,7 +142,7 @@ body {
 }
 
 #card_wrapper{
-    padding-top: 10px;
+    padding: 10px 20px;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-wrap: wrap; /* Safari */
@@ -151,16 +151,24 @@ body {
 
 .card-wrapper-i {
     vertical-align: top;
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    padding: 10px 20px;
 }
 
 /****************** time events *******************/
 .card_block {
-    margin: 20px 36px 36px 36px;
+    margin: 0 36px 36px 36px;
 }
 
 .time {
-    width: 40px;
-    margin-right: -15px;
+    width: fit-content;
+    /*margin-right: -15px;*/
+}
+
+.time .mdl-textfield {
+    width: fit-content;
 }
 
 .min {
@@ -172,21 +180,22 @@ body {
 }
 
 .time_input {
-    text-align: center;
-    font-weight: bold;
-    font-size: 25px;
+    /*text-align: center;*/
+    /*font-weight: bold;*/
+    font-size: 16px;
+    width: 50px;
     /*color: slategray;*/
 }
 
 .event_name{
-    margin-left: 40px;
+    margin-left: 24px;
     display: inline-block;
     color: #616161;
 }
 
-.input_eve {
-    font-size: 20px;
-}
+/*.input_eve {*/
+    /*font-size: 18px;*/
+/*}*/
 
 .colon {
     font-size: 25px;
@@ -207,8 +216,16 @@ body {
 }
 
 .icon_down{
-    margin-left: 90px;
-    margin-bottom: -20px;
+    /*margin-left: 90px;*/
+    /*margin-bottom: -20px;*/
+}
+
+.range-post .mdl-textfield {
+    padding-top: 0;
+}
+
+.range-post .mdl-textfield__input{
+    padding-top: 0;
 }
 
 .circle {
@@ -221,6 +238,16 @@ body {
     border-radius: 50%;
     margin-right: 20px;
     border: 3px solid transparent;
+}
+
+tbody .circle {
+    width: 10px;
+    height: 10px;
+    cursor: default;
+}
+
+tbody .mdl-textfield__input {
+    padding-bottom: 0;
 }
 
 .circle :hover{
@@ -363,12 +390,12 @@ td {
     border-radius: 50%;
     flex-flow: column;
     vertical-align: middle;
+    margin-top: 10px;
 }
 /* 円の大きさ */
 .size_normal{
     width: 20px;
     height: 20px;
-    margin: 4px;
 }
 /* 文字の大きさ */
 .letter3 {
@@ -433,29 +460,37 @@ td {
 
 /*---------タグプール系-----------*/
 
-.chips_btn {
-    color: white;
-    margin: 5px;
-    font-size: 22px;
-}
+/*.chips_btn {*/
+    /*color: white;*/
+    /*margin: 5px;*/
+    /*font-size: 22px;*/
+/*}*/
 
-.chips_btn_circle {
-    color: white;/*.mdl-chip__action に合わせてる*/
-    margin: 0;
-}
+/*.chips_btn_circle {*/
+    /*color: white;!*.mdl-chip__action に合わせてる*!*/
+    /*margin: 0;*/
+/*}*/
 
-.custom_tips_btn{
-    font-size: 32px;
-}
+/*.custom_tips_btn{*/
+    /*font-size: 32px;*/
+/*}*/
 
 .tag_wrapper{
     display: inline-block;
     margin: 2px 5px;
 }
 
-.mdl-chip{
-    background-color: #F1EAE0;
+.mdl-chip i, .mdl-chip .fa-check{
+    color: white;
 }
+
+.mdl-chip .fa-check {
+    margin-left: 8px;
+}
+
+/*.mdl-chip{*/
+    /*background-color: #F1EAE0;*/
+/*}*/
 
 /*-------------モーダル系----------------*/
 .modal-content{

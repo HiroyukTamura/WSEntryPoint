@@ -158,6 +158,18 @@ function init() {
             var url = "../analytics/index.html?uid=" + user.uid;
             $('.mdl-navigation__link').eq(2).attr("href", url);
 
+            tippy('[title]', {
+                updateDuration: 0,
+                dynamicTitle: false,
+                popperOptions: {
+                    modifiers: {
+                        preventOverflow: {
+                            enabled: false
+                        }
+                    }
+                }
+            });
+
         } else {
             console.log("ユーザはログアウトしたっす。");
             //todo ログアウト時の動作
@@ -193,6 +205,19 @@ function getColor(num) {
     }
 }
 
+function getHighLightedColor(num) {
+    switch (num){
+        case 0:
+            return "#D79599";
+        case 1:
+            return "#C5D79D";
+        case 2:
+            return "#5C8BBF";
+        case 3:
+            return "#AEA3C5";
+    }
+}
+
 function changeTimeColor(block, value) {
     //時刻の色を変える
     var coloreds = block.getElementsByClassName("colored");
@@ -203,9 +228,8 @@ function changeTimeColor(block, value) {
 }
 
 function setEveInputValues(inputs, value) {
-    inputs[0].setAttribute("value", format0to00(value["cal"]["hourOfDay"]));
-    inputs[1].setAttribute("value", format0to00(value["cal"]["minute"]));
-    inputs[2].setAttribute("value", value["name"]);
+    inputs[0].setAttribute("value", format0to00(value["cal"]["hourOfDay"]) + ":" + format0to00(value["cal"]["minute"]));
+    inputs[1].setAttribute("value", value["name"]);
 }
 
 function format0to00(value) {
@@ -267,16 +291,16 @@ function operateAs1(doc, childSnap) {
             setEveInputValues(inputs, value);
 
             //時刻の色を変える
-            var coloreds = block.getElementsByClassName("colored");
-            var color = getColor(value["colorNum"]);
-            console.log(coloreds.length);
-            for (var i=0; i<coloreds.length; i++){
-                console.log(i);
-                coloreds[i].style.color = color;
-            }
-            changeTimeColor(block, value);
+            // var coloreds = block.getElementsByClassName("colored");
+            // var color = getColor(value["colorNum"]);
+            // console.log(coloreds.length);
+            // for (var i=0; i<coloreds.length; i++){
+            //     console.log(i);
+            //     coloreds[i].style.color = color;
+            // }
+            // changeTimeColor(block, value);
             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
-            // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+            block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
 
             setElementAsMdl(block);
             doc.children[1].children[0].appendChild(block);
@@ -290,15 +314,16 @@ function operateAs1(doc, childSnap) {
             blocks[0] = createHtmlAs1Eve();
             blocks[1] = craeteHtmlAs1Row();
             blocks[2] = createHtmlAs1Eve();
+            $(blocks[2]).addClass('range-post');
             var startInputs = blocks[0].getElementsByClassName("mdl-textfield__input");
             setEveInputValues(startInputs, value["start"]);
             var endInputs = blocks[2].getElementsByClassName("mdl-textfield__input");
             setEveInputValues(endInputs, value["end"]);
 
-            // blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-            changeTimeColor(blocks[0], value);
-            changeTimeColor(blocks[2], value);
-            // blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+            blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+            // changeTimeColor(blocks[0], value);
+            // changeTimeColor(blocks[2], value);
+            blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
             blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
 
             console.log(blocks.length);
@@ -479,19 +504,22 @@ function operateAs4(doc, childSnap) {
 //endregion
 
 function setTagUi(clone, splited) {
-    $(clone).find(".mdl-chip__text").eq(0).html(splited[0]);
+    $(clone).find(".mdl-chip__text").html(splited[0]);
 
-    var chipsBtn = $(clone).find(".chips_btn");
-    if(splited[2] === "false"){
-        chipsBtn.eq(0).css("display", "none");
-        chipsBtn.eq(1).css("display", "inline");
-    } else if (splited[2] === "true"){
-        chipsBtn.eq(1).css("display", "none");
-        chipsBtn.eq(0).css("display", "inline");
-    } else {
-        console.log(splited);
+    if (splited[2] === "false") {
+        $(clone).find(".fa-check").hide();
     }
-    $(clone).find(".chips_btn_circle").eq(0).css("color", getColor(parseInt(splited[1])));
+    // var chipsBtn = $(clone).find(".chips_btn");
+    // if(splited[2] === "false"){
+    //     chipsBtn.eq(0).css("display", "none");
+    //     chipsBtn.eq(1).css("display", "inline");
+    // } else if (splited[2] === "true"){
+    //     chipsBtn.eq(1).css("display", "none");
+    //     chipsBtn.eq(0).css("display", "inline");
+    // } else {
+    //     console.log(splited);
+    // }
+    $(clone).find(".mdl-chip").css("background-color", getHighLightedColor(parseInt(splited[1])));
 }
 
 function initModal() {
@@ -708,34 +736,33 @@ function createElementWithHeader(dataNum, dataType) {
 function createHtmlAs1Eve() {
     var clone = document.createElement('tr');
     clone.innerHTML =
-    // '<td class="circle_wrapper">' +
-    // '<div class="circle">' +'</div>' +
-    // '</td>' +
+    '<td class="circle_wrapper">' +
+        '<div class="circle">' +'</div>' +
+    '</td>' +
 
     '<td>' +
         '<form action="#" class="time colored">' +
             '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-                '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="([01]?[0-9]{1}|2[0-3]{1})" id="sample">' +
+                '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" id="sample">' +
                 '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
-                '<span class="mdl-textfield__error mdl-pre-upgrade">Error</span>' +
             '</div>' +
         '</form>' +
     '</td>' +
-
-    '<td>' +
-
-        '<p class="colon colored">:</p>' +
-    '</td>' +
-
-    '<td>' +
-        '<form action="#" class="min colored">' +
-            '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-                '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="[0-5]{1}[0-9]{1}" id="sample2">' +
-                '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample2">' +'</label>' +
-                '<span class="mdl-textfield__error mdl-pre-upgrade">Error</span>' +
-            '</div>' +
-        '</form>' +
-    '</td>' +
+    //
+    // '<td>' +
+    //
+    //     '<p class="colon colored">:</p>' +
+    // '</td>' +
+    //
+    // '<td>' +
+    //     '<form action="#" class="min colored">' +
+    //         '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
+    //             '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="[0-5]{1}[0-9]{1}" id="sample2">' +
+    //             '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample2">' +'</label>' +
+    //             '<span class="mdl-textfield__error mdl-pre-upgrade">Error</span>' +
+    //         '</div>' +
+    //     '</form>' +
+    // '</td>' +
 
     '<td>' +
         '<form action="#" class="event_name">' +
@@ -753,8 +780,8 @@ function craeteHtmlAs1Row() {
     var clone = document.createElement("tr");
     clone.innerHTML =
         '<tr>' +
-            '<td colspan="3">' +
-                '<i class="fas fa-angle-double-down fa-2x icon_down">' +'</i>' +
+            '<td>' +
+                '<i class="fas fa-angle-double-down icon_down">' +'</i>' +
             '</td>' +
         '</tr>';
     return clone;
@@ -765,25 +792,32 @@ function showModal() {
 }
 
 function createHtmlAs2() {
-    var clone = document.createElement("div");
-    clone.setAttribute("class", "tag_wrapper");
+    var clone = $(
+    '<div class="tag_wrapper">'+
+        '<span class="mdl-chip mdl-chip--deletable">' +
+            '<span class="mdl-chip__text"></span>' +
+            '<i class="fas fa-check fa-2x mdl-chip__action"></i>' +
+            '<button type="button" class="mdl-chip__action"><i class="material-icons">cancel</i></button>' +
+        '</span>'+
+    '</div>');
     // var clone = $("div", {class: "tag_wrapper"});
-    clone.innerHTML =
-        '<a href="#">'+
-            '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
-                '<span class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">' +
-                    '<span class="fa-stack">' +
-                        '<i class="fas fa-circle fa-stack-1x chips_btn_circle"></i>' +
-                        '<i class="fas fa-eye fa-stack-1x chips_btn"></i>' +
-                        '<i class="fas fa-eye-slash fa-stack-1x chips_btn"></i>' +
-                    '</span>' +
-                '</span>' +
-                '<span class="mdl-chip__text"></span>' +
-                // '<a href="#" class="mdl-chip__action mdl-pre-upgrade a_remove_btn"><i class="fas fa-times remove_btn"></i></a>'+
-            '</span>' +
-        '</a>';
+    // clone.innerHTML =
+    //     '<a href="#">'+
+    //         '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
+    //             '<span class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">' +
+    //                 '<span class="fa-stack">' +
+    //                     '<i class="fas fa-circle fa-stack-1x chips_btn_circle"></i>' +
+    //                     '<i class="fas fa-check-circle fa-stack-1x chips_btn"></i>' +
+    //                     '<i class="fas fa-eye-slash fa-stack-1x chips_btn"></i>' +
+    //                 '</span>' +
+    //             '</span>' +
+    //             '<span class="mdl-chip__text mdl-pre-upgrade"></span>' +
+    //             // '<a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>' +
+    //             // '<a href="#" class="mdl-chip__action mdl-pre-upgrade a_remove_btn"><i class="fas fa-times remove_btn"></i></a>'+
+    //         '</span>' +
+    //     '</a>';
         // '<div class="mdl-tooltip" for="tooltip_delete"></div>';
-    return clone;
+    return clone[0];
 }
 
 function createHtmlAs3(id) {
