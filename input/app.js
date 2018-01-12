@@ -288,8 +288,9 @@ function operateAs1(doc, childSnap) {
     var json = JSON.parse(childSnap["data"]["0"]);
 
     if(json["eventList"]){
+
         json["eventList"].forEach(function (value) {
-            var block = createHtmlAs1Eve();
+            var block = $(createHtmlAs1Eve());
             var inputs = block.getElementsByClassName("mdl-textfield__input");
             setEveInputValues(inputs, value);
 
@@ -303,18 +304,26 @@ function operateAs1(doc, childSnap) {
             // }
             // changeTimeColor(block, value);
             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
-            block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+            // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+            block.find('.circle').css('background-clor', getColor(value["colorNum"]));
+            var time = moment();
+            time.hour(value['cal']['hourOfDay']);
+            time.minute(value['cal']['minute']);
+            $(block).attr('data-order', time.format('HHmm'));
 
             setDatePickerLisntener($(block).find('.time .mdl-textfield__input'))
                 .on('change', function (event, date) {
                     console.log(event, date);
-                    var index = $(this).closest('tr').index();
+                    var tr = (this).closest('tr');
+                    var index = tr.index();
                     var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
                     var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
                     var time = moment($(event.target).val(), 'HH:mm');
                     jsonC["eventList"][index]["cal"]["hourOfDay"] = time.hour();
                     jsonC["eventList"][index]["cal"]["minute"] = time.minute();
                     masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+
+                    tr.attr('data-order', time.format('HHmm'));
                     console.log(masterJson);
             });
 
@@ -322,6 +331,21 @@ function operateAs1(doc, childSnap) {
             doc.children[1].children[0].appendChild(block);
         });
     }
+
+    var mixier = mixitup('tbody', {
+        load: {
+            sort: 'order:asc'
+        },
+        animation: {
+            duration: 250,
+            nudge: true,
+            reverseOut: false,
+            effects: "fade translateZ(-100px)"
+        },
+        selectors: {
+            target: '.card'
+        }
+    });
 
     var addRowBtn = createAssEveRow('eve-add');
     doc.children[1].children[0].appendChild(addRowBtn[0]);
