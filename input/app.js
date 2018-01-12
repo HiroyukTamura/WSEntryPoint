@@ -6,6 +6,7 @@ var modalTipNum;
 var clickedColor;
 var loginedUser;
 var isModalOpen = false;
+var datePickerOpenedIndex;
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
@@ -220,14 +221,14 @@ function getHighLightedColor(num) {
     }
 }
 
-function changeTimeColor(block, value) {
-    //時刻の色を変える
-    var coloreds = block.getElementsByClassName("colored");
-    var color = getColor(value["colorNum"]);
-    for (var i=0; i<coloreds.length; i++){
-        coloreds[i].style.color = color;
-    }
-}
+// function changeTimeColor(block, value) {
+//     //時刻の色を変える
+//     var coloreds = block.getElementsByClassName("colored");
+//     var color = getColor(value["colorNum"]);
+//     for (var i=0; i<coloreds.length; i++){
+//         coloreds[i].style.color = color;
+//     }
+// }
 
 function setEveInputValues(inputs, value) {
     inputs[0].setAttribute("value", format0to00(value["cal"]["hourOfDay"]) + ":" + format0to00(value["cal"]["minute"]));
@@ -310,8 +311,19 @@ function operateAs1(doc, childSnap) {
                 format: 'HH:mm'
             }).on('open', function (event) {
                 isModalOpen = true;
+                // datePickerOpenedIndex = $(this).closest('tr').index();
             }).on('close', function (event) {
                 isModalOpen = false;
+            }).on('change', function (event, date) {
+                console.log(event, date);
+                var index = $(this).closest('tr').index();
+                var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
+                var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+                var time = moment($(event.target).val(), 'HH:mm');
+                jsonC["eventList"][index]["cal"]["hourOfDay"] = time.hour();
+                jsonC["eventList"][index]["cal"]["minute"] = time.minute();
+                masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+                console.log(masterJson);
             });
 
             // setElementAsMdl(block);
@@ -364,12 +376,12 @@ function setRangeDatePicker(block) {
         shortTime: false,
         format: 'HH:mm'
     }).on('open', function (event) {
-        console.log('nnn');
+
         isModalOpen = true;
     }).on('close', function (event) {
         isModalOpen = false;
     }).on('beforeChange', function (event, date) {
-
+        console.log(event, date);
     });
 
     var datePickers = $('.dtp-actual-meridien');
@@ -836,26 +848,28 @@ function createHtmlAs1Eve() {
 
 function createHtmlRadio() {
     return $(
-        '<tr class="date-picker-radios">'+
-            '<td>'+
-                '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-1">'+
-                    '<input type="radio" id="option-1" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1" checked>'+
-                    '<span class="mdl-radio__label mdl-pre-upgrade">前日</span>'+
-                '</label>'+
-            '</td>'+
-            '<td>'+
-                '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-2">'+
-                    '<input type="radio" id="option-2" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
-                    '<span class="mdl-radio__label mdl-pre-upgrade">当日</span>'+
-                '</label>'+
-            '</td>'+
-            '<td>'+
-                '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-3">'+
-                    '<input type="radio" id="option-3" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
-                    '<span class="mdl-radio__label mdl-pre-upgrade">翌日</span>'+
-                '</label>'+
-            '</td>'+
-        '</tr>'
+        '<form class="date-picker-radios">'+
+            '<tr>'+
+                '<td>'+
+                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-1">'+
+                        '<input type="radio" id="option-1" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1" checked="checked">'+
+                        '<span class="mdl-radio__label mdl-pre-upgrade">前日</span>'+
+                    '</label>'+
+                '</td>'+
+                '<td>'+
+                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-2">'+
+                        '<input type="radio" id="option-2" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                        '<span class="mdl-radio__label mdl-pre-upgrade">当日</span>'+
+                    '</label>'+
+                '</td>'+
+                '<td>'+
+                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-3">'+
+                        '<input type="radio" id="option-3" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                        '<span class="mdl-radio__label mdl-pre-upgrade">翌日</span>'+
+                    '</label>'+
+                '</td>'+
+            '</tr>'+
+        '</form>'
     );
 }
 
