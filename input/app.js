@@ -6,7 +6,7 @@ var modalTipNum;
 var clickedColor;
 var loginedUser;
 var isModalOpen = false;
-var datePickerOpenedIndex;
+var mixierTime;
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
@@ -318,17 +318,33 @@ function operateAs1(doc, childSnap) {
             setDatePickerLisntener($(block).find('.time .mdl-textfield__input'))
                 .on('change', function (event, date) {
                     console.log(event, date);
-                    var tr = (this).closest('tr');
+                    var tr = $(this).parents('tr');
                     var index = tr.index();
-                    var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
+                    var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
                     var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-                    var time = moment($(event.target).val(), 'HH:mm');
+                    var time = moment($(event.target).val(), 'H:mm');
                     jsonC["eventList"][index]["cal"]["hourOfDay"] = time.hour();
                     jsonC["eventList"][index]["cal"]["minute"] = time.minute();
                     masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
-                    tr.attr('data-order', time.format('HHmm'));
+                    tr.attr('data-order', time.format('Hmm'));
                     console.log(masterJson);
+
+                    mixierTime.sort("order:asc").then(function (value2) {
+                        //todo なぜ...なぜ動作しない？？
+                        console.log(value2);
+                    });
+            });
+
+            block.find('.remove-btn').on('click', function (ev) {
+                var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+                var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+                var index = $(this).parents('tr').index();
+                jsonC["eventList"].splice(index, 1);
+                masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+                console.log(masterJson);
+
+                $(this).parents('tr').remove();
             });
 
             // setElementAsMdl(block);
@@ -346,10 +362,12 @@ function operateAs1(doc, childSnap) {
             var blocks = [];
             blocks[0] = createHtmlAs1Eve();
             setDataOrderToRangeList($(blocks[0]), count);
+            $(blocks[0]).find('.remove-btn').hide();
             blocks[1] = craeteHtmlAs1Row();
             setDataOrderToRangeList($(blocks[1]), count);
             blocks[2] = createHtmlAs1Eve();
             setDataOrderToRangeList($(blocks[2]), count);
+            $(blocks[2]).find('.remove-btn').hide();
             $(blocks[2]).addClass('range-post');
             var startInputs = $(blocks[0]).find(".mdl-textfield__input");
             setEveInputValues(startInputs, value["start"]);
@@ -362,8 +380,23 @@ function operateAs1(doc, childSnap) {
             blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
             blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
 
+            //リスナをセット
             setRangeDatePicker($(blocks[0]));
             setRangeDatePicker($(blocks[2]));
+
+            $(blocks[1]).find('.remove-btn').on('click', function (ev) {
+                var tr = $(this).closest('tr');
+                var index = tr.index() - $('#eve-add').index()-1;
+                var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
+                var dataNum = Math.floor(index/3);
+                var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+                jsonC["rangeList"].splice(dataNum, 1);
+                masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+
+                tr.prev().remove();
+                tr.next().remove();
+                tr.remove();
+            });
 
             for(var i=0; i<blocks.length; i++){
                 // var element = blocks[i].cloneNode(true);
@@ -377,7 +410,7 @@ function operateAs1(doc, childSnap) {
     var addRangeBtn = createAssEveRow('range-add', 1000000);
     doc.children[1].children[0].appendChild(addRangeBtn[0]);
 
-    var mixier = mixitup('tbody', {
+    mixierTime = mixitup('tbody', {
         load: {
             sort: 'order:asc'
         },
@@ -388,11 +421,11 @@ function operateAs1(doc, childSnap) {
             effects: "fade translateZ(-100px)"
         },
         selectors: {
-            target: 'tbody tr'
+            target: 'tr'
         }
     });
 
-    mixier.sort("order:asc");
+    mixierTime.sort("order:asc");
 
     setElementAsMdl(doc);
 }
@@ -402,7 +435,7 @@ function setDataOrderToEveList(block, hourOfDay, min) {
     var time = moment();
     time.hour(hourOfDay);
     time.minute(min);
-    $(block).attr('data-order', time.format('HHmm'));
+    $(block).attr('data-order', time.format('Hmm'));
 }
 
 function setDataOrderToRangeList(block, rangeNum) {
@@ -412,7 +445,7 @@ function setDataOrderToRangeList(block, rangeNum) {
 function setRangeDatePicker(block) {
     var input = block.find('input').eq(0);
     setDatePickerLisntener(input)
-        .on('beforeChange', function (event, date) {
+        .on('change', function (event, date) {
             var index = $(this).closest('tr').index() - $('#eve-add').index()-1;
             var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
             var dataNum = Math.floor(index/3);
@@ -430,7 +463,7 @@ function setRangeDatePicker(block) {
             }
 
             var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-            var time = moment($(event.target).val(), 'HH:mm');
+            var time = moment($(event.target).val(), 'H:mm');
             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["hourOfDay"] = time.hour();
             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["minute"] = time.minute();
 
@@ -459,7 +492,7 @@ function setDatePickerLisntener(ele) {
     return ele.bootstrapMaterialDatePicker({
         date: false,
         shortTime: false,
-        format: 'HH:mm'
+        format: 'H:mm'
     }).on('open', function (event) {
         isModalOpen = true;
     }).on('close', function (event) {
@@ -959,14 +992,17 @@ function createAssEveRow(id, dataOrder) {
 }
 
 function craeteHtmlAs1Row() {
-    var clone = document.createElement("tr");
-    clone.innerHTML =
+    return $(
         '<tr>' +
-            '<td>' +
-                '<i class="fas fa-angle-double-down icon_down">' +'</i>' +
+            '<td colspan="3">' +
+                '<i class="fas fa-angle-double-down icon_down"></i>' +
             '</td>' +
-        '</tr>';
-    return clone;
+            '<td colspan="1">' +
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
+                    '<i class="fas fa-times"></i>' +
+                '</button>' +
+            '</td>' +
+        '</tr>')[0];
 }
 
 function showModal() {
