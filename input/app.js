@@ -301,6 +301,14 @@ function operateAs1(doc, childSnap) {
             // changeTimeColor(block, value);
             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
             block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+            var row = $('.dtp-actual-meridien');
+            createHtmlRadio().insertBefore(row);
+            row.hide();
+            $(block).find('.time .mdl-textfield__input').bootstrapMaterialDatePicker({
+                date: false,
+                shortTime: false,
+                format: 'HH:mm'
+            });
 
             setElementAsMdl(block);
             doc.children[1].children[0].appendChild(block);
@@ -744,7 +752,7 @@ function createHtmlAs1Eve() {
                 '<form action="#" class="time colored">' +
                     '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
                         '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" id="sample">' +
-                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
+                        // '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
                     '</div>' +
                 '</form>' +
             '</td>' +
@@ -774,6 +782,31 @@ function createHtmlAs1Eve() {
             '</td>'+
         '</tr>'
     )[0];
+}
+
+function createHtmlRadio() {
+    return $(
+        '<tr class="date-picker-radios">'+
+            '<td>'+
+                '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-1">'+
+                    '<input type="radio" id="option-1" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1" checked>'+
+                    '<span class="mdl-radio__label mdl-pre-upgrade">前日</span>'+
+                '</label>'+
+            '</td>'+
+            '<td>'+
+                '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-2">'+
+                    '<input type="radio" id="option-2" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                    '<span class="mdl-radio__label mdl-pre-upgrade">当日</span>'+
+                '</label>'+
+            '</td>'+
+            '<td>'+
+                '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-3">'+
+                    '<input type="radio" id="option-3" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                    '<span class="mdl-radio__label mdl-pre-upgrade">翌日</span>'+
+                '</label>'+
+            '</td>'+
+        '</tr>'
+    );
 }
 
 function appendDateBtn() {

@@ -179,6 +179,23 @@ body {
 
 }
 
+/*datePickerまわり*/
+
+.btn {
+    margin-left: 16px;
+    cursor: pointer;
+}
+
+.dtp-btn-cancel {
+    cursor: pointer;
+}
+
+.date-picker-radios {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
 .time_input {
     /*text-align: center;*/
     /*font-weight: bold;*/
