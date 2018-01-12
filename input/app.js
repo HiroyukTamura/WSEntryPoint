@@ -305,25 +305,17 @@ function operateAs1(doc, childSnap) {
             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
             block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
 
-            $(block).find('.time .mdl-textfield__input').bootstrapMaterialDatePicker({
-                date: false,
-                shortTime: false,
-                format: 'HH:mm'
-            }).on('open', function (event) {
-                isModalOpen = true;
-                // datePickerOpenedIndex = $(this).closest('tr').index();
-            }).on('close', function (event) {
-                isModalOpen = false;
-            }).on('change', function (event, date) {
-                console.log(event, date);
-                var index = $(this).closest('tr').index();
-                var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
-                var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-                var time = moment($(event.target).val(), 'HH:mm');
-                jsonC["eventList"][index]["cal"]["hourOfDay"] = time.hour();
-                jsonC["eventList"][index]["cal"]["minute"] = time.minute();
-                masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-                console.log(masterJson);
+            setDatePickerLisntener($(block).find('.time .mdl-textfield__input'))
+                .on('change', function (event, date) {
+                    console.log(event, date);
+                    var index = $(this).closest('tr').index();
+                    var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
+                    var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+                    var time = moment($(event.target).val(), 'HH:mm');
+                    jsonC["eventList"][index]["cal"]["hourOfDay"] = time.hour();
+                    jsonC["eventList"][index]["cal"]["minute"] = time.minute();
+                    masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+                    console.log(masterJson);
             });
 
             // setElementAsMdl(block);
@@ -371,17 +363,39 @@ function operateAs1(doc, childSnap) {
 
 function setRangeDatePicker(block) {
     var input = block.find('input').eq(0);
-    input.bootstrapMaterialDatePicker({
-        date: false,
-        shortTime: false,
-        format: 'HH:mm'
-    }).on('open', function (event) {
+    setDatePickerLisntener(input)
+        .on('beforeChange', function (event, date) {
+            var index = $(this).closest('tr').index() - $('#eve-add').index()-1;
+            var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
+            var dataNum = Math.floor(index/3);
+            console.log(dataNum, index%3);
+            var startOrEnd;
+            switch (index%3) {
+                case 0:
+                    startOrEnd = 'start';
+                    break;
+                case 2:
+                    startOrEnd = 'end';
+                    break;
+                default:
+                    return;
+            }
 
-        isModalOpen = true;
-    }).on('close', function (event) {
-        isModalOpen = false;
-    }).on('beforeChange', function (event, date) {
-        console.log(event, date);
+            var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+            var time = moment($(event.target).val(), 'HH:mm');
+            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["hourOfDay"] = time.hour();
+            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["minute"] = time.minute();
+
+            var n = index%3;
+            if(n === 2)
+                n = 1;
+
+            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["offset"]
+                = $('.dtp').eq(jsonC["eventList"].length + dataNum*2 +n)
+                    .find('.date-picker-radios input:checked')
+                    .parent().index() -1;
+            masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+            console.log(masterJson);
     });
 
     var datePickers = $('.dtp-actual-meridien');
@@ -391,6 +405,18 @@ function setRangeDatePicker(block) {
     var row = datePickers.eq(datePickers.length-1);
     radios.insertBefore(row);
     row.hide();
+}
+
+function setDatePickerLisntener(ele) {
+    return ele.bootstrapMaterialDatePicker({
+        date: false,
+        shortTime: false,
+        format: 'HH:mm'
+    }).on('open', function (event) {
+        isModalOpen = true;
+    }).on('close', function (event) {
+        isModalOpen = false;
+    });
 }
 
 function operateAs2(doc, childSnap) {
