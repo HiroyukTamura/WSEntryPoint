@@ -257,22 +257,45 @@ body {
     border: 3px solid transparent;
 }
 
+/*タイムイベント系*/
 tbody .circle {
     width: 10px;
     height: 10px;
     cursor: default;
 }
 
-tbody .mdl-textfield__input {
+tbody .mdl-textfield {
     padding-bottom: 0;
+    padding-right: 16px;
 }
 
-.range-date-btn {
-    margin: 0 16px;
+tbody .mdl-textfield__input {
+    padding: 0;
 }
 
-.range-date-btn i {
-    color: gray;
+tbody .fa-times {
+    color: #BCBCBC;
+}
+
+tbody .remove_btn {
+
+}
+
+.add-eve-row {
+    /*padding-top: 20px;*/
+}
+
+.add-eve-row td {
+    text-align: center;
+    padding-top: 16px;
+}
+
+.add-eve-row button {
+    display: inline-block;
+}
+
+.add-eve-row i {
+    color: #BCBCBC;
 }
 
 .circle :hover{
@@ -511,6 +534,14 @@ td {
 
 .mdl-chip .fa-check {
     margin-left: 8px;
+}
+
+.mdl-chip__text {
+    cursor: pointer;
+}
+
+.mdl-chip .mdl-chip__action i:hover{
+    color: #BCBCBC;
 }
 
 /*.mdl-chip{*/

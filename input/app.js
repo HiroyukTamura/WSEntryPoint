@@ -5,6 +5,7 @@ var modalDataNum;
 var modalTipNum;
 var clickedColor;
 var loginedUser;
+var isModalOpen = false;
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
@@ -55,6 +56,7 @@ function init() {
 
                 if (!snapshot.exists()) {
                     console.log("テンプレ存在せず！うわー！");
+                    //todo エラー処理
                     return;
                 }
 
@@ -301,19 +303,24 @@ function operateAs1(doc, childSnap) {
             // changeTimeColor(block, value);
             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
             block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-            var row = $('.dtp-actual-meridien');
-            createHtmlRadio().insertBefore(row);
-            row.hide();
+
             $(block).find('.time .mdl-textfield__input').bootstrapMaterialDatePicker({
                 date: false,
                 shortTime: false,
                 format: 'HH:mm'
+            }).on('open', function (event) {
+                isModalOpen = true;
+            }).on('close', function (event) {
+                isModalOpen = false;
             });
 
-            setElementAsMdl(block);
+            // setElementAsMdl(block);
             doc.children[1].children[0].appendChild(block);
         });
     }
+
+    var addRowBtn = createAssEveRow('eve-add');
+    doc.children[1].children[0].appendChild(addRowBtn[0]);
 
     if(json["rangeList"]){
         json["rangeList"].forEach(function (value) {
@@ -334,14 +341,44 @@ function operateAs1(doc, childSnap) {
             blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
             blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
 
-            console.log(blocks.length);
+            setRangeDatePicker($(blocks[0]));
+            setRangeDatePicker($(blocks[2]));
+
             for(var i=0; i<blocks.length; i++){
-                var element = blocks[i].cloneNode(true);
-                setElementAsMdl(element);
-                doc.children[1].children[0].appendChild(element);
+                // var element = blocks[i].cloneNode(true);
+                doc.children[1].children[0].appendChild(blocks[i]);
             }
         });
     }
+
+    var addRangeBtn = createAssEveRow('range-add');
+    doc.children[1].children[0].appendChild(addRangeBtn[0]);
+
+    setElementAsMdl(doc);
+}
+
+function setRangeDatePicker(block) {
+    var input = block.find('input').eq(0);
+    input.bootstrapMaterialDatePicker({
+        date: false,
+        shortTime: false,
+        format: 'HH:mm'
+    }).on('open', function (event) {
+        console.log('nnn');
+        isModalOpen = true;
+    }).on('close', function (event) {
+        isModalOpen = false;
+    }).on('beforeChange', function (event, date) {
+
+    });
+
+    var datePickers = $('.dtp-actual-meridien');
+
+    // datePickerを整備
+    var radios = createHtmlRadio();
+    var row = datePickers.eq(datePickers.length-1);
+    radios.insertBefore(row);
+    row.hide();
 }
 
 function operateAs2(doc, childSnap) {
@@ -378,6 +415,12 @@ function operateAs2(doc, childSnap) {
 
             showModal();
         };
+
+        $(clone).find('.mdl-chip__action i').on('click', function (e) {
+            e.preventDefault();
+            console.log('delete clicked');
+            return false;
+        });
 
         pool.append(clone);
 
@@ -696,7 +739,7 @@ function setElementAsMdl(clone) {
 function createElementWithHeader(dataNum, dataType) {
     var doc = $('<div>', {
         class: "card mix",
-        "data-order": dataNum.toString()
+        // "data-order": dataNum.toString()
     });
     var id = "card_title_" + dataNum;
     var pre = '<span class="ele_header">' +
@@ -777,8 +820,15 @@ function createHtmlAs1Eve() {
                     '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
                         '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample3">' +
                         '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample3">イベント名</label>' +
+                        // '<span class="mdl-textfield__error mdl-pre-upgrade">文字を入力してください</span>' +
                     '</div>' +
                 '</form>' +
+            '</td>'+
+
+            '<td>'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
+                    '<i class="fas fa-times"></i>' +
+                '</button>' +
             '</td>'+
         '</tr>'
     )[0];
@@ -809,15 +859,15 @@ function createHtmlRadio() {
     );
 }
 
-function appendDateBtn() {
+function createAssEveRow(id) {
     return $(
-        '<td>'+
-            '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="checkbox-1">'+
-                '<input type="checkbox" id="checkbox-1" class="mdl-checkbox__input mdl-pre-upgradet" checked>'+
-                '<span class="mdl-checkbox__label mdl-pre-upgrade">前日</span>'+
-            '</label>'+
-        '</td>'
-        );
+        '<tr class="add-eve-row" id="'+ id +'">'+
+            '<td colspan="4">'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade">' +
+                    '<i class="material-icons">add</i>' +
+                '</button>'+
+            '</tr>'+
+        '</td>');
 }
 
 function craeteHtmlAs1Row() {
