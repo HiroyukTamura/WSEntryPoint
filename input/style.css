@@ -250,6 +250,14 @@ tbody .mdl-textfield__input {
     padding-bottom: 0;
 }
 
+.range-date-btn {
+    margin: 0 16px;
+}
+
+.range-date-btn i {
+    color: gray;
+}
+
 .circle :hover{
     border-color: #00bbff;
 }

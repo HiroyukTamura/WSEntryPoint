@@ -734,46 +734,57 @@ function createElementWithHeader(dataNum, dataType) {
 }
 
 function createHtmlAs1Eve() {
-    var clone = document.createElement('tr');
-    clone.innerHTML =
-    '<td class="circle_wrapper">' +
-        '<div class="circle">' +'</div>' +
-    '</td>' +
+    return $(
+        '<tr>'+
+            '<td class="circle_wrapper">' +
+                '<div class="circle">' +'</div>' +
+            '</td>' +
 
-    '<td>' +
-        '<form action="#" class="time colored">' +
-            '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-                '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" id="sample">' +
-                '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
-            '</div>' +
-        '</form>' +
-    '</td>' +
-    //
-    // '<td>' +
-    //
-    //     '<p class="colon colored">:</p>' +
-    // '</td>' +
-    //
-    // '<td>' +
-    //     '<form action="#" class="min colored">' +
-    //         '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-    //             '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="[0-5]{1}[0-9]{1}" id="sample2">' +
-    //             '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample2">' +'</label>' +
-    //             '<span class="mdl-textfield__error mdl-pre-upgrade">Error</span>' +
-    //         '</div>' +
-    //     '</form>' +
-    // '</td>' +
+            '<td>' +
+                '<form action="#" class="time colored">' +
+                    '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
+                        '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" id="sample">' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
+                    '</div>' +
+                '</form>' +
+            '</td>' +
+        //
+        // '<td>' +
+        //
+        //     '<p class="colon colored">:</p>' +
+        // '</td>' +
+        //
+        // '<td>' +
+        //     '<form action="#" class="min colored">' +
+        //         '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
+        //             '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="[0-5]{1}[0-9]{1}" id="sample2">' +
+        //             '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample2">' +'</label>' +
+        //             '<span class="mdl-textfield__error mdl-pre-upgrade">Error</span>' +
+        //         '</div>' +
+        //     '</form>' +
+        // '</td>' +
 
-    '<td>' +
-        '<form action="#" class="event_name">' +
-            '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-                '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample3">' +
-                '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample3">イベント名</label>' +
-            '</div>' +
-        '</form>' +
-    '</td>';
+            '<td>' +
+                '<form action="#" class="event_name">' +
+                    '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
+                        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample3">' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample3">イベント名</label>' +
+                    '</div>' +
+                '</form>' +
+            '</td>'+
+        '</tr>'
+    )[0];
+}
 
-    return clone;
+function appendDateBtn() {
+    return $(
+        '<td>'+
+            '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="checkbox-1">'+
+                '<input type="checkbox" id="checkbox-1" class="mdl-checkbox__input mdl-pre-upgradet" checked>'+
+                '<span class="mdl-checkbox__label mdl-pre-upgrade">前日</span>'+
+            '</label>'+
+        '</td>'
+        );
 }
 
 function craeteHtmlAs1Row() {
