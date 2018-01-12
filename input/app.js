@@ -231,8 +231,8 @@ function getHighLightedColor(num) {
 // }
 
 function setEveInputValues(inputs, value) {
-    inputs[0].setAttribute("value", format0to00(value["cal"]["hourOfDay"]) + ":" + format0to00(value["cal"]["minute"]));
-    inputs[1].setAttribute("value", value["name"]);
+    inputs.eq(0).attr("value", format0to00(value["cal"]["hourOfDay"]) + ":" + format0to00(value["cal"]["minute"]));
+    inputs.eq(1).attr("value", value["name"]);
 }
 
 function format0to00(value) {
@@ -275,15 +275,22 @@ function setHeaderTitle(doc, childSnap) {
 }
 
 function createTable() {
-    var table = document.createElement("table");
-    table.setAttribute("class", "card_block");
-    table.innerHTML = "<tbody></tbody>";
+    var table =  $('<table>', {
+        class: "card_block"
+    });
+    table.html('<tbody></tbody>');
     return table;
 }
 
 //region **************operate系*******************
+/**
+ * data-orderに関して: dayEveについてはdata-orderの値はYYmmとする
+ * dayEveの追加ボタンは10000とする
+ * @param doc
+ * @param childSnap
+ */
 function operateAs1(doc, childSnap) {
-    doc.appendChild(createTable());
+    $(doc).append(createTable());
 
     var json = JSON.parse(childSnap["data"]["0"]);
 
@@ -291,7 +298,7 @@ function operateAs1(doc, childSnap) {
 
         json["eventList"].forEach(function (value) {
             var block = $(createHtmlAs1Eve());
-            var inputs = block.getElementsByClassName("mdl-textfield__input");
+            var inputs = block.find(".mdl-textfield__input");
             setEveInputValues(inputs, value);
 
             //時刻の色を変える
@@ -305,11 +312,8 @@ function operateAs1(doc, childSnap) {
             // changeTimeColor(block, value);
             // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
             // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-            block.find('.circle').css('background-clor', getColor(value["colorNum"]));
-            var time = moment();
-            time.hour(value['cal']['hourOfDay']);
-            time.minute(value['cal']['minute']);
-            $(block).attr('data-order', time.format('HHmm'));
+            block.find('.circle').css('background-color', getColor(value["colorNum"]));
+            setDataOrderToEveList(block, value['cal']['hourOfDay'], value['cal']['minute']);
 
             setDatePickerLisntener($(block).find('.time .mdl-textfield__input'))
                 .on('change', function (event, date) {
@@ -328,39 +332,28 @@ function operateAs1(doc, childSnap) {
             });
 
             // setElementAsMdl(block);
-            doc.children[1].children[0].appendChild(block);
+            $(doc.children[1].children[0]).append(block);
         });
     }
 
-    var mixier = mixitup('tbody', {
-        load: {
-            sort: 'order:asc'
-        },
-        animation: {
-            duration: 250,
-            nudge: true,
-            reverseOut: false,
-            effects: "fade translateZ(-100px)"
-        },
-        selectors: {
-            target: '.card'
-        }
-    });
-
-    var addRowBtn = createAssEveRow('eve-add');
+    var addRowBtn = createAssEveRow('eve-add', 10000);
     doc.children[1].children[0].appendChild(addRowBtn[0]);
 
     if(json["rangeList"]){
+        var count = 0;
         json["rangeList"].forEach(function (value) {
             // var clone = document.getElementById("dummy").getElementsByClassName("card-block")[0].cloneNode(true);
             var blocks = [];
             blocks[0] = createHtmlAs1Eve();
+            setDataOrderToRangeList($(blocks[0]), count);
             blocks[1] = craeteHtmlAs1Row();
+            setDataOrderToRangeList($(blocks[1]), count);
             blocks[2] = createHtmlAs1Eve();
+            setDataOrderToRangeList($(blocks[2]), count);
             $(blocks[2]).addClass('range-post');
-            var startInputs = blocks[0].getElementsByClassName("mdl-textfield__input");
+            var startInputs = $(blocks[0]).find(".mdl-textfield__input");
             setEveInputValues(startInputs, value["start"]);
-            var endInputs = blocks[2].getElementsByClassName("mdl-textfield__input");
+            var endInputs = $(blocks[2]).find(".mdl-textfield__input");
             setEveInputValues(endInputs, value["end"]);
 
             blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
@@ -376,13 +369,44 @@ function operateAs1(doc, childSnap) {
                 // var element = blocks[i].cloneNode(true);
                 doc.children[1].children[0].appendChild(blocks[i]);
             }
+
+            count++;
         });
     }
 
-    var addRangeBtn = createAssEveRow('range-add');
+    var addRangeBtn = createAssEveRow('range-add', 1000000);
     doc.children[1].children[0].appendChild(addRangeBtn[0]);
 
+    var mixier = mixitup('tbody', {
+        load: {
+            sort: 'order:asc'
+        },
+        animation: {
+            duration: 250,
+            nudge: true,
+            reverseOut: false,
+            effects: "fade translateZ(-100px)"
+        },
+        selectors: {
+            target: 'tbody tr'
+        }
+    });
+
+    mixier.sort("order:asc");
+
     setElementAsMdl(doc);
+}
+
+function setDataOrderToEveList(block, hourOfDay, min) {
+    //date-orderを付加
+    var time = moment();
+    time.hour(hourOfDay);
+    time.minute(min);
+    $(block).attr('data-order', time.format('HHmm'));
+}
+
+function setDataOrderToRangeList(block, rangeNum) {
+    block.attr('data-order', rangeNum + 10000);
 }
 
 function setRangeDatePicker(block) {
@@ -923,9 +947,9 @@ function createHtmlRadio() {
     );
 }
 
-function createAssEveRow(id) {
+function createAssEveRow(id, dataOrder) {
     return $(
-        '<tr class="add-eve-row" id="'+ id +'">'+
+        '<tr class="add-eve-row" id="'+ id +'"'+ 'data-order="'+ dataOrder +'">'+
             '<td colspan="4">'+
                 '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade">' +
                     '<i class="material-icons">add</i>' +
