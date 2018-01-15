@@ -231,7 +231,7 @@ function getHighLightedColor(num) {
 // }
 
 function setEveInputValues(inputs, value) {
-    inputs.eq(0).attr("value", format0to00(value["cal"]["hourOfDay"]) + ":" + format0to00(value["cal"]["minute"]));
+    inputs.eq(0).attr("value", value["cal"]["hourOfDay"] + ":" + format0to00(value["cal"]["minute"]));
     inputs.eq(1).attr("value", value["name"]);
 }
 
@@ -294,73 +294,29 @@ function operateAs1(doc, childSnap) {
 
     var json = JSON.parse(childSnap["data"]["0"]);
 
-    if(json["eventList"]){
-
-        json["eventList"].forEach(function (value) {
-            var block = $(createHtmlAs1Eve());
-            var inputs = block.find(".mdl-textfield__input");
-            setEveInputValues(inputs, value);
-
-            //時刻の色を変える
-            // var coloreds = block.getElementsByClassName("colored");
-            // var color = getColor(value["colorNum"]);
-            // console.log(coloreds.length);
-            // for (var i=0; i<coloreds.length; i++){
-            //     console.log(i);
-            //     coloreds[i].style.color = color;
-            // }
-            // changeTimeColor(block, value);
-            // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
-            // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-            block.find('.circle').css('background-color', getColor(value["colorNum"]));
-            setDataOrderToEveList(block, value['cal']['hourOfDay'], value['cal']['minute']);
-
-            setDatePickerLisntener($(block).find('.time .mdl-textfield__input'))
-                .on('change', function (event, date) {
-                    console.log(event, date);
-                    var tr = $(this).parents('tr');
-                    var index = tr.index();
-                    var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
-                    var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-                    var time = moment($(event.target).val(), 'H:mm');
-                    jsonC["eventList"][index]["cal"]["hourOfDay"] = time.hour();
-                    jsonC["eventList"][index]["cal"]["minute"] = time.minute();
-                    masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-
-                    tr.attr('data-order', time.format('Hmm'));
-                    console.log(masterJson);
-
-                    mixierTime.sort("order:asc").then(function (value2) {
-                        //todo なぜ...なぜ動作しない？？
-                        console.log(value2);
-                    });
-            });
-
-            block.find('.remove-btn').on('click', function (ev) {
-                var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
-                var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-                var index = $(this).parents('tr').index();
-                jsonC["eventList"].splice(index, 1);
-                masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-                console.log(masterJson);
-
-                $(this).parents('tr').remove();
-            });
-
-            // setElementAsMdl(block);
-            $(doc.children[1].children[0]).append(block);
-        });
-    }
-
     var addRowBtn = createAssEveRow('eve-add', 10000);
     addRowBtn.on('click', function (e) {
         console.log('addRowBtn click');
-    });
+        var value = createNewTimeEveData();
+        createOneEveRow(doc, value);
+        var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+        var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+        jsonC['eventList'].push(value);
+        masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
+        console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
+        setElementAsMdl(doc);
+        mixierTime.sort("order:asc");
+    });
     doc.children[1].children[0].appendChild(addRowBtn[0]);
 
-    var count = 1;//#eve-add のdata-orderは10000なので、eveListのdata-orderは10001スタートにしたい
+    if(json["eventList"]){
+        json["eventList"].forEach(function (value) {
+            createOneEveRow(doc, value)
+        });
+    }
 
+    var count = 1;//#eve-add のdata-orderは10000なので、eveListのdata-orderは10001スタートにしたい
     var addRangeBtn = createAssEveRow('range-add', 1000000);
 
     addRangeBtn.on('click', function (e) {
@@ -375,7 +331,6 @@ function operateAs1(doc, childSnap) {
 
         createOneRangeRow(doc, count, newRangeData);
         setElementAsMdl(doc);
-
         console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
 
         count++;
@@ -412,6 +367,7 @@ function operateAs1(doc, childSnap) {
     setElementAsMdl(doc);
 }
 
+//region 新規TimeEve/RangeEve作成処理
 function createOneRangeRow(doc, count, value) {
 
     var blocks = [];
@@ -456,15 +412,85 @@ function createOneRangeRow(doc, count, value) {
 
     for(var i=0; i<blocks.length; i++){
         // var element = blocks[i].cloneNode(true);
-        var addBtn = $(doc).find('#range-add');
-        if(addBtn) {
-            //on cllick時ではこっちにくる
-            $(blocks[i]).insertBefore(addBtn);
-        }
-        // else {
-        //     doc.children[1].children[0].appendChild(blocks[i]);
-        // }
+        //おわかりかと思うが、このロジックが正常に動作するためには、{#range-add}を先にdomに追加しないといけない
+        $(blocks[i]).insertBefore($(doc).find('#range-add'));
     }
+}
+
+function createOneEveRow(doc, value) {
+    console.log(value);
+
+    var block = $(createHtmlAs1Eve());
+    var inputs = block.find(".mdl-textfield__input");
+    setEveInputValues(inputs, value);
+
+    //時刻の色を変える
+    // var coloreds = block.getElementsByClassName("colored");
+    // var color = getColor(value["colorNum"]);
+    // console.log(coloreds.length);
+    // for (var i=0; i<coloreds.length; i++){
+    //     console.log(i);
+    //     coloreds[i].style.color = color;
+    // }
+    // changeTimeColor(block, value);
+    // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
+    // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+    block.find('.circle').css('background-color', getColor(value["colorNum"]));
+    setDataOrderToEveList(block, value['cal']['hourOfDay'], value['cal']['minute']);
+
+    setDatePickerLisntener($(block).find('.time .mdl-textfield__input'))
+        .on('change', function (event, date) {
+            console.log(event, date);
+            var tr = $(this).parents('tr');
+            var index = tr.index();
+            var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+            var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+            var time = moment($(event.target).val(), 'H:mm');
+            jsonC["eventList"][index]["cal"]["hourOfDay"] = time.hour();
+            jsonC["eventList"][index]["cal"]["minute"] = time.minute();
+            masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+
+            tr.attr('data-order', time.format('Hmm'));
+            console.log(masterJson);
+
+            mixierTime.sort("order:asc").then(function (value2) {
+                //todo なぜ...なぜ動作しない？？
+                console.log(value2);
+            });
+        });
+
+    block.find('.remove-btn').on('click', function (ev) {
+        var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+        var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+        var index = $(this).parents('tr').index();
+        jsonC["eventList"].splice(index, 1);
+        masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+        console.log(masterJson);
+
+        $(this).parents('tr').remove();
+    });
+
+    block.insertBefore($(doc).find('#eve-add'));
+}
+
+//region 新規イベントデータ作成
+function createNewTimeEveData() {
+    var today = moment();
+
+    var value  = {};
+    value['colorNum'] = 0;
+    value['offset'] = 0;
+    value['name'] = '新しいイベント';
+
+    value['cal'] = {};
+    value['cal']['year'] = today.year();
+    value['cal']['month'] = today.month();
+    value['cal']['dayOfMonth'] = today.date();
+    value['cal']['hourOfDay'] = today.hour();
+    value['cal']['minute'] = today.minute();
+    value['cal']['second'] = 0;
+
+    return value;
 }
 
 function createNewRangeData() {
@@ -475,6 +501,7 @@ function createNewRangeData() {
     value['start'] = {};
     value['start']['colorNum'] = 0;
     value['start']['name'] = '開始';
+    value['start']['offset'] = 0;
 
     value['start']['cal'] = {};
     value['start']['cal']['year'] = today.year();
@@ -487,6 +514,7 @@ function createNewRangeData() {
     value['end'] = {};
     value['end']['colorNum'] = 0;
     value['end']['name'] = '終了';
+    value['end']['offset'] = 0;
 
     value['end']['cal'] = {};
     value['end']['cal']['year'] = today.year();
@@ -498,6 +526,7 @@ function createNewRangeData() {
 
     return value;
 }
+//endregion
 
 function setDataOrderToEveList(block, hourOfDay, min) {
     //date-orderを付加
