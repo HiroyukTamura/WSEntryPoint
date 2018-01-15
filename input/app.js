@@ -353,62 +353,44 @@ function operateAs1(doc, childSnap) {
     }
 
     var addRowBtn = createAssEveRow('eve-add', 10000);
+    addRowBtn.on('click', function (e) {
+        console.log('addRowBtn click');
+    });
+
     doc.children[1].children[0].appendChild(addRowBtn[0]);
 
+    var count = 1;//#eve-add のdata-orderは10000なので、eveListのdata-orderは10001スタートにしたい
+
+    var addRangeBtn = createAssEveRow('range-add', 1000000);
+
+    addRangeBtn.on('click', function (e) {
+        console.log('addRangeBtn clicked');
+        var newRangeData = createNewRangeData();
+        // json["rangeList"].push(newRangeData);
+
+        var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+        var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+        jsonC['rangeList'].push(newRangeData);
+        masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+
+        createOneRangeRow(doc, count, newRangeData);
+        setElementAsMdl(doc);
+
+        console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
+
+        count++;
+    });
+
+    doc.children[1].children[0].appendChild(addRangeBtn[0]);
+
     if(json["rangeList"]){
-        var count = 0;
         json["rangeList"].forEach(function (value) {
             // var clone = document.getElementById("dummy").getElementsByClassName("card-block")[0].cloneNode(true);
-            var blocks = [];
-            blocks[0] = createHtmlAs1Eve();
-            setDataOrderToRangeList($(blocks[0]), count);
-            $(blocks[0]).find('.remove-btn').hide();
-            blocks[1] = craeteHtmlAs1Row();
-            setDataOrderToRangeList($(blocks[1]), count);
-            blocks[2] = createHtmlAs1Eve();
-            setDataOrderToRangeList($(blocks[2]), count);
-            $(blocks[2]).find('.remove-btn').hide();
-            $(blocks[2]).addClass('range-post');
-            var startInputs = $(blocks[0]).find(".mdl-textfield__input");
-            setEveInputValues(startInputs, value["start"]);
-            var endInputs = $(blocks[2]).find(".mdl-textfield__input");
-            setEveInputValues(endInputs, value["end"]);
-
-            blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-            // changeTimeColor(blocks[0], value);
-            // changeTimeColor(blocks[2], value);
-            blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-            blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
-
-            //リスナをセット
-            setRangeDatePicker($(blocks[0]));
-            setRangeDatePicker($(blocks[2]));
-
-            $(blocks[1]).find('.remove-btn').on('click', function (ev) {
-                var tr = $(this).closest('tr');
-                var index = tr.index() - $('#eve-add').index()-1;
-                var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
-                var dataNum = Math.floor(index/3);
-                var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-                jsonC["rangeList"].splice(dataNum, 1);
-                masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-
-                tr.prev().remove();
-                tr.next().remove();
-                tr.remove();
-            });
-
-            for(var i=0; i<blocks.length; i++){
-                // var element = blocks[i].cloneNode(true);
-                doc.children[1].children[0].appendChild(blocks[i]);
-            }
-
+            console.log(value);
+            createOneRangeRow(doc, count, value);
             count++;
         });
     }
-
-    var addRangeBtn = createAssEveRow('range-add', 1000000);
-    doc.children[1].children[0].appendChild(addRangeBtn[0]);
 
     mixierTime = mixitup('tbody', {
         load: {
@@ -428,6 +410,93 @@ function operateAs1(doc, childSnap) {
     mixierTime.sort("order:asc");
 
     setElementAsMdl(doc);
+}
+
+function createOneRangeRow(doc, count, value) {
+
+    var blocks = [];
+    blocks[0] = createHtmlAs1Eve();
+    setDataOrderToRangeList($(blocks[0]), count);
+    $(blocks[0]).find('.remove-btn').hide();
+    blocks[1] = craeteHtmlAs1Row();
+    setDataOrderToRangeList($(blocks[1]), count);
+    blocks[2] = createHtmlAs1Eve();
+    setDataOrderToRangeList($(blocks[2]), count);
+    $(blocks[2]).find('.remove-btn').hide();
+    $(blocks[2]).addClass('range-post');
+    var startInputs = $(blocks[0]).find(".mdl-textfield__input");
+    setEveInputValues(startInputs, value["start"]);
+    var endInputs = $(blocks[2]).find(".mdl-textfield__input");
+    setEveInputValues(endInputs, value["end"]);
+
+    blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+    // changeTimeColor(blocks[0], value);
+    // changeTimeColor(blocks[2], value);
+    blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
+    blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
+
+    //リスナをセット
+    setRangeDatePicker($(blocks[0]));
+    setRangeDatePicker($(blocks[2]));
+
+    $(blocks[1]).find('.remove-btn').on('click', function (ev) {
+        var tr = $(this).closest('tr');
+        var index = tr.index() - $('#eve-add').index()-1;
+        var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
+        var dataNum = Math.floor(index/3);
+        var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+        jsonC["rangeList"].splice(dataNum, 1);
+        masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+
+        tr.prev().remove();
+        tr.next().remove();
+        tr.remove();
+    });
+
+
+    for(var i=0; i<blocks.length; i++){
+        // var element = blocks[i].cloneNode(true);
+        var addBtn = $(doc).find('#range-add');
+        if(addBtn) {
+            //on cllick時ではこっちにくる
+            $(blocks[i]).insertBefore(addBtn);
+        }
+        // else {
+        //     doc.children[1].children[0].appendChild(blocks[i]);
+        // }
+    }
+}
+
+function createNewRangeData() {
+    var today = moment();
+
+    var value  = {};
+    value['colorNum'] = 0;
+    value['start'] = {};
+    value['start']['colorNum'] = 0;
+    value['start']['name'] = '開始';
+
+    value['start']['cal'] = {};
+    value['start']['cal']['year'] = today.year();
+    value['start']['cal']['month'] = today.month();
+    value['start']['cal']['dayOfMonth'] = today.date();
+    value['start']['cal']['hourOfDay'] = 0;
+    value['start']['cal']['minute'] = 0;
+    value['start']['cal']['second'] = 0;
+
+    value['end'] = {};
+    value['end']['colorNum'] = 0;
+    value['end']['name'] = '終了';
+
+    value['end']['cal'] = {};
+    value['end']['cal']['year'] = today.year();
+    value['end']['cal']['month'] = today.month();
+    value['end']['cal']['dayOfMonth'] = today.date();
+    value['end']['cal']['hourOfDay'] = 0;
+    value['end']['cal']['minute'] = 0;
+    value['end']['cal']['second'] = 0;
+
+    return value;
 }
 
 function setDataOrderToEveList(block, hourOfDay, min) {
