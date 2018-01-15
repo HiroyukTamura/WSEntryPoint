@@ -599,43 +599,58 @@ function setDatePickerLisntener(ele) {
 }
 
 function operateAs2(doc, childSnap) {
-    var pool = document.createElement("div");
-    pool.setAttribute("class", "tag_pool");
+    var pool = $('<div>', {
+        class: "tag_pool"
+    });
 
     var count = 0;
+
     Object.keys(childSnap["data"]).forEach(function (key) {
         var splited = childSnap["data"][key].split(delimiter);
         var clone = createHtmlAs2();
 
         setTagUi(clone, splited);
 
-        clone.setAttribute("index", count);
-        setElementAsMdl(clone);
+        clone.attr("index", count);
+        setElementAsMdl(clone[0]);
         // var order = clone.closest($(".card")).attr("data-order");
         // var order = clone.parentNode.parentNode.
         // console.log(order);
 
-        clone.getElementsByClassName("mdl-chip")[0].onclick = function (ev) {
-            modalDataNum = parseInt(pool.parentElement.getAttribute("data-order"));
-            modalTipNum = clone.getAttribute("index");
+        clone.find(".mdl-chip").on('click', function (e) {
+            modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
+            modalTipNum = clone.attr("index");
             var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
             clickedColor = parseInt(splited[1]);
 
             $('#modal_input').attr('value', splited[0]).val(splited[0]);
             $('.modal-circle-check').eq(parseInt(splited[1])).addClass("show");
 
-            if(splited[2] === "true"){
+            if(!!splited[2])
                 document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
-            }
 
-           // setCircleHoverEvent(index);
+            // setCircleHoverEvent(index);
 
             showModal();
-        };
+        });
 
-        $(clone).find('.mdl-chip__action i').on('click', function (e) {
+        clone.find('.mdl-chip__action i').on('click', function (e) {
             e.preventDefault();
             console.log('delete clicked');
+            var pos = clone.index();
+            var sublings = clone.siblings();
+            console.log(sublings.length);
+            for (var i=0; i<sublings.length; i++) {
+                console.log('hogehoge');
+                sublings.eq(i).attr('index', i);
+            }
+
+            var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+            masterJson[dataOrder]["data"].splice(pos, 1);
+            console.log(masterJson[dataOrder]["data"]);
+
+            clone.remove();
+
             return false;
         });
 
@@ -653,7 +668,8 @@ function operateAs2(doc, childSnap) {
         // swap(masterJson[dataPos]["data"], dragedPos, currentPos);
         // console.log(masterJson);
     });
-    doc.append(pool);
+
+    $(doc).append(pool);
 }
 
 function operateAs3(doc, childSnap, dataNum) {
@@ -1108,11 +1124,11 @@ function showModal() {
 }
 
 function createHtmlAs2() {
-    var clone = $(
+    return $(
     '<div class="tag_wrapper">'+
         '<span class="mdl-chip mdl-chip--deletable">' +
             '<span class="mdl-chip__text"></span>' +
-            '<i class="fas fa-check fa-2x mdl-chip__action"></i>' +
+            '<i class="fas fa-check fa-2x mdl-chip__action" title="初期状態で表示"></i>' +
             '<button type="button" class="mdl-chip__action"><i class="material-icons">cancel</i></button>' +
         '</span>'+
     '</div>');
@@ -1133,7 +1149,6 @@ function createHtmlAs2() {
     //         '</span>' +
     //     '</a>';
         // '<div class="mdl-tooltip" for="tooltip_delete"></div>';
-    return clone[0];
 }
 
 function createHtmlAs3(id) {

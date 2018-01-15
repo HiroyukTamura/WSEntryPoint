@@ -531,6 +531,7 @@ td {
 .tag_wrapper{
     display: inline-block;
     margin: 2px 5px;
+    cursor: pointer;
 }
 
 .mdl-chip i, .mdl-chip .fa-check{
