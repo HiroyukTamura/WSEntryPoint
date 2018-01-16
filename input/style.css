@@ -141,6 +141,10 @@ body {
     display: inline-block;
 }
 
+.align-center {
+    text-align: center;
+}
+
 #card_wrapper{
     padding: 10px 20px;
     display: -webkit-flex;
@@ -422,9 +426,25 @@ td {
 }
 
 .mdl-list {
-    padding-right: 30px;
-    padding-left: 30px;
-    padding-bottom: 20px;/*この値はmdl-textfieldのデフォルト値に合わせてる*/
+    padding-left: 24px;
+    /*padding-right: 30px;*/
+    padding-bottom: 0;
+    margin-bottom: 0;
+    /*padding-bottom: 20px;!*この値はmdl-textfieldのデフォルト値に合わせてる*!*/
+}
+
+.mdl-list .mdl-list__item {
+    margin: 8px 0 8px 16px;
+    padding: 0;
+}
+
+.mdl-list .params_check {
+    margin-right: 40px;
+    margin-left: 40px;
+}
+
+.slider .mdl-textfield{
+    width: 250px;
 }
 
 .tag_pool {
@@ -468,7 +488,6 @@ td {
 
 .params_slider {
     vertical-align: middle;
-    margin: 0;
 }
 
 .mdl-button{
@@ -509,6 +528,18 @@ td {
 .max_btn{
     cursor: pointer;
     color: #BCBCBC;
+}
+
+.add-li-btn {
+    margin: 0 auto 16px auto;
+    width: 32px;
+    height: 32px;
+    display: block;
+}
+
+.add-li-btn i {
+    color: #BCBCBC;
+    font-size: 24px;
 }
 
 /*---------タグプール系-----------*/

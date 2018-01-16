@@ -767,105 +767,115 @@ function addTagToPool(splited, count, pool) {
 }
 
 function operateAs3(doc, childSnap, dataNum) {
-    // if(childSnap["data"]){
-        var ul = document.createElement("ul");
-        ul.setAttribute("class", "demo-list-item mdl-list");
+    var ul = $('<ul>', {
+        class: "demo-list-item mdl-list"
+    });
 
-        // var liNum = 0;
-        var values = Object.values(childSnap["data"]);
-        console.log(childSnap["data"]);
+    // var liNum = 0;
+    var values = Object.values(childSnap["data"]);
+    console.log(childSnap["data"]);
 
-        for (var i=0; i<values.length; i++){
-            var splited = values[i].split(delimiter);
-            console.log(splited);
-            var witch = splited[0];
-            // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
-            var clone = createHtmlAs3(dataNum + "_" + i);
-            var paramsTitle = $(clone).find(".params_title").eq(0);
-            paramsTitle.attr("value", splited[1]);
-            paramsTitle.keyup(function (e) {
-                var index = $(this).closest("li").index();
-                masterJson[dataNum]["data"][index] = $(this).val();
-            });
+    for (var i=0; i<values.length; i++){
 
-            switch(witch){
-                case "0":
-                    $(clone).find(".params_slider").eq(0).css("display", "none");
-                    // clone.getElementsByClassName("params_slider")[0].style.display = "none";
-                    $(clone).find(".max_btn").eq(0).css("display", "none");
-                    var checkBox = $(clone).find(".mdl-checkbox__input");
+        var splited = values[i].split(delimiter);
+        console.log(splited);
+        var witch = splited[0];
+        // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
+        var clone = createHtmlAs3(dataNum + "_" + i);
+        var paramsTitle = clone.find(".params_title").eq(0);
+        paramsTitle.attr("value", splited[1]);
+        paramsTitle.keyup(function (e) {
+            var index = $(this).closest("li").index();
+            masterJson[dataNum]["data"][index] = $(this).val();
+        });
 
-                    if(splited[2] === "true"){
-                        checkBox.attr("checked", "");
-                    }
+        switch(witch){
+            case "0":
+                clone.find(".params_slider").hide();
+                // clone.getElementsByClassName("params_slider")[0].style.display = "none";
+                clone.find(".max_btn").parent().hide();
+                var checkBox = clone.find(".mdl-checkbox__input");
 
-                    //checkBox event
-                    checkBox.change(function () {
-                        var index = $(this).closest("li").index();
-                        var values = masterJson[dataNum]["data"][index].split(delimiter);
-                        values[2] = $(this).is(':checked').toString();
-                        masterJson[dataNum]["data"][index] = values.join(delimiter);
-                        console.log(masterJson[dataNum]["data"][index]);
-                    });
-                    break;
+                if(splited[2] === "true"){
+                    checkBox.attr("checked", "");
+                }
 
-                case "1":
-                    $(clone).find(".params_check").eq(0).css("display", "none");
-                    // clone.getElementsByClassName("params_check")[0].style.display = "none";
-                    var slider = $(clone).find(".mdl-slider").eq(0);
-                    // var slider = clone.getElementsByClassName("mdl-slider")[0];
-                    slider.attr("value", splited[2]);
-                    slider.attr("max", splited[3]);
-                    slider.change(function () {
-                        var index = $(this).closest("li").index();
-                        var values = masterJson[dataNum]["data"][index].split(delimiter);
-                        values[2] = $(this).val();
-                        masterJson[dataNum]["data"][index] = values.join(delimiter);
-                        console.log(masterJson[dataNum]["data"][index]);
-                    });
+                //checkBox event
+                checkBox.change(function () {
+                    var index = $(this).closest("li").index();
+                    var values = masterJson[dataNum]["data"][index].split(delimiter);
+                    values[2] = $(this).is(':checked').toString();
+                    masterJson[dataNum]["data"][index] = values.join(delimiter);
+                    console.log(masterJson[dataNum]["data"][index]);
+                });
+                break;
 
-                    // var toolTip = $('div', {class: 'mdl-tooltip'});
-                    // toolTip.html("最大値を変更");
-                    var maxBtn = $(clone).find(".max_btn").eq(0).parent();
-                    var id = "max_btn_" + dataNum + "_" + $(maxBtn).closest("li").index();
-                    maxBtn.attr("id", id);
-                    // toolTip.attr("data-mdl-for", id);
-                    // maxBtn.click(function () {
-                    //     console.log("clicked");
-                    // });
-                    // $(clone.children[0]).append(toolTip);
-                    var dropDown = $(
-                        '<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">' +
-                    '<li class="mdl-menu__item">Some Action</li>' +
-                '<li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>' +
-                '<li disabled class="mdl-menu__item">Disabled Action</li>' +
-                '<li class="mdl-menu__item">Yet Another Action</li>' +
-                '</ul>'
-                );
-                    document.body.appendChild(dropDown[0]);
-                    // $("body").append(dropDown);
-                    break;
-            }
+            case "1":
+                clone.addClass('slider');
+                clone.find(".params_check").hide();
+                // clone.getElementsByClassName("params_check")[0].style.display = "none";
+                var slider = clone.find(".mdl-slider");
+                // var slider = clone.getElementsByClassName("mdl-slider")[0];
+                slider.attr("value", splited[2]);
+                slider.attr("max", splited[3]);
+                slider.change(function () {
+                    var index = $(this).closest("li").index();
+                    var values = masterJson[dataNum]["data"][index].split(delimiter);
+                    values[2] = $(this).val();
+                    masterJson[dataNum]["data"][index] = values.join(delimiter);
+                    console.log(masterJson[dataNum]["data"][index]);
+                });
 
-            ul.appendChild(clone.children[0]);
+                // var toolTip = $('div', {class: 'mdl-tooltip'});
+                // toolTip.html("最大値を変更");
+                // var maxBtn = $(clone).find(".max_btn").parent();
+                // var id = "max_btn_" + dataNum + "_" + $(maxBtn).closest("li").index();
+                // maxBtn.attr("id", id);
+                // toolTip.attr("data-mdl-for", id);
+                // maxBtn.click(function () {
+                //     console.log("clicked");
+                // });
+                // $(clone.children[0]).append(toolTip);
+                // var dropDown = $(
+                //     '<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">' +
+                //         '<li class="mdl-menu__item">Some Action</li>' +
+                //         '<li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>' +
+                //         '<li disabled class="mdl-menu__item">Disabled Action</li>' +
+                //         '<li class="mdl-menu__item">Yet Another Action</li>' +
+                //     '</ul>');
+                // document.body.appendChild(dropDown[0]);
+                // $("body").append(dropDown);
+                break;
         }
 
-        setElementAsMdl(ul);
+        ul.append(clone);
+    }
 
-        doc.appendChild(ul);
+    var addLiBtn = createAddLiBtn()
+        .on('click', function (e) {
+            e.preventDefault();
+            console.log(e);
+            return false;
+    });
 
-        var oldPos;
-        dragula([ul], {
-            moves: function (el, container, handle) {
-                return handle.classList.contains('drag_btn_i');
-            }
-        }).on('drop', function (el) {
-            var currentPos = $(el).index();
-            masterJson[dataNum]["data"].move(oldPos, currentPos);
-            console.log(masterJson);
-        }).on('drag', function (el) {
-            oldPos = $(el).index();
-        });
+    // $(doc).addClass('align-center');
+    $(doc).append(ul);
+    $(doc).append(addLiBtn);
+
+    setElementAsMdl(doc);
+
+    var oldPos;
+    dragula([ul[0]], {
+        moves: function (el, container, handle) {
+            return handle.classList.contains('drag_btn_i');
+        }
+    }).on('drop', function (el) {
+        var currentPos = $(el).index();
+        masterJson[dataNum]["data"].move(oldPos, currentPos);
+        console.log(masterJson);
+    }).on('drag', function (el) {
+        oldPos = $(el).index();
+    });
 }
 
 function operateAs4(doc, childSnap) {
@@ -873,11 +883,11 @@ function operateAs4(doc, childSnap) {
     // var clone = document.getElementById("comment_dummy").cloneNode(true);
     var summery = getCommentAsNullable(childSnap);
     if(summery){
-        clone.getElementsByClassName("mdl-textfield__input")[0].setAttribute("value", summery);
+        clone.find(".mdl-textfield__input").attr("value", summery);
     }
 
-    setElementAsMdl(clone);
-    doc.appendChild(clone);
+    setElementAsMdl(clone[0]);
+    $(doc).append(clone);
 }
 //endregion
 
@@ -1263,57 +1273,67 @@ function createHtmlAs2() {
 }
 
 function createAddTagBtn() {
-    return $('<button class="mdl-button mdl-js-button mdl-button--icon remove_btn tag-add-btn mdl-pre-upgrade">' +
+    return $('<button class="mdl-button mdl-js-button mdl-button--icon tag-add-btn mdl-pre-upgrade">' +
         '<i class="material-icons">add_circle</i>' +
     '</button>');
 }
 
+function createAddLiBtn() {
+    return $(
+        // '<li class="mdl-list__item mdl-pre-upgrade add-li">'+
+            '<button class="mdl-button mdl-js-button mdl-button--icon add-li-btn mdl-pre-upgrade">' +
+                '<i class="material-icons">add_circle</i>' +
+            '</button>'
+        // '</li>'
+    );
+}
+
 function createHtmlAs3(id) {
-    var clone = document.createElement("ul");
-    clone.setAttribute("class", "demo-list-item mdl-list mdl-pre-upgrade");
     var checkId = "checkId" + id;
     var inputId = "inputId" + id;
-    clone.innerHTML =
-        '<li class="mdl-list__item mdl-pre-upgrade">'+
-            '<i class="fas fa-bars drag_btn_i"></i>'+
+    return $(
+        // '<ul class="demo-list-item mdl-list mdl-pre-upgrade">'+
+            '<li class="mdl-list__item mdl-pre-upgrade">'+
+                '<i class="fas fa-bars drag_btn_i"></i>'+
 
-            '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                '<form action="#">' +
-                    '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
-                        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
-                        '<label class="mdl-textfield__label" for="'+inputId+'"></label>' +
-                    '</div>' +
-                '</form>' +
-            '</span>'+
+                '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                    '<form action="#">' +
+                        '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
+                            '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
+                            '<label class="mdl-textfield__label" for="'+inputId+'"></label>' +
+                        '</div>' +
+                    '</form>' +
+                '</span>'+
 
-            '<span class="mdl-list__item-secondary-action params_check">'+
-                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + checkId +'">'+
-                    '<input type="checkbox" id="' + checkId + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
-                '</label>'+
-            '</span>'+
+                '<span class="mdl-list__item-secondary-action params_check">'+
+                    '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + checkId +'">'+
+                        '<input type="checkbox" id="' + checkId + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
+                    '</label>'+
+                '</span>'+
 
-            '<p class="slider_wrapper params_slider" style="width:300px">'+
-                '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" id="s1" min="0" max="5" value="3" step="1">'+
-            '</p>'+
+                // '<button class="mdl-button mdl-js-button mdl-button--icon">' +
+                //     '<i class="fas fa-arrows-alt-h max_btn"></i>' +
+                // '</button>'+
 
-            '<button class="mdl-button mdl-js-button mdl-button--icon">' +
-                '<i class="fas fa-arrows-alt-h max_btn"></i>' +
-            '</button>'+
-        '</li>';
-    return clone;
+                '<p class="slider_wrapper params_slider">'+
+                    '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" id="s1" min="0" max="5" value="3" step="1">'+
+                '</p>'+
+            '</li>'
+        // '</ul>'
+    );
 }
 
 function createHtmlAs4() {
-    var clone = document.createElement("div");
-    clone.innerHTML =
-        '<div id="comment_dummy">'+
-            '<form action="#" class="comment_form">' +
-                '<div class="mdl-textfield mdl-js-textfield comment mdl-pre-upgrade">' +
-                    '<textarea class="mdl-textfield__input comment_ta mdl-pre-upgrade" type="text" rows= "3" id="comment" ></textarea>' +
-                    '<label class="mdl-textfield__label mdl-pre-upgrade" for="comment">Text...</label>' +
-                '</div>' +
-            '</form>' +
-        '</div>';
-    return clone;
+    return $(
+        '<div>'+
+            '<div id="comment_dummy">'+
+                '<form action="#" class="comment_form">' +
+                    '<div class="mdl-textfield mdl-js-textfield comment mdl-pre-upgrade">' +
+                        '<textarea class="mdl-textfield__input comment_ta mdl-pre-upgrade" type="text" rows= "3" id="comment" ></textarea>' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="comment">Text...</label>' +
+                    '</div>' +
+                '</form>' +
+            '</div>'+
+        '</div>');
 }
 //endregion
