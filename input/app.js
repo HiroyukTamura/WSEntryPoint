@@ -94,15 +94,6 @@ function init() {
 
                 }
 
-                var myDataset = [];
-                var cards = $('#card_wrapper').find('.card-wrapper-i');
-                for(var p=0; p<cards.length; p++){
-                    var set = {};
-                    set['id'] = p;
-                    set['obj'] = cards.eq(p);
-                    myDataset.push(set);
-                }
-
                 var mixier = mixitup('#card_wrapper', {
                     // load: {
                     //     sort: 'order:asc'
@@ -117,8 +108,6 @@ function init() {
                         target: '.card-wrapper-i'
                     }
                 });
-
-                console.log(myDataset);
 
                 $(".ele_header_button").on('click', function (e) {
                     e.preventDefault();
@@ -695,11 +684,15 @@ function operateAs2(doc, childSnap) {
         count++;
     });
 
-    //todo 動作しない・addBtnはドラッグさせないようにしないとね　
-    dragula([pool]).on('drop', function (el) {
+    //todo 動作しない・addBtnはドラッグさせないようにしないとね
+    dragula([pool[0]],{
+        moves: function (el, container, handle) {
+            return !(handle.classList.contains('tag-add-btn') || handle.classList.contains('material-icons'))
+        }
+    }).on('drop', function (el) {
         var currentPos = $(el).index();
         var dragedPos = $(el).attr("index");
-        var dataPos = parseInt($(pool).parents('.card-wrapper-i').attr("data-order"));
+        var dataPos = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
         masterJson[dataPos]["data"].move(dragedPos, currentPos);
         console.log(masterJson);
         // swap(masterJson[dataPos]["data"], dragedPos, currentPos);
