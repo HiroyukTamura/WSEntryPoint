@@ -6,6 +6,7 @@ var modalTipNum;
 var clickedColor;
 var loginedUser;
 var isModalOpen = false;
+var isModalForNewTag = false;
 var mixierTime;
 
 Array.prototype.move = function(from, to) {
@@ -607,69 +608,133 @@ function operateAs2(doc, childSnap) {
 
     Object.keys(childSnap["data"]).forEach(function (key) {
         var splited = childSnap["data"][key].split(delimiter);
-        var clone = createHtmlAs2();
+        addTagToPool(splited, count, pool);
 
-        setTagUi(clone, splited);
-
-        clone.attr("index", count);
-        setElementAsMdl(clone[0]);
-        // var order = clone.closest($(".card")).attr("data-order");
-        // var order = clone.parentNode.parentNode.
-        // console.log(order);
-
-        clone.find(".mdl-chip").on('click', function (e) {
-            modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
-            modalTipNum = clone.attr("index");
-            var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
-            clickedColor = parseInt(splited[1]);
-
-            $('#modal_input').attr('value', splited[0]).val(splited[0]);
-            $('.modal-circle-check').eq(parseInt(splited[1])).addClass("show");
-
-            if(!!splited[2])
-                document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
-
-            // setCircleHoverEvent(index);
-
-            showModal();
-        });
-
-        clone.find('.mdl-chip__action i').on('click', function (e) {
-            e.preventDefault();
-            console.log('delete clicked');
-            var pos = clone.index();
-            var sublings = clone.siblings();
-            console.log(sublings.length);
-            for (var i=0; i<sublings.length; i++) {
-                console.log('hogehoge');
-                sublings.eq(i).attr('index', i);
-            }
-
-            var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
-            masterJson[dataOrder]["data"].splice(pos, 1);
-            console.log(masterJson[dataOrder]["data"]);
-
-            clone.remove();
-
-            return false;
-        });
-
-        pool.append(clone);
+        // var clone = createHtmlAs2();
+        //
+        // setTagUi(clone, splited);
+        //
+        // clone.attr("index", count);
+        // setElementAsMdl(clone[0]);
+        //
+        // clone.find(".mdl-chip").on('click', function (e) {
+        //     modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
+        //     modalTipNum = clone.attr("index");
+        //     var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
+        //     clickedColor = parseInt(splited[1]);
+        //
+        //     $('#modal_input').attr('value', splited[0]).val(splited[0]);
+        //     $('.modal-circle-check').eq(parseInt(splited[1])).addClass("show");
+        //
+        //     if(!!splited[2])
+        //         document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
+        //
+        //     // setCircleHoverEvent(index);
+        //
+        //     showModal();
+        // });
+        //
+        // clone.find('.mdl-chip__action i').on('click', function (e) {
+        //     e.preventDefault();
+        //     console.log('delete clicked');
+        //     var pos = clone.index();
+        //     var sublings = clone.siblings();
+        //     console.log(sublings.length);
+        //     for (var i=0; i<sublings.length; i++) {
+        //         console.log('hogehoge');
+        //         sublings.eq(i).attr('index', i);
+        //     }
+        //
+        //     var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+        //     masterJson[dataOrder]["data"].splice(pos, 1);
+        //     console.log(masterJson[dataOrder]["data"]);
+        //
+        //     clone.remove();
+        //
+        //     return false;
+        // });
+        //
+        // pool.append(clone);
 
         count++;
     });
 
+    //todo 動作しない・addBtnはドラッグさせないようにしないとね　
     dragula([pool]).on('drop', function (el) {
         var currentPos = $(el).index();
         var dragedPos = $(el).attr("index");
-        var dataPos = parseInt($(pool).parent().attr("data-order"));
+        var dataPos = parseInt($(pool).parents('.card-wrapper-i').attr("data-order"));
         masterJson[dataPos]["data"].move(dragedPos, currentPos);
         console.log(masterJson);
         // swap(masterJson[dataPos]["data"], dragedPos, currentPos);
         // console.log(masterJson);
     });
 
+    var addTagBtn = createAddTagBtn();
+    addTagBtn.on('click', function (e) {
+        console.log('addBtn clicked');
+        isModalForNewTag = true;
+        clickedColor = 0;
+        modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
+        $('.modal-circle-check').eq(0).addClass("show");
+        showModal();
+        return false;
+    });
+    pool.append(addTagBtn);
+
     $(doc).append(pool);
+}
+
+function addTagToPool(splited, count, pool) {
+    var clone = createHtmlAs2();
+
+    setTagUi(clone, splited);
+
+    clone.attr("index", count);
+    setElementAsMdl(clone[0]);
+
+    clone.find(".mdl-chip").on('click', function (e) {
+        modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
+        modalTipNum = clone.attr("index");
+        var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
+        clickedColor = parseInt(splited[1]);
+
+        $('#modal_input').attr('value', splited[0]).val(splited[0]);
+        $('.modal-circle-check').eq(parseInt(splited[1])).addClass("show");
+
+        if(!!splited[2])
+            document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
+
+        // setCircleHoverEvent(index);
+
+        showModal();
+    });
+
+    clone.find('.mdl-chip__action i').on('click', function (e) {
+        e.preventDefault();
+        console.log('delete clicked');
+        var pos = clone.index();
+        var sublings = clone.siblings();
+        console.log(sublings.length);
+        for (var i=0; i<sublings.length; i++) {
+            console.log('hogehoge');
+            sublings.eq(i).attr('index', i);
+        }
+
+        var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+        masterJson[dataOrder]["data"].splice(pos, 1);
+        console.log(masterJson[dataOrder]["data"]);
+
+        clone.remove();
+
+        return false;
+    });
+
+    var addBtn = pool.find('.tag-add-btn');
+    if(addBtn.length)
+        clone.insertBefore(addBtn);
+    else
+        clone.appendTo(pool);
 }
 
 function operateAs3(doc, childSnap, dataNum) {
@@ -821,9 +886,13 @@ function initModal() {
     });
 
     modal.on('hide.bs.modal', function () {
-        var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
-        var tip = $('.card').eq(modalDataNum).find(".tag_wrapper").eq(modalTipNum);
-        setTagUi(tip, splited);
+        if(isModalForNewTag){
+            isModalForNewTag = false;
+        } else {
+            var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
+            var tip = $('.card').eq(modalDataNum).find(".tag_wrapper").eq(modalTipNum);
+            setTagUi(tip, splited);
+        }
     });
 
     modal.on('hidden.bs.modal', function () {
@@ -845,22 +914,35 @@ function initModal() {
             return;
         }
 
-        var arr = masterJson[modalDataNum]["data"];
-        var val = Object.values(arr);
-        console.log(modalTipNum);
-        for(var i=0; i<val.length; i++){
-            if(i.toString() === modalTipNum)
-                continue;
+        if (isModalForNewTag) {
+            // console.log('てってれー', modalDataNum, clickedColor);
+            var check = $('#checkbox-modal-label').hasClass('is-checked');
+            var length = masterJson[modalDataNum]["data"].length;
+            var splited = [title, clickedColor, check];
+            masterJson[modalDataNum]["data"].push(splited.join(delimiter));
+            console.log(masterJson[modalDataNum]["data"]);
+            var pool = $('.card-wrapper-i[data-order='+modalDataNum+']').find('.tag_pool');
+            addTagToPool(splited, length, pool);
 
-            if(title === val[i].split(delimiter)[0]){
-                errorSpan.html("タグ名が重複しています");
-                input.parent().addClass('is-invalid');
-                return;
+        } else {
+            var arr = masterJson[modalDataNum]["data"];
+            var val = Object.values(arr);
+            console.log(modalTipNum);
+            for(var i=0; i<val.length; i++){
+                if(i.toString() === modalTipNum)
+                    continue;
+
+                if(title === val[i].split(delimiter)[0]){
+                    errorSpan.html("タグ名が重複しています");
+                    input.parent().addClass('is-invalid');
+                    return;
+                }
             }
+
+            var show = $('#checkbox-modal-label').hasClass('is-checked');
+            masterJson[modalDataNum]["data"][modalTipNum] = title + delimiter + clickedColor + delimiter + show;
         }
 
-        var show = $('#checkbox-modal-label').hasClass('is-checked');
-        masterJson[modalDataNum]["data"][modalTipNum] = title + delimiter + clickedColor + delimiter + show;
         console.log(masterJson);
         modal.modal('hide');
     });
@@ -1149,6 +1231,12 @@ function createHtmlAs2() {
     //         '</span>' +
     //     '</a>';
         // '<div class="mdl-tooltip" for="tooltip_delete"></div>';
+}
+
+function createAddTagBtn() {
+    return $('<button class="mdl-button mdl-js-button mdl-button--icon remove_btn tag-add-btn mdl-pre-upgrade">' +
+        '<i class="material-icons">add_circle</i>' +
+    '</button>');
 }
 
 function createHtmlAs3(id) {

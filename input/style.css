@@ -550,6 +550,16 @@ td {
     color: #BCBCBC;
 }
 
+.tag-add-btn {
+    color: #BCBCBC;
+    font-size: 24px;
+    height: 32px;
+    width: 32px;
+    margin-top: 8px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
 /*.mdl-chip{*/
     /*background-color: #F1EAE0;*/
 /*}*/
