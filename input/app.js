@@ -94,6 +94,15 @@ function init() {
 
                 }
 
+                var myDataset = [];
+                var cards = $('#card_wrapper').find('.card-wrapper-i');
+                for(var p=0; p<cards.length; p++){
+                    var set = {};
+                    set['id'] = p;
+                    set['obj'] = cards.eq(p);
+                    myDataset.push(set);
+                }
+
                 var mixier = mixitup('#card_wrapper', {
                     // load: {
                     //     sort: 'order:asc'
@@ -105,16 +114,21 @@ function init() {
                         effects: "fade translateZ(-100px)"
                     },
                     selectors: {
-                        target: '.card'
+                        target: '.card-wrapper-i'
                     }
                 });
 
-                $(".ele_header_button").click(function(e) {
+                console.log(myDataset);
+
+                $(".ele_header_button").on('click', function (e) {
                     e.preventDefault();
+
                     var index = $('.ele_header_button').index(this);
-                    var dataNum = Math.floor(index/3);//小数切り捨て
-                    console.log("dataNum: "+dataNum);
-                    var selectedCard = $("[data-order=" + dataNum + "]");
+                    var selectedCard = $(this).parents('.card-wrapper-i');
+                    var dataNum = parseInt(selectedCard.attr('data-order'));
+                    console.log("dataNum: "+dataNum, index);
+                    var newDataNum;
+                    // var newCard = $("[data-order="+ newDataNum +"]");
                     // var elements = $(".card");
                     switch (index%3){
                         case 0:
@@ -123,31 +137,50 @@ function init() {
                             selectedCard.remove();
 
                             for(var i=dataNum+1; i<masterJson.length+1; i++){
-                                console.log("ueeee");
                                 $("[data-order=" + i + "]").attr("data-order", i-1);
                             }
-                            break;
+                            return false;
+
                         case 1:
                             //最後尾は後ろにずらせない
-                            if(dataNum+1 < masterJson.length){
-                                masterJson = swap(masterJson, dataNum, dataNum+1);
-                                var nextCard = $("[data-order="+ (dataNum+1) +"]");
-                                selectedCard.attr("data-order", dataNum+1);
-                                nextCard.attr("data-order", dataNum);
-                            }
+                            if (masterJson.length === dataNum+1)
+                                return false;
+
+                            // if(dataNum+1 < masterJson.length){
+                            newDataNum = dataNum+1;
+                            masterJson = swap(masterJson, dataNum, newDataNum);
+                            var nextCard = $("[data-order="+ newDataNum +"]");
+                            selectedCard.attr("data-order", newDataNum);
+                            nextCard.attr("data-order", dataNum);
+                            // }
                             break;
+
                         case 2:
                             //最初の要素は前にずらせない masterJsonの先頭はダミー
-                            if(dataNum-1 >= 0){
-                                masterJson = swap(masterJson, dataNum, dataNum-1);
-                                var prevCard = $("[data-order=" + (dataNum-1) + "]");
-                                selectedCard.attr("data-order", dataNum-1);
-                                prevCard.attr("data-order", dataNum);
-                            }
+                            if(dataNum === 0)
+                                return false;
+
+                            // if(dataNum-1 >= 0){
+                            newDataNum = dataNum-1;
+                            masterJson = swap(masterJson, dataNum, newDataNum);
+                            var prevCard = $("[data-order=" + newDataNum + "]");
+                            selectedCard.attr("data-order", newDataNum);
+                            prevCard.attr("data-order", dataNum);
+                            // } else
+                            //     return false;
                             break;
                     }
-                    console.log(masterJson);
-                    mixier.sort("order:asc");
+
+                    mixier.multimix({
+                        remove: selectedCard[0],
+                        insert: selectedCard.clone(true)[0],
+                        sort: 'order:asc'
+                    }).then(function(state) {
+                        selectedCard.remove();
+                        console.log(masterJson);
+                    });
+
+                    return false;
                 });
 
                 initCardDragging();
@@ -186,13 +219,16 @@ function initCardDragging() {
         moves: function (el, container, handle) {
             return handle.classList.contains('drag_bars');
         }
+
     }).on('drop', function (el) {
-        var cards = $(".card");
-        var prevPos = el.getAttribute("data-order");
-        var currentPos = cards.index(el);
+
+        var cards = $(".card-wrapper-i");
+        var prevPos = $(el).attr("data-order");
+        var currentPos = $(el).index();
         masterJson = swap(masterJson, prevPos, currentPos);
-        el.setAttribute("data-order", currentPos);
-        cards.eq(prevPos).attr("data-order", prevPos);
+        for(var i=0; i< cards.length; i++){
+            cards.eq(i).attr('data-order', i);
+        }
     });
 }
 
