@@ -504,10 +504,17 @@ function createOneRangeRow(doc, count, value) {
                     .on('click', function (e2) {
                         console.log('cicle clicked');
 
+                        //todo ここでは、色をmasterJsonからではなく、domから取って処理に使用している。masterJsonに適宜書き込むかどうかを含めて、一旦考えてからこれからの処理をやってください。
                         var index = $(e2.target).parents('.fa-layers').index();
                         console.log(index);
-                        //todo 次ここからです
-                        $(e.target).css('background-color', getColor(index));
+                        var newColor = getColor(index);
+                        $(e.target).css('background-color', newColor);
+                        var dataNum = $(e.target).parents('tr').attr('data-order');
+                        var trs = $(e.target).parents('tbody')
+                            .find('tr[data-order="'+ dataNum +'"]');
+                        trs.find('.circle').css('background-color', newColor);
+                        trs.find('.icon_down').css('color', newColor);
+
                         $(e2.target).parents('.circle-popover').find('.fa-check:visible').hide();
                         $(e2.target).parents('.fa-layers').find('.fa-check').show();
 
