@@ -1243,7 +1243,7 @@ function setTagUi(clone, splited) {
 
 function setOnFabClickListener() {
     $('#overlay').click('on', function (e) {
-        console.log(e);
+
     });
 }
 
