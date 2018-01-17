@@ -184,18 +184,6 @@ function init() {
             var url = "../analytics/index.html?uid=" + user.uid;
             $('.mdl-navigation__link').eq(2).attr("href", url);
 
-            tippy('[title]', {
-                updateDuration: 0,
-                dynamicTitle: false,
-                popperOptions: {
-                    modifiers: {
-                        preventOverflow: {
-                            enabled: false
-                        }
-                    }
-                }
-            });
-
         } else {
             console.log("ユーザはログアウトしたっす。");
             //todo ログアウト時の動作
@@ -321,6 +309,7 @@ function operateAs1(doc, childSnap) {
     var json = JSON.parse(childSnap["data"]["0"]);
 
     var addRowBtn = createAssEveRow('eve-add', 10000);
+
     addRowBtn.on('click', function (e) {
         console.log('addRowBtn click');
         var value = createNewTimeEveData();
@@ -391,6 +380,8 @@ function operateAs1(doc, childSnap) {
     mixierTime.sort("order:asc");
 
     setElementAsMdl(doc);
+
+    $(doc).find('[data-toggle="tooltip"]').tooltip();
 }
 
 //region 新規TimeEve/RangeEve作成処理
@@ -818,12 +809,29 @@ function operateAs3(doc, childSnap, dataNum) {
                 // var slider = clone.getElementsByClassName("mdl-slider")[0];
                 slider.attr("value", splited[2]);
                 slider.attr("max", splited[3]);
-                slider.change(function () {
+
+                slider.on('input', function (e) {
+                    console.log($(this).val());
+                    $(e.target).tooltip('hide');
+
+                }).change(function (e) {
                     var index = $(this).closest("li").index();
                     var values = masterJson[dataNum]["data"][index].split(delimiter);
                     values[2] = $(this).val();
                     masterJson[dataNum]["data"][index] = values.join(delimiter);
                     console.log(masterJson[dataNum]["data"][index]);
+
+                }).hover(function (e) {
+                        $(e.target).tooltip('show');
+                    }, function (e) {
+                        setTimeout(function () {
+                            $(e.target).tooltip('hide');
+                        }, 1500);
+                    });
+
+                slider.tooltip({
+                    trigger: 'manual',
+                    placement: 'right'
                 });
 
                 // var toolTip = $('div', {class: 'mdl-tooltip'});
@@ -1219,8 +1227,8 @@ function createAssEveRow(id, dataOrder) {
     return $(
         '<tr class="add-eve-row" id="'+ id +'"'+ 'data-order="'+ dataOrder +'">'+
             '<td colspan="4">'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade">' +
-                    '<i class="material-icons">add</i>' +
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade" data-toggle="tooltip" data-placement="top" title="項目を追加">' +
+                    '<i class="material-icons">add_circle</i>' +
                 '</button>'+
             '</tr>'+
         '</td>');
@@ -1233,7 +1241,7 @@ function craeteHtmlAs1Row() {
                 '<i class="fas fa-angle-double-down icon_down"></i>' +
             '</td>' +
             '<td colspan="1">' +
-                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn"' +
                     '<i class="fas fa-times"></i>' +
                 '</button>' +
             '</td>' +
@@ -1249,7 +1257,7 @@ function createHtmlAs2() {
     '<div class="tag_wrapper">'+
         '<span class="mdl-chip mdl-chip--deletable">' +
             '<span class="mdl-chip__text"></span>' +
-            '<i class="fas fa-check fa-2x mdl-chip__action" title="初期状態で表示"></i>' +
+            '<i class="fas fa-check fa-2x mdl-chip__action"></i>' +
             '<button type="button" class="mdl-chip__action"><i class="material-icons">cancel</i></button>' +
         '</span>'+
     '</div>');
@@ -1316,7 +1324,7 @@ function createHtmlAs3(id) {
                 // '</button>'+
 
                 '<p class="slider_wrapper params_slider">'+
-                    '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" id="s1" min="0" max="5" value="3" step="1">'+
+                    '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="tooltip" data-html="true" title="最大値を変更">'+
                 '</p>'+
             '</li>'
         // '</ul>'

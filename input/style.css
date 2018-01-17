@@ -294,9 +294,14 @@ tbody .remove_btn {
     /*padding-top: 20px;*/
 }
 
+.add-eve-row .mdl-button {
+    height: 32px;
+    width: 32px;
+}
+
 .add-eve-row td {
     text-align: center;
-    padding-top: 16px;
+    padding-top: 8px;
 }
 
 .add-eve-row button {
@@ -443,10 +448,6 @@ td {
     margin-left: 40px;
 }
 
-.slider .mdl-textfield{
-    width: 250px;
-}
-
 .tag_pool {
     padding: 20px 30px;
 }
@@ -487,7 +488,8 @@ td {
 }
 
 .params_slider {
-    vertical-align: middle;
+    vertical-align: bottom;
+    margin-bottom: 0;
 }
 
 .mdl-button{
