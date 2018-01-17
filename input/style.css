@@ -266,11 +266,10 @@ body {
     border: 3px solid transparent;
 }
 
-/*タイムイベント系*/
+/************タイムイベント系************/
 tbody .circle {
     width: 10px;
     height: 10px;
-    cursor: default;
 }
 
 tbody .mdl-textfield {
@@ -312,6 +311,8 @@ tbody .remove_btn {
     color: #BCBCBC;
 }
 
+/*///////////////タイムイベントモーダルまわり/////////////*/
+
 .circle :hover{
     border-color: #00bbff;
 }
@@ -325,19 +326,19 @@ tbody .remove_btn {
     /*border-color: #00bbff;*/
 /*}*/
 
-#circle1{
+.circle1{
     color: #C0504D;
 }
 
-#circle2{
+.circle2{
     color: #9BBB59;
 }
 
-#circle3{
+.circle3{
     color: #1F497D;
 }
 
-#circle4 {
+.circle4 {
     color: #8064A2;
 }
 
@@ -347,7 +348,7 @@ tbody .remove_btn {
 }
 
 /*override {.modal-circle-w}*/
-#modal-circle-w1{
+.modal-circle-w1{
     margin-left: 12px;
 }
 
@@ -374,6 +375,13 @@ tbody .remove_btn {
 
 #modal-circle-w {
     vertical-align: middle;
+}
+
+/*////////////タイムイベントPopOverまわり//////////////*/
+.circle-popover {
+    height: content-box;
+    margin: 8px 32px 12px 8px;
+    text-align: left;
 }
 
 #dummy {

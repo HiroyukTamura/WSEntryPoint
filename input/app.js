@@ -1,4 +1,34 @@
 const delimiter = "9mVSv";
+const TIME_POPOVER_CONFIG = {
+    trigger: 'manual',
+    placement: 'bottom',
+    content:'<div class="circle-popover">'+
+                '<span class="fa-layers modal-circle-w modal-circle-w1">'+
+                    '<i class="fas fa-circle modal-circle-i circle1"></i>'+
+                    '<i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>'+
+                '</span>'+
+                '<span class="fa-layers modal-circle-w">'+
+                    '<i class="fas fa-circle modal-circle-i circle2"></i>'+
+                    '<i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>'+
+                '</span>'+
+                '<span class="fa-layers modal-circle-w">'+
+                    '<i class="fas fa-circle modal-circle-i circle3"></i>'+
+                    '<i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>'+
+                '</span>'+
+                '<span class="fa-layers modal-circle-w">'+
+                    '<i class="fas fa-circle modal-circle-i circle4"></i>'+
+                    '<i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>'+
+                '</span>'+
+            '</div>',
+    html: true,
+    container: 'body',
+    offset: '0, 15px'
+};
+const colors = ["#C0504D", "#9BBB59", "#1F497D", "#8064A2"];
+
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
 
 var masterJson;
 var modalDataNum;
@@ -7,7 +37,6 @@ var clickedColor;
 var loginedUser;
 var isModalOpen = false;
 var isModalForNewTag = false;
-var mixierTime;
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
@@ -340,18 +369,35 @@ function operateAs1(doc, childSnap) {
         createOneEveRow(doc, value);
         var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-        jsonC['eventList'].push(value);
+        jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
         console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
         setElementAsMdl(doc);
-        mixierTime.sort("order:asc");
+
+        //todo うごかないぞタコ！
+        mixitup($(doc).find('tbody'), {
+            load: {
+                sort: 'order:asc'
+            },
+            animation: {
+                duration: 250,
+                nudge: true,
+                reverseOut: false,
+                effects: "fade translateZ(-100px)"
+            },
+            selectors: {
+                target: $(doc).find('.card_block tbody tr'),
+                control: '.mixitup-control'//@see https://goo.gl/QpW5BR
+            }
+        }).sort("order:asc");
     });
+
     doc.children[1].children[0].appendChild(addRowBtn[0]);
 
     if(json["eventList"]){
         json["eventList"].forEach(function (value) {
-            createOneEveRow(doc, value)
+            createOneEveRow(doc, value);
         });
     }
 
@@ -386,23 +432,6 @@ function operateAs1(doc, childSnap) {
         });
     }
 
-    mixierTime = mixitup('tbody', {
-        load: {
-            sort: 'order:asc'
-        },
-        animation: {
-            duration: 250,
-            nudge: true,
-            reverseOut: false,
-            effects: "fade translateZ(-100px)"
-        },
-        selectors: {
-            target: 'tr'
-        }
-    });
-
-    mixierTime.sort("order:asc");
-
     setElementAsMdl(doc);
 
     $(doc).find('[data-toggle="tooltip"]').tooltip();
@@ -418,6 +447,7 @@ function createOneRangeRow(doc, count, value) {
     blocks[1] = craeteHtmlAs1Row();
     setDataOrderToRangeList($(blocks[1]), count);
     blocks[2] = createHtmlAs1Eve();
+
     setDataOrderToRangeList($(blocks[2]), count);
     $(blocks[2]).find('.remove-btn').hide();
     $(blocks[2]).addClass('range-post');
@@ -426,11 +456,9 @@ function createOneRangeRow(doc, count, value) {
     var endInputs = $(blocks[2]).find(".mdl-textfield__input");
     setEveInputValues(endInputs, value["end"]);
 
-    blocks[0].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-    // changeTimeColor(blocks[0], value);
-    // changeTimeColor(blocks[2], value);
-    blocks[2].getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-    blocks[1].getElementsByClassName("icon_down")[0].style.color = getColor(value["colorNum"]);
+    $(blocks[0]).find('.circle').css('background-color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
+    $(blocks[2]).find('.circle').css('background-color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
+    $(blocks[1]).find('.icon_down').css('color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
 
     //リスナをセット
     setRangeDatePicker($(blocks[0]));
@@ -450,12 +478,77 @@ function createOneRangeRow(doc, count, value) {
         tr.remove();
     });
 
-
     for(var i=0; i<blocks.length; i++){
         // var element = blocks[i].cloneNode(true);
         //おわかりかと思うが、このロジックが正常に動作するためには、{#range-add}を先にdomに追加しないといけない
+        $(blocks[i]).find('.circle,.icon_down')
+            .popover(TIME_POPOVER_CONFIG)
+            .hover(function (e) {
+                    onHoverForPopover(e);
+                })
+            .on('shown.bs.popover', function (e) {
+                console.log('onShown');
+                // var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+                // var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+                var tr = $(this).parents('tr');
+                var index = tr.index();
+                var colorNum = $(e.target).attr('colorNum');
+
+                var popoverId = $(e.target).attr('aria-describedby');
+                var popover = $('#'+popoverId);
+                // var rgb = $(this).parents('tr').find('.circle').css('color').substring(4);
+                // rgb = rgb.substring(0, rgb.length-1);
+                // var colorNum = colors.indexOf(rgbToHex(rgb[0], rgb[1], rgb[2]));
+                // console.log(rgbToHex(rgb[0], rgb[1], rgb[2]));
+                popover.find('.fa-circle')
+                    .on('click', function (e2) {
+                        console.log('cicle clicked');
+
+                        var index = $(e2.target).parents('.fa-layers').index();
+                        console.log(index);
+                        //todo 次ここからです
+                        $(e.target).css('background-color', getColor(index));
+                        $(e2.target).parents('.circle-popover').find('.fa-check:visible').hide();
+                        $(e2.target).parents('.fa-layers').find('.fa-check').show();
+
+                        //todo ここどうする？
+                        // var dataOrder = $(e.target).parents(".card-wrapper-i").attr('data-order');
+                        // var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+                        // var dataNum = $(e.target).parents('tr').index();
+                        // jsonC["eventList"][dataNum]['colorNum'] = index.toString();
+                        // masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+                    });
+                var className = '.circle'+ (parseInt(colorNum)+1);
+                popover.find(className).parents('.fa-layers').find('.fa-check').show();
+                    // .eq(jsonC["rangeList"][index]['colorNum'])
+                    // .find('.fa-check').show();
+
+                $(window).hover(function (e2) {
+                    var dataOrder = $(e.target).parents(".card-wrapper-i").attr('data-order');
+                    //混迷を極めるhover判定
+                    if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')) {
+                        return false;
+                    } else if(($(e2.target).hasClass('card') || $(e2.target).parents('tr').index() === index || $(e2.target).parents('tr').index() === index+1)
+                        &&
+                        ($(e2.target).parents('.card-wrapper-i[data-order='+ dataOrder +']').length || $(e2.target).attr('data-order') == dataOrder)) {
+                        return false
+                    }
+                    console.log('hideやね', e2.target);
+                    $(e.target).popover('hide');
+                });
+
+            }).on('hidden.bs.popover', function (e) {
+                console.log('onHidden');
+                $(window).off('mouseenter mouseleave');
+            });
+
         $(blocks[i]).insertBefore($(doc).find('#range-add'));
     }
+}
+
+function onHoverForPopover(e) {
+    if(!$('.popover').length)
+        $(e.target).popover('show');
 }
 
 function createOneEveRow(doc, value) {
@@ -476,7 +569,58 @@ function createOneEveRow(doc, value) {
     // changeTimeColor(block, value);
     // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
     // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-    block.find('.circle').css('background-color', getColor(value["colorNum"]));
+    block.find('.circle').css('background-color', getColor(value["colorNum"]))
+        .popover(TIME_POPOVER_CONFIG)
+        .hover(function (e) {
+            onHoverForPopover(e);
+        })
+        .on('shown.bs.popover', function (e) {
+            console.log('onShown');
+            var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+            var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+            var tr = $(this).parents('tr');
+            var index = tr.index();
+
+            var popoverId = $(this).attr('aria-describedby');
+            var popover = $('#'+popoverId);
+            popover.find('.fa-layers')
+                .on('click', function (e2) {
+                    console.log('cicle clicked');
+
+                    var index = $(e2.target).parents('.fa-layers').index();
+                    console.log(index);
+                    $(e.target).css('background-color', getColor(index));
+                    $(e2.target).parents('.circle-popover').find('.fa-check:visible').hide();
+                    $(e2.target).parents('.fa-layers').find('.fa-check').show();
+
+                    var dataOrder = $(e.target).parents(".card-wrapper-i").attr('data-order');
+                    var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+                    var dataNum = $(e.target).parents('tr').index();
+                    jsonC["eventList"][dataNum]['colorNum'] = index.toString();
+                    masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+                })
+                .eq(jsonC["eventList"][index]['colorNum'])
+                .find('.fa-check').show();
+
+            $(window).hover(function (e2) {
+                var dataOrder = $(e.target).parents(".card-wrapper-i").attr('data-order');
+                //混迷を極めるhover判定
+                if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')) {
+                    return false;
+                } else if(($(e2.target).hasClass('card') || $(e2.target).parents('tr').index() === index || $(e2.target).parents('tr').index() === index+1)
+                    &&
+                    ($(e2.target).parents('.card-wrapper-i[data-order='+ dataOrder +']').length || $(e2.target).attr('data-order') == dataOrder)) {
+                    return false
+                }
+                console.log('hideやね', e2.target);
+                $(e.target).popover('hide');
+            });
+
+        }).on('hidden.bs.popover', function (e) {
+            console.log('onHidden');
+            $(window).off('mouseenter mouseleave');
+        });
+
     setDataOrderToEveList(block, value['cal']['hourOfDay'], value['cal']['minute']);
 
     setDatePickerLisntener($(block).find('.time .mdl-textfield__input'))
@@ -494,9 +638,25 @@ function createOneEveRow(doc, value) {
             tr.attr('data-order', time.format('Hmm'));
             console.log(masterJson);
 
-            mixierTime.sort("order:asc").then(function (value2) {
-                //todo なぜ...なぜ動作しない？？
-                console.log(value2);
+            //todo 動かないぞタコ！
+            mixitup($(doc).find('table'), {
+                load: {
+                    sort: 'order:asc'
+                },
+                animation: {
+                    duration: 250,
+                    nudge: true,
+                    reverseOut: false,
+                    effects: "fade translateZ(-100px)"
+                },
+                selectors: {
+                    target: $(doc).find('.card_block tbody tr'),
+                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
+                }
+            }).sort("order:asc").then(function (value2) {
+
+            }).catch(function (reason) {
+                console.log(reason);
             });
         });
 
@@ -702,17 +862,15 @@ function operateAs2(doc, childSnap) {
         count++;
     });
 
-    var mixier = null;
 
-    //todo 動作しない・addBtnはドラッグさせないようにしないとね
     dragula([pool[0]],{
         moves: function (el, container, handle) {
             return !(handle.classList.contains('tag-add-btn') || handle.classList.contains('material-icons'))
         }
     }).on('drop', function (el) {
         if(pool.find('.tag-add-btn').index() !== pool.children().length-1){
-            pool.removeAttr('id')
-            var mixier = mixitup(pool, {
+            pool.removeAttr('id');
+            mixitup(pool, {
                 load: {
                     sort: 'tag-order:asc'
                 },
@@ -726,8 +884,7 @@ function operateAs2(doc, childSnap) {
                     target: '.tag_wrapper,.tag-add-btn',
                     control: '.mixitup-control'//@see https://goo.gl/QpW5BR
                 }
-            });
-            mixier.sort('tag-order:asc');
+            }).sort('tag-order:asc');
         }
 
         var currentPos = $(el).index();
@@ -1306,7 +1463,7 @@ function createHtmlAs1Eve() {
     return $(
         '<tr>'+
             '<td class="circle_wrapper">' +
-                '<div class="circle">' +'</div>' +
+                '<div class="circle"></div>' +
             '</td>' +
 
             '<td>' +

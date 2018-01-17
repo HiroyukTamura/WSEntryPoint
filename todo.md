@@ -35,6 +35,9 @@
 
 ### todo input編
 * タイムイベント、色変更できるようにする
+* タイムイベント、並び替え問題
 * paramsの項目名重複を防ぐ
-* tagPoolでaddBtnが最末にくるように配置すべき
 * カード追加動作
+* popOverメソッド整理・popOver表示時popOverは表示しない
+* textFieldのplaceholderのmargin-bottomおかしい
+* つーか、masterJsonにいちいち書き込む必要って何だ？
