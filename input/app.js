@@ -771,164 +771,59 @@ function operateAs3(doc, childSnap, dataNum) {
     for (var i=0; i<values.length; i++){
 
         var splited = values[i].split(delimiter);
-        console.log(splited);
-        var witch = splited[0];
-        // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
-        var clone = createHtmlAs3(dataNum + "_" + i);
-        var paramsTitle = clone.find(".params_title").eq(0);
-        paramsTitle.attr("value", splited[1]);
-        paramsTitle.keyup(function (e) {
-            var index = $(this).closest("li").index();
-            masterJson[dataNum]["data"][index] = $(this).val();
-        });
-
-        switch(witch){
-            case "0":
-                clone.find(".params_slider").hide();
-                // clone.getElementsByClassName("params_slider")[0].style.display = "none";
-                clone.find(".max_btn").parent().hide();
-                var checkBox = clone.find(".mdl-checkbox__input");
-
-                if(splited[2] === "true"){
-                    checkBox.attr("checked", "");
-                }
-
-                //checkBox event
-                checkBox.change(function () {
-                    var index = $(this).closest("li").index();
-                    var values = masterJson[dataNum]["data"][index].split(delimiter);
-                    values[2] = $(this).is(':checked').toString();
-                    masterJson[dataNum]["data"][index] = values.join(delimiter);
-                    console.log(masterJson[dataNum]["data"][index]);
-                });
-                break;
-
-            case "1":
-                clone.addClass('slider');
-                clone.find(".params_check").hide();
-                // clone.getElementsByClassName("params_check")[0].style.display = "none";
-                var slider = clone.find(".mdl-slider");
-                // var slider = clone.getElementsByClassName("mdl-slider")[0];
-                slider.prop("value", splited[2])
-                    .prop("max", splited[3])
-                    .on('input', function (e) {
-                        e.preventDefault();
-                        $(e.target).popover('hide');
-                        return false;
-
-                    }).change(function (e) {
-                        e.preventDefault();
-                        var index = $(this).closest("li").index();
-                        var values = masterJson[dataNum]["data"][index].split(delimiter);
-                        values[2] = $(this).val();
-                        masterJson[dataNum]["data"][index] = values.join(delimiter);
-                        console.log(masterJson[dataNum]["data"][index]);
-                        return false;
-                    })
-                    .hover(function (e) {
-                        var popoverId = $(this).attr('aria-describedby');
-                        var popover = $('#'+popoverId);
-                        if(!popover.length || !popover.hasClass('show')) {
-                            console.log(popover.length, !popover.hasClass('show'), popoverId);
-                            $(e.target).popover('show');
-                        }
-                    })
-                    .popover({
-                        trigger: 'manual',
-                        placement: 'right',
-                        content: '<div class="select">'+
-                                    '<p>最大値を変更&nbsp;&nbsp;&nbsp;'+
-                                        '<select name="blood">' +
-                                            '<option value="3">3</option>' +
-                                            '<option value="4">4</option>' +
-                                            '<option value="5">5</option>' +
-                                            '<option value="6">6</option>' +
-                                            '<option value="7">7</option>' +
-                                            '<option value="8">8</option>' +
-                                            '<option value="9">9</option>' +
-                                            '<option value="10">10</option>' +
-                                        '</select>' +
-                                    '</p>'+
-                                '<div/>',
-                        html: true,
-                        container: 'body'
-                    }).on('shown.bs.popover', function (e) {
-                        console.log('shown.bs.popover', $(e.target).attr('max'));
-                        var popoverId = $(this).attr('aria-describedby');
-                        var popover = $('#'+popoverId);
-                        popover.addClass('tooltip-slider')
-                            .find('select')
-                            .val($(e.target).attr('max'))
-                            .change(function (e2) {
-                                e2.preventDefault();
-                                var newMax = $(this).val();
-                                console.log('changed', $(this).val());
-                                $(e.target).popover('hide');
-
-                                //masterJson反映
-                                var dataNum = $(e.target).parents('li').index();
-                                var dataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-                                var splited = masterJson[dataOrder]['data'][dataNum].split(delimiter);
-                                splited[3] = newMax;
-                                if (parseInt(splited[2]) > newMax) {
-                                    splited[2] = newMax;
-                                    $(e.target).val(newMax);
-                                }
-                                $(e.target).attr('max', newMax);
-
-                                masterJson[dataOrder]['data'][dataNum] = splited.join(delimiter);
-                                console.log(masterJson[dataOrder]['data']);
-                                return false;
-                            });
-                        $(window).hover(function (e2) {
-                            if($(e2.target).parents('#'+popoverId).length || $(e2.target).prop('id') === popoverId){
-                                return false;
-                            } else if($(e2.target).parents('.mdl-list__item').length || $(e2.target).hasClass('mdl-list__item')) {
-                                return false
-                            }
-                            console.log('hideやね', e2);
-                            $(e.target).popover('hide');
-                        });
-
-                    }).on('hidden.bs.popover', function (e) {
-                        var popoverId = $(this).prop('aria-describedby');
-                        $('#'+popoverId).removeClass('tooltip-slider');
-                        console.log('hover off');
-
-                        $(window).off('mouseenter mouseleave');
-                    });
-
-                // var toolTip = $('div', {class: 'mdl-tooltip'});
-                // toolTip.html("最大値を変更");
-                // var maxBtn = $(clone).find(".max_btn").parent();
-                // var id = "max_btn_" + dataNum + "_" + $(maxBtn).closest("li").index();
-                // maxBtn.attr("id", id);
-                // toolTip.attr("data-mdl-for", id);
-                // maxBtn.click(function () {
-                //     console.log("clicked");
-                // });
-                // $(clone.children[0]).append(toolTip);
-                // var dropDown = $(
-                //     '<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">' +
-                //         '<li class="mdl-menu__item">Some Action</li>' +
-                //         '<li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>' +
-                //         '<li disabled class="mdl-menu__item">Disabled Action</li>' +
-                //         '<li class="mdl-menu__item">Yet Another Action</li>' +
-                //     '</ul>');
-                // document.body.appendChild(dropDown[0]);
-                // $("body").append(dropDown);
-                break;
-        }
-
-        ul.append(clone);
+        ul.append(createParamsLi(splited, dataNum, i));
     }
 
-    var addLiBtn = createAddLiBtn()
-        .on('click', function (e) {
-            e.preventDefault();
+    var addLiBtn = createAddLiBtn();
+    addLiBtn.find('button')
+        .popover({
+            trigger: 'manual',
+            placement: 'bottom',
+            content:'<div class="param-add-popover">'+
+                        '<button type="button" class="btn btn-secondary add-checkbox">チェックボックス</button>'+
+                        '<button type="button" class="btn btn-secondary add-slider">スライダー</button>'+
+                    '</div>',
+            html: true,
+            container: 'body'
+        })
+        .hover(function (e) {
+            console.log('hover');
+            var popoverId = $(this).attr('aria-describedby');
+            var popover = $('#'+popoverId);
+            if(!popover.length || !popover.hasClass('show')) {
+                console.log(popover.length, !popover.hasClass('show'), popoverId);
+                $(e.target).popover('show');
+            }
+        })
+        .on('shown.bs.popover', function (e) {
             console.log(e);
-            return false;
-    });
+            var popoverId = $(this).attr('aria-describedby');
+            var poppover = $('#'+popoverId);
+            poppover.find('.add-slider')
+                .on('click', function (e2) {
+                    var splited = ['1', '', '3', '5'];
+                    onClickAddParamsLiBtn(splited, e, e2);
+                });
+            poppover.find('.add-checkbox')
+                .on('click', function (e2) {
+                    var splited = ['0', '', 'true'];
+                    onClickAddParamsLiBtn(splited, e, e2);
+                });
+            // var popoverId = $(this).attr('aria-describedby');
+            $(window).hover(function (e2) {
+                if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
+                    return false;
+                } else if($(e2.target).parents('.add-li-btn').length || $(e2.target).hasClass('add-li-btn')) {
+                    return false
+                }
+                console.log('hideやね', e2.target);
+                $(e.target).popover('hide');
+            });
+        })
+        .on('hidden.bs.popover', function (e) {
+            console.log(e);
+            $(window).off('mouseenter mouseleave');
+        });
 
     // $(doc).addClass('align-center');
     $(doc).append(ul);
@@ -948,6 +843,173 @@ function operateAs3(doc, childSnap, dataNum) {
     }).on('drag', function (el) {
         oldPos = $(el).index();
     });
+}
+
+function onClickAddParamsLiBtn(splited, e, e2) {
+    var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+    masterJson[currentDataOrder]['data'].push(splited.join(delimiter));
+    var ul = $(e.target).parents('.card').find('.mdl-list');
+    createParamsLi(splited, currentDataOrder, ul.length)
+        .appendTo(ul);
+    setElementAsMdl(ul[0]);
+    $(e.target).popover('hide');
+}
+
+function createParamsLi(splited, dataOrder, i) {
+    // var splited = values[i].split(delimiter);
+    console.log(splited);
+    var witch = splited[0];
+    // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
+    var clone = createHtmlAs3(dataOrder + "_" + i);
+    var paramsTitle = clone.find(".params_title").eq(0);
+    paramsTitle.attr("value", splited[1]);
+    paramsTitle.keyup(function (e) {
+        var index = $(this).closest("li").index();
+        var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
+        masterJson[currentDataOrder]["data"][index] = $(this).val();
+    });
+
+    switch(witch){
+        case "0":
+            clone.find(".params_slider").hide();
+            // clone.getElementsByClassName("params_slider")[0].style.display = "none";
+            clone.find(".max_btn").parent().hide();
+            var checkBox = clone.find(".mdl-checkbox__input");
+
+            if(splited[2] === "true"){
+                checkBox.attr("checked", "");
+            }
+
+            //checkBox event
+            checkBox.change(function () {
+                var index = $(this).closest("li").index();
+                var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
+                var values = masterJson[currentDataOrder]["data"][index].split(delimiter);
+                values[2] = $(this).is(':checked').toString();
+                masterJson[currentDataOrder]["data"][index] = values.join(delimiter);
+                console.log(masterJson[currentDataOrder]["data"][index]);
+            });
+            break;
+
+        case "1":
+            clone.addClass('slider');
+            clone.find(".params_check").hide();
+            // clone.getElementsByClassName("params_check")[0].style.display = "none";
+            var slider = clone.find(".mdl-slider");
+            // var slider = clone.getElementsByClassName("mdl-slider")[0];
+            slider.prop("value", splited[2])
+                .prop("max", splited[3])
+                .on('input', function (e) {
+                    e.preventDefault();
+                    $(e.target).popover('hide');
+                    return false;
+
+                }).change(function (e) {
+                    e.preventDefault();
+                    var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
+                    var index = $(this).closest("li").index();
+                    var values = masterJson[currentDataOrder]["data"][index].split(delimiter);
+                    values[2] = $(this).val();
+                    masterJson[currentDataOrder]["data"][index] = values.join(delimiter);
+                    console.log(masterJson[currentDataOrder]["data"][index]);
+                    return false;
+                })
+                .on('click', function (e) {
+                    var popoverId = $(this).attr('aria-describedby');
+                    var popover = $('#'+popoverId);
+                    if(!popover.length || !popover.hasClass('show')) {
+                        console.log(popover.length, !popover.hasClass('show'), popoverId);
+                        $(e.target).popover('show');
+                    }
+                })
+                .popover({
+                    trigger: 'manual',
+                    placement: 'right',
+                    content: '<div class="select">'+
+                    '<p>最大値を変更&nbsp;&nbsp;&nbsp;'+
+                        '<select name="blood">' +
+                            '<option value="3">3</option>' +
+                            '<option value="4">4</option>' +
+                            '<option value="5">5</option>' +
+                            '<option value="6">6</option>' +
+                            '<option value="7">7</option>' +
+                            '<option value="8">8</option>' +
+                            '<option value="9">9</option>' +
+                            '<option value="10">10</option>' +
+                        '</select>' +
+                        '</p>'+
+                    '<div/>',
+                    html: true,
+                    container: 'body'
+                }).on('shown.bs.popover', function (e) {
+                console.log('shown.bs.popover', $(e.target).attr('max'));
+                var popoverId = $(this).attr('aria-describedby');
+                var popover = $('#'+popoverId);
+                popover.addClass('tooltip-slider')
+                    .find('select')
+                    .val($(e.target).attr('max'))
+                    .change(function (e2) {
+                        e2.preventDefault();
+                        var newMax = $(this).val();
+                        console.log('changed', $(this).val());
+                        $(e.target).popover('hide');
+
+                        //masterJson反映
+                        var dataNum = $(e.target).parents('li').index();
+                        var dataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+                        var splited = masterJson[dataOrder]['data'][dataNum].split(delimiter);
+                        splited[3] = newMax;
+                        if (parseInt(splited[2]) > newMax) {
+                            splited[2] = newMax;
+                            $(e.target).val(newMax);
+                        }
+                        $(e.target).attr('max', newMax);
+
+                        masterJson[dataOrder]['data'][dataNum] = splited.join(delimiter);
+                        console.log(masterJson[dataOrder]['data']);
+                        return false;
+                    });
+                $(window).hover(function (e2) {
+                    if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
+                        return false;
+                    } else if($(e2.target).parents('.mdl-list__item').length || $(e2.target).hasClass('mdl-list__item')) {
+                        return false
+                    }
+                    console.log('hideやね', e2);
+                    $(e.target).popover('hide');
+                });
+
+            }).on('hidden.bs.popover', function (e) {
+                var popoverId = $(this).prop('aria-describedby');
+                $('#'+popoverId).removeClass('tooltip-slider');
+                console.log('hover off');
+
+                $(window).off('mouseenter mouseleave');
+            });
+
+            // var toolTip = $('div', {class: 'mdl-tooltip'});
+            // toolTip.html("最大値を変更");
+            // var maxBtn = $(clone).find(".max_btn").parent();
+            // var id = "max_btn_" + dataNum + "_" + $(maxBtn).closest("li").index();
+            // maxBtn.attr("id", id);
+            // toolTip.attr("data-mdl-for", id);
+            // maxBtn.click(function () {
+            //     console.log("clicked");
+            // });
+            // $(clone.children[0]).append(toolTip);
+            // var dropDown = $(
+            //     '<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">' +
+            //         '<li class="mdl-menu__item">Some Action</li>' +
+            //         '<li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>' +
+            //         '<li disabled class="mdl-menu__item">Disabled Action</li>' +
+            //         '<li class="mdl-menu__item">Yet Another Action</li>' +
+            //     '</ul>');
+            // document.body.appendChild(dropDown[0]);
+            // $("body").append(dropDown);
+            break;
+    }
+
+    return clone;
 }
 
 function operateAs4(doc, childSnap) {
@@ -1352,11 +1414,11 @@ function createAddTagBtn() {
 
 function createAddLiBtn() {
     return $(
-        // '<li class="mdl-list__item mdl-pre-upgrade add-li">'+
-            '<button class="mdl-button mdl-js-button mdl-button--icon add-li-btn mdl-pre-upgrade">' +
+        '<div class="add-li-btn">'+
+            '<button class="mdl-button mdl-js-button mdl-button--icon add-li-btn mdl-pre-upgrade" data-toggle="popover">' +
                 '<i class="material-icons">add_circle</i>' +
-            '</button>'
-        // '</li>'
+            '</button>'+
+        '</div>'
     );
 }
 

@@ -533,6 +533,11 @@ td {
 }
 
 .add-li-btn {
+    width: border-box;
+    height: fit-content;
+}
+
+.add-li-btn button{
     margin: 0 auto 16px auto;
     width: 32px;
     height: 32px;
@@ -544,6 +549,14 @@ td {
     font-size: 24px;
 }
 
+.param-add-popover {
+    display: flex;
+}
+
+.param-add-popover button{
+    margin: 8px;
+}
+
 .tooltip-slider p{
     /*text-align: center;*/
     margin: 8px;
@@ -553,7 +566,7 @@ td {
     /*margin: 0 auto;*/
 /*}*/
 
-.tooltip-slider .popover-header {
+.popover-header {
     display: none;
 }
 /*---------タグプール系-----------*/
