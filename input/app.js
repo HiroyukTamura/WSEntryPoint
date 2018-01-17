@@ -90,25 +90,9 @@ function init() {
                     }
 
                     setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
-                    document.getElementById('card_wrapper').appendChild(cardWrapper);
+                    $('.card_wrapper').append($(cardWrapper));
 
                 }
-
-                var mixier = mixitup('#card_wrapper', {
-                    // load: {
-                    //     sort: 'order:asc'
-                    // },
-                    animation: {
-                        duration: 250,
-                        nudge: true,
-                        reverseOut: false,
-                        effects: "fade translateZ(-100px)"
-                    },
-                    selectors: {
-                        target: '.card-wrapper-i',
-                        control: '.mixitup-control'//@see https://goo.gl/QpW5BR
-                    }
-                });
 
                 $(".ele_header_button").on('click', function (e) {
                     e.preventDefault();
@@ -130,12 +114,23 @@ function init() {
                                     .find('.letter3').html(i);
                             }
 
-                            mixier.multimix({
-                                remove: selectedCard[0],
-                                sort: 'order:asc'
-                            }).then(function(state) {
+                            mixitup('.card_wrapper', {
+                                animation: {
+                                    duration: 250,
+                                    nudge: true,
+                                    reverseOut: false,
+                                    effects: "fade translateZ(-100px)"
+                                },
+                                selectors: {
+                                    target: '.card-wrapper-i',
+                                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
+                                }
+                            })
+                            .remove(selectedCard[0])
+                            .then(function(state) {
                                 console.log(state);
                                 selectedCard.remove();
+                                $('.card_wrapper').removeAttr('id');
                                 console.log(masterJson);
                             });
 
@@ -151,19 +146,23 @@ function init() {
                             onSwapCard(selectedCard, dataNum, newDataNum);
                             // }
 
-                            mixier.multimix({
-                                remove: selectedCard[0],
-                                insert: {
-                                    collection: [selectedCard.clone(true)[0]],
-                                    index: newDataNum
+                            mixitup('.card_wrapper', {
+                                animation: {
+                                    duration: 250,
+                                    nudge: true,
+                                    reverseOut: false,
+                                    effects: "fade translateZ(-100px)"
                                 },
-                                sort: 'order:asc'
-                            }).then(function(state) {
+                                selectors: {
+                                    target: '.card-wrapper-i',
+                                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
+                                }
+                            }).sort('order:asc')
+                            .then(function(state) {
                                 console.log(state);
-                                selectedCard.remove();
+                                $('.card_wrapper').removeAttr('id');
                                 console.log(masterJson);
                             });
-
                             break;
 
                         case 2:
@@ -177,16 +176,22 @@ function init() {
                             // } else
                             //     return false;
 
-                            mixier.multimix({
-                                remove: selectedCard[0],
-                                insert: {
-                                    collection: [selectedCard.clone(true)[0]],
-                                    index: newDataNum
+                            mixitup('.card_wrapper', {
+                                animation: {
+                                    duration: 250,
+                                    nudge: true,
+                                    reverseOut: false,
+                                    effects: "fade translateZ(-100px)"
                                 },
-                                sort: 'order:asc'
-                            }).then(function(state) {
+                                selectors: {
+                                    target: '.card-wrapper-i',
+                                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
+                                }
+                            })
+                            .sort('order:asc')
+                            .then(function(state) {
                                 console.log(state);
-                                selectedCard.remove();
+                                $('.card_wrapper').removeAttr('id');
                                 console.log(masterJson);
                             });
 
@@ -225,7 +230,7 @@ function onSwapCard(selectedCard, dataNum, newDataNum) {
 }
 
 function initCardDragging() {
-    dragula([document.querySelector("#card_wrapper")], {
+    dragula([document.querySelector(".card_wrapper")], {
         moves: function (el, container, handle) {
             return handle.classList.contains('drag_bars');
         }
@@ -713,12 +718,34 @@ function operateAs2(doc, childSnap) {
         count++;
     });
 
+    var mixier = null;
+
     //todo 動作しない・addBtnはドラッグさせないようにしないとね
     dragula([pool[0]],{
         moves: function (el, container, handle) {
             return !(handle.classList.contains('tag-add-btn') || handle.classList.contains('material-icons'))
         }
     }).on('drop', function (el) {
+        if(pool.find('.tag-add-btn').index() !== pool.children().length-1){
+            pool.removeAttr('id')
+            var mixier = mixitup(pool, {
+                load: {
+                    sort: 'tag-order:asc'
+                },
+                animation: {
+                    duration: 250,
+                    nudge: true,
+                    reverseOut: false,
+                    effects: "fade translateZ(-100px)"
+                },
+                selectors: {
+                    target: '.tag_wrapper,.tag-add-btn',
+                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
+                }
+            });
+            mixier.sort('tag-order:asc');
+        }
+
         var currentPos = $(el).index();
         var dragedPos = $(el).attr("index");
         var dataPos = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
@@ -1399,7 +1426,7 @@ function showModal() {
 
 function createHtmlAs2() {
     return $(
-    '<div class="tag_wrapper">'+
+    '<div class="tag_wrapper" data-tag-order="0">'+
         '<span class="mdl-chip mdl-chip--deletable">' +
             '<span class="mdl-chip__text"></span>' +
             '<i class="fas fa-check fa-2x mdl-chip__action"></i>' +
@@ -1426,7 +1453,7 @@ function createHtmlAs2() {
 }
 
 function createAddTagBtn() {
-    return $('<button class="mdl-button mdl-js-button mdl-button--icon tag-add-btn mdl-pre-upgrade">' +
+    return $('<button class="mdl-button mdl-js-button mdl-button--icon tag-add-btn mdl-pre-upgrade" data-tag-order="1000">' +
         '<i class="material-icons">add_circle</i>' +
     '</button>');
 }

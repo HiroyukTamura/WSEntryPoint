@@ -145,7 +145,7 @@ body {
     text-align: center;
 }
 
-#card_wrapper{
+.card_wrapper{
     padding: 10px 20px;
     display: -webkit-flex;
     display: flex;
