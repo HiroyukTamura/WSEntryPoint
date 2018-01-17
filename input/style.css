@@ -251,11 +251,7 @@ body {
 }
 
 .range-post .mdl-textfield {
-    padding-top: 0;
-}
-
-.range-post .mdl-textfield__input{
-    padding-top: 0;
+    margin-top: -20px;
 }
 
 .circle {
@@ -289,8 +285,8 @@ tbody .fa-times {
     color: #BCBCBC;
 }
 
-tbody .remove_btn {
-
+tbody .mdl-textfield__label {
+    top: 20px;
 }
 
 .add-eve-row {

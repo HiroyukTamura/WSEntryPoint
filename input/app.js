@@ -995,7 +995,6 @@ function operateAs3(doc, childSnap, dataNum) {
     console.log(childSnap["data"]);
 
     for (var i=0; i<values.length; i++){
-
         var splited = values[i].split(delimiter);
         ul.append(createParamsLi(splited, dataNum, i));
     }
@@ -1123,7 +1122,8 @@ function createParamsLi(splited, dataOrder, i) {
                     e.preventDefault();
                     $(e.target).popover('hide');
                     return false;
-
+                }).hover(function (e) {
+                    onHoverForPopover(e);
                 }).change(function (e) {
                     e.preventDefault();
                     var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
@@ -1162,33 +1162,33 @@ function createParamsLi(splited, dataOrder, i) {
                     html: true,
                     container: 'body'
                 }).on('shown.bs.popover', function (e) {
-                console.log('shown.bs.popover', $(e.target).attr('max'));
-                var popoverId = $(this).attr('aria-describedby');
-                var popover = $('#'+popoverId);
-                popover.addClass('tooltip-slider')
-                    .find('select')
-                    .val($(e.target).attr('max'))
-                    .change(function (e2) {
-                        e2.preventDefault();
-                        var newMax = $(this).val();
-                        console.log('changed', $(this).val());
-                        $(e.target).popover('hide');
+                    console.log('shown.bs.popover', $(e.target).attr('max'));
+                    var popoverId = $(this).attr('aria-describedby');
+                    var popover = $('#'+popoverId);
+                    popover.addClass('tooltip-slider')
+                        .find('select')
+                        .val($(e.target).attr('max'))
+                        .change(function (e2) {
+                            e2.preventDefault();
+                            var newMax = $(this).val();
+                            console.log('changed', $(this).val());
+                            $(e.target).popover('hide');
 
-                        //masterJson反映
-                        var dataNum = $(e.target).parents('li').index();
-                        var dataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-                        var splited = masterJson[dataOrder]['data'][dataNum].split(delimiter);
-                        splited[3] = newMax;
-                        if (parseInt(splited[2]) > newMax) {
-                            splited[2] = newMax;
-                            $(e.target).val(newMax);
-                        }
-                        $(e.target).attr('max', newMax);
+                            //masterJson反映
+                            var dataNum = $(e.target).parents('li').index();
+                            var dataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+                            var splited = masterJson[dataOrder]['data'][dataNum].split(delimiter);
+                            splited[3] = newMax;
+                            if (parseInt(splited[2]) > newMax) {
+                                splited[2] = newMax;
+                                $(e.target).val(newMax);
+                            }
+                            $(e.target).attr('max', newMax);
 
-                        masterJson[dataOrder]['data'][dataNum] = splited.join(delimiter);
-                        console.log(masterJson[dataOrder]['data']);
-                        return false;
-                    });
+                            masterJson[dataOrder]['data'][dataNum] = splited.join(delimiter);
+                            console.log(masterJson[dataOrder]['data']);
+                            return false;
+                        });
                 $(window).hover(function (e2) {
                     if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
                         return false;
@@ -1523,6 +1523,7 @@ function createElementWithHeader(dataNum, dataType) {
 }
 
 function createHtmlAs1Eve() {
+    var random = Math.random().toString(36).slice(-8);
     return $(
         '<tr>'+
             '<td class="circle_wrapper">' +
@@ -1532,7 +1533,7 @@ function createHtmlAs1Eve() {
             '<td>' +
                 '<form action="#" class="time colored">' +
                     '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-                        '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" id="sample">' +
+                        '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text"' +
                         // '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
                     '</div>' +
                 '</form>' +
@@ -1556,8 +1557,8 @@ function createHtmlAs1Eve() {
             '<td>' +
                 '<form action="#" class="event_name">' +
                     '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-                        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample3">' +
-                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample3">イベント名</label>' +
+                        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="'+ random +'">' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ random +'">イベント名</label>' +
                         // '<span class="mdl-textfield__error mdl-pre-upgrade">文字を入力してください</span>' +
                     '</div>' +
                 '</form>' +
