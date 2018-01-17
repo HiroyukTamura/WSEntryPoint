@@ -40,6 +40,7 @@
 * popOverメソッド整理・popOver表示時popOverは表示しない
 * textFieldのplaceholderのmargin-bottomおかしい
 * つーか、masterJsonにいちいち書き込む必要って何だ？
+* 最大値変更のところの動作おかしい
 
 ### 1/18夜に回す作業
 * タイムイベント、並び替え問題 ->場合によってはmixitUpとは別のlib導入

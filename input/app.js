@@ -1242,9 +1242,9 @@ function setTagUi(clone, splited) {
 }
 
 function setOnFabClickListener() {
-    $('#overlay').click('on', function (e) {
-
-    });
+    // $('#fab-wrapper li').on('click', function (e) {
+    //     console.log('clicked');
+    // });
 }
 
 function initModal() {
