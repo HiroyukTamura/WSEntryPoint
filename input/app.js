@@ -352,11 +352,15 @@ function setHeaderTitle(doc, childSnap) {
 }
 
 function createTable() {
-    var table =  $('<table>', {
-        class: "card_block"
-    });
-    table.html('<tbody></tbody>');
-    return table;
+    return $(
+        '<div class="card_block_w">' +
+            '<table class="card_block">' +
+                '<tbody>' +
+
+                '</tbody>'+
+            '</table>'+
+        '</div>'
+    );
 }
 
 //region **************operate系*******************
@@ -404,7 +408,7 @@ function operateAs1(doc, childSnap) {
         }).sort("order:asc");
     });
 
-    doc.children[1].children[0].appendChild(addRowBtn[0]);
+    $(doc).find('tbody').append(addRowBtn);
 
     if(json["eventList"]){
         json["eventList"].forEach(function (value) {
@@ -432,7 +436,7 @@ function operateAs1(doc, childSnap) {
         count++;
     });
 
-    doc.children[1].children[0].appendChild(addRangeBtn[0]);
+    $(doc).find('tbody').append(addRangeBtn);
 
     if(json["rangeList"]){
         json["rangeList"].forEach(function (value) {
@@ -475,7 +479,7 @@ function createOneRangeRow(doc, count, value) {
 
     $(blocks[1]).find('.remove-btn').on('click', function (ev) {
         var tr = $(this).closest('tr');
-        var index = tr.index() - $('#eve-add').index()-1;
+        var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
         var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
         var dataNum = Math.floor(index/3);
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
@@ -558,7 +562,7 @@ function createOneRangeRow(doc, count, value) {
                 $(window).off('mouseenter mouseleave');
             });
 
-        $(blocks[i]).insertBefore($(doc).find('#range-add'));
+        $(blocks[i]).insertBefore($(doc).find('.range-add'));
     }
 }
 
@@ -687,7 +691,7 @@ function createOneEveRow(doc, value) {
         $(this).parents('tr').remove();
     });
 
-    block.insertBefore($(doc).find('#eve-add'));
+    block.insertBefore($(doc).find('.eve-add'));
 }
 //endregion
 
@@ -762,7 +766,7 @@ function setRangeDatePicker(block) {
     var input = block.find('input').eq(0);
     setDatePickerLisntener(input)
         .on('change', function (event, date) {
-            var index = $(this).closest('tr').index() - $('#eve-add').index()-1;
+            var index = $(this).parents('tr').index() - $(this).parents('tr').find('.eve-add').index()-1;
             var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
             var dataNum = Math.floor(index/3);
             console.log(dataNum, index%3);
@@ -1242,9 +1246,87 @@ function setTagUi(clone, splited) {
 }
 
 function setOnFabClickListener() {
-    // $('#fab-wrapper li').on('click', function (e) {
-    //     console.log('clicked');
-    // });
+    $('.sub-button').on('click', function (e) {
+
+        var dataType = 0;
+        if ($(this).hasClass('br')) {
+            //タイムイベント
+            for(var val in masterJson){
+                if(masterJson.hasOwnProperty(val) && masterJson[val]['dataType'] === 1) {
+                    //todo エラー処理
+                    console.log('エラーだよね');
+                    return;
+                }
+            }
+
+            dataType = 1;
+
+        } else if ($(this).hasClass('bl')) {
+            //リスト
+            dataType = 3;
+        } else if ($(this).hasClass('tr')) {
+            //コメント
+            dataType = 4;
+        } else if ($(this).hasClass('tl')) {
+            //タグ
+           dataType = 2;
+        }
+
+        var data = createNewData(dataType);
+        var i = masterJson.length;
+        console.log(data);
+        masterJson.push(data);
+        var cardWrapper = createElementWithHeader(i, dataType);
+        var doc = cardWrapper.children[1];
+
+        switch (dataType){
+            case 1:
+                operateAs1(doc, data);
+                break;
+            case 2:
+                operateAs2(doc, data);
+                break;
+            case 3:
+                operateAs3(doc, data);
+                break;
+            case 4:
+                operateAs4(doc, data);
+                break;
+        }
+
+        setHeaderTitle(doc, masterJson[i]);
+        $('.card_wrapper').append($(cardWrapper));
+
+        initAllTooltips();
+        $('.ele_header_button').off('click');
+        setOnClickCardHeaderBtn();
+    });
+}
+
+function createNewData(dataType) {
+    var data = {
+        dataType: dataType,
+        day: 0,
+        mon: 0,
+        year: 0
+    };
+
+    if (dataType === 2 || dataType === 3 || dataType === 4) {
+       data.dataName = '';
+    }
+
+    if (dataType === 2 || dataType === 3){
+        data.data = [];
+    } else if (dataType === 1) {
+        var jsonStr = {
+            eventList: [],
+            rangeList: []
+        };
+        data.data = {};
+        data['data']['0'] = JSON.stringify(jsonStr);
+    }
+
+    return data;
 }
 
 function initModal() {
@@ -1517,11 +1599,20 @@ function createHtmlRadio() {
     );
 }
 
-function createAssEveRow(id, dataOrder) {
+function createAssEveRow(customClass, dataOrder) {
+    var title = null;
+    switch (customClass){
+        case 'eve-add':
+            title = '項目を追加（時刻）';
+            break;
+        case 'range-add':
+            title = '項目を追加（範囲）';
+            break;
+    }
     return $(
-        '<tr class="add-eve-row" id="'+ id +'"'+ 'data-order="'+ dataOrder +'">'+
+        '<tr class="add-eve-row '+ customClass +'" data-order="'+ dataOrder +'">'+
             '<td colspan="4">'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade" data-toggle="tooltip" data-placement="top" title="項目を追加">' +
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade" data-toggle="tooltip" data-placement="top" title="'+title+'">' +
                     '<i class="material-icons">add_circle</i>' +
                 '</button>'+
             '</tr>'+

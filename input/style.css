@@ -163,6 +163,10 @@ body {
 
 /****************** time events *******************/
 .card_block {
+    width: 100%;
+}
+
+.card_block_w {
     margin: 0 36px 36px 36px;
 }
 
@@ -748,6 +752,7 @@ td {
     position: absolute;
     box-shadow: 0 2px 2px gray;
     border-radius: 50%;
+    cursor: pointer;
     right: 0;
     bottom: -28px;
     width: 56px;
@@ -781,6 +786,7 @@ td {
 .sub-button {
     position: absolute;
     display: inline-block;
+    cursor: pointer;
     background-color: #E57C3E;
     color: rgba(255,255,255,0);
     width: 28px;
@@ -839,21 +845,21 @@ td {
 }
 
 
-.tl:before {
-    content:"";
-}
+/*.tl:before {*/
+    /*content:"";*/
+/*}*/
 
-.tr:before {
-    content:"";
-}
+/*.tr:before {*/
+    /*content:"";*/
+/*}*/
 
-.bl:before {
-    content:"";
-}
+/*.bl:before {*/
+    /*content:"";*/
+/*}*/
 
-.br:before {
-    content:"";
-}
+/*.br:before {*/
+    /*content:"";*/
+/*}*/
 
 
 .add-button:hover .sub-button {

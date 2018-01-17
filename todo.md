@@ -41,6 +41,8 @@
 * textFieldのplaceholderのmargin-bottomおかしい
 * つーか、masterJsonにいちいち書き込む必要って何だ？
 * 最大値変更のところの動作おかしい
+* 前日・翌日などの表示/イベントの項目名ってmasterJson書き込みしてなくね？
+* コメントってmasterJson書き込んでる？たしかdata.commentだよな
 
 ### 1/18夜に回す作業
 * タイムイベント、並び替え問題 ->場合によってはmixitUpとは別のlib導入
