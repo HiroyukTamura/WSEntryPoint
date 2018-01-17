@@ -369,7 +369,7 @@ function operateAs1(doc, childSnap) {
         createOneEveRow(doc, value);
         var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-        jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・
+        jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・ mixitUpでソートした後、いい感じにすることだ。
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
         console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
@@ -1561,7 +1561,7 @@ function craeteHtmlAs1Row() {
                 '<i class="fas fa-angle-double-down icon_down"></i>' +
             '</td>' +
             '<td colspan="1">' +
-                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn"' +
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
                     '<i class="fas fa-times"></i>' +
                 '</button>' +
             '</td>' +
