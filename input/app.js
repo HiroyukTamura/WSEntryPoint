@@ -105,7 +105,8 @@ function init() {
                         effects: "fade translateZ(-100px)"
                     },
                     selectors: {
-                        target: '.card-wrapper-i'
+                        target: '.card-wrapper-i',
+                        control: '.mixitup-control'
                     }
                 });
 
@@ -165,6 +166,7 @@ function init() {
                         insert: selectedCard.clone(true)[0],
                         sort: 'order:asc'
                     }).then(function(state) {
+                        console.log(state);
                         selectedCard.remove();
                         console.log(masterJson);
                     });
@@ -807,32 +809,43 @@ function operateAs3(doc, childSnap, dataNum) {
                 // clone.getElementsByClassName("params_check")[0].style.display = "none";
                 var slider = clone.find(".mdl-slider");
                 // var slider = clone.getElementsByClassName("mdl-slider")[0];
-                slider.attr("value", splited[2]);
-                slider.attr("max", splited[3]);
+                slider.prop("value", splited[2])
+                    .prop("max", splited[3])
+                    .prop('title', '最大値を変更')
+                    .on('input', function (e) {
+                        e.preventDefault();
+                        console.log($(this).val());
+                        $(e.target).tooltip('hide');
+                        return false;
 
-                slider.on('input', function (e) {
-                    console.log($(this).val());
-                    $(e.target).tooltip('hide');
+                    }).change(function (e) {
+                        e.preventDefault();
+                        var index = $(this).closest("li").index();
+                        var values = masterJson[dataNum]["data"][index].split(delimiter);
+                        values[2] = $(this).val();
+                        masterJson[dataNum]["data"][index] = values.join(delimiter);
+                        console.log(masterJson[dataNum]["data"][index]);
+                        return false;
 
-                }).change(function (e) {
-                    var index = $(this).closest("li").index();
-                    var values = masterJson[dataNum]["data"][index].split(delimiter);
-                    values[2] = $(this).val();
-                    masterJson[dataNum]["data"][index] = values.join(delimiter);
-                    console.log(masterJson[dataNum]["data"][index]);
-
-                }).hover(function (e) {
+                    }).hover(function (e) {
                         $(e.target).tooltip('show');
+                        $('.tooltip .tooltip-inner').addClass('tooltip-slider')
+                            .on('click', function (event) {
+                                event.preventDefault();
+                                console.log(event);
+                                return false;
+                        });
                     }, function (e) {
                         setTimeout(function () {
+                            $('.tooltip .tooltip-inner').removeClass('tooltip-slider')
+                                .off('click');
                             $(e.target).tooltip('hide');
-                        }, 1500);
-                    });
+                        }, 2000);
 
-                slider.tooltip({
-                    trigger: 'manual',
-                    placement: 'right'
-                });
+                    }).tooltip({
+                        trigger: 'manual',
+                        placement: 'right'
+                    });
 
                 // var toolTip = $('div', {class: 'mdl-tooltip'});
                 // toolTip.html("最大値を変更");
@@ -1324,7 +1337,7 @@ function createHtmlAs3(id) {
                 // '</button>'+
 
                 '<p class="slider_wrapper params_slider">'+
-                    '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="tooltip" data-html="true" title="最大値を変更">'+
+                    '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="tooltip" data-html="true">'+
                 '</p>'+
             '</li>'
         // '</ul>'

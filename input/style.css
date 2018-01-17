@@ -544,6 +544,10 @@ td {
     font-size: 24px;
 }
 
+.tooltip-slider {
+    text-decoration: underline;
+    cursor: pointer;
+}
 /*---------タグプール系-----------*/
 
 /*.chips_btn {*/
