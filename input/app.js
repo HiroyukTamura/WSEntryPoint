@@ -853,15 +853,31 @@ function operateAs3(doc, childSnap, dataNum) {
                         html: true,
                         container: 'body'
                     }).on('shown.bs.popover', function (e) {
-                        console.log('shown.bs.popover');
+                        console.log('shown.bs.popover', $(e.target).attr('max'));
                         var popoverId = $(this).attr('aria-describedby');
                         var popover = $('#'+popoverId);
                         popover.addClass('tooltip-slider')
+                            .find('select')
+                            .val($(e.target).attr('max'))
                             .change(function (e2) {
                                 e2.preventDefault();
-                                console.log('changed', e2);
+                                var newMax = $(this).val();
+                                console.log('changed', $(this).val());
                                 $(e.target).popover('hide');
-                                //todo masterJson反映
+
+                                //masterJson反映
+                                var dataNum = $(e.target).parents('li').index();
+                                var dataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+                                var splited = masterJson[dataOrder]['data'][dataNum].split(delimiter);
+                                splited[3] = newMax;
+                                if (parseInt(splited[2]) > newMax) {
+                                    splited[2] = newMax;
+                                    $(e.target).val(newMax);
+                                }
+                                $(e.target).attr('max', newMax);
+
+                                masterJson[dataOrder]['data'][dataNum] = splited.join(delimiter);
+                                console.log(masterJson[dataOrder]['data']);
                                 return false;
                             });
                         $(window).hover(function (e2) {
@@ -873,10 +889,12 @@ function operateAs3(doc, childSnap, dataNum) {
                             console.log('hideやね', e2);
                             $(e.target).popover('hide');
                         });
+
                     }).on('hidden.bs.popover', function (e) {
                         var popoverId = $(this).prop('aria-describedby');
                         $('#'+popoverId).removeClass('tooltip-slider');
                         console.log('hover off');
+
                         $(window).off('mouseenter mouseleave');
                     });
 
