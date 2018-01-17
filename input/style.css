@@ -544,9 +544,17 @@ td {
     font-size: 24px;
 }
 
-.tooltip-slider {
-    text-decoration: underline;
-    cursor: pointer;
+.tooltip-slider p{
+    /*text-align: center;*/
+    margin: 8px;
+}
+
+/*.tooltip-slider select {*/
+    /*margin: 0 auto;*/
+/*}*/
+
+.tooltip-slider .popover-header {
+    display: none;
 }
 /*---------タグプール系-----------*/
 

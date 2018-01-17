@@ -106,7 +106,7 @@ function init() {
                     },
                     selectors: {
                         target: '.card-wrapper-i',
-                        control: '.mixitup-control'
+                        control: '.mixitup-control'//@see https://goo.gl/QpW5BR
                     }
                 });
 
@@ -811,11 +811,9 @@ function operateAs3(doc, childSnap, dataNum) {
                 // var slider = clone.getElementsByClassName("mdl-slider")[0];
                 slider.prop("value", splited[2])
                     .prop("max", splited[3])
-                    .prop('title', '最大値を変更')
                     .on('input', function (e) {
                         e.preventDefault();
-                        console.log($(this).val());
-                        $(e.target).tooltip('hide');
+                        $(e.target).popover('hide');
                         return false;
 
                     }).change(function (e) {
@@ -826,25 +824,60 @@ function operateAs3(doc, childSnap, dataNum) {
                         masterJson[dataNum]["data"][index] = values.join(delimiter);
                         console.log(masterJson[dataNum]["data"][index]);
                         return false;
-
-                    }).hover(function (e) {
-                        $(e.target).tooltip('show');
-                        $('.tooltip .tooltip-inner').addClass('tooltip-slider')
-                            .on('click', function (event) {
-                                event.preventDefault();
-                                console.log(event);
-                                return false;
-                        });
-                    }, function (e) {
-                        setTimeout(function () {
-                            $('.tooltip .tooltip-inner').removeClass('tooltip-slider')
-                                .off('click');
-                            $(e.target).tooltip('hide');
-                        }, 2000);
-
-                    }).tooltip({
+                    })
+                    .hover(function (e) {
+                        var popoverId = $(this).attr('aria-describedby');
+                        var popover = $('#'+popoverId);
+                        if(!popover.length || !popover.hasClass('show')) {
+                            console.log(popover.length, !popover.hasClass('show'), popoverId);
+                            $(e.target).popover('show');
+                        }
+                    })
+                    .popover({
                         trigger: 'manual',
-                        placement: 'right'
+                        placement: 'right',
+                        content: '<div class="select">'+
+                                    '<p>最大値を変更&nbsp;&nbsp;&nbsp;'+
+                                        '<select name="blood">' +
+                                            '<option value="3">3</option>' +
+                                            '<option value="4">4</option>' +
+                                            '<option value="5">5</option>' +
+                                            '<option value="6">6</option>' +
+                                            '<option value="7">7</option>' +
+                                            '<option value="8">8</option>' +
+                                            '<option value="9">9</option>' +
+                                            '<option value="10">10</option>' +
+                                        '</select>' +
+                                    '</p>'+
+                                '<div/>',
+                        html: true,
+                        container: 'body'
+                    }).on('shown.bs.popover', function (e) {
+                        console.log('shown.bs.popover');
+                        var popoverId = $(this).attr('aria-describedby');
+                        var popover = $('#'+popoverId);
+                        popover.addClass('tooltip-slider')
+                            .change(function (e2) {
+                                e2.preventDefault();
+                                console.log('changed', e2);
+                                $(e.target).popover('hide');
+                                //todo masterJson反映
+                                return false;
+                            });
+                        $(window).hover(function (e2) {
+                            if($(e2.target).parents('#'+popoverId).length || $(e2.target).prop('id') === popoverId){
+                                return false;
+                            } else if($(e2.target).parents('.mdl-list__item').length || $(e2.target).hasClass('mdl-list__item')) {
+                                return false
+                            }
+                            console.log('hideやね', e2);
+                            $(e.target).popover('hide');
+                        });
+                    }).on('hidden.bs.popover', function (e) {
+                        var popoverId = $(this).prop('aria-describedby');
+                        $('#'+popoverId).removeClass('tooltip-slider');
+                        console.log('hover off');
+                        $(window).off('mouseenter mouseleave');
                     });
 
                 // var toolTip = $('div', {class: 'mdl-tooltip'});
@@ -1337,7 +1370,7 @@ function createHtmlAs3(id) {
                 // '</button>'+
 
                 '<p class="slider_wrapper params_slider">'+
-                    '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="tooltip" data-html="true">'+
+                    '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="popover">'+
                 '</p>'+
             '</li>'
         // '</ul>'
