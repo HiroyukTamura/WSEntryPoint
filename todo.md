@@ -34,10 +34,13 @@
 * commentのところ、、もうちょっとやりようある
 
 ### todo input編
-* タイムイベント、色変更できるようにする
 * タイムイベント、並び替え問題
 * paramsの項目名重複を防ぐ
 * カード追加動作
 * popOverメソッド整理・popOver表示時popOverは表示しない
 * textFieldのplaceholderのmargin-bottomおかしい
 * つーか、masterJsonにいちいち書き込む必要って何だ？
+
+### 1/18夜に回す作業
+* タイムイベント、並び替え問題 ->場合によってはmixitUpとは別のlib導入
+* circleの色はmasterJsonから？それともdomから？また、masterJsonの位置づけはどうする？

@@ -126,6 +126,8 @@ function init() {
 
                 initCardDragging();
                 initModal();
+                initAllTooltips();
+                setOnFabClickListener();
                 // document.getElementById("place-holder").style.display = "none";
                 // document.getElementById("page-content-wrapper").style.display = "inline";
 
@@ -139,7 +141,16 @@ function init() {
         } else {
             console.log("ユーザはログアウトしたっす。");
             //todo ログアウト時の動作
+
+            initAllTooltips();
+            $('#overlay').hide();
         }
+    });
+}
+
+function initAllTooltips() {
+    $('[data-toggle="tooltip"]').tooltip({
+        offset: '0, 8px'
     });
 }
 
@@ -331,7 +342,7 @@ function setHeaderTitle(doc, childSnap) {
     if(childSnap["dataType"] !== 1){
         titleInput.attr("value", childSnap["dataName"]);
         titleInput.keyup(function (e) {
-            var order = $(doc).attr("data-order");
+            var order = $(doc).parents('.card-wrapper-i').attr("data-order");
             masterJson[parseInt(order)]["dataName"] = titleInput.val();
             console.log(masterJson);
         });
@@ -433,8 +444,6 @@ function operateAs1(doc, childSnap) {
     }
 
     setElementAsMdl(doc);
-
-    $(doc).find('[data-toggle="tooltip"]').tooltip();
 }
 
 ////////////////////////region 新規TimeEve/RangeEve作成処理
@@ -1000,13 +1009,7 @@ function operateAs3(doc, childSnap, dataNum) {
             container: 'body'
         })
         .hover(function (e) {
-            console.log('hover');
-            var popoverId = $(this).attr('aria-describedby');
-            var popover = $('#'+popoverId);
-            if(!popover.length || !popover.hasClass('show')) {
-                console.log(popover.length, !popover.hasClass('show'), popoverId);
-                $(e.target).popover('show');
-            }
+            onHoverForPopover(e);
         })
         .on('shown.bs.popover', function (e) {
             console.log(e);
@@ -1238,6 +1241,12 @@ function setTagUi(clone, splited) {
     $(clone).find(".mdl-chip").css("background-color", getHighLightedColor(parseInt(splited[1])));
 }
 
+function setOnFabClickListener() {
+    $('#overlay').click('on', function (e) {
+        console.log(e);
+    });
+}
+
 function initModal() {
     var modal = $('#exampleModal');
     var input = $('#modal_input');
@@ -1354,41 +1363,6 @@ function initModal() {
     // });
 }
 
-function setCircleHoverEvent(circleNum) {
-    // var circle = $('.modal-circle-i');
-    //
-    // for(var i=0; i<circle.length; i++){
-    //     if(i === circleNum)
-    //        break;
-    //
-    //     circle.mouseenter(function (e) {
-    //         $(this).next().css('display', "inline");
-    //     });
-    //     circle.mouseleave(function (e) {
-    //         $(this).next().css('display', "none");
-    //     });
-    // }
-    //
-    // $('.modal-footer-btn').eq(1).onclick(function (ev) {
-    //     var title = $('#modal_input').attr("value");
-    //
-    //     masterJson[modalDataNum]["data"][modalTipNum]
-    // });
-}
-
-// function generateRegexp () {
-//     var arr = [];
-//     $.extend(arr, masterJson[modalDataNum]["data"], true);//doing deep copy
-//     delete arr[modalTipNum];
-//     var regexp = "(";
-//     arr.forEach(function (tipVal) {
-//         regexp += "^"+ tipVal.split(delimiter)[0] +"$|";
-//     });
-//     regexp = regexp.slice(0, -1) + ")/i";//最後の"|"を削除して、そこに")/i"を付加する iはignore caseのフラグ
-//     console.log(regexp);
-//     return regexp;
-// }
-
 /**
  *
  * @param shouldShow :only "true"/"false"
@@ -1420,7 +1394,7 @@ function setElementAsMdl(clone) {
 
 function createElementWithHeader(dataNum, dataType) {
     var doc = $('<div>', {
-        class: "card mix",
+        class: "card mix"
         // "data-order": dataNum.toString()
     });
     var id = "card_title_" + dataNum;

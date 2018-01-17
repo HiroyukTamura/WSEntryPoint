@@ -683,11 +683,23 @@ td {
 }
 
 /*--------------ボタン追加系------------------*/
-#add_btn_w{
-    padding-top: 30px;
-    padding-bottom: 30px;
-    width: 100%;
-    text-align: center;
+/*#add_btn_w{*/
+    /*padding-top: 30px;*/
+    /*padding-bottom: 30px;*/
+    /*width: 100%;*/
+    /*text-align: center;*/
+/*}*/
+
+#overlay {
+    z-index: 4;
+    position: fixed;
+    right: 48px;
+    bottom: 32px;
+    background-color: #E57C3E;
+}
+
+#overlay i{
+    color: white;
 }
 
 /*.remove_btn{*/
