@@ -91,115 +91,9 @@ function init() {
 
                     setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
                     $('.card_wrapper').append($(cardWrapper));
-
                 }
 
-                $(".ele_header_button").on('click', function (e) {
-                    e.preventDefault();
-
-                    var index = $('.ele_header_button').index(this);
-                    var selectedCard = $(this).parents('.card-wrapper-i');
-                    var dataNum = parseInt(selectedCard.attr('data-order'));
-                    console.log("dataNum: "+dataNum, index);
-                    var newDataNum;
-                    // var newCard = $("[data-order="+ newDataNum +"]");
-                    // var elements = $(".card");
-                    switch (index%3){
-                        case 0:
-                            delete masterJson[dataNum];
-                            masterJson.splice(dataNum, 1);
-
-                            for(var i=dataNum+1; i<masterJson.length+1; i++){
-                                $("[data-order=" + i + "]").attr("data-order", i-1)
-                                    .find('.letter3').html(i);
-                            }
-
-                            mixitup('.card_wrapper', {
-                                animation: {
-                                    duration: 250,
-                                    nudge: true,
-                                    reverseOut: false,
-                                    effects: "fade translateZ(-100px)"
-                                },
-                                selectors: {
-                                    target: '.card-wrapper-i',
-                                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
-                                }
-                            })
-                            .remove(selectedCard[0])
-                            .then(function(state) {
-                                console.log(state);
-                                selectedCard.remove();
-                                $('.card_wrapper').removeAttr('id');
-                                console.log(masterJson);
-                            });
-
-                            break;
-
-                        case 1:
-                            //最後尾は後ろにずらせない
-                            newDataNum = dataNum+1;
-                            if (masterJson.length === newDataNum)
-                                break;
-
-                            // if(dataNum+1 < masterJson.length){
-                            onSwapCard(selectedCard, dataNum, newDataNum);
-                            // }
-
-                            mixitup('.card_wrapper', {
-                                animation: {
-                                    duration: 250,
-                                    nudge: true,
-                                    reverseOut: false,
-                                    effects: "fade translateZ(-100px)"
-                                },
-                                selectors: {
-                                    target: '.card-wrapper-i',
-                                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
-                                }
-                            }).sort('order:asc')
-                            .then(function(state) {
-                                console.log(state);
-                                $('.card_wrapper').removeAttr('id');
-                                console.log(masterJson);
-                            });
-                            break;
-
-                        case 2:
-                            //最初の要素は前にずらせない masterJsonの先頭はダミー
-                            if(dataNum === 0)
-                                return false;
-
-                            // if(dataNum-1 >= 0){
-                            newDataNum = dataNum-1;
-                            onSwapCard(selectedCard, dataNum, newDataNum);
-                            // } else
-                            //     return false;
-
-                            mixitup('.card_wrapper', {
-                                animation: {
-                                    duration: 250,
-                                    nudge: true,
-                                    reverseOut: false,
-                                    effects: "fade translateZ(-100px)"
-                                },
-                                selectors: {
-                                    target: '.card-wrapper-i',
-                                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
-                                }
-                            })
-                            .sort('order:asc')
-                            .then(function(state) {
-                                console.log(state);
-                                $('.card_wrapper').removeAttr('id');
-                                console.log(masterJson);
-                            });
-
-                            break;
-                    }
-
-                    return false;
-                });
+                setOnClickCardHeaderBtn();
 
                 initCardDragging();
                 initModal();
@@ -218,6 +112,43 @@ function init() {
             //todo ログアウト時の動作
         }
     });
+}
+
+//region ////////////////card並び替えまわり//////////////
+function mixWithCardOnSwap() {
+    createMixUpObjForCard()
+        .sort('order:asc')
+        .then(function(state) {
+            console.log(state);
+            $('.card_wrapper').removeAttr('id');
+            console.log(masterJson);
+        });
+}
+
+function mixWithCardOnRemove(selectedCard) {
+    createMixUpObjForCard()
+        .remove(selectedCard[0])
+        .then(function(state) {
+            console.log(state);
+            selectedCard.remove();
+            $('.card_wrapper').removeAttr('id');
+            console.log(masterJson);
+        });
+}
+
+function createMixUpObjForCard() {
+    return mixitup('.card_wrapper', {
+        animation: {
+            duration: 250,
+            nudge: true,
+            reverseOut: false,
+            effects: "fade translateZ(-100px)"
+        },
+        selectors: {
+            target: '.card-wrapper-i',
+            control: '.mixitup-control'//@see https://goo.gl/QpW5BR
+        }
+    })
 }
 
 function onSwapCard(selectedCard, dataNum, newDataNum) {
@@ -246,6 +177,59 @@ function initCardDragging() {
                 .attr('data-order', i)
                 .find('.letter3').html(i+1);
         }
+    });
+}
+//endregion
+
+function setOnClickCardHeaderBtn() {
+    $('.ele_header_button').on('click', function (e) {
+        e.preventDefault();
+        var index = $('.ele_header_button').index(this);
+        var selectedCard = $(this).parents('.card-wrapper-i');
+        var dataNum = parseInt(selectedCard.attr('data-order'));
+        console.log("dataNum: "+dataNum, index);
+        var newDataNum;
+        // var newCard = $("[data-order="+ newDataNum +"]");
+        // var elements = $(".card");
+        switch (index%3){
+            case 0:
+                delete masterJson[dataNum];
+                masterJson.splice(dataNum, 1);
+
+                for(var i=dataNum+1; i<masterJson.length+1; i++){
+                    $("[data-order=" + i + "]").attr("data-order", i-1)
+                        .find('.letter3').html(i);
+                }
+
+                mixWithCardOnRemove(selectedCard);
+                break;
+
+            case 1:
+                //最後尾は後ろにずらせない
+                newDataNum = dataNum+1;
+                if (masterJson.length === newDataNum)
+                    break;
+
+                // if(dataNum+1 < masterJson.length){
+                onSwapCard(selectedCard, dataNum, newDataNum);
+                // }
+                mixWithCardOnSwap();
+                break;
+
+            case 2:
+                //最初の要素は前にずらせない masterJsonの先頭はダミー
+                if(dataNum === 0)
+                    return false;
+
+                // if(dataNum-1 >= 0){
+                newDataNum = dataNum-1;
+                onSwapCard(selectedCard, dataNum, newDataNum);
+                // } else
+                //     return false;
+                mixWithCardOnSwap();
+                break;
+        }
+        return false;
     });
 }
 
