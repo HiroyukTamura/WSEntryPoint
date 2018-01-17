@@ -34,7 +34,7 @@
 * commentのところ、、もうちょっとやりようある
 
 ### todo input編
-* ele-headerでonKeyUpしたときの処理 data-indexどうにかすべきでは
 * タイムイベント、色変更できるようにする
 * paramsの項目名重複を防ぐ
-
+* tagPoolでaddBtnが最末にくるように配置すべき
+* mixitUp問題どうにかしてーー

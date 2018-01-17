@@ -124,25 +124,46 @@ function init() {
                         case 0:
                             delete masterJson[dataNum];
                             masterJson.splice(dataNum, 1);
-                            selectedCard.remove();
 
                             for(var i=dataNum+1; i<masterJson.length+1; i++){
-                                $("[data-order=" + i + "]").attr("data-order", i-1);
+                                $("[data-order=" + i + "]").attr("data-order", i-1)
+                                    .find('.letter3').html(i);
                             }
-                            return false;
+
+                            mixier.multimix({
+                                remove: selectedCard[0],
+                                sort: 'order:asc'
+                            }).then(function(state) {
+                                console.log(state);
+                                selectedCard.remove();
+                                console.log(masterJson);
+                            });
+
+                            break;
 
                         case 1:
                             //最後尾は後ろにずらせない
-                            if (masterJson.length === dataNum+1)
-                                return false;
+                            newDataNum = dataNum+1;
+                            if (masterJson.length === newDataNum)
+                                break;
 
                             // if(dataNum+1 < masterJson.length){
-                            newDataNum = dataNum+1;
-                            masterJson = swap(masterJson, dataNum, newDataNum);
-                            var nextCard = $("[data-order="+ newDataNum +"]");
-                            selectedCard.attr("data-order", newDataNum);
-                            nextCard.attr("data-order", dataNum);
+                            onSwapCard(selectedCard, dataNum, newDataNum);
                             // }
+
+                            mixier.multimix({
+                                remove: selectedCard[0],
+                                insert: {
+                                    collection: [selectedCard.clone(true)[0]],
+                                    index: newDataNum
+                                },
+                                sort: 'order:asc'
+                            }).then(function(state) {
+                                console.log(state);
+                                selectedCard.remove();
+                                console.log(masterJson);
+                            });
+
                             break;
 
                         case 2:
@@ -152,24 +173,25 @@ function init() {
 
                             // if(dataNum-1 >= 0){
                             newDataNum = dataNum-1;
-                            masterJson = swap(masterJson, dataNum, newDataNum);
-                            var prevCard = $("[data-order=" + newDataNum + "]");
-                            selectedCard.attr("data-order", newDataNum);
-                            prevCard.attr("data-order", dataNum);
+                            onSwapCard(selectedCard, dataNum, newDataNum);
                             // } else
                             //     return false;
+
+                            mixier.multimix({
+                                remove: selectedCard[0],
+                                insert: {
+                                    collection: [selectedCard.clone(true)[0]],
+                                    index: newDataNum
+                                },
+                                sort: 'order:asc'
+                            }).then(function(state) {
+                                console.log(state);
+                                selectedCard.remove();
+                                console.log(masterJson);
+                            });
+
                             break;
                     }
-
-                    mixier.multimix({
-                        remove: selectedCard[0],
-                        insert: selectedCard.clone(true)[0],
-                        sort: 'order:asc'
-                    }).then(function(state) {
-                        console.log(state);
-                        selectedCard.remove();
-                        console.log(masterJson);
-                    });
 
                     return false;
                 });
@@ -193,6 +215,15 @@ function init() {
     });
 }
 
+function onSwapCard(selectedCard, dataNum, newDataNum) {
+    swap(masterJson, dataNum, newDataNum);
+    var nextCard = $("[data-order="+ newDataNum +"]");
+    selectedCard.attr("data-order", newDataNum)
+        .find('.letter3').html(newDataNum+1);
+    nextCard.attr("data-order", dataNum)
+        .find('.letter3').html(dataNum+1);
+}
+
 function initCardDragging() {
     dragula([document.querySelector("#card_wrapper")], {
         moves: function (el, container, handle) {
@@ -206,7 +237,9 @@ function initCardDragging() {
         var currentPos = $(el).index();
         masterJson = swap(masterJson, prevPos, currentPos);
         for(var i=0; i< cards.length; i++){
-            cards.eq(i).attr('data-order', i);
+            cards.eq(i)
+                .attr('data-order', i)
+                .find('.letter3').html(i+1);
         }
     });
 }
@@ -280,9 +313,8 @@ function setHeaderTitle(doc, childSnap) {
     if(childSnap["dataType"] !== 1){
         titleInput.attr("value", childSnap["dataName"]);
         titleInput.keyup(function (e) {
-            console.log(titleInput.val());
             var order = $(doc).attr("data-order");
-            masterJson[parseInt(order)]["dataName"] = titleInput.val();//このとき、不正な値が代入されるかもしれないこと（例えばnullなど）に注意してください!!
+            masterJson[parseInt(order)]["dataName"] = titleInput.val();
             console.log(masterJson);
         });
     } else {
@@ -299,6 +331,7 @@ function createTable() {
 }
 
 //region **************operate系*******************
+//region /////////////////operateAs1系/////////////////
 /**
  * data-orderに関して: dayEveについてはdata-orderの値はYYmmとする
  * dayEveの追加ボタンは10000とする
@@ -386,7 +419,7 @@ function operateAs1(doc, childSnap) {
     $(doc).find('[data-toggle="tooltip"]').tooltip();
 }
 
-//region 新規TimeEve/RangeEve作成処理
+////////////////////////region 新規TimeEve/RangeEve作成処理
 function createOneRangeRow(doc, count, value) {
 
     var blocks = [];
@@ -491,8 +524,9 @@ function createOneEveRow(doc, value) {
 
     block.insertBefore($(doc).find('#eve-add'));
 }
+//endregion
 
-//region 新規イベントデータ作成
+////////////////////region 新規イベントデータ作成
 function createNewTimeEveData() {
     var today = moment();
 
@@ -616,7 +650,9 @@ function setDatePickerLisntener(ele) {
         isModalOpen = false;
     });
 }
+//endregion
 
+//region /////////////////operateAs2系列//////////////
 function operateAs2(doc, childSnap) {
     var pool = $('<div>', {
         class: "tag_pool"
@@ -758,7 +794,9 @@ function addTagToPool(splited, count, pool) {
     else
         clone.appendTo(pool);
 }
+//endregion
 
+//region ///////////////operateAs3系列//////////////
 function operateAs3(doc, childSnap, dataNum) {
     var ul = $('<ul>', {
         class: "demo-list-item mdl-list"
@@ -986,31 +1024,12 @@ function createParamsLi(splited, dataOrder, i) {
 
                 $(window).off('mouseenter mouseleave');
             });
-
-            // var toolTip = $('div', {class: 'mdl-tooltip'});
-            // toolTip.html("最大値を変更");
-            // var maxBtn = $(clone).find(".max_btn").parent();
-            // var id = "max_btn_" + dataNum + "_" + $(maxBtn).closest("li").index();
-            // maxBtn.attr("id", id);
-            // toolTip.attr("data-mdl-for", id);
-            // maxBtn.click(function () {
-            //     console.log("clicked");
-            // });
-            // $(clone.children[0]).append(toolTip);
-            // var dropDown = $(
-            //     '<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">' +
-            //         '<li class="mdl-menu__item">Some Action</li>' +
-            //         '<li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>' +
-            //         '<li disabled class="mdl-menu__item">Disabled Action</li>' +
-            //         '<li class="mdl-menu__item">Yet Another Action</li>' +
-            //     '</ul>');
-            // document.body.appendChild(dropDown[0]);
-            // $("body").append(dropDown);
             break;
     }
 
     return clone;
 }
+//endregion
 
 function operateAs4(doc, childSnap) {
     var clone = createHtmlAs4();
@@ -1262,7 +1281,7 @@ function createElementWithHeader(dataNum, dataType) {
 
     var circleNum = $(
         '<div class="maru size_normal pink1">'+
-            '<div class="letter3">1</div>'+
+            '<div class="letter3">'+(dataNum+1)+'</div>'+
         '</div>'
     );
     wrapper.append(circleNum);
