@@ -631,25 +631,33 @@ function createOneRangeRow(doc, count, value) {
                         console.log('cicle clicked');
 
                         //todo ここでは、色をmasterJsonからではなく、domから取って処理に使用している。masterJsonに適宜書き込むかどうかを含めて、一旦考えてからこれからの処理をやってください。
+                        // var index = $(e2.target).parents('.fa-layers').index();
+                        // console.log(index);
+                        // var newColor = getColor(index);
+                        // $(e.target).css('background-color', newColor);
+                        // var dataNum = $(e.target).parents('tr').attr('data-order');
+                        // var trs = $(e.target).parents('tbody')
+                        //     .find('tr[data-order="'+ dataNum +'"]');
+                        // trs.find('.circle').css('background-color', newColor);
+                        // trs.find('.icon_down').css('color', newColor);
+
+                        var currentDataOrder = $(e.target).parents('tr').attr('data-order');
                         var index = $(e2.target).parents('.fa-layers').index();
                         console.log(index);
                         var newColor = getColor(index);
                         $(e.target).css('background-color', newColor);
-                        var dataNum = $(e.target).parents('tr').attr('data-order');
-                        var trs = $(e.target).parents('tbody')
-                            .find('tr[data-order="'+ dataNum +'"]');
+                        var trs = $(e.target)
+                            .parents('tbody')
+                            .find('tr[data-order="'+ currentDataOrder +'"]');
                         trs.find('.circle').css('background-color', newColor);
                         trs.find('.icon_down').css('color', newColor);
 
                         $(e2.target).parents('.circle-popover').find('.fa-check:visible').hide();
                         $(e2.target).parents('.fa-layers').find('.fa-check').show();
 
-                        //todo ここどうする？
-                        // var dataOrder = $(e.target).parents(".card-wrapper-i").attr('data-order');
-                        // var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-                        // var dataNum = $(e.target).parents('tr').index();
-                        // jsonC["eventList"][dataNum]['colorNum'] = index.toString();
-                        // masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+                        var jsonC = JSON.parse(masterJson[currentDataOrder]['data']["0"]);
+                        jsonC["eventList"][currentDataOrder]['colorNum'] = index.toString();
+                        masterJson[currentDataOrder]['data']["0"] = JSON.stringify(jsonC);
                     });
                 var className = '.circle'+ (parseInt(colorNum)+1);
                 popover.find(className).parents('.fa-layers').find('.fa-check').show();
