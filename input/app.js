@@ -1084,10 +1084,23 @@ function createParamsLi(splited, dataOrder, i) {
     var clone = createHtmlAs3(dataOrder + "_" + i);
     var paramsTitle = clone.find(".params_title").eq(0);
     paramsTitle.attr("value", splited[1]);
+
     paramsTitle.keyup(function (e) {
         var index = $(this).closest("li").index();
         var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
         masterJson[currentDataOrder]["data"][index] = $(this).val();
+    });
+
+    clone.find('.li-rm-btn').on('click', function (e) {
+        e.preventDefault();
+        console.log('clicked');
+        var li = $(this).parents('li').eq(0);
+        var index = li.index();
+        var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
+        masterJson[currentDataOrder]["data"].splice(index, 1);
+        li.remove();//todo アニメーションつけようと思ったけどうまくいかない。
+        console.log(masterJson);
+        return false;
     });
 
     switch(witch){
@@ -1103,7 +1116,7 @@ function createParamsLi(splited, dataOrder, i) {
 
             //checkBox event
             checkBox.change(function () {
-                var index = $(this).closest("li").index();
+                var index = $(this).parents("li").index();
                 var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
                 var values = masterJson[currentDataOrder]["data"][index].split(delimiter);
                 values[2] = $(this).is(':checked').toString();

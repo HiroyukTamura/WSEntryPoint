@@ -446,6 +446,10 @@ td {
     /*padding-bottom: 20px;!*この値はmdl-textfieldのデフォルト値に合わせてる*!*/
 }
 
+.mdl-list {
+    min-height: 48px;
+}
+
 .mdl-list  .mdl-textfield{
     width: 250px;
 }
