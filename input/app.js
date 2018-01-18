@@ -1,4 +1,3 @@
-const delimiter = "9mVSv";
 const ERR_MSG_NULL_VAL = "項目名を入力してください";
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
@@ -33,8 +32,6 @@ const TIME_POPOVER_CONFIG = {
     container: 'body',
     offset: '0, 15px'
 };
-const colors = ["#C0504D", "#9BBB59", "#1F497D", "#8064A2"];
-const highlightColors = ["#D79599", "#C5D79D", "#5C8BBF", "#AEA3C5"];
 
 var masterJson;
 var modalDataNum;
@@ -46,25 +43,8 @@ var isModalForNewTag = false;
 var defaultDatabase;
 const progress = $('#progress');
 
-Array.prototype.move = function(from, to) {
-    this.splice(to, 0, this.splice(from, 1)[0]);
-};
-
-function makeRefScheme(parasArr) {
-    return parasArr.join('/');
-}
-
 window.onload = function (ev) {
-
-    var config = {
-        apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
-        authDomain: "wordsupport3.firebaseapp.com",
-        databaseURL: "https://wordsupport3.firebaseio.com",
-        projectId: "wordsupport3",
-        storageBucket: "wordsupport3.appspot.com",
-        messagingSenderId: "60633268871"
-    };
-    var defaultApp = firebase.initializeApp(config);
+    var defaultApp = firebase.initializeApp(CONFIG);
     defaultDatabase = defaultApp.database();
 
     firebase.auth().onAuthStateChanged(function(userObject) {
@@ -1008,7 +988,7 @@ function operateAs2(doc, childSnap) {
     var count = 0;
 
     Object.keys(childSnap["data"]).forEach(function (key) {
-        var splited = childSnap["data"][key].split(delimiter);
+        var splited = childSnap["data"][key].split(DELIMITER);
         addTagToPool(splited, count, pool);
 
         // var clone = createHtmlAs2();
@@ -1120,7 +1100,7 @@ function addTagToPool(splited, count, pool) {
     clone.find(".mdl-chip").on('click', function (e) {
         modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
         modalTipNum = clone.attr("index");
-        var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
+        var splited = masterJson[modalDataNum]["data"][modalTipNum].split(DELIMITER);
         clickedColor = parseInt(splited[1]);
 
         $('#modal_input').attr('value', splited[0]).val(splited[0]);
@@ -1173,7 +1153,7 @@ function operateAs3(doc, childSnap, dataNum) {
     console.log(childSnap["data"]);
 
     for (var i=0; i<values.length; i++){
-        var splited = values[i].split(delimiter);
+        var splited = values[i].split(DELIMITER);
         ul.append(createParamsLi(splited, dataNum, i));
     }
 
@@ -1244,7 +1224,7 @@ function operateAs3(doc, childSnap, dataNum) {
 
 function onClickAddParamsLiBtn(splited, e, e2) {
     var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-    masterJson[currentDataOrder]['data'].push(splited.join(delimiter));
+    masterJson[currentDataOrder]['data'].push(splited.join(DELIMITER));
     var ul = $(e.target).parents('.card').find('.mdl-list');
     createParamsLi(splited, currentDataOrder, ul.length)
         .appendTo(ul);
@@ -1299,9 +1279,9 @@ function createParamsLi(splited, dataOrder, i) {
             checkBox.change(function () {
                 var index = $(this).parents("li").index();
                 var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
-                var values = masterJson[currentDataOrder]["data"][index].split(delimiter);
+                var values = masterJson[currentDataOrder]["data"][index].split(DELIMITER);
                 values[2] = $(this).is(':checked').toString();
-                masterJson[currentDataOrder]["data"][index] = values.join(delimiter);
+                masterJson[currentDataOrder]["data"][index] = values.join(DELIMITER);
                 console.log(masterJson[currentDataOrder]["data"][index]);
             });
             break;
@@ -1324,9 +1304,9 @@ function createParamsLi(splited, dataOrder, i) {
                     e.preventDefault();
                     var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
                     var index = $(this).closest("li").index();
-                    var values = masterJson[currentDataOrder]["data"][index].split(delimiter);
+                    var values = masterJson[currentDataOrder]["data"][index].split(DELIMITER);
                     values[2] = $(this).val();
-                    masterJson[currentDataOrder]["data"][index] = values.join(delimiter);
+                    masterJson[currentDataOrder]["data"][index] = values.join(DELIMITER);
                     console.log(masterJson[currentDataOrder]["data"][index]);
                     return false;
                 })
@@ -1373,7 +1353,7 @@ function createParamsLi(splited, dataOrder, i) {
                             //masterJson反映
                             var dataNum = $(e.target).parents('li').index();
                             var dataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-                            var splited = masterJson[dataOrder]['data'][dataNum].split(delimiter);
+                            var splited = masterJson[dataOrder]['data'][dataNum].split(DELIMITER);
                             splited[3] = newMax;
                             if (parseInt(splited[2]) > newMax) {
                                 splited[2] = newMax;
@@ -1381,7 +1361,7 @@ function createParamsLi(splited, dataOrder, i) {
                             }
                             $(e.target).attr('max', newMax);
 
-                            masterJson[dataOrder]['data'][dataNum] = splited.join(delimiter);
+                            masterJson[dataOrder]['data'][dataNum] = splited.join(DELIMITER);
                             console.log(masterJson[dataOrder]['data']);
                             return false;
                         });
@@ -1565,7 +1545,7 @@ function createNewData(dataType) {
         data['data']['0'] = JSON.stringify(jsonStr);
     } else if (dataType === 0) {
         data.data = {};
-        data['data']['0'] = "勤務日"+ delimiter +"2";
+        data['data']['0'] = "勤務日"+ DELIMITER +"2";
     }
 
     return data;
@@ -1589,7 +1569,7 @@ function initModal() {
         if(isModalForNewTag){
             isModalForNewTag = false;
         } else {
-            var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
+            var splited = masterJson[modalDataNum]["data"][modalTipNum].split(DELIMITER);
             var tip = $('.card').eq(modalDataNum).find(".tag_wrapper").eq(modalTipNum);
             setTagUi(tip, splited);
         }
@@ -1618,8 +1598,8 @@ function initModal() {
             if(!isModalForNewTag && i.toString() === modalTipNum)
                 continue;
 
-            if(title === val[i].split(delimiter)[0]){
-                errorSpan.html("タグ名が重複しています");
+            if(title === val[i].split(DELIMITER)[0]){
+                errorSpan.html(ERR_MSG_DUPLICATE_VAL);
                 input.parent().addClass('is-invalid');
                 return;
             }
@@ -1632,14 +1612,14 @@ function initModal() {
             var check = $('#checkbox-modal-label').hasClass('is-checked');
             var length = masterJson[modalDataNum]["data"].length;
             var splited = [title, clickedColor, check];
-            masterJson[modalDataNum]["data"].push(splited.join(delimiter));
+            masterJson[modalDataNum]["data"].push(splited.join(DELIMITER));
             console.log(masterJson[modalDataNum]["data"]);
             var pool = $('.card-wrapper-i[data-order='+modalDataNum+']').find('.tag_pool');
             addTagToPool(splited, length, pool);
 
         } else {
             var show = $('#checkbox-modal-label').hasClass('is-checked');
-            masterJson[modalDataNum]["data"][modalTipNum] = title + delimiter + clickedColor + delimiter + show;
+            masterJson[modalDataNum]["data"][modalTipNum] = title + DELIMITER + clickedColor + DELIMITER + show;
         }
 
         console.log(masterJson);
@@ -1692,8 +1672,8 @@ function isValidAboutNullAndDelimiter(input, errSpan) {
         input.parent().addClass('is-invalid');
         return false;
     }
-    if (input.val().indexOf(delimiter) !== -1){
-        errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(delimiter));
+    if (input.val().indexOf(DELIMITER) !== -1){
+        errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(DELIMITER));
         input.parent().addClass('is-invalid');
         return false;
     }

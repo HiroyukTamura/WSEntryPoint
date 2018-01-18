@@ -547,7 +547,7 @@ function init() {
     firebase.auth().onAuthStateChanged(function(userObject) {
         if (userObject) {
             console.log("ユーザログインしてます");
-            // progress.css("display", "none");
+            progress.hide();
             user = userObject;
             onLoginSuccess();
         } else {
@@ -568,8 +568,8 @@ function init() {
                             'signInSuccess': function(userObject, credential, redirectUrl) {
                                 console.log(userObject);
                                 user = userObject;
-                                progress.css('display', "none");
-                                $('#login_w').css('display', "none");
+                                progress.hide();
+                                $('#login_w').hide();
                                 onLoginSuccess();
                                 return false;
                             }
@@ -577,17 +577,23 @@ function init() {
                     };
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.css('display', "none");
-                    $('#login_w').css('display', "inline");
+                    progress.hide();
+                    $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
                 }).catch(function(error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode, errorMessage);
-                //todo エラー時の処理
+                console.log(error.code, error.message);
+                onErrConnectFb();
             });
         }
     });
+}
+
+function onErrConnectFb() {
+    showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
+
+    initAllTooltips();
+    $('#fab-wrapper').hide();
+    $('#save').hide();
 }
 
 function onLoginSuccess() {
@@ -1335,14 +1341,5 @@ function showAll() {
                 }
             }
         }
-    });
-}
-
-function showNotification(msg, type) {
-    $.notify({
-        title: '<i class="fas fa-info-circle fa-lg"></i>',
-        message: '  ' + msg
-    },{
-        type: type
     });
 }
