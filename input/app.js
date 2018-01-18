@@ -345,12 +345,28 @@ function  getCommentAsNullable(childSnap) {
 
 function setHeaderTitle(doc, childSnap) {
     var titleInput = $(doc).find(".card_title_input").eq(0);
+    var errSpan = titleInput.parent().find('.mdl-textfield__error');
     if(childSnap["dataType"] !== 1){
         titleInput.attr("value", childSnap["dataName"]);
         titleInput.keyup(function (e) {
+            //todo 不正な値でもmasterJsonに書き込んでいることに注意してください
+            var isValid = isValidAboutNullAndDelimiter(titleInput, errSpan);
+            for(var i=0; i<masterJson.length; i++){
+                if (masterJson[i]['dataName'] && masterJson[i]['dataName'] === titleInput.val()) {
+                    errSpan.html(ERR_MSG_DUPLICATE_VAL);
+                    errSpan.parent().addClass('is-invalid');
+                    isValid = false;
+                    console.log('こっち');
+                    break;
+                }
+                console.log(masterJson[i]['dataName'], titleInput.val());
+            }
+
+            if(isValid){
+                titleInput.parent().removeClass('is-invalid');
+            }
             var order = $(doc).parents('.card-wrapper-i').attr("data-order");
             masterJson[parseInt(order)]["dataName"] = titleInput.val();
-            console.log(masterJson);
         });
     } else {
         titleInput.html("イベント");
@@ -1666,7 +1682,7 @@ function createElementWithHeader(dataNum, dataType) {
     var input =     '<span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title">' +
                         '<input class="mdl-textfield__input input_eve mdl-pre-upgrade card_title_input" type="text" id="'+ id +'">' +
                         '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ id +'"></label>' +
-                        '<span class="mdl-textfield__error">入力してください</span>' +
+                        '<span class="mdl-textfield__error"></span>' +
                     '</span>';
     var span =     '<span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title_input event_title"></span>';
     var post =     '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">' +
