@@ -34,10 +34,7 @@ const TIME_POPOVER_CONFIG = {
     offset: '0, 15px'
 };
 const colors = ["#C0504D", "#9BBB59", "#1F497D", "#8064A2"];
-
-function rgbToHex(r, g, b) {
-    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-}
+const highlightColors = ["#D79599", "#C5D79D", "#5C8BBF", "#AEA3C5"];
 
 var masterJson;
 var modalDataNum;
@@ -47,19 +44,17 @@ var loginedUser;
 var isModalOpen = false;
 var isModalForNewTag = false;
 var defaultDatabase;
+const progress = $('#progress');
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
-function init() {
-    // document.getElementById("place-holder").style.height = screen.availHeight + "px";
-    // document.getElementById("place-holder").style.display = "inline";
+function makeRefScheme(parasArr) {
+    return parasArr.join('/');
+}
 
-    // $("#menu-toggle").click(function(e) {
-    //     e.preventDefault();
-    //     $("#wrapper").toggleClass("toggled");
-    // });
+window.onload = function (ev) {
 
     var config = {
         apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
@@ -72,94 +67,129 @@ function init() {
     var defaultApp = firebase.initializeApp(config);
     defaultDatabase = defaultApp.database();
 
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            loginedUser = user;
-
-            defaultDatabase.ref("/userData/" + user.uid + "/template").once('value').then(function(snapshot) {
-                masterJson = [];
-                snapshot.forEach(function (childSnap) {
-                    masterJson.push(childSnap.toJSON());
-                });
-                masterJson.shift();
-
-                //タグの連想配列を普通の配列に変換
-                masterJson.forEach(function (arr) {
-                    if(arr["dataType"] === 2 || arr["dataType"] === 3){
-                        var newArr = [];
-                        Object.values(arr["data"]).forEach(function (value) {
-                            newArr.push(value);
-                        });
-                        arr["data"] = newArr;
-                    }
-                });
-                console.log(masterJson);
-
-                if (!snapshot.exists()) {
-                    console.log("テンプレ存在せず！うわー！");
-                    //todo エラー処理
-                    return;
-                }
-
-                for (var i=0; i<masterJson.length; i++){
-                    var childSnap = masterJson[i];
-                    var cardWrapper = createElementWithHeader(i, childSnap["dataType"]);
-                    var doc = cardWrapper.children[1];
-
-                    switch (childSnap["dataType"]){
-                        case 0:
-                            continue;
-                        case 1:
-                            operateAs1(doc, childSnap);
-                            break;
-                        case 2:
-                            operateAs2(doc, childSnap);
-                            break;
-                        case 3:
-                            var element = operateAs3(doc, childSnap, i);
-                            if(element){
-                                createElementWithHeader(i).appendChild(element);
-                            } else {
-                                //todo エラー時処理？？
-                            }
-                            break;
-                        case 4:
-                            operateAs4(doc, childSnap);
-                            break;
-                    }
-
-                    setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
-                    $('.card_wrapper').append($(cardWrapper));
-                }
-
-                setOnClickCardHeaderBtn();
-
-                initCardDragging();
-                initModal();
-                initAllTooltips();
-                setOnBtmFabClickListener();
-                setOnSaveFabClickListener();
-                // document.getElementById("place-holder").style.display = "none";
-                // document.getElementById("page-content-wrapper").style.display = "inline";
-
-                $('#progress').css("display", "none");
-                $('#post_load').css("display", "inline");
-            });
-
-            // var url = "../analytics/index.html;
-            // $('.mdl-navigation__link').eq(2).attr("href", url);
-
+    firebase.auth().onAuthStateChanged(function(userObject) {
+        if (userObject) {
+            console.log("ユーザログインしてます");
+            progress.hide();
+            loginedUser = userObject;
+            onLoginSuccess();
         } else {
-            console.log("ユーザはログアウトしたっす。");
-            //todo ログアウト時の動作
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                .then(function() {
+                    var uiConfig = {
+                        signInOptions: [
+                            // Leave the lines as is for the providers you want to offer your users.
+                            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+                            firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                            firebase.auth.PhoneAuthProvider.PROVIDER_ID
+                        ],
+                        // Terms of service url.
+                        tosUrl: 'sampleTosUrl',
+                        'callbacks': {
+                            // Called when the user has been successfully signed in.
+                            'signInSuccess': function(userObject, credential, redirectUrl) {
+                                loginedUser = userObject;
+                                progress.hide();
+                                $('#login_w').hide();
+                                return false;
+                            }
+                        }
+                    };
 
-            initAllTooltips();
-            $('#fab-wrapper').hide();
-            $('#save').hide();
+                    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                    progress.hide();
+                    $('#login_w').show();
+                    ui.start('#firebaseui-auth-container', uiConfig);
+
+                }).catch(function(error) {
+                    console.log(error.code, error.message);
+                    onErrConnectFb();
+                });
         }
     });
 
     initDrawerDecoration();
+};
+
+function onErrConnectFb() {
+    showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
+
+    initAllTooltips();
+    $('#fab-wrapper').hide();
+    $('#save').hide();
+}
+
+
+function onLoginSuccess() {
+    defaultDatabase.ref(makeRefScheme(['userData', loginedUser.uid, 'template'])).once('value').then(function(snapshot) {
+
+        masterJson = [];
+        snapshot.forEach(function (childSnap) {
+            masterJson.push(childSnap.toJSON());
+        });
+        masterJson.shift();
+
+        //タグの連想配列を普通の配列に変換
+        masterJson.forEach(function (arr) {
+            if(arr["dataType"] === 2 || arr["dataType"] === 3){
+                var newArr = [];
+                Object.values(arr["data"]).forEach(function (value) {
+                    newArr.push(value);
+                });
+                arr["data"] = newArr;
+            }
+        });
+        console.log(masterJson);
+
+        if (!snapshot.exists()) {
+            console.log("テンプレ存在せず！うわー！");
+            onErrConnectFb();
+            return;
+        }
+
+        for (var i=0; i<masterJson.length; i++){
+            var childSnap = masterJson[i];
+            var cardWrapper = createElementWithHeader(i, childSnap["dataType"]);
+            var doc = cardWrapper.children[1];
+
+            switch (childSnap["dataType"]){
+                case 0:
+                    continue;
+                case 1:
+                    operateAs1(doc, childSnap);
+                    break;
+                case 2:
+                    operateAs2(doc, childSnap);
+                    break;
+                case 3:
+                    var element = operateAs3(doc, childSnap, i);
+                    if(element){
+                        createElementWithHeader(i).appendChild(element);
+                    } else {
+                        //todo エラー時処理？？
+                    }
+                    break;
+                case 4:
+                    operateAs4(doc, childSnap);
+                    break;
+            }
+
+            setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
+            $('.card_wrapper').append($(cardWrapper));
+        }
+
+        setOnClickCardHeaderBtn();
+
+        initCardDragging();
+        initModal();
+        initAllTooltips();
+        setOnBtmFabClickListener();
+        setOnSaveFabClickListener();
+
+        $('#progress').hide();
+        $('#post_load').show();
+    });
 }
 
 function initDrawerDecoration() {
@@ -296,41 +326,6 @@ function setOnClickCardHeaderBtn() {
         return false;
     });
 }
-
-function getColor(num) {
-    switch(num){
-        case 0:
-            return "#C0504D";
-        case 1:
-            return "#9BBB59";
-        case 2:
-            return "#1F497D";
-        case 3:
-            return "#8064A2";
-    }
-}
-
-function getHighLightedColor(num) {
-    switch (num){
-        case 0:
-            return "#D79599";
-        case 1:
-            return "#C5D79D";
-        case 2:
-            return "#5C8BBF";
-        case 3:
-            return "#AEA3C5";
-    }
-}
-
-// function changeTimeColor(block, value) {
-//     //時刻の色を変える
-//     var coloreds = block.getElementsByClassName("colored");
-//     var color = getColor(value["colorNum"]);
-//     for (var i=0; i<coloreds.length; i++){
-//         coloreds[i].style.color = color;
-//     }
-// }
 
 function setEveInputValues(inputs, value) {
     inputs.eq(0).attr("value", value["cal"]["hourOfDay"] + ":" + format0to00(value["cal"]["minute"]));
@@ -662,7 +657,7 @@ function createOneRangeRow(doc, count, value) {
                         var currentDataOrder = $(e.target).parents('tr').attr('data-order');
                         var index = $(e2.target).parents('.fa-layers').index();
                         console.log(index);
-                        var newColor = getColor(index);
+                        var newColor = colors[index];
                         $(e.target).css('background-color', newColor);
                         var trs = $(e.target)
                             .parents('tbody')
@@ -742,7 +737,7 @@ function createOneEveRow(doc, value) {
     // changeTimeColor(block, value);
     // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
     // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
-    block.find('.circle').css('background-color', getColor(value["colorNum"]))
+    block.find('.circle').css('background-color', colors[value["colorNum"]])
         .popover(TIME_POPOVER_CONFIG)
         .hover(function (e) {
             onHoverForPopover(e);
@@ -762,7 +757,7 @@ function createOneEveRow(doc, value) {
 
                     var index = $(e2.target).parents('.fa-layers').index();
                     console.log(index);
-                    $(e.target).css('background-color', getColor(index));
+                    $(e.target).css('background-color', colors[index]);
                     $(e2.target).parents('.circle-popover').find('.fa-check:visible').hide();
                     $(e2.target).parents('.fa-layers').find('.fa-check').show();
 
@@ -1444,7 +1439,7 @@ function setTagUi(clone, splited) {
     // } else {
     //     console.log(splited);
     // }
-    $(clone).find(".mdl-chip").css("background-color", getHighLightedColor(parseInt(splited[1])));
+    $(clone).find(".mdl-chip").css("background-color", highlightColors[parseInt(splited[1])]);
 }
 
 function setOnBtmFabClickListener() {
@@ -1732,7 +1727,7 @@ function setElementAsMdl(clone) {
     }
 }
 
-function showNotification(msg, type) {
+function showNotification(msg, type, delay) {
     var icon = null;
     switch (type){
         case 'danger':
@@ -1744,12 +1739,14 @@ function showNotification(msg, type) {
             break;
     }
 
+    var setting = {type: type};
+    if(delay)
+        setting['delay'] = delay;
+
     $.notify({
         title: icon,
         message: '  ' + msg
-    },{
-        type: type
-    });
+    }, setting);
 }
 
 //region *****************html生成系**************

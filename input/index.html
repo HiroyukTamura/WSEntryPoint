@@ -19,389 +19,401 @@
     <link rel="stylesheet" href="draglula/dragula.min.css">
     <link rel="stylesheet" href="vender/bootstrap-material-datetimepicker.css">
 
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
+
     <link href="style.css" rel="stylesheet">
 </head>
 
 <body>
 
-<div id="progress" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+    <div id="progress" class="mdl-spinner mdl-js-spinner is-active"></div>
 
-
-<div id="post_load">
-
-    <!--header-->
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-
-    <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-            <!-- Title -->
-            <span class="mdl-layout-title">テンプレート</span>
-
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-shadow--4dp " id="save" data-toggle="tooltip" data-placement="top" title="テンプレートを保存">
-                <i class="material-icons">save</i>
-            </button>
-            <!-- Add spacer, to align navigation to the right -->
-            <!--<div class="mdl-layout-spacer"></div>-->
-            <!-- Navigation. We hide it in small screens. -->
-            <!--<nav class="mdl-navigation mdl-layout&#45;&#45;large-screen-only">-->
-                <!--<a class="mdl-navigation__link" href="">Link</a>-->
-                <!--<a class="mdl-navigation__link" href="">Link</a>-->
-                <!--<a class="mdl-navigation__link" href="">Link</a>-->
-                <!--<a class="mdl-navigation__link" href="">Link</a>-->
-            <!--</nav>-->
-        </div>
-    </header>
-
-    <div class="mdl-layout__drawer">
-        <!--<span class="mdl-layout-title">Title</span>-->
-        <header class="demo-drawer-header">
-            <div class="demo-avatar">
-                <img src="img/icon.png" class="rounded-circle">
+    <div id="login_w">
+        <div class="mdl-grid" id="login-grid">
+            <div class="mdl-cell mdl-cell--4-col"></div>
+            <div class="mdl-cell mdl-cell--4-col">
+                <img id="login-logo" src="img/icon.png">
             </div>
-            <div class="demo-avatar-dropdown">
-                <span>田村 浩幸</span>
-                <!--<div class="mdl-layout-spacer"></div>-->
-                <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-                    <i class="material-icons" role="presentation">arrow_drop_down</i>
-                    <span class="visuallyhidden">Accounts</span>
+            <div class="mdl-cell mdl-cell--4-col"></div>
+        </div>
+        <h2 id="login_title">ChallengedKit(β)</h2>
+        <div id="firebaseui-auth-container"></div>
+    </div>
+
+
+    <div id="post_load">
+
+        <!--header-->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">テンプレート</span>
+
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-shadow--4dp " id="save" data-toggle="tooltip" data-placement="top" title="テンプレートを保存">
+                    <i class="material-icons">save</i>
                 </button>
-                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-                    <li class="mdl-menu__item">hello@example.com</li>
-                    <li class="mdl-menu__item">info@example.com</li>
-                    <li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>
-                </ul>
+                <!-- Add spacer, to align navigation to the right -->
+                <!--<div class="mdl-layout-spacer"></div>-->
+                <!-- Navigation. We hide it in small screens. -->
+                <!--<nav class="mdl-navigation mdl-layout&#45;&#45;large-screen-only">-->
+                    <!--<a class="mdl-navigation__link" href="">Link</a>-->
+                    <!--<a class="mdl-navigation__link" href="">Link</a>-->
+                    <!--<a class="mdl-navigation__link" href="">Link</a>-->
+                    <!--<a class="mdl-navigation__link" href="">Link</a>-->
+                <!--</nav>-->
             </div>
         </header>
 
-        <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="#"><i class="fas fa-edit fa-lg drawer_icon"></i>入力</a>
-            <a class="mdl-navigation__link current-page" href="#"><i class="fas fa-table fa-lg drawer_icon"></i>テンプレート</a>
-            <a class="mdl-navigation__link" href="../analytics/index.html"><i class="fas fa-chart-bar fa-lg drawer_icon"></i>分析</a>
-            <a class="mdl-navigation__link" href="../social/index.html"><i class="fas fa-share-alt fa-lg drawer_icon"></i>共有</a>
-            <a class="mdl-navigation__link" href="#"><i class="fas fa-cog fa-lg drawer_icon"></i>設定</a>
-        </nav>
-
-    </div>
-
-    <main class="mdl-layout__content">
-        <div class="page-content">
-            <!-- Your content goes here -->
-            <div id="wrapper">
-
-    <!-- Page Content -->
-                <div id="page-content-wrapper">
-                    <div id="container-fluid">
-                        <div class="card_wrapper"></div>
-
-                        <!--<a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>-->
-
-                        <!--<footer class="footer">-->
-                            <!--<div class="container">-->
-                                <!--<p class="text-muted">Place sticky footer content here.</p>-->
-                            <!--</div>-->
-                        <!--</footer>-->
-                    </div>
+        <div class="mdl-layout__drawer">
+            <!--<span class="mdl-layout-title">Title</span>-->
+            <header class="demo-drawer-header">
+                <div class="demo-avatar">
+                    <img src="img/icon.png" class="rounded-circle">
                 </div>
-
-                <div id="fab-wrapper">
-                    <div class="add-button">
-                        <div class="sub-button br"><i class="fas fa-clock" data-toggle="tooltip" data-placement="top" title="イベントタイプの項目を追加"></i></div>
-                        <div class="sub-button tl"><i class="fas fa-tags" data-toggle="tooltip" data-placement="top" title="タグタイプの項目を追加"></i></div>
-                        <div class="sub-button bl"><i class="fas fa-list-ul" data-toggle="tooltip" data-placement="top" title="リストタイプの項目を追加"></i></div>
-                        <div class="sub-button tr"><i class="fas fa-edit" data-toggle="tooltip" data-placement="left" title="コメントタイプの項目を追加"></i></div>
-                    </div>
+                <div class="demo-avatar-dropdown">
+                    <span>田村 浩幸</span>
+                    <!--<div class="mdl-layout-spacer"></div>-->
+                    <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                        <i class="material-icons" role="presentation">arrow_drop_down</i>
+                        <span class="visuallyhidden">Accounts</span>
+                    </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                        <li class="mdl-menu__item">hello@example.com</li>
+                        <li class="mdl-menu__item">info@example.com</li>
+                        <li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>
+                    </ul>
                 </div>
+            </header>
 
-                <div id="dummy">
-                    <table class="card-block">
-                        <tr>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="#"><i class="fas fa-edit fa-lg drawer_icon"></i>入力</a>
+                <a class="mdl-navigation__link current-page" href="#"><i class="fas fa-table fa-lg drawer_icon"></i>テンプレート</a>
+                <a class="mdl-navigation__link" href="../analytics/index.html"><i class="fas fa-chart-bar fa-lg drawer_icon"></i>分析</a>
+                <a class="mdl-navigation__link" href="../social/index.html"><i class="fas fa-share-alt fa-lg drawer_icon"></i>共有</a>
+                <a class="mdl-navigation__link" href="#"><i class="fas fa-cog fa-lg drawer_icon"></i>設定</a>
+            </nav>
 
-                            <td>
-                                <form action="#" class="time colored">
-                                    <div class="mdl-textfield mdl-js-textfield">
-                                        <input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="([01]?[0-9]{1}|2[0-3]{1})" id="sample">
-                                        <label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>
-                                        <span class="mdl-textfield__error mdl-pre-upgrade">Error</span>
-                                    </div>
-                                </form>
-                            </td>
+        </div>
 
-                            <td>
-                                <p class="colon colored">:</p>
-                            </td>
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <!-- Your content goes here -->
+                <div id="wrapper">
 
-                            <td>
-                                <form action="#" class="min colored">
-                                    <div class="mdl-textfield mdl-js-textfield">
-                                        <input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="[0-5]{1}[0-9]{1}" id="sample2">
-                                        <label class="mdl-textfield__label mdl-pre-upgrade" for="sample2"></label>
-                                        <span class="mdl-textfield__error mdl-pre-upgrade">Error</span>
-                                    </div>
-                                </form>
-                            </td>
+        <!-- Page Content -->
+                    <div id="page-content-wrapper">
+                        <div id="container-fluid">
+                            <div class="card_wrapper"></div>
 
-                            <td>
-                                <form action="#" class="event_name">
-                                    <div class="mdl-textfield mdl-js-textfield">
-                                        <input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample3">
-                                        <label class="mdl-textfield__label mdl-pre-upgrade" for="sample3">イベント名</label>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
+                            <!--<a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>-->
 
-                        <tr>
-                            <td colspan="3">
-                                <i class="fas fa-angle-double-down icon_down"></i>
-                            </td>
-                        </tr>
-
-                        <tr>
-
-                            <td>
-                                <form action="#" class="time colored">
-                                    <div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">
-                                        <input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
-                                        <label class="mdl-textfield__label mdl-pre-upgrade" for="sample4"></label>
-                                        <span class="mdl-textfield__error mdl-pre-upgrade">Error</span>
-                                    </div>
-                                </form>
-                            </td>
-
-                            <td>
-                                <p class="colon colored">:</p>
-                            </td>
-
-                            <td>
-                                <form action="#" class="min colored">
-                                    <div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">
-                                        <input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">
-                                        <label class="mdl-textfield__label mdl-pre-upgrade" for="sample5"></label>
-                                        <span class="mdl-textfield__error mdl-pre-upgrade">Error</span>
-                                    </div>
-                                </form>
-                            </td>
-
-                            <td>
-                                <form action="#" class="event_name">
-                                    <div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">
-                                        <input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample6">
-                                        <label class="mdl-textfield__label mdl-pre-upgrade" for="sample6">イベント名</label>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div class="card">
-                        <span class="ele_header">
-                            <i class="fas fa-bars drag_bars"></i>
-                            <span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title">
-                                        <input class="mdl-textfield__input input_eve mdl-pre-upgrade card_title_input" type="text" id="sample8">
-                                        <label class="mdl-textfield__label mdl-pre-upgrade" for="sample8"></label>
-                            </span>
-                            <button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">
-                                <i class="fas fa-times mdl-pre-upgrade"></i>
-                            </button>
-                            <button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">
-                                <i class="fas fa-angle-down"></i>
-                            </button>
-                            <button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">
-                                <i class="fas fa-angle-up"></i>
-                            </button>
-                        </span>
-
-                        <div id="comment_dummy">
-                            <form action="#" class="comment_form">
-                                <div class="mdl-textfield mdl-js-textfield comment mdl-pre-upgrade">
-                                    <textarea class="mdl-textfield__input comment_ta mdl-pre-upgrade" type="text" rows= "3" id="comment" ></textarea>
-                                    <label class="mdl-textfield__label mdl-pre-upgrade" for="comment">Text...</label>
-                                </div>
-                            </form>
+                            <!--<footer class="footer">-->
+                                <!--<div class="container">-->
+                                    <!--<p class="text-muted">Place sticky footer content here.</p>-->
+                                <!--</div>-->
+                            <!--</footer>-->
                         </div>
                     </div>
 
-                    <div class="card">
-                        <span class="ele_header">
-                            <button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">
-                                <i class="fas fa-angle-down"></i>
-                            </button>
-                            <button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">
-                                <i class="fas fa-angle-up"></i>
-                            </button>
-                            <!--<a href="#" class="remove_btn ele_header_button"></a>-->
-                            <!--<a href="#" class="arrow_down ele_header_button"><i class="fas fa-angle-down"></i></a>-->
-                            <!--<a href="#" class="arrow_up ele_header_button"><i class="fas fa-angle-up"></i></a>-->
-                        </span>
-
-                        <div id="params_dummy">
-                            <ul class="demo-list-item mdl-list mdl-pre-upgrade">
-                                <li class="mdl-list__item mdl-pre-upgrade">
-                                    <i class="fas fa-bars drag_btn_i"></i>
-                                    <span class="mdl-list__item-primary-content mdl-pre-upgrade">
-                                        <span class="params_title">Bryan Cranston</span>
-                                    </span>
-
-                                    <span class="mdl-list__item-secondary-action params_check">
-                                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="list-checkbox-1">
-                                            <input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input mdl-pre-upgrade" />
-                                        </label>
-                                    </span>
-
-                                    <p class="slider_wrapper params_slider" style="width:300px">
-                                        <input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" id="s1" min="0" max="5" value="3" step="1">
-                                    </p>
-                                </li>
-                            </ul>
+                    <div id="fab-wrapper">
+                        <div class="add-button">
+                            <div class="sub-button br"><i class="fas fa-clock" data-toggle="tooltip" data-placement="top" title="イベントタイプの項目を追加"></i></div>
+                            <div class="sub-button tl"><i class="fas fa-tags" data-toggle="tooltip" data-placement="top" title="タグタイプの項目を追加"></i></div>
+                            <div class="sub-button bl"><i class="fas fa-list-ul" data-toggle="tooltip" data-placement="top" title="リストタイプの項目を追加"></i></div>
+                            <div class="sub-button tr"><i class="fas fa-edit" data-toggle="tooltip" data-placement="left" title="コメントタイプの項目を追加"></i></div>
                         </div>
+                    </div>
 
-                        <div id="tags_dummy">
-                            <div class="tag_wrapper">
-                                <span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">
-                                <!--<img class="mdl-chip__contact" src="img/icon.png" />-->
-                                    <a href="#" class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-circle fa-stack-1x chips_btn_circle"></i>
-                                            <i class="fas fa-eye fa-stack-1x chips_btn"></i>
-                                            <i class="fas fa-eye-slash fa-stack-1x chips_btn"></i>
-                                        </span>
-                                    </a>
-                                    <span class="mdl-chip__text"></span>
-                                    <a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>
+                    <div id="dummy">
+                        <table class="card-block">
+                            <tr>
+
+                                <td>
+                                    <form action="#" class="time colored">
+                                        <div class="mdl-textfield mdl-js-textfield">
+                                            <input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="([01]?[0-9]{1}|2[0-3]{1})" id="sample">
+                                            <label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>
+                                            <span class="mdl-textfield__error mdl-pre-upgrade">Error</span>
+                                        </div>
+                                    </form>
+                                </td>
+
+                                <td>
+                                    <p class="colon colored">:</p>
+                                </td>
+
+                                <td>
+                                    <form action="#" class="min colored">
+                                        <div class="mdl-textfield mdl-js-textfield">
+                                            <input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="[0-5]{1}[0-9]{1}" id="sample2">
+                                            <label class="mdl-textfield__label mdl-pre-upgrade" for="sample2"></label>
+                                            <span class="mdl-textfield__error mdl-pre-upgrade">Error</span>
+                                        </div>
+                                    </form>
+                                </td>
+
+                                <td>
+                                    <form action="#" class="event_name">
+                                        <div class="mdl-textfield mdl-js-textfield">
+                                            <input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample3">
+                                            <label class="mdl-textfield__label mdl-pre-upgrade" for="sample3">イベント名</label>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3">
+                                    <i class="fas fa-angle-double-down icon_down"></i>
+                                </td>
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    <form action="#" class="time colored">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">
+                                            <input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample4">
+                                            <label class="mdl-textfield__label mdl-pre-upgrade" for="sample4"></label>
+                                            <span class="mdl-textfield__error mdl-pre-upgrade">Error</span>
+                                        </div>
+                                    </form>
+                                </td>
+
+                                <td>
+                                    <p class="colon colored">:</p>
+                                </td>
+
+                                <td>
+                                    <form action="#" class="min colored">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">
+                                            <input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample5">
+                                            <label class="mdl-textfield__label mdl-pre-upgrade" for="sample5"></label>
+                                            <span class="mdl-textfield__error mdl-pre-upgrade">Error</span>
+                                        </div>
+                                    </form>
+                                </td>
+
+                                <td>
+                                    <form action="#" class="event_name">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">
+                                            <input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="sample6">
+                                            <label class="mdl-textfield__label mdl-pre-upgrade" for="sample6">イベント名</label>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="card">
+                            <span class="ele_header">
+                                <i class="fas fa-bars drag_bars"></i>
+                                <span class="mdl-textfield mdl-js-textfield mdl-pre-upgrade card_title">
+                                            <input class="mdl-textfield__input input_eve mdl-pre-upgrade card_title_input" type="text" id="sample8">
+                                            <label class="mdl-textfield__label mdl-pre-upgrade" for="sample8"></label>
                                 </span>
+                                <button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">
+                                    <i class="fas fa-times mdl-pre-upgrade"></i>
+                                </button>
+                                <button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">
+                                    <i class="fas fa-angle-down"></i>
+                                </button>
+                                <button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">
+                                    <i class="fas fa-angle-up"></i>
+                                </button>
+                            </span>
 
-                                <div class="mdl-tooltip" for="tooltip_delete"></div>
+                            <div id="comment_dummy">
+                                <form action="#" class="comment_form">
+                                    <div class="mdl-textfield mdl-js-textfield comment mdl-pre-upgrade">
+                                        <textarea class="mdl-textfield__input comment_ta mdl-pre-upgrade" type="text" rows= "3" id="comment" ></textarea>
+                                        <label class="mdl-textfield__label mdl-pre-upgrade" for="comment">Text...</label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <span class="ele_header">
+                                <button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">
+                                    <i class="fas fa-angle-down"></i>
+                                </button>
+                                <button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button mdl-pre-upgrade">
+                                    <i class="fas fa-angle-up"></i>
+                                </button>
+                                <!--<a href="#" class="remove_btn ele_header_button"></a>-->
+                                <!--<a href="#" class="arrow_down ele_header_button"><i class="fas fa-angle-down"></i></a>-->
+                                <!--<a href="#" class="arrow_up ele_header_button"><i class="fas fa-angle-up"></i></a>-->
+                            </span>
+
+                            <div id="params_dummy">
+                                <ul class="demo-list-item mdl-list mdl-pre-upgrade">
+                                    <li class="mdl-list__item mdl-pre-upgrade">
+                                        <i class="fas fa-bars drag_btn_i"></i>
+                                        <span class="mdl-list__item-primary-content mdl-pre-upgrade">
+                                            <span class="params_title">Bryan Cranston</span>
+                                        </span>
+
+                                        <span class="mdl-list__item-secondary-action params_check">
+                                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="list-checkbox-1">
+                                                <input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input mdl-pre-upgrade" />
+                                            </label>
+                                        </span>
+
+                                        <p class="slider_wrapper params_slider" style="width:300px">
+                                            <input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" id="s1" min="0" max="5" value="3" step="1">
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div id="tags_dummy">
+                                <div class="tag_wrapper">
+                                    <span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">
+                                    <!--<img class="mdl-chip__contact" src="img/icon.png" />-->
+                                        <a href="#" class="mdl-chip__contact custom_tips_btn mdl-pre-upgrade" id="tooltip_delete">
+                                            <span class="fa-stack">
+                                                <i class="fas fa-circle fa-stack-1x chips_btn_circle"></i>
+                                                <i class="fas fa-eye fa-stack-1x chips_btn"></i>
+                                                <i class="fas fa-eye-slash fa-stack-1x chips_btn"></i>
+                                            </span>
+                                        </a>
+                                        <span class="mdl-chip__text"></span>
+                                        <a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>
+                                    </span>
+
+                                    <div class="mdl-tooltip" for="tooltip_delete"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-</div>
+    </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div id="modal-row1">
-                        <span class="fa-layers modal-circle-w modal-circle-w1">
-                            <i class="fas fa-circle modal-circle-i circle1"></i>
-                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
-                        </span>
-                        <span class="fa-layers modal-circle-w">
-                            <i class="fas fa-circle modal-circle-i circle2"></i>
-                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
-                        </span>
-                        <span class="fa-layers modal-circle-w">
-                            <i class="fas fa-circle modal-circle-i circle3"></i>
-                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
-                        </span>
-                        <span class="fa-layers modal-circle-w">
-                            <i class="fas fa-circle modal-circle-i circle4"></i>
-                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
-                        </span>
-                    </div>
-
-                    <!--<div>-->
-                        <!--<span class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label modal_row">-->
-                            <!--<input class="mdl-textfield__input card_title_input" type="text" id="modal_input">-->
-                            <!--<label class="mdl-textfield__label" for="modal_input"></label>-->
-                        <!--</span>-->
-                    <!--</div>-->
-
-                    <form action="#" class="modal_row">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input card_title_input" type="text" id="modal_input">
-                            <label class="mdl-textfield__label" for="modal_input"></label>
-                            <span class="mdl-textfield__error"></span>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="modal-row1">
+                            <span class="fa-layers modal-circle-w modal-circle-w1">
+                                <i class="fas fa-circle modal-circle-i circle1"></i>
+                                <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                            </span>
+                            <span class="fa-layers modal-circle-w">
+                                <i class="fas fa-circle modal-circle-i circle2"></i>
+                                <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                            </span>
+                            <span class="fa-layers modal-circle-w">
+                                <i class="fas fa-circle modal-circle-i circle3"></i>
+                                <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                            </span>
+                            <span class="fa-layers modal-circle-w">
+                                <i class="fas fa-circle modal-circle-i circle4"></i>
+                                <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                            </span>
                         </div>
-                    </form>
 
-                    <div id="modal-row3">
-                        <span>
-                            <span>初期状態で表示する</span>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-modal" id="checkbox-modal-label">
-                              <input type="checkbox" id="checkbox-modal" class="mdl-checkbox__input">
-                              <span class="mdl-checkbox__label"></span>
+                        <!--<div>-->
+                            <!--<span class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label modal_row">-->
+                                <!--<input class="mdl-textfield__input card_title_input" type="text" id="modal_input">-->
+                                <!--<label class="mdl-textfield__label" for="modal_input"></label>-->
+                            <!--</span>-->
+                        <!--</div>-->
+
+                        <form action="#" class="modal_row">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input card_title_input" type="text" id="modal_input">
+                                <label class="mdl-textfield__label" for="modal_input"></label>
+                                <span class="mdl-textfield__error"></span>
+                            </div>
+                        </form>
+
+                        <div id="modal-row3">
+                            <span>
+                                <span>初期状態で表示する</span>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-modal" id="checkbox-modal-label">
+                                  <input type="checkbox" id="checkbox-modal" class="mdl-checkbox__input">
+                                  <span class="mdl-checkbox__label"></span>
+                                </label>
+                            </span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary modal-footer-btn" data-dismiss="modal">キャンセル</button>
+                        <button type="button" class="btn btn-primary modal-footer-btn">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalDate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form action="#" class="modal_row">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input class="mdl-textfield__input card_title_input" type="text" id="modal_input2">
+                                <label class="mdl-textfield__label" for="modal_input2"></label>
+                            </div>
+                        </form>
+
+                        <div>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+                                <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
+                                <span class="mdl-radio__label">前日</span>
                             </label>
-                        </span>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary modal-footer-btn" data-dismiss="modal">キャンセル</button>
-                    <button type="button" class="btn btn-primary modal-footer-btn">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="modalDate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <form action="#" class="modal_row">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input card_title_input" type="text" id="modal_input2">
-                            <label class="mdl-textfield__label" for="modal_input2"></label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
+                                <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="1" checked>
+                                <span class="mdl-radio__label">当日</span>
+                            </label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
+                                <input type="radio" id="option-3" class="mdl-radio__button" name="options" value="1" checked>
+                                <span class="mdl-radio__label">翌日</span>
+                            </label>
                         </div>
-                    </form>
-
-                    <div>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
-                            <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
-                            <span class="mdl-radio__label">前日</span>
-                        </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
-                            <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="1" checked>
-                            <span class="mdl-radio__label">当日</span>
-                        </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
-                            <input type="radio" id="option-3" class="mdl-radio__button" name="options" value="1" checked>
-                            <span class="mdl-radio__label">翌日</span>
-                        </label>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary modal-footer-btn" data-dismiss="modal">キャンセル</button>
-                    <button type="button" class="btn btn-primary modal-footer-btn">OK</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary modal-footer-btn" data-dismiss="modal">キャンセル</button>
+                        <button type="button" class="btn btn-primary modal-footer-btn">OK</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-</div>
+    <!-- Bootstrap core JavaScript jqueryのfadeOut()を使いたいので使用する版はslimではないものとする-->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 
-<!-- Bootstrap core JavaScript jqueryのfadeOut()を使いたいので使用する版はslimではないものとする-->
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
 
-<script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
+    <script src="vender/mixitup.min.js"></script>
+    <script src='draglula/dragula.min.js'></script>
 
-<script src="vender/mixitup.min.js"></script>
-<script src='draglula/dragula.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <script src="vender/bootstrap-material-datetimepicker.js"></script>
+    <script src="../dist/bootstrap-notify.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-<script src="vender/bootstrap-material-datetimepicker.js"></script>
-<script src="../dist/bootstrap-notify.min.js"></script>
+    <script src="app.js"></script>
 
-<script src="app.js"></script>
-
-<!-- Menu Toggle Script -->
-<script>
-    window.onload = function (ev) { init() };
-</script>
-
+    <noscript>
+        <h4>JavaScriptが無効になっています。ブラウザの設定を開いてJavaScriptを有効にしてください。</h4>
+    </noscript>
 </body>
 </html>
