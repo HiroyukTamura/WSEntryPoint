@@ -1,7 +1,6 @@
 "use strict";
 
 const postLoad = $('#post_load');
-const DEFAULT = "DEFAULT";
 const progress = $('#progress');
 var defaultApp;
 var defaultDatabase;
@@ -9,22 +8,14 @@ var user;
 var fbCoumpleteCount = 0;
 var userDataJson;
 
-function init() {
-    var config = {
-        apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
-        authDomain: "wordsupport3.firebaseapp.com",
-        databaseURL: "https://wordsupport3.firebaseio.com",
-        projectId: "wordsupport3",
-        storageBucket: "wordsupport3.appspot.com",
-        messagingSenderId: "60633268871"
-    };
-    defaultApp = firebase.initializeApp(config);
+window.onload = function (ev) {
+    defaultApp = firebase.initializeApp(CONFIG);
     defaultDatabase = defaultApp.database();
 
     firebase.auth().onAuthStateChanged(function(userObject) {
         if (userObject) {
             console.log("ユーザログインしてます");
-            // progress.css("display", "none");
+            progress.hide();
             user = userObject;
             onLoginSuccess();
         } else {
@@ -44,26 +35,25 @@ function init() {
                             // Called when the user has been successfully signed in.
                             'signInSuccess': function(userObject, credential, redirectUrl) {
                                 user = userObject;
-                                progress.css('display', "none");
-                                $('#login_w').css('display', "none");
+                                progress.hide();
+                                $('#login_w').hide();
                                 return false;
                             }
                         }
                     };
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.css('display', "none");
-                    $('#login_w').css('display', "inline");
+                    progress.hide();
+                    $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
+
                 }).catch(function(error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode, errorMessage);
-                //todo エラー時の処理
+                    console.log(error.code, error.message);
+                    showNotification(ERR_MSG_OPE_FAILED, 'danger');
             });
         }
     });
-}
+};
 
 function onLoginSuccess() {
     console.log("onLoginSuccess:", user);
@@ -71,7 +61,7 @@ function onLoginSuccess() {
     defaultDatabase.ref("userData/" + user.uid).once("value").then(function (snapshot) {
 
         if(!snapshot.exists()){
-            // todo エラー処理
+            showNotification(ERR_MSG_OPE_FAILED, 'danger');
             console.log("snapShot存在せず" + snapshot);
             fbCoumpleteCount++;
             return;

@@ -1,5 +1,6 @@
+"use strict";
+
 const postLoad = $('#post_load');
-const DEFAULT = 'DEFAULT';
 var progress = $('#progress');
 
 /////////dialogまわり////////
@@ -23,7 +24,6 @@ var groupNodeJson;
 var groupKey;
 var isModalOpen = false;
 var calendar;
-const DELIMITER = '9mVSv';
 const holidays = {
     "2017-01-01": "元日",
     "2017-01-02": "元日 振替休日",
@@ -531,17 +531,8 @@ function onClickBtn() {
 ////////////////////////////////////////////////////////////////////////
 
 
-function init() {
-
-    var config = {
-        apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
-        authDomain: "wordsupport3.firebaseapp.com",
-        databaseURL: "https://wordsupport3.firebaseio.com",
-        projectId: "wordsupport3",
-        storageBucket: "wordsupport3.appspot.com",
-        messagingSenderId: "60633268871"
-    };
-    defaultApp = firebase.initializeApp(config);
+window.onload = function (ev) {
+    defaultApp = firebase.initializeApp(CONFIG);
     defaultDatabase = defaultApp.database();
 
     firebase.auth().onAuthStateChanged(function(userObject) {
@@ -570,6 +561,8 @@ function init() {
                                 user = userObject;
                                 progress.hide();
                                 $('#login_w').hide();
+                                postLoad.show();
+
                                 onLoginSuccess();
                                 return false;
                             }
@@ -581,8 +574,8 @@ function init() {
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
                 }).catch(function(error) {
-                console.log(error.code, error.message);
-                onErrConnectFb();
+                    console.log(error.code, error.message);
+                    onErrConnectFb();
             });
         }
     });
@@ -590,10 +583,6 @@ function init() {
 
 function onErrConnectFb() {
     showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
-
-    initAllTooltips();
-    $('#fab-wrapper').hide();
-    $('#save').hide();
 }
 
 function onLoginSuccess() {
@@ -1292,7 +1281,7 @@ function onGetSnapOfGroupNode(snapshot) {
         } else {
             var li = $('<li>', {
                 class: "mdl-menu__item"
-            }).html(value.name);
+            }).html(groupNodeJson[key]['name']);
 
             li.on('click', function (ev) {
                 var index = $(this).index();

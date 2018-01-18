@@ -1,8 +1,9 @@
+"use strict";
+
 const ERR_MSG_NULL_VAL = "項目名を入力してください";
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
 const ERR_MSG_EACH_VAL_SAME = "項目名は開始と終了で別にしてください";
-const ERR_MSG_OPE_FAILED = '処理に失敗しました';
 const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません';
 const ERR_MSG_NO_CONTENTS = '項目は最低でもひとつ必要です';
 const SUCCESS_MSG_SAVE = '保存しました';
@@ -1705,28 +1706,6 @@ function setElementAsMdl(clone) {
     for (var i=0; i<ele.length; i++){
         componentHandler.upgradeElement(ele[i]);
     }
-}
-
-function showNotification(msg, type, delay) {
-    var icon = null;
-    switch (type){
-        case 'danger':
-        case 'warning':
-            icon = '<i class="fas fa-info-circle fa-lg"></i>';
-            break;
-        case 'success':
-            icon = '<i class="fas fa-check-circle"></i>';
-            break;
-    }
-
-    var setting = {type: type};
-    if(delay)
-        setting['delay'] = delay;
-
-    $.notify({
-        title: icon,
-        message: '  ' + msg
-    }, setting);
 }
 
 //region *****************html生成系**************
