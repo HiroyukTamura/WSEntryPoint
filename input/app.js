@@ -146,8 +146,8 @@ function init() {
                 $('#post_load').css("display", "inline");
             });
 
-            var url = "../analytics/index.html?uid=" + user.uid;
-            $('.mdl-navigation__link').eq(2).attr("href", url);
+            // var url = "../analytics/index.html;
+            // $('.mdl-navigation__link').eq(2).attr("href", url);
 
         } else {
             console.log("ユーザはログアウトしたっす。");
@@ -157,6 +157,18 @@ function init() {
             $('#fab-wrapper').hide();
             $('#save').hide();
         }
+    });
+
+    initDrawerDecoration();
+}
+
+function initDrawerDecoration() {
+    $('.mdl-navigation .mdl-navigation__link:not(.current-page)').hover(function (e) {
+        $(this).find('.drawer_icon').css('color', '#E57C3E');
+        $(this).css('color', '#E57C3E');
+    }, function (e) {
+        $(this).find('.drawer_icon').css('color', '#757575');
+        $(this).css('color', '#757575');
     });
 }
 
