@@ -44,3 +44,10 @@ function showNotification(msg, type, delay) {
         message: '  ' + msg
     }, setting);
 }
+
+function setElementAsMdl(clone) {
+    var ele = clone.find(".mdl-pre-upgrade");
+    for (var i=0; i<ele.length; i++){
+        componentHandler.upgradeElement(ele.eq(i)[0]);
+    }
+}

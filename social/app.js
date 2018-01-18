@@ -56,12 +56,14 @@ window.onload = function (ev) {
 };
 
 function onLoginSuccess() {
+    postLoad.show();
+
     console.log("onLoginSuccess:", user);
 
     defaultDatabase.ref("userData/" + user.uid).once("value").then(function (snapshot) {
 
         if(!snapshot.exists()){
-            showNotification(ERR_MSG_OPE_FAILED, 'danger');
+            showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
             console.log("snapShot存在せず" + snapshot);
             fbCoumpleteCount++;
             return;
@@ -71,7 +73,7 @@ function onLoginSuccess() {
 
         //グループに参加していない場合
         if(snapshot.child("group").numChildren() === 1){
-            $("#group .group-w-title-w p").css('display', 'inline');
+            $("#group .group-w-title-w p").show();
         }
 
         snapshot.child("group").forEach(function (childSnap) {
@@ -120,7 +122,7 @@ function onLoginSuccess() {
 function retrieveFriendSnap() {
     defaultDatabase.ref("friend/" + user.uid).once("value").then(function (snapshot) {
         if(!snapshot.exists()){
-            // todo エラー処理
+            showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
             console.log("snapShot存在せず" + snapshot);
             fbCoumpleteCount++;
             return;
@@ -227,11 +229,4 @@ function showAll() {
             }
         }
     });
-}
-
-function setElementAsMdl(clone) {
-    var ele = clone.find(".mdl-pre-upgrade");
-    for (var i=0; i<ele.length; i++){
-        componentHandler.upgradeElement(ele.eq(i)[0]);
-    }
 }
