@@ -2,6 +2,7 @@ const delimiter = "9mVSv";
 const ERR_MSG_NULL_VAL = "項目名を入力してください";
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
+const ERR_MSG_EACH_VAL_SAME = "項目名は開始と終了で別にしてください"
 const TIME_POPOVER_CONFIG = {
     trigger: 'manual',
     placement: 'bottom',
@@ -496,6 +497,8 @@ function createOneRangeRow(doc, count, value) {
         tr.remove();
     });
 
+
+    //region 禁則文字まわり
     var startInput = $(blocks[0]).find('.input_eve');
     var endInput = $(blocks[2]).find('.input_eve');
     var errSpanStart = $(blocks[0]).find('.event_name .mdl-textfield__error');
@@ -506,14 +509,11 @@ function createOneRangeRow(doc, count, value) {
         var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanStart);
 
         var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-        var tr = $(this).closest('tr');
-        var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
-        index = Math.floor(index/3);
+        var index = getRangeIndex($(e.target));
         var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
 
         if($(e.target).val() === jsonC['rangeList'][index]['end']['name']){
-            errSpanEnd.html("項目名は開始と終了で別にしてください");
-            endInput.parent().addClass('is-invalid');
+            showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_EACH_VAL_SAME);
             isValid = false;
 
         } else {
@@ -529,10 +529,7 @@ function createOneRangeRow(doc, count, value) {
                 if (jsonC['rangeList'][key]['start']['name'] === $(e.target).val()
                     && jsonC['rangeList'][key]['end']['name'] === endInput.val()) {
 
-                    errSpanStart.html(ERR_MSG_DUPLICATE_VAL);
-                    errSpanEnd.html(ERR_MSG_DUPLICATE_VAL);
-                    $(e.target).parent().addClass('is-invalid');
-                    endInput.parent().addClass('is-invalid');
+                    showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_DUPLICATE_VAL);
                     isValid = false;
                     console.log('こっち');
                     break;
@@ -548,6 +545,48 @@ function createOneRangeRow(doc, count, value) {
         // jsonC['eventList'][index]['name'] = $(e.target).val();
         // masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
     });
+
+
+    endInput.keyup(function (e) {
+        //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
+        var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanEnd);
+
+        var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+        var index = getRangeIndex($(e.target));
+        var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
+
+        if($(e.target).val() === jsonC['rangeList'][index]['start']['name']){
+            showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_EACH_VAL_SAME);
+            isValid = false;
+
+        } else {
+            console.log($(e.target).val(), jsonC['rangeList'][index]['start']['name']);
+
+            for(var key in jsonC['rangeList']) {
+                if(!jsonC['rangeList'].hasOwnProperty(key))
+                    continue;
+
+                if(key == index)
+                    continue;
+
+                if (jsonC['rangeList'][key]['start']['name'] === startInput.val()
+                    && jsonC['rangeList'][key]['end']['name'] === $(e.target).val()) {
+
+                    showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_DUPLICATE_VAL);
+                    isValid = false;
+                    console.log('こっち');
+                    break;
+                }
+            }
+        }
+
+        if (isValid){
+            $(e.target).parent().removeClass('is-invalid');
+            startInput.parent().removeClass('is-invalid');
+            console.log('うむ');
+        }
+    });
+    //endregion
 
     for(var i=0; i<blocks.length; i++){
         // var element = blocks[i].cloneNode(true);
@@ -622,6 +661,20 @@ function createOneRangeRow(doc, count, value) {
 
         $(blocks[i]).insertBefore($(doc).find('.range-add'));
     }
+}
+
+
+function showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, errMsg) {
+    errSpanStart.html(errMsg);
+    startInput.parent().addClass('is-invalid');
+    errSpanEnd.html(errMsg);
+    endInput.parent().addClass('is-invalid');
+}
+
+function getRangeIndex(target) {
+    var tr = target.closest('tr');
+    var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
+    return Math.floor(index/3);
 }
 
 function onHoverForPopover(e) {
@@ -772,7 +825,7 @@ function createOneEveRow(doc, value) {
             }
         }
 
-        if(!isValid)
+        if(isValid)
             $(e.target).parent().removeClass('is-invalid');
 
         jsonC['eventList'][index]['name'] = $(e.target).val();
