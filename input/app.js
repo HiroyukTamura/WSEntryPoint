@@ -1716,13 +1716,13 @@ function createHtmlAs3(id) {
                     '</label>'+
                 '</span>'+
 
-                // '<button class="mdl-button mdl-js-button mdl-button--icon">' +
-                //     '<i class="fas fa-arrows-alt-h max_btn"></i>' +
-                // '</button>'+
-
                 '<p class="slider_wrapper params_slider">'+
                     '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="popover">'+
                 '</p>'+
+
+                '<button class="mdl-button mdl-js-button mdl-button--icon li-rm-btn mdl-pre-upgrade">' +
+                    '<i class="fas fa-times"></i>' +
+                '</button>'+
             '</li>'
         // '</ul>'
     );

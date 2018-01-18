@@ -446,8 +446,16 @@ td {
     /*padding-bottom: 20px;!*この値はmdl-textfieldのデフォルト値に合わせてる*!*/
 }
 
+.mdl-list  .mdl-textfield{
+    width: 250px;
+}
+
+.li-rm-btn .fa-times{
+    color: #BCBCBC;
+}
+
 .mdl-list .mdl-list__item {
-    margin: 8px 0 8px 16px;
+    margin: 8px 16px 8px 16px;
     padding: 0;
 }
 
@@ -490,7 +498,7 @@ td {
     color: white;
 }
 
-/*------prams系--------*/
+/*----------------prams系-----------------*/
 .params_check .params_slider {
     display: none;
 }
@@ -568,6 +576,10 @@ td {
 .tooltip-slider p{
     /*text-align: center;*/
     margin: 8px;
+}
+
+.li-rm-btn {
+
 }
 
 /*.tooltip-slider select {*/
@@ -721,28 +733,8 @@ td {
 #post_load {
     display: none;
 }
-/*#page-content-wrapper {*/
-    /*display: none;*/
-/*}*/
 
-/*#place-holder {*/
-    /*display: none;*/
-/*}*/
-
-/*#loading-spinner{*/
-    /*margin: auto;*/
-/*}*/
-/*.mdl-chip__text{*/
-    /*color: white;*/
-/*}*/
-/*#stripe {*/
-    /*position: relative;*/
-    /*width: 4px;*/
-    /*height: 100%;*/
-    /*margin-right: 33px;*/
-    /*margin-left: 33px;*/
-    /*background-color: #9fcdff;*/
-/*}*/
+/*----------------FAB関係------------------------*/
 
 #save {
     display: none;
