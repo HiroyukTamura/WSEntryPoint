@@ -1,4 +1,7 @@
 const delimiter = "9mVSv";
+const ERR_MSG_NULL_VAL = "項目名を入力してください";
+const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
+const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
 const TIME_POPOVER_CONFIG = {
     trigger: 'manual',
     placement: 'bottom',
@@ -493,6 +496,59 @@ function createOneRangeRow(doc, count, value) {
         tr.remove();
     });
 
+    var startInput = $(blocks[0]).find('.input_eve');
+    var endInput = $(blocks[2]).find('.input_eve');
+    var errSpanStart = $(blocks[0]).find('.event_name .mdl-textfield__error');
+    var errSpanEnd = $(blocks[2]).find('.event_name .mdl-textfield__error');
+
+    startInput.keyup(function (e) {
+        //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
+        var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanStart);
+
+        var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+        var tr = $(this).closest('tr');
+        var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
+        index = Math.floor(index/3);
+        var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
+
+        if($(e.target).val() === jsonC['rangeList'][index]['end']['name']){
+            errSpanEnd.html("項目名は開始と終了で別にしてください");
+            endInput.parent().addClass('is-invalid');
+            isValid = false;
+
+        } else {
+            console.log($(e.target).val(), jsonC['rangeList'][index]['end']['name']);
+
+            for(var key in jsonC['rangeList']) {
+                if(!jsonC['rangeList'].hasOwnProperty(key))
+                    continue;
+
+                if(key == index)
+                    continue;
+
+                if (jsonC['rangeList'][key]['start']['name'] === $(e.target).val()
+                    && jsonC['rangeList'][key]['end']['name'] === endInput.val()) {
+
+                    errSpanStart.html(ERR_MSG_DUPLICATE_VAL);
+                    errSpanEnd.html(ERR_MSG_DUPLICATE_VAL);
+                    $(e.target).parent().addClass('is-invalid');
+                    endInput.parent().addClass('is-invalid');
+                    isValid = false;
+                    console.log('こっち');
+                    break;
+                }
+            }
+        }
+
+        if (isValid){
+            $(e.target).parent().removeClass('is-invalid');
+            endInput.parent().removeClass('is-invalid');
+            console.log('うむ');
+        }
+        // jsonC['eventList'][index]['name'] = $(e.target).val();
+        // masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
+    });
+
     for(var i=0; i<blocks.length; i++){
         // var element = blocks[i].cloneNode(true);
         //おわかりかと思うが、このロジックが正常に動作するためには、{#range-add}を先にdomに追加しないといけない
@@ -682,6 +738,7 @@ function createOneEveRow(doc, value) {
             });
         });
 
+    //項目削除イベント
     block.find('.remove-btn').on('click', function (ev) {
         var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
@@ -690,7 +747,36 @@ function createOneEveRow(doc, value) {
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
         console.log(masterJson);
 
-        $(this).parents('tr').remove();
+        $(this).parents('tr').remove();//todo アニメーションできたらなあ。
+    });
+
+    //イベント名入力イベント
+    var errSpan = block.find('.event_name .mdl-textfield__error');
+    block.find('.input_eve').keyup(function (e) {
+        //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
+        var isValid = isValidAboutNullAndDelimiter($(e.target), errSpan);
+
+        var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+        var index = $(e.target).parents('tr').index();
+        var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
+        for(var key in jsonC['eventList']) {
+            if(!jsonC['eventList'].hasOwnProperty(key) || key == index)
+                continue;
+
+            if (jsonC['eventList'][key]['name'] === $(e.target).val()) {
+                errSpan.html(ERR_MSG_DUPLICATE_VAL);
+                $(e.target).parent().addClass('is-invalid');
+                console.log('こっち');
+                isValid = false;
+                break;
+            }
+        }
+
+        if(!isValid)
+            $(e.target).parent().removeClass('is-invalid');
+
+        jsonC['eventList'][index]['name'] = $(e.target).val();
+        masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
     });
 
     block.insertBefore($(doc).find('.eve-add'));
@@ -1082,13 +1168,18 @@ function createParamsLi(splited, dataOrder, i) {
     var witch = splited[0];
     // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
     var clone = createHtmlAs3(dataOrder + "_" + i);
-    var paramsTitle = clone.find(".params_title").eq(0);
+    var paramsTitle = clone.find(".params_title");
     paramsTitle.attr("value", splited[1]);
+    var errSpan = clone.find(".mdl-textfield__error");
 
     paramsTitle.keyup(function (e) {
         var index = $(this).closest("li").index();
         var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
-        masterJson[currentDataOrder]["data"][index] = $(this).val();
+        var isValid = isValidAboutNullAndDelimiter($(this), errSpan);
+        if(isValid){
+            $(e.target).parent().removeClass('is-invalid');
+        }
+        masterJson[currentDataOrder]["data"][index] = $(this).val();//todo masterJsonに書き込んでいることに注意してください
     });
 
     clone.find('.li-rm-btn').on('click', function (e) {
@@ -1390,11 +1481,24 @@ function initModal() {
     $('.modal-footer-btn').eq(1).click(function (ev) {
         var title = input.val();
 
-        if(!title){
-            errorSpan.html("項目名を入力してください");
-            input.parent().addClass('is-invalid');
+        if (!isValidAboutNullAndDelimiter(input, errorSpan))
             return;
+
+        var arr = masterJson[modalDataNum]["data"];
+        var val = Object.values(arr);
+        console.log(modalTipNum);
+        for(var i=0; i<val.length; i++){
+            if(!isModalForNewTag && i.toString() === modalTipNum)
+                continue;
+
+            if(title === val[i].split(delimiter)[0]){
+                errorSpan.html("タグ名が重複しています");
+                input.parent().addClass('is-invalid');
+                return;
+            }
         }
+
+        input.parent().removeClass('is-invalid');
 
         if (isModalForNewTag) {
             // console.log('てってれー', modalDataNum, clickedColor);
@@ -1407,20 +1511,6 @@ function initModal() {
             addTagToPool(splited, length, pool);
 
         } else {
-            var arr = masterJson[modalDataNum]["data"];
-            var val = Object.values(arr);
-            console.log(modalTipNum);
-            for(var i=0; i<val.length; i++){
-                if(i.toString() === modalTipNum)
-                    continue;
-
-                if(title === val[i].split(delimiter)[0]){
-                    errorSpan.html("タグ名が重複しています");
-                    input.parent().addClass('is-invalid');
-                    return;
-                }
-            }
-
             var show = $('#checkbox-modal-label').hasClass('is-checked');
             masterJson[modalDataNum]["data"][modalTipNum] = title + delimiter + clickedColor + delimiter + show;
         }
@@ -1467,6 +1557,20 @@ function initModal() {
     //
     //     masterJson[modalDataNum]["data"][modalTipNum]
     // });
+}
+
+function isValidAboutNullAndDelimiter(input, errSpan) {
+    if (!input.val()){
+        errSpan.html(ERR_MSG_NULL_VAL);
+        input.parent().addClass('is-invalid');
+        return false;
+    }
+    if (input.val().indexOf(delimiter) !== -1){
+        errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(delimiter));
+        input.parent().addClass('is-invalid');
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -1582,8 +1686,8 @@ function createHtmlAs1Eve() {
                 '<form action="#" class="event_name">' +
                     '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
                         '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="'+ random +'">' +
-                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ random +'">イベント名</label>' +
-                        // '<span class="mdl-textfield__error mdl-pre-upgrade">文字を入力してください</span>' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ random +'"></label>'+
+                        '<span class="mdl-textfield__error mdl-pre-upgrade"></span>' +
                     '</div>' +
                 '</form>' +
             '</td>'+
@@ -1719,6 +1823,7 @@ function createHtmlAs3(id) {
                         '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
                             '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
                             '<label class="mdl-textfield__label" for="'+inputId+'"></label>' +
+                            '<span class="mdl-textfield__error">'+ ERR_MSG_NULL_VAL +'</span>'+
                         '</div>' +
                     '</form>' +
                 '</span>'+

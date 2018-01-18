@@ -300,7 +300,7 @@ tbody .mdl-textfield__label {
 
 .add-eve-row td {
     text-align: center;
-    padding-top: 8px;
+    padding-top: 20px;
 }
 
 .add-eve-row button {
@@ -446,10 +446,6 @@ td {
     /*padding-bottom: 20px;!*この値はmdl-textfieldのデフォルト値に合わせてる*!*/
 }
 
-.mdl-list {
-    min-height: 48px;
-}
-
 .mdl-list  .mdl-textfield{
     width: 250px;
 }
@@ -459,8 +455,8 @@ td {
 }
 
 .mdl-list .mdl-list__item {
-    margin: 8px 16px 8px 16px;
-    padding: 0;
+    margin: 8px 16px 0 8px;
+    padding-top: 0;
 }
 
 .mdl-list .params_check {
