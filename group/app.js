@@ -1252,13 +1252,6 @@ function getGroupKey() {
     return url.searchParams.get("key");
 }
 
-function avoidNullValue(photoUrl, onErrVal) {
-    if(photoUrl === "null")
-        return onErrVal;
-    else
-        return photoUrl;
-}
-
 function onGetSnapOfGroupNode(snapshot) {
     if(!snapshot.exists()){
         // todo エラー処理

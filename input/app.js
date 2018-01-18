@@ -103,6 +103,10 @@ function onErrConnectFb() {
 
 
 function onLoginSuccess() {
+    postLoad.show();
+
+    setDrawerProfile(loginedUser);
+
     defaultDatabase.ref(makeRefScheme(['userData', loginedUser.uid, 'template'])).once('value').then(function(snapshot) {
 
         masterJson = [];
@@ -170,16 +174,6 @@ function onLoginSuccess() {
 
         $('#progress').hide();
         $('#post_load').show();
-    });
-}
-
-function initDrawerDecoration() {
-    $('.mdl-navigation .mdl-navigation__link:not(.current-page)').hover(function (e) {
-        $(this).find('.drawer_icon').css('color', '#E57C3E');
-        $(this).css('color', '#E57C3E');
-    }, function (e) {
-        $(this).find('.drawer_icon').css('color', '#757575');
-        $(this).css('color', '#757575');
     });
 }
 

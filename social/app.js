@@ -53,10 +53,13 @@ window.onload = function (ev) {
             });
         }
     });
+
+    initDrawerDecoration();
 };
 
 function onLoginSuccess() {
-    postLoad.show();
+
+    setDrawerProfile(user);
 
     console.log("onLoginSuccess:", user);
 

@@ -51,3 +51,27 @@ function setElementAsMdl(clone) {
         componentHandler.upgradeElement(ele.eq(i)[0]);
     }
 }
+
+function initDrawerDecoration() {
+    $('.mdl-navigation .mdl-navigation__link:not(.current-page)').hover(function (e) {
+        $(this).find('.drawer_icon').css('color', '#E57C3E');
+        $(this).css('color', '#E57C3E');
+    }, function (e) {
+        $(this).find('.drawer_icon').css('color', '#757575');
+        $(this).css('color', '#757575');
+    });
+}
+
+function setDrawerProfile(loginedUser) {
+    var photoUrl = avoidNullValue(loginedUser.photoURL, 'img/icon.png');
+    $('.demo-avatar img').attr('src', photoUrl);
+    var displayName = avoidNullValue(loginedUser.displayName, "ユーザ名未設定");
+    $('.user-name').html(displayName);
+}
+
+function avoidNullValue(photoUrl, onErrVal) {
+    if(photoUrl === "null")
+        return onErrVal;
+    else
+        return photoUrl;
+}
