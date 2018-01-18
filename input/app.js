@@ -127,7 +127,8 @@ function init() {
                 initCardDragging();
                 initModal();
                 initAllTooltips();
-                setOnFabClickListener();
+                setOnBtmFabClickListener();
+                setOnSaveFabClickListener();
                 // document.getElementById("place-holder").style.display = "none";
                 // document.getElementById("page-content-wrapper").style.display = "inline";
 
@@ -143,7 +144,8 @@ function init() {
             //todo ログアウト時の動作
 
             initAllTooltips();
-            $('#overlay').hide();
+            $('#fab-wrapper').hide();
+            $('#save').hide();
         }
     });
 }
@@ -1245,7 +1247,7 @@ function setTagUi(clone, splited) {
     $(clone).find(".mdl-chip").css("background-color", getHighLightedColor(parseInt(splited[1])));
 }
 
-function setOnFabClickListener() {
+function setOnBtmFabClickListener() {
     $('.sub-button').on('click', function (e) {
 
         var dataType = 0;
@@ -1300,6 +1302,15 @@ function setOnFabClickListener() {
         initAllTooltips();
         $('.ele_header_button').off('click');
         setOnClickCardHeaderBtn();
+    });
+}
+
+function setOnSaveFabClickListener() {
+    $('#save').on('click', function (e) {
+        e.preventDefault();
+        console.log('clicked');
+        //todo 将来実装
+        return false;
     });
 }
 
@@ -1367,7 +1378,7 @@ function initModal() {
         var title = input.val();
 
         if(!title){
-            errorSpan.html("タグ名を入力してください");
+            errorSpan.html("項目名を入力してください");
             input.parent().addClass('is-invalid');
             return;
         }

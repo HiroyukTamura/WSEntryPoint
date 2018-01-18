@@ -36,15 +36,19 @@
         <div class="mdl-layout__header-row">
             <!-- Title -->
             <span class="mdl-layout-title">テンプレート</span>
+
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-shadow--4dp " id="save" data-toggle="tooltip" data-placement="top" title="テンプレートを保存">
+                <i class="material-icons">save</i>
+            </button>
             <!-- Add spacer, to align navigation to the right -->
-            <div class="mdl-layout-spacer"></div>
+            <!--<div class="mdl-layout-spacer"></div>-->
             <!-- Navigation. We hide it in small screens. -->
-            <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <!--<nav class="mdl-navigation mdl-layout&#45;&#45;large-screen-only">-->
                 <!--<a class="mdl-navigation__link" href="">Link</a>-->
                 <!--<a class="mdl-navigation__link" href="">Link</a>-->
                 <!--<a class="mdl-navigation__link" href="">Link</a>-->
                 <!--<a class="mdl-navigation__link" href="">Link</a>-->
-            </nav>
+            <!--</nav>-->
         </div>
     </header>
 
@@ -94,24 +98,13 @@
                                 <!--<p class="text-muted">Place sticky footer content here.</p>-->
                             <!--</div>-->
                         <!--</footer>-->
-                    </div>
-                    <div id="fab-wrapper">
-                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-js-ripple-effect" id="overlay" data-toggle="tooltip" data-placement="left" title="タイプを選んで項目を追加">-->
-                            <!--<i class="material-icons">add</i>-->
-                        <!--</button>-->
-
-                        <!--<ul class="mdl-menu mdl-menu&#45;&#45;top-right mdl-js-menu mdl-js-ripple-effect" for="overlay">-->
-                            <!--<li disabled class="mdl-menu__item">タイムイベント</li>-->
-                            <!--<li class="mdl-menu__item">タグ</li>-->
-                            <!--<li class="mdl-menu__item">テキスト</li>-->
-                            <!--<li class="mdl-menu__item">リスト</li>-->
-                        <!--</ul>-->
-
-                        <div class="add-button">
-                            <div class="sub-button br"><i class="fas fa-clock" data-toggle="tooltip" data-placement="top" title="イベント"></i></div>
-                            <div class="sub-button tl"><i class="fas fa-tags" data-toggle="tooltip" data-placement="top" title="タグ"></i></div>
-                            <div class="sub-button bl"><i class="fas fa-list-ul" data-toggle="tooltip" data-placement="top" title="リスト"></i></div>
-                            <div class="sub-button tr"><i class="fas fa-edit" data-toggle="tooltip" data-placement="top" title="コメント"></i></div>
+                        <div id="fab-wrapper">
+                            <div class="add-button">
+                                <div class="sub-button br"><i class="fas fa-clock" data-toggle="tooltip" data-placement="top" title="イベントタイプの項目を追加"></i></div>
+                                <div class="sub-button tl"><i class="fas fa-tags" data-toggle="tooltip" data-placement="top" title="タグタイプの項目を追加"></i></div>
+                                <div class="sub-button bl"><i class="fas fa-list-ul" data-toggle="tooltip" data-placement="top" title="リストタイプの項目を追加"></i></div>
+                                <div class="sub-button tr"><i class="fas fa-edit" data-toggle="tooltip" data-placement="left" title="コメントタイプの項目を追加"></i></div>
+                            </div>
                         </div>
                     </div>
                 </div>

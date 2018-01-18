@@ -385,7 +385,7 @@ tbody .mdl-textfield__label {
 }
 
 #dummy {
-    /*display: none;*/
+    display: none;
 }
 
 .card_title {
@@ -695,7 +695,7 @@ td {
 
 #fab-wrapper {
     position: fixed;
-    right: 60px;
+    right: 76px;
     bottom: 72px;
 }
 
@@ -744,6 +744,15 @@ td {
     /*background-color: #9fcdff;*/
 /*}*/
 
+#save {
+    display: none;
+    position: absolute;
+    right: 56px;
+    top: 36px;
+    color: rgba(255,255,255,1);
+    background-color: #E57C3E;
+}
+
 .add-button {
     position: absolute;
     box-shadow: 0 2px 2px gray;
@@ -783,7 +792,7 @@ td {
     position: absolute;
     display: inline-block;
     cursor: pointer;
-    background-color: #E57C3E;
+    background-color: #BCBCBC;;
     color: rgba(255,255,255,0);
     width: 28px;
     height: 28px;
