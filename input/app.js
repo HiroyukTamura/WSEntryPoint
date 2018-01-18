@@ -2,7 +2,12 @@ const delimiter = "9mVSv";
 const ERR_MSG_NULL_VAL = "項目名を入力してください";
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
-const ERR_MSG_EACH_VAL_SAME = "項目名は開始と終了で別にしてください"
+const ERR_MSG_EACH_VAL_SAME = "項目名は開始と終了で別にしてください";
+const ERR_MSG_OPE_FAILED = '処理に失敗しました';
+const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません';
+const ERR_MSG_NO_CONTENTS = '項目は最低でもひとつ必要です';
+const SUCCESS_MSG_SAVE = '保存しました';
+
 const TIME_POPOVER_CONFIG = {
     trigger: 'manual',
     placement: 'bottom',
@@ -41,6 +46,7 @@ var clickedColor;
 var loginedUser;
 var isModalOpen = false;
 var isModalForNewTag = false;
+var defaultDatabase;
 
 Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
@@ -64,7 +70,7 @@ function init() {
         messagingSenderId: "60633268871"
     };
     var defaultApp = firebase.initializeApp(config);
-    var defaultDatabase = defaultApp.database();
+    defaultDatabase = defaultApp.database();
 
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
@@ -1396,6 +1402,7 @@ function createParamsLi(splited, dataOrder, i) {
 }
 //endregion
 
+//todo ここって'comment'じゃなかったっけ？？
 function operateAs4(doc, childSnap) {
     var clone = createHtmlAs4();
     // var clone = document.getElementById("comment_dummy").cloneNode(true);
@@ -1485,13 +1492,46 @@ function setOnBtmFabClickListener() {
         setOnClickCardHeaderBtn();
     });
 }
-
 function setOnSaveFabClickListener() {
-    $('#save').on('click', function (e) {
-        e.preventDefault();
-        console.log('clicked');
-        //todo 将来実装
-        return false;
+    $('#save').show()
+        .on('click', function (e) {
+            e.preventDefault();
+            console.log('clicked');
+
+            if(!masterJson || !$.isArray(masterJson)){
+                showNotification(ERR_MSG_OPE_FAILED, 'danger');
+                return;
+            }
+
+            if(!masterJson.length) {
+                showNotification(ERR_MSG_NO_CONTENTS, 'warning');
+                return;
+            }
+
+            masterJson.unshift(createNewData(0));
+
+            defaultDatabase.ref('userDataSample/'+ loginedUser.uid + '/template').set(masterJson).then(function () {
+                showNotification(SUCCESS_MSG_SAVE, 'success');
+                masterJson.splice(0, 1);
+
+            }).catch(function (reason) {
+                console.log(reason);
+                masterJson.splice(0, 1);
+                onSaveErr();
+            });
+            return false;
+        });
+}
+
+//todo ここ後々どうするか決めよう
+function onSaveErr() {
+    var connectedRef = firebase.database().ref(".info/connected");
+    connectedRef.on("value", function(snap) {
+        if (snap.val() === false) {
+            showNotification(ERR_MSG_NO_INTERNET, 'danger');
+        } else {
+            showNotification(ERR_MSG_OPE_FAILED, 'danger');
+        }
     });
 }
 
@@ -1516,6 +1556,9 @@ function createNewData(dataType) {
         };
         data.data = {};
         data['data']['0'] = JSON.stringify(jsonStr);
+    } else if (dataType === 0) {
+        data.data = {};
+        data['data']['0'] = "勤務日"+ delimiter +"2";
     }
 
     return data;
@@ -1675,6 +1718,26 @@ function setElementAsMdl(clone) {
     for (var i=0; i<ele.length; i++){
         componentHandler.upgradeElement(ele[i]);
     }
+}
+
+function showNotification(msg, type) {
+    var icon = null;
+    switch (type){
+        case 'danger':
+        case 'warning':
+            icon = '<i class="fas fa-info-circle fa-lg"></i>';
+            break;
+        case 'success':
+            icon = '<i class="fas fa-check-circle"></i>';
+            break;
+    }
+
+    $.notify({
+        title: icon,
+        message: '  ' + msg
+    },{
+        type: type
+    });
 }
 
 //region *****************html生成系**************

@@ -917,3 +917,8 @@ td {
     right: -25px;
     border-radius: 28px;
 }
+
+/*---------------Notifyまわり-----------------*/
+span[data-notify="title"] {
+    padding-right: 12px;
+}
