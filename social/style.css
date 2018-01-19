@@ -368,14 +368,89 @@ body {
     object-fit: contain;
 }
 
-.mdl-dialog__content img{
+.mdl-dialog {
+    width: fit-content;
+    max-width: 60%;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+.mdl-list__item img {
+    display: inline-block;
+}
+
+.mdl-dialog .mdl-list__item-primary-content img{
+    margin-right: 24px;
+}
+
+.mdl-dialog .mdl-list__item-primary-content span {
+    text-align: left;
+    color: rgba(0,0,0,.87);
+}
+
+.mdl-dialog .mdl-list__item-primary-content {
+    margin-right: 48px;
+}
+
+#add-group img{
     width: 60px;
     height: 60px;
-    border-radius: 50%;
     object-fit: cover;
 }
 
 .mdl-dialog__content h4 {
     font-size: 18px;
     margin: 8px 0 8px 0;
+}
+
+#create-group .mdl-list__item-primary-content img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.group-icon {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.group-icon img{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.group-icon > div {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: #E57C3E;
+    bottom: 0;
+    right: 0;
+    vertical-align: center;
+    text-align: center;
+}
+
+.group-icon .fa-folder {
+    color: white;
+}
+
+/*.mdl-badge[data-badge]:after {*/
+    /*top: 16px !important;*/
+    /*right: 0 !important;*/
+/*}*/
+
+.mdl-checkbox__ripple-container .mdl-ripple {
+    background: #E57C3E;
+}
+
+.mdl-checkbox.is-checked .mdl-checkbox__box-outline {
+    border: 2px solid #E57C3E;
+}
+
+.mdl-checkbox.is-checked .mdl-checkbox__tick-outline {
+    background: #E57C3E;
 }

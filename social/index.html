@@ -22,6 +22,7 @@
 
         <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
         <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
 
         <link href="../dist/common.css" rel="stylesheet">
         <link href="style.css" rel="stylesheet">
@@ -319,14 +320,44 @@
         <dialog class="mdl-dialog" id="add-group-dialog">
             <div class="mdl-dialog__content">
                 <div id="dialog-img-w">
-                    <img src="img/icon.png" alt="group-image">
-                    <h4>田中貴金属愛好会</h4>
-                    <p>○○××さんに招待されています</p>
+                    <div id="add-group">
+                        <img src="img/icon.png" alt="group-image" class="rounded-circle">
+                        <h4>田中貴金属愛好会</h4>
+                        <p>○○××さんに招待されています</p>
+                    </div>
+                    <div id="create-group">
+                        <div class="group-icon">
+                            <img src="img/icon.png" alt="group-image" class="rounded-circle">
+                            <div class="rounded-circle">
+                                <i class="fas fa-folder fa-sm"></i>
+                            </div>
+                        </div>
+                        <form action="#">
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input" type="text" id="new-group-name">
+                                <label class="mdl-textfield__label" for="new-group-name">グループ名</label>
+                                <span class="mdl-textfield__error"></span>
+                            </div>
+                        </form>
+                        <ul class="mdl-list" id="friend-list">
+                            <!--<li class="mdl-list__item">-->
+                                <!--<span class="mdl-list__item-primary-content">-->
+                                    <!--<i class="material-icons  mdl-list__item-avatar">person</i>-->
+                                    <!--Bryan Cranston-->
+                                <!--</span>-->
+                                <!--<span class="mdl-list__item-secondary-action">-->
+                                    <!--<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">-->
+                                        <!--<input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" checked />-->
+                                    <!--</label>-->
+                                <!--</span>-->
+                            <!--</li>-->
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="mdl-dialog__actions">
                 <button type="button" class="mdl-button" id="add-group-btn">参加する</button>
-                <button type="button" class="mdl-button close">拒否する</button>
+                <button type="button" class="mdl-button" id="cancel">拒否する</button>
             </div>
         </dialog>
 

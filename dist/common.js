@@ -1,8 +1,13 @@
 const DEFAULT = 'DEFAULT';
 const DELIMITER = "9mVSv";
+
 const colors = ["#C0504D", "#9BBB59", "#1F497D", "#8064A2"];
 const highlightColors = ["#D79599", "#C5D79D", "#5C8BBF", "#AEA3C5"];
+
 const ERR_MSG_OPE_FAILED = '処理に失敗しました';
+const ERR_MSG_NULL_VAL = "項目名を入力してください";
+const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
+
 const CONFIG = {
     apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
     authDomain: "wordsupport3.firebaseapp.com",
@@ -70,8 +75,22 @@ function setDrawerProfile(loginedUser) {
 }
 
 function avoidNullValue(photoUrl, onErrVal) {
-    if(photoUrl === "null")
+    if(!photoUrl || photoUrl === "null")
         return onErrVal;
     else
         return photoUrl;
+}
+
+function isValidAboutNullAndDelimiter(input, errSpan) {
+    if (!input.val()){
+        errSpan.html(ERR_MSG_NULL_VAL);
+        input.parent().addClass('is-invalid');
+        return false;
+    }
+    if (input.val().indexOf(DELIMITER) !== -1){
+        errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(DELIMITER));
+        input.parent().addClass('is-invalid');
+        return false;
+    }
+    return true;
 }

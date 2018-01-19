@@ -1,7 +1,5 @@
 "use strict";
 
-const ERR_MSG_NULL_VAL = "項目名を入力してください";
-const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
 const ERR_MSG_EACH_VAL_SAME = "項目名は開始と終了で別にしてください";
 const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません';
@@ -1661,19 +1659,19 @@ function initModal() {
     // });
 }
 
-function isValidAboutNullAndDelimiter(input, errSpan) {
-    if (!input.val()){
-        errSpan.html(ERR_MSG_NULL_VAL);
-        input.parent().addClass('is-invalid');
-        return false;
-    }
-    if (input.val().indexOf(DELIMITER) !== -1){
-        errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(DELIMITER));
-        input.parent().addClass('is-invalid');
-        return false;
-    }
-    return true;
-}
+// function isValidAboutNullAndDelimiter(input, errSpan) {
+//     if (!input.val()){
+//         errSpan.html(ERR_MSG_NULL_VAL);
+//         input.parent().addClass('is-invalid');
+//         return false;
+//     }
+//     if (input.val().indexOf(DELIMITER) !== -1){
+//         errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(DELIMITER));
+//         input.parent().addClass('is-invalid');
+//         return false;
+//     }
+//     return true;
+// }
 
 /**
  *

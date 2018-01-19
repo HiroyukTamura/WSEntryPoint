@@ -1,7 +1,14 @@
 "use strict";
 
+const ERR_MSG_GROUP = "メンバーが一人も選択されていません";
 const postLoad = $('#post_load');
 const progress = $('#progress');
+const createGroupC = $('#create-group');
+const addGroupC = $('#add-group');
+const dialog = $('#add-group-dialog')[0];
+const dialogPsBtn = $('#add-group-btn');
+const dialogNgBtn = $('#cancel');
+var currentDialogShown;
 var defaultApp;
 var defaultDatabase;
 var user;
@@ -58,6 +65,7 @@ window.onload = function (ev) {
 };
 
 function onLoginSuccess() {
+    postLoad.show();
 
     setDrawerProfile(user);
 
@@ -152,22 +160,32 @@ function retrieveFriendSnap() {
             pool.append(ele);
 
             console.log("おともだち", userName);
+
+            var li = $(
+                '<li class="mdl-list__item mdl-pre-upgrade">'+
+                    '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                        '<img src="'+photoUrl+'" class="rounded-circle"><span>'+userName+'</span>'+
+                    '</span>'+
+                    '<span class="mdl-list__item-secondary-action mdl-pre-upgrade">'+
+                        '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="'+childSnap.key+'">'+
+                            '<input type="checkbox" id="'+ childSnap.key +'" class="mdl-checkbox__input mdl-pre-upgrade" />'+
+                        '</label>'+
+                    '</span>'+
+                '</li>'
+            );
+            ($('#friend-list')).append(li);
         });
 
         showAll();
     });
 }
 
-function avoidNullValue(photoUrl, onErrVal) {
-    if(photoUrl === "null")
-        return onErrVal;
-    else
-        return photoUrl;
-}
-
+//todo group参加動作どうするの
 function setOnClickListeners() {
     $('#group #add-btn-w').on("click", function (ev) {
         console.log("groupAddBtn clicked");
+
+        displayDialogContent('createGroup');
     });
 
     $('#edit-prof').on("click", function (ev) {
@@ -175,21 +193,95 @@ function setOnClickListeners() {
     });
 
     var clickedAndMovePage = false;
-    var dialog = $('#add-group-dialog')[0];
     if(!dialog.showModal){
         dialogPolyfill.registerDialog(dialog);
     }
 
-    $('.close').on("click", function (ev) {
+    dialog.addEventListener('close', function () {
+        console.log('dialog close');
+        var checkBoxes = $('#friend-list .mdl-checkbox');
+        if(checkBoxes.length)
+            checkBoxes[0].MaterialCheckbox.uncheck();
+
+        if(currentDialogShown === 'createGroup' && this.returnValue){
+            console.log(this.returnValue);
+            var dataArr = this.returnValue.split(DELIMITER);
+            var groupKey = defaultDatabase.ref('group').push().key;
+            var map = {
+                host: user.uid,
+                groupName: dataArr[0],
+                member: dataArr.shift()
+            };
+
+            defaultDatabase.ref('groupSample/'+groupKey).update(map).then(function () {
+                console.log('うまいこといったよ！よかったね！');
+                //ここで、memberのkeyのみを書き込んでいることに注意してください。photoUrlやdisplayNameと整合性がとれない場合があるため、
+                // 必ずcloudFunction側で検査を行い、検査にpassしたら、書き込みを許します。
+            }).catch(function (reason) {
+                console.log(reason);
+
+                var connectedRef = firebase.database().ref(".info/connected");
+                connectedRef.on("value", function(snap) {
+                    if (snap.val() === false) {
+                        showNotification(ERR_MSG_NO_INTERNET, 'danger');
+                    } else {
+                        showNotification(ERR_MSG_OPE_FAILED, 'danger');
+                    }
+                });
+            });
+        }
+    });
+    //escキー押下で離脱した場合
+    dialog.addEventListener('cancel', function(e) {
+        console.log('cancel');
+        e.preventDefault();
+    });
+
+    dialogNgBtn.on("click", function (ev) {
         dialog.close();
     });
-    $('#add-group-btn').on("click", function (ev) {
+    dialogPsBtn.on("click", function (ev) {
+        if(currentDialogShown === 'createGroup'){
+            //todo 禁則処理に文字長は含まれていません
+            if (!isValidAboutNullAndDelimiter(groupNameInput, errSpan))
+                return false;
+            groupNameInput.parent().removeClass('is-invalid');
+
+            var checked = [];
+            var inputs = $('#friend-list .mdl-checkbox.is-checked input');
+            for(var i=0; i<inputs.length; i++) {
+                var id = inputs.eq(i).attr('id');
+                checked.push(id);
+            }
+
+            if (!checked.length) {
+                showNotification(ERR_MSG_GROUP, 'warning');
+                return;
+            }
+
+            //配列の先頭にグループ名、その後メンバーのuidを追加していく。
+            checked.push(groupNameInput.val());
+            var joinedVal = checked.join(DELIMITER);
+
+            dialog.close(joinedVal);
+        }
+
         dialog.close();
-        console.log("参加するってよ！");
+    });
+
+    const groupNameInput = $('#new-group-name');
+    const errSpan = groupNameInput.parent().find('.mdl-textfield__error');
+    $('.group-icon .group-icon').on('click', function (e) {
+        e.preventDefault();
+        if(currentDialogShown === 'createGroup')
+            return;
+
+        console.log('image clicked');
+
+        return false;
     });
 
     $('#group .demo-card-image').on("click", function (ev) {
-
         var groupKeys = Object.keys(userDataJson["group"]);
         var index = $(this).index();
         var groupKey = groupKeys[index];
@@ -202,14 +294,37 @@ function setOnClickListeners() {
             if(clickedAndMovePage){
                clickedAndMovePage = true;
             } else {
-                window.location.href = "../group/index.html?key=" + groupKey;
+                window.location.href = "../group/index.html";
             }
         } else {
-            if(!dialog.showModal){
-                dialog.showModal();
-            }
+            displayDialogContent('addGroup');
         }
     });
+}
+
+function displayDialogContent(witch) {
+    if(dialog.hasAttribute('opened')) {
+        console.log(dialog.hasAttribute('opened'), witch);
+        return;
+    }
+
+    currentDialogShown = witch;
+    switch (witch){
+        case 'addGroup':
+            createGroupC.hide();
+            addGroupC.show();
+            dialogPsBtn.html('参加する');
+            dialogNgBtn.html('拒否する');
+            break;
+        case 'createGroup':
+            createGroupC.show();
+            addGroupC.hide();
+            dialogPsBtn.html('グループを作成');
+            dialogNgBtn.html('キャンセル');
+            break;
+    }
+
+    dialog.showModal();
 }
 
 function showAll() {
