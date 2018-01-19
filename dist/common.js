@@ -6,6 +6,7 @@ const highlightColors = ["#D79599", "#C5D79D", "#5C8BBF", "#AEA3C5"];
 
 const ERR_MSG_OPE_FAILED = '処理に失敗しました';
 const ERR_MSG_NULL_VAL = "項目名を入力してください";
+const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません';
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 
 const CONFIG = {
@@ -93,4 +94,15 @@ function isValidAboutNullAndDelimiter(input, errSpan) {
         return false;
     }
     return true;
+}
+
+function showOpeErrNotification(defaultDatabase) {
+    var connectedRef = defaultDatabase.ref(".info/connected");
+    connectedRef.on("value", function(snap) {
+        if (snap.val() === false) {
+            showNotification(ERR_MSG_NO_INTERNET, 'danger');
+        } else {
+            showNotification(ERR_MSG_OPE_FAILED, 'danger');
+        }
+    });
 }

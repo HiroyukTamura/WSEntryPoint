@@ -170,7 +170,7 @@ body {
 }
 
 #spacer {
-    margin: 0 auto;
+    margin: 60px auto 0 auto;
     max-width: 1000px;
 }
 
@@ -179,6 +179,7 @@ body {
     display: flex;
     -webkit-flex-wrap: wrap; /* Safari */
     flex-wrap:         wrap;
+    margin-bottom: 60px;
 }
 
 /*---------------ユーザ-----------------*/
@@ -512,21 +513,21 @@ body {
 }
 
 /*---------------通知------------*/
-#notification div {
+.notification div {
     margin: 0 60px;
-    padding-top: 48px;
+    /*padding-top: 48px;*/
     height: fit-content;
 }
 
-#notification .mdl-list__item-primary-content {
+.notification .mdl-list__item-primary-content {
     padding: 0 16px 8px 16px;
 }
 
-#notification .mdl-list__item--three-line .mdl-list__item-primary-content {
+.notification .mdl-list__item--three-line .mdl-list__item-primary-content {
     height: auto;
 }
 
-#notification .mdl-list__item--three-line .mdl-list__item-text-body {
+.notification .mdl-list__item--three-line .mdl-list__item-text-body {
     height: auto;
     padding-left: 76px;
 }
@@ -546,27 +547,27 @@ body {
     display: inline-block;
 }
 
-#notification .mdl-list__item--three-line {
+.notification .mdl-list__item--three-line {
     height: fit-content;
     padding: 0;
 }
 
-#notification .tool-tips {
+.notification .tool-tips {
     display: block;
     margin-top: 16px;
 }
 
-#notification .mdl-chip {
+.notification .mdl-chip {
     margin: 4px 4px 4px 0;
     background-color: transparent;
     color: saddlebrown;
 }
 
-#notification .mdl-button {
+.notification .mdl-button {
     font-size: 18px;
     color: #E57C3E;
 }
 
-#notification .btns-li {
+.notification .btns-li {
     padding-bottom: 0;
 }

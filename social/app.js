@@ -74,11 +74,15 @@ function onLoginSuccess() {
     defaultDatabase.ref("userData/" + user.uid).once("value").then(function (snapshot) {
         onGetGroupNodeData(snapshot);
         showAll();
+    }).catch(function (reason) {
+
     });
 
     defaultDatabase.ref("friend/" + user.uid).once("value").then(function (snapshot) {
         onGetFriendSnap(snapshot);
         showAll();
+    }).catch(function (reason) {
+
     });
 }
 
@@ -97,30 +101,111 @@ function onGetGroupNodeData(snapshot) {
         $("#group .group-w-title-w p").show();
     }
 
+    var sectionGroup = $('#group');
+
     snapshot.child("group").forEach(function (childSnap) {
         console.log("groupKey", childSnap.key);
 
         if(childSnap.key === DEFAULT)
             return;
 
-        var userName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
+        var groupName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
+        var groupPhotoUrl = avoidNullValue(childSnap.child('photoUrl').val(), "img/icon.png");
 
-        var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), 'img/icon.png');
-        photoUrl = "url('"+ photoUrl + "') center / cover";
 
-        // todo 未読を記録するnodeを作らないとね
-        var html = $(
-            '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
-                '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
-                    '<div class="mdl-card__actions mdl-pre-upgrade">'+
-                        '<span class="demo-card-image__filename mdl-pre-upgrade">'+userName+'</span>'+
+        if(childSnap.child('added').val() == true) {
+
+            // todo 未読を記録するnodeを作らないとね
+            var html = $(
+                '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
+                    '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
+                        '<div class="mdl-card__actions mdl-pre-upgrade">'+
+                            '<span class="demo-card-image__filename mdl-pre-upgrade">'+groupName+'</span>'+
+                        '</div>'+
                     '</div>'+
-                '</div>'+
-            '</div>');
+                '</div>');
 
-        // $('#group #add-btn-w').insertBefore($(html));
-        html.css('background', photoUrl);
-        html.insertBefore($('#group #add-btn-w'));
+            // $('#group #add-btn-w').insertBefore($(html));
+            html.css('background', photoUrl);
+            html.insertBefore($('#group #add-btn-w'));
+
+        } else {
+            var section = $(
+                '<section class="notification">'+
+                    '<div>'+
+                        '<ul class="demo-list-two mdl-list mdl-pre-upgrade">'+
+                            '<li class="mdl-list__item mdl-list__item--three-line mdl-pre-upgrade">'+
+                                '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                                    '<img class="invite-group-icon rounded-circle mdl-list__item-avatar mdl-shadow--2dp mdl-pre-upgrade" src="'+ groupPhotoUrl +'">'+
+                                    '<span>'+ groupName +'</span>'+
+                                    '<span class="mdl-list__item-text-body mdl-pre-upgrade">'+
+                                        '<span class="sub-title">グループに招待されています</span>'+
+                                            '<span class="tool-tips"></span>'+
+                                        '</span>'+
+                                    '</span>'+
+                                '</span>'+
+                            '</li>'+
+                            '<li class="mdl-list__item btns-li">'+
+                                '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
+                                    '<button class="mdl-button mdl-js-button mdl-button--colored add-btn mdl-pre-upgrade">参加する</button>'+
+                                    '<button class="mdl-button mdl-js-button mdl-button--colored reject-btn mdl-pre-upgrade">拒否する</button>'+
+                                '</span>'+
+                            '</li>'+
+                        '</ul>'+
+                    '</div>'+
+                    '<hr class="seem">'+
+                '</section>'
+            );
+
+            var tooltips = section.find('.tool-tips');
+            defaultDatabase.ref(makeRefScheme(['group', childSnap.key, 'member'])).once('value').then(function (memberSnap) {
+                if (!memberSnap.exists())
+                    return;//グループにメンバーがいない→メンバーから全員が退会した
+
+                memberSnap.forEach(function (childMemberSnap) {
+                    //自分は当然除外(論理的に未参加なので冗長ではあるが一応除外しておく)
+                    if(childMemberSnap.key === DEFAULT || childMemberSnap.key === user.uid)
+                        return;
+
+                    //未参加の場合はメンバーとして表示しない
+                    if(childMemberSnap.child('isChecked').val() == false)
+                        return;
+
+                    var memberName = avoidNullValue(childMemberSnap.child('name').val(), "ユーザ名未設定");
+                    var memberPhotoUrl = avoidNullValue(childMemberSnap.child('photoUrl').val(), 'img/icon.png');
+
+                    var chipsHtml =
+                        '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
+                            '<img class="mdl-chip__contact mdl-pre-upgrade" src="'+ memberPhotoUrl +'">' +
+                            '<span class="mdl-chip__text mdl-pre-upgrade">'+ memberName +'</span>' +
+                        '</span>';
+                    tooltips.append(chipsHtml);
+                });
+
+                section.find('.reject-btn').on('click', function (e) {
+                    section.fadeOut('slow', function (e) {
+                       section.remove();
+                       showNotification('招待を拒否しました', 'success');
+                    });
+                });
+
+                section.find('.add-btn').on('click', function (e) {
+                    //todo 参加動作を実装すること　多分バックエンドと連携するんだろうね
+                    section.fadeOut('slow', function (e) {
+                        section.remove();
+                        showNotification('参加しました', 'success');
+                    });
+                });
+
+                setElementAsMdl(section);
+
+                section.insertBefore(sectionGroup);
+
+            }).catch(function (reason) {
+                console.log(reason);
+                showOpeErrNotification(defaultDatabase);
+            });
+        }
     });
 
     var userName = avoidNullValue(snapshot.child('displayName').val(), "ユーザ名未設定");
@@ -179,7 +264,7 @@ function onGetFriendSnap(snapshot) {
         });
 }
 
-//todo group参加動作どうするの
+
 function setOnClickListeners() {
     $('#group #add-btn-w').on("click", function (ev) {
         console.log("groupAddBtn clicked");
@@ -218,15 +303,7 @@ function setOnClickListeners() {
                 // 必ずcloudFunction側で検査を行い、検査にpassしたら、書き込みを許します。
             }).catch(function (reason) {
                 console.log(reason);
-
-                var connectedRef = firebase.database().ref(".info/connected");
-                connectedRef.on("value", function(snap) {
-                    if (snap.val() === false) {
-                        showNotification(ERR_MSG_NO_INTERNET, 'danger');
-                    } else {
-                        showNotification(ERR_MSG_OPE_FAILED, 'danger');
-                    }
-                });
+                showOpeErrNotification(defaultDatabase);
             });
         }
     });

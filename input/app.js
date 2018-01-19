@@ -2,7 +2,6 @@
 
 const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
 const ERR_MSG_EACH_VAL_SAME = "項目名は開始と終了で別にしてください";
-const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません';
 const ERR_MSG_NO_CONTENTS = '項目は最低でもひとつ必要です';
 const SUCCESS_MSG_SAVE = '保存しました';
 
@@ -1473,6 +1472,7 @@ function setOnBtmFabClickListener() {
         setOnClickCardHeaderBtn();
     });
 }
+
 function setOnSaveFabClickListener() {
     $('#save').show()
         .on('click', function (e) {
