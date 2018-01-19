@@ -41,6 +41,7 @@ var isModalOpen = false;
 var isModalForNewTag = false;
 var defaultDatabase;
 const progress = $('#progress');
+const postLoad = $('#post_load');
 
 window.onload = function (ev) {
     var defaultApp = firebase.initializeApp(CONFIG);

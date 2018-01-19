@@ -113,15 +113,16 @@ function onLoginSuccess() {
             html.insertBefore($('#group #add-btn-w'));
         });
 
+        var userName = avoidNullValue(snapshot.child('displayName').val(), "ユーザ名未設定");
+
         //プロフィール欄を表示
-        $('#profile-w h3').html('<i class="fas fa-user"></i>' + "&nbsp;&nbsp;" + snapshot.child('displayName').val());
+        $('#user-name').html(userName);
 
         var userEmail = avoidNullValue(snapshot.child('email').val(), "アドレス未設定");
         $('#user-email').html(userEmail);
 
-        var photoUrl = avoidNullValue(snapshot.child("photoUrl").val());
-        if(photoUrl)
-            $('#profile').find('img').attr("src", photoUrl);
+        var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
+        $('#profile').find('img').attr("src", photoUrl);
 
         showAll();
     });
@@ -159,8 +160,6 @@ function retrieveFriendSnap() {
 
             pool.append(ele);
 
-            console.log("おともだち", userName);
-
             var li = $(
                 '<li class="mdl-list__item mdl-pre-upgrade">'+
                     '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
@@ -188,9 +187,9 @@ function setOnClickListeners() {
         displayDialogContent('createGroup');
     });
 
-    $('#edit-prof').on("click", function (ev) {
-        console.log("edit-prof clicked");
-    });
+    // $('#edit-prof').on("click", function (ev) {
+    //     console.log("edit-prof clicked");
+    // });
 
     var clickedAndMovePage = false;
     if(!dialog.showModal){
@@ -337,7 +336,7 @@ function showAll() {
 
     setElementAsMdl($("body"));
 
-    tippy('[title]', {
+    tippy('[title]:non(.group-icon)', {
         updateDuration: 0,
         popperOptions: {
             modifiers: {
@@ -346,5 +345,42 @@ function showAll() {
                 }
             }
         }
+    });
+
+    tippy('.group-icon', {
+        updateDuration: 0,
+        appendTo: $('dialog')[0],
+        distance: 0,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: {
+                    enabled: false
+                }
+            }
+        }
+    });
+
+    notifyInvitation();
+}
+
+function notifyInvitation() {
+    $.notify({
+        icon: 'https://randomuser.me/api/portraits/med/men/77.jpg',
+        title: '田中貴金属コーポレート部',
+        message: 'グループに招待されています'
+    },{
+        type: 'minimalist',
+        allow_dismiss: true,
+        newest_on_top: true,
+        delay: -1,
+        icon_type: 'image',
+        template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                        '<div>'+
+                            '<img data-notify="icon" class="rounded-circle img-circle pull-left">' +
+                            '<span data-notify="title">{1}</span>' +
+                            '<span data-notify="message">{2}</span>' +
+                        '</div>'+
+                        '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>'+
+                    '</div>'
     });
 }
