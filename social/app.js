@@ -72,67 +72,70 @@ function onLoginSuccess() {
     console.log("onLoginSuccess:", user);
 
     defaultDatabase.ref("userData/" + user.uid).once("value").then(function (snapshot) {
-
-        if(!snapshot.exists()){
-            showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
-            console.log("snapShot存在せず" + snapshot);
-            fbCoumpleteCount++;
-            return;
-        }
-
-        userDataJson = snapshot.toJSON();
-
-        //グループに参加していない場合
-        if(snapshot.child("group").numChildren() === 1){
-            $("#group .group-w-title-w p").show();
-        }
-
-        snapshot.child("group").forEach(function (childSnap) {
-            console.log("groupKey", childSnap.key);
-
-            if(childSnap.key === DEFAULT)
-                return;
-
-            var userName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
-
-            var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), 'img/icon.png');
-            photoUrl = "url('"+ photoUrl + "') center / cover";
-
-            // todo 未読を記録するnodeを作らないとね
-            var html = $(
-                '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
-                    '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
-                        '<div class="mdl-card__actions mdl-pre-upgrade">'+
-                            '<span class="demo-card-image__filename mdl-pre-upgrade">'+userName+'</span>'+
-                        '</div>'+
-                    '</div>'+
-                '</div>');
-
-            // $('#group #add-btn-w').insertBefore($(html));
-            html.css('background', photoUrl);
-            html.insertBefore($('#group #add-btn-w'));
-        });
-
-        var userName = avoidNullValue(snapshot.child('displayName').val(), "ユーザ名未設定");
-
-        //プロフィール欄を表示
-        $('#user-name').html(userName);
-
-        var userEmail = avoidNullValue(snapshot.child('email').val(), "アドレス未設定");
-        $('#user-email').html(userEmail);
-
-        var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
-        $('#profile').find('img').attr("src", photoUrl);
-
+        onGetGroupNodeData(snapshot);
         showAll();
     });
 
-    //友達のユーザを表示
-    retrieveFriendSnap();
+    defaultDatabase.ref("friend/" + user.uid).once("value").then(function (snapshot) {
+        onGetFriendSnap(snapshot);
+        showAll();
+    });
 }
 
-function retrieveFriendSnap() {
-    defaultDatabase.ref("friend/" + user.uid).once("value").then(function (snapshot) {
+function onGetGroupNodeData(snapshot) {
+    if(!snapshot.exists()){
+        showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
+        console.log("snapShot存在せず" + snapshot);
+        fbCoumpleteCount++;
+        return;
+    }
+
+    userDataJson = snapshot.toJSON();
+
+    //グループに参加していない場合
+    if(snapshot.child("group").numChildren() === 1){
+        $("#group .group-w-title-w p").show();
+    }
+
+    snapshot.child("group").forEach(function (childSnap) {
+        console.log("groupKey", childSnap.key);
+
+        if(childSnap.key === DEFAULT)
+            return;
+
+        var userName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
+
+        var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), 'img/icon.png');
+        photoUrl = "url('"+ photoUrl + "') center / cover";
+
+        // todo 未読を記録するnodeを作らないとね
+        var html = $(
+            '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
+                '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
+                    '<div class="mdl-card__actions mdl-pre-upgrade">'+
+                        '<span class="demo-card-image__filename mdl-pre-upgrade">'+userName+'</span>'+
+                    '</div>'+
+                '</div>'+
+            '</div>');
+
+        // $('#group #add-btn-w').insertBefore($(html));
+        html.css('background', photoUrl);
+        html.insertBefore($('#group #add-btn-w'));
+    });
+
+    var userName = avoidNullValue(snapshot.child('displayName').val(), "ユーザ名未設定");
+
+    //プロフィール欄を表示
+    $('#user-name').html(userName);
+
+    var userEmail = avoidNullValue(snapshot.child('email').val(), "アドレス未設定");
+    $('#user-email').html(userEmail);
+
+    var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
+    $('#profile').find('img').attr("src", photoUrl);
+}
+
+function onGetFriendSnap(snapshot) {
         if(!snapshot.exists()){
             showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
             console.log("snapShot存在せず" + snapshot);
@@ -174,9 +177,6 @@ function retrieveFriendSnap() {
             );
             ($('#friend-list')).append(li);
         });
-
-        showAll();
-    });
 }
 
 //todo group参加動作どうするの
