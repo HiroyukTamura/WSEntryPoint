@@ -8,6 +8,7 @@ const addGroupC = $('#add-group');
 const dialog = $('#add-group-dialog')[0];
 const dialogPsBtn = $('#add-group-btn');
 const dialogNgBtn = $('#cancel');
+var initialErr = false;
 var currentDialogShown;
 var defaultApp;
 var defaultDatabase;
@@ -56,7 +57,7 @@ window.onload = function (ev) {
 
                 }).catch(function(error) {
                     console.log(error.code, error.message);
-                    showNotification(ERR_MSG_OPE_FAILED, 'danger');
+                    showOpeErrNotification(defaultDatabase, -1);
             });
         }
     });
@@ -75,15 +76,23 @@ function onLoginSuccess() {
         onGetGroupNodeData(snapshot);
         showAll();
     }).catch(function (reason) {
-
+        console.log(reason);
+        onSnapShotVanished();
     });
 
     defaultDatabase.ref("friend/" + user.uid).once("value").then(function (snapshot) {
         onGetFriendSnap(snapshot);
         showAll();
     }).catch(function (reason) {
-
+        console.log(reason);
+        onSnapShotVanished();
     });
+}
+
+function onSnapShotVanished() {
+    if (!initialErr)
+        showOpeErrNotification(defaultDatabase, -1);
+    initialErr = true;
 }
 
 function onGetGroupNodeData(snapshot) {
@@ -370,7 +379,7 @@ function setOnClickListeners() {
             if(clickedAndMovePage){
                clickedAndMovePage = true;
             } else {
-                window.location.href = "../group/index.html";
+                window.location.href = "../group/index.html?key=" + groupKey;
             }
         } else {
             displayDialogContent('addGroup');

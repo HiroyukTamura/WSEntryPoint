@@ -2,6 +2,7 @@
 
 const postLoad = $('#post_load');
 var progress = $('#progress');
+var initialErr = false;
 
 /////////dialogまわり////////
 const dialog = $('dialog')[0];
@@ -83,7 +84,7 @@ const holidays = {
     "2019-12-23": "天皇誕生日"
 };
 
-/////////////////EventCalendar(手を加えていない部分)////////////////////
+//region/////////////////EventCalendar(手を加えていない部分)////////////////////
 !function() {
 
     var today = moment();
@@ -272,7 +273,7 @@ const holidays = {
     }
 
     Calendar.prototype.getDayClass = function(day) {
-        classes = ['day'];
+        var classes = ['day'];
         if(day.month() !== this.current.month()) {
             classes.push('other');
         } else if (today.isSame(day, 'day')) {
@@ -492,43 +493,43 @@ const holidays = {
 }();
 
 // !function() {
-    var data = [
-        { eventName: 'Lunch Meeting w/ Mark', calendar: 'Work', color: 'orange' },
-        { eventName: 'Interview - Jr. Web Developer', calendar: 'Work', color: 'orange' },
-        { eventName: 'Demo New App to the Board', calendar: 'Work', color: 'orange' },
-        { eventName: 'Dinner w/ Marketing', calendar: 'Work', color: 'orange' },
-
-        { eventName: 'Game vs Portalnd', calendar: 'Sports', color: 'blue' },
-        { eventName: 'Game vs Houston', calendar: 'Sports', color: 'blue' },
-        { eventName: 'Game vs Denver', calendar: 'Sports', color: 'blue' },
-        { eventName: 'Game vs San Degio', calendar: 'Sports', color: 'blue' },
-
-        { eventName: 'School Play', calendar: 'Kids', color: 'yellow' },
-        { eventName: 'Parent/Teacher Conference', calendar: 'Kids', color: 'yellow' },
-        { eventName: 'Pick up from Soccer Practice', calendar: 'Kids', color: 'yellow' },
-        { eventName: 'Ice Cream Night', calendar: 'Kids', color: 'yellow' },
-
-        { eventName: 'Free Tamale Night', calendar: 'Other', color: 'green' },
-        { eventName: 'Bowling Team', calendar: 'Other', color: '0' },
-        { eventName: 'Teach Kids to Code', calendar: 'Other', color: 'green' },
-        { eventName: 'Startup Weekend', calendar: 'Other', color: 'green' }
-    ];
-
-
-    function addDate(ev) {
-        data.push(ev);
-        calendar.renderEvents()
-    }
+//     var data = [
+//         { eventName: 'Lunch Meeting w/ Mark', calendar: 'Work', color: 'orange' },
+//         { eventName: 'Interview - Jr. Web Developer', calendar: 'Work', color: 'orange' },
+//         { eventName: 'Demo New App to the Board', calendar: 'Work', color: 'orange' },
+//         { eventName: 'Dinner w/ Marketing', calendar: 'Work', color: 'orange' },
+//
+//         { eventName: 'Game vs Portalnd', calendar: 'Sports', color: 'blue' },
+//         { eventName: 'Game vs Houston', calendar: 'Sports', color: 'blue' },
+//         { eventName: 'Game vs Denver', calendar: 'Sports', color: 'blue' },
+//         { eventName: 'Game vs San Degio', calendar: 'Sports', color: 'blue' },
+//
+//         { eventName: 'School Play', calendar: 'Kids', color: 'yellow' },
+//         { eventName: 'Parent/Teacher Conference', calendar: 'Kids', color: 'yellow' },
+//         { eventName: 'Pick up from Soccer Practice', calendar: 'Kids', color: 'yellow' },
+//         { eventName: 'Ice Cream Night', calendar: 'Kids', color: 'yellow' },
+//
+//         { eventName: 'Free Tamale Night', calendar: 'Other', color: 'green' },
+//         { eventName: 'Bowling Team', calendar: 'Other', color: '0' },
+//         { eventName: 'Teach Kids to Code', calendar: 'Other', color: 'green' },
+//         { eventName: 'Startup Weekend', calendar: 'Other', color: 'green' }
+//     ];
+//
+//
+//     function addDate(ev) {
+//         data.push(ev);
+//         calendar.renderEvents()
+//     }
 // }();
 
-function onClickBtn() {
-    console.log("btn clicked");
-    var newData = {
-        eventName: '全く新しい予定', calendar: 'Work', color: 'orange'
-    };
-    addDate(newData);
-}
-////////////////////////////////////////////////////////////////////////
+// function onClickBtn() {
+//     console.log("btn clicked");
+//     var newData = {
+//         eventName: '全く新しい予定', calendar: 'Work', color: 'orange'
+//     };
+//     addDate(newData);
+// }
+//endregion////////////////////////////////////////////////////////////////////////
 
 
 window.onload = function (ev) {
@@ -561,9 +562,6 @@ window.onload = function (ev) {
                                 user = userObject;
                                 progress.hide();
                                 $('#login_w').hide();
-                                postLoad.show();
-
-                                onLoginSuccess();
                                 return false;
                             }
                         }
@@ -575,15 +573,11 @@ window.onload = function (ev) {
                     ui.start('#firebaseui-auth-container', uiConfig);
                 }).catch(function(error) {
                     console.log(error.code, error.message);
-                    onErrConnectFb();
+                    showOpeErrNotification(defaultDatabase, -1);
             });
         }
     });
-}
-
-function onErrConnectFb() {
-    showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
-}
+};
 
 function onLoginSuccess() {
     if (!dialog.showModal) {
@@ -606,7 +600,7 @@ function onLoginSuccess() {
         if(snapshot.exists()){
             calendar = new Calendar('#calendar', snapshot.toJSON());
         } else {
-            //todo エラー処理
+            onSnapShotVanished();
         }
         showAll();
     });
@@ -628,7 +622,7 @@ function onLoginSuccess() {
                 delete groupJson['contents'][removeContentsKey];
                 $('.card[key="' + removeContentsKey + '"]').remove();
             }).catch(function (err) {
-                showNotification('処理に失敗しました', 'danger');
+                showOpeErrNotification(defaultDatabase);
                 console.log(err);
             });
 
@@ -655,7 +649,7 @@ function onLoginSuccess() {
                 groupJson['contents'][removeContentsKey]['comment'] = inputVal;
 
             }).catch(function (err) {
-                showNotification('処理に失敗しました', 'danger');
+                showOpeErrNotification(defaultDatabase);
                 console.log(err);
             });
         }
@@ -667,8 +661,6 @@ function onLoginSuccess() {
         onClickModalCircleI($(this));
         return false;
     });
-
-
 }
 
 function setLisnters() {
@@ -726,17 +718,13 @@ function addSchedule() {
 
     }).catch(function (err) {
         console.log('firebase update err', err);
-        showNotification('処理に失敗しました', 'danger');
+        showOpeErrNotification(defaultDatabase);
     });
-}
-
-function makeRefScheme(parasArr) {
-    return parasArr.join('/');
 }
 
 function onGetGroupSnap(snapshot) {
     if(!snapshot.exists()){
-        // todo エラー処理
+        onSnapShotVanished();
         console.log("snapShot存在せず" + snapshot);
         return;
     }
@@ -1252,9 +1240,15 @@ function getGroupKey() {
     return url.searchParams.get("key");
 }
 
+function onSnapShotVanished() {
+    if (!initialErr)
+        showOpeErrNotification(defaultDatabase, -1);
+    initialErr = true;
+}
+
 function onGetSnapOfGroupNode(snapshot) {
     if(!snapshot.exists()){
-        // todo エラー処理
+        onSnapShotVanished();
         console.log("snapShot存在せず" + snapshot);
         return;
     }
@@ -1324,4 +1318,6 @@ function showAll() {
             }
         }
     });
+
+    postLoad.show();
 }

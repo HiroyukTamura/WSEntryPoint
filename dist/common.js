@@ -96,13 +96,13 @@ function isValidAboutNullAndDelimiter(input, errSpan) {
     return true;
 }
 
-function showOpeErrNotification(defaultDatabase) {
+function showOpeErrNotification(defaultDatabase, delay) {
     var connectedRef = defaultDatabase.ref(".info/connected");
     connectedRef.on("value", function(snap) {
         if (snap.val() === false) {
-            showNotification(ERR_MSG_NO_INTERNET, 'danger');
+            showNotification(ERR_MSG_NO_INTERNET, 'danger', delay);
         } else {
-            showNotification(ERR_MSG_OPE_FAILED, 'danger');
+            showNotification(ERR_MSG_OPE_FAILED, 'danger', delay);
         }
     });
 }
