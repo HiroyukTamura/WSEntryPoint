@@ -7,6 +7,7 @@ var isModalOpen = false;
 var isModalForNewTag = false;
 var modalDataNum;
 var modalTipNum;
+var currentMoment = moment();
 
 window.onload = function (ev) {
     var defaultApp = firebase.initializeApp(CONFIG);
@@ -153,12 +154,27 @@ function onGetTamplateSnap(snapshot) {
     initAllTooltips();
     setElementAsMdl($('body'));
     initModal();
+    setOnSaveFabClickListener();
+    setOnBtmFabClickListener();
+    $('#progress').hide();
+    $('#post_load').show();
 }
 
 function setHeaderTitle(doc, childSnap) {
     var title = childSnap['dataType'] == 1 ? "タイトル" : childSnap['dataName'];
-    console.log(title);
-    doc.find('.ele_header').html('<i class="fas fa-clock"></i>'+title);
+    if(!childSnap['dataType']) {
+        return;
+    } else if(childSnap['dataType'] == 1) {
+        title = '<i class="fas fa-clock"></i>タイトル';
+    } else if (childSnap['dataType'] == 2) {
+        title = '<i class="fas fa-tags"></i>' + childSnap['dataName'];
+    } else if (childSnap['dataType'] == 3) {
+        title = '<i class="fas fa-list-ul"></i>' + childSnap['dataName'];
+    } else if (childSnap['dataType'] == 4) {
+        title = '<i class="fas fa-edit"></i>' + childSnap['dataName'];
+    }
+
+    doc.find('.ele_header').html(title);
 }
 
 function initModal() {
@@ -673,4 +689,93 @@ function createHtmlAs3(id) {
             '</button>'+
         '</li>'
     );
+}
+
+function setOnSaveFabClickListener() {
+    $('#save').show()
+        .on('click', function (e) {
+            e.preventDefault();
+            console.log('clicked');
+
+            if(!masterJson || !$.isArray(masterJson)){
+                showNotification(ERR_MSG_OPE_FAILED, 'danger');
+                return;
+            }
+
+            if(!masterJson.length) {
+                showNotification(ERR_MSG_NO_CONTENTS, 'warning');
+                return;
+            }
+
+            masterJson.unshift(createNewData(0));
+
+            var ymd = currentMoment.fomat('YYYYMMDD');
+            defaultDatabase.ref('usersParamSample/'+ loginedUser.uid +'/'+ ymd).set(masterJson).then(function () {
+                showNotification(SUCCESS_MSG_SAVE, 'success');
+                masterJson.splice(0, 1);
+
+            }).catch(function (reason) {
+                console.log(reason);
+                masterJson.splice(0, 1);
+                showOpeErrNotification(defaultDatabase);
+            });
+            return false;
+        });
+}
+
+function setOnBtmFabClickListener() {
+    $('.sub-button').on('click', function (e) {
+
+        var dataType = 0;
+        if ($(this).hasClass('br')) {
+            //タイムイベント
+            for(var val in masterJson){
+                if(masterJson.hasOwnProperty(val) && masterJson[val]['dataType'] === 1) {
+                    //todo エラー処理
+                    console.log('エラーだよね');
+                    return;
+                }
+            }
+
+            dataType = 1;
+
+        } else if ($(this).hasClass('bl')) {
+            //リスト
+            dataType = 3;
+        } else if ($(this).hasClass('tr')) {
+            //コメント
+            dataType = 4;
+        } else if ($(this).hasClass('tl')) {
+            //タグ
+            dataType = 2;
+        }
+
+        var data = createNewData(dataType);
+        var i = masterJson.length;
+        console.log(data);
+        masterJson.push(data);
+        var cardWrapper = createElementWithHeader(i, dataType);
+        var doc = $(cardWrapper.children[0]);
+
+        switch (dataType){
+            case 1:
+                operateAs1(doc, data);
+                break;
+            case 2:
+                operateAs2(doc, data);
+                break;
+            case 3:
+                operateAs3(doc, data);
+                break;
+            case 4:
+                operateAs4(doc, data);
+                break;
+        }
+
+        setHeaderTitle(doc, masterJson[i]);
+        setElementAsMdl(doc);
+        $('.card_wrapper').append($(cardWrapper));
+
+        initAllTooltips();
+    });
 }

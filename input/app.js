@@ -1187,35 +1187,6 @@ function onSaveErr() {
     });
 }
 
-function createNewData(dataType) {
-    var data = {
-        dataType: dataType,
-        day: 0,
-        mon: 0,
-        year: 0
-    };
-
-    if (dataType === 2 || dataType === 3 || dataType === 4) {
-       data.dataName = '';
-    }
-
-    if (dataType === 2 || dataType === 3){
-        data.data = [];
-    } else if (dataType === 1) {
-        var jsonStr = {
-            eventList: [],
-            rangeList: []
-        };
-        data.data = {};
-        data['data']['0'] = JSON.stringify(jsonStr);
-    } else if (dataType === 0) {
-        data.data = {};
-        data['data']['0'] = "勤務日"+ DELIMITER +"2";
-    }
-
-    return data;
-}
-
 function initModal() {
     var modal = $('#exampleModal');
     var input = $('#modal_input');
