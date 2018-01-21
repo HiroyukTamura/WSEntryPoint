@@ -465,6 +465,7 @@ function createOneRangeRow(doc, count, value) {
     blocks[0] = createHtmlAs1Eve();
     setDataOrderToRangeList($(blocks[0]), count);
     $(blocks[0]).find('.remove-btn').hide();
+    $(blocks[0]).addClass('range-pre');
     blocks[1] = craeteHtmlAs1Row();
     setDataOrderToRangeList($(blocks[1]), count);
     blocks[2] = createHtmlAs1Eve();
@@ -1740,7 +1741,7 @@ function createElementWithHeader(dataNum, dataType) {
     });
 
     var circleNum = $(
-        '<div class="maru size_normal pink1">'+
+        '<div class="maru size_normal pink1 mdl-shadow--2dp mdl-pre-upgrade">'+
             '<div class="letter3">'+(dataNum+1)+'</div>'+
         '</div>'
     );

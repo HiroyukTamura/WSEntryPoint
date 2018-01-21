@@ -70,7 +70,7 @@ body {
     display: flex;
     display: -webkit-flex;
     display: -ms-flexbox;
-    padding: 10px 20px;
+    padding: 20px 20px;
     margin: 0 auto;
     width: min-content;
     width: -moz-min-content;
@@ -82,7 +82,7 @@ body {
 }
 
 .card_block_w {
-    margin: 16px 36px 0 36px;
+    margin: 16px 60px 16px 60px;
 }
 
 .card_block tr {
@@ -170,8 +170,16 @@ body {
 }
 
 .range-post .mdl-textfield {
-    margin-top: -20px;
+     margin-top: -20px;
 }
+
+/*tbody .range-post :after {*/
+    /*height: 40px;*/
+/*}*/
+
+/*tbody .range-post {*/
+    /*padding-top: 12px;*/
+/*}*/
 
 .circle {
     width: 20px;
@@ -208,13 +216,9 @@ tbody .mdl-textfield__label {
     top: 20px;
 }
 
-.add-eve-row td {
-    padding-bottom: 20px;
-}
-
 .card_block .mdl-button--icon, .demo-list-item .mdl-button--icon, .ele_header .mdl-button--icon{
-    height: 18px;
-    width: 18px;
+    height: 20px;
+    width: 20px;
     min-width: 15px;
     font-size: 15px;
 }
@@ -227,6 +231,7 @@ tbody .mdl-textfield__label {
 .add-eve-row td {
     text-align: center;
     padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 .add-eve-row button {
@@ -237,8 +242,20 @@ tbody .mdl-textfield__label {
     color: #BCBCBC;
 }
 
-.angle-down {
-    height: 20px;
+tbody .angle-down {
+    height: fit-content;
+}
+
+tbody .angle-down td{
+    padding-top: 6px;
+}
+
+tbody .range-post {
+    height: 30px;
+}
+
+.range-pre {
+    padding-bottom: 12px;
 }
 
 /*///////////////タイムイベントモーダルまわり/////////////*/
@@ -363,16 +380,15 @@ td {
 }
 
 .comment_form {
-    padding-right: 46px;
-    padding-left: 46px;
-    padding-bottom: 20px;/*この値はmdl-textfieldのデフォルト値に合わせてる*/
+    padding: 12px 60px 12px 60px;
 }
 
 .mdl-list {
-    padding-left: 24px;
+    /*padding-left: 24px;*/
     /*padding-right: 30px;*/
-    padding-bottom: 0;
+    /*padding-bottom: 0;*/
     margin-bottom: 0;
+    padding: 52px 60px 0 60px;
     /*padding-bottom: 20px;!*この値はmdl-textfieldのデフォルト値に合わせてる*!*/
 }
 
@@ -385,7 +401,7 @@ td {
 }
 
 .mdl-list .mdl-list__item {
-    margin: 8px 16px 0 8px;
+    margin: 0 8px 12px 8px;
     padding-top: 0;
 }
 
@@ -395,7 +411,7 @@ td {
 }
 
 .tag_pool {
-    padding: 20px 30px;
+    padding: 60px 56px;
 }
 
 .comment > .mdl-textfield__input {
@@ -410,13 +426,16 @@ td {
     border-radius: 50%;
     flex-flow: column;
     vertical-align: middle;
-    margin-top: 10px;
 }
 /* 円の大きさ */
 .size_normal{
-    width: 20px;
-    min-width: 20px;
-    height: 20px;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    /*margin-right: 20px;*/
+    margin-top: 24px;
+
+    /*margin-bottom: auto;*/
 }
 /* 文字の大きさ */
 .letter3 {
@@ -454,7 +473,8 @@ td {
 .params_title {
     vertical-align: middle;
     color: #66615b;
-    font-size: 15px;
+    font-size: 18px;
+    padding: 0;
 }
 
 .params_title_w{
@@ -478,7 +498,7 @@ td {
 }
 
 .add-li-btn button{
-    margin: 0 auto 16px auto;
+    margin: 0 auto 24px auto;
     width: 32px;
     height: 32px;
     display: block;
