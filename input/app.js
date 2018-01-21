@@ -1851,7 +1851,7 @@ function createAssEveRow(customClass, dataOrder) {
 
 function craeteHtmlAs1Row() {
     return $(
-        '<tr>' +
+        '<tr class="angle-down">' +
             '<td colspan="3">' +
                 '<i class="fas fa-angle-double-down icon_down"></i>' +
             '</td>' +

@@ -47,7 +47,7 @@ body {
     border: 0;
     border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
-    width: 510px;/*イベントのカードの横幅default値*/
+    width: 700px;/*イベントのカードの横幅default値*/
     display: inline-block;
 }
 
@@ -57,11 +57,12 @@ body {
 
 .card_wrapper{
     padding: 40px 20px;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-wrap: wrap; /* Safari */
-    flex-wrap:         wrap;
-    justify-content: center;
+    /*margin: 0 auto;*/
+    /*display: -webkit-flex;*/
+    /*display: flex;*/
+    /*-webkit-flex-wrap: wrap; !* Safari *!*/
+    /*flex-wrap:         wrap;*/
+    /*justify-content: center;*/
 }
 
 .card-wrapper-i {
@@ -70,6 +71,9 @@ body {
     display: -webkit-flex;
     display: -ms-flexbox;
     padding: 10px 20px;
+    margin: 0 auto;
+    width: min-content;
+    width: -moz-min-content;
 }
 
 /****************** time events *******************/
@@ -78,7 +82,11 @@ body {
 }
 
 .card_block_w {
-    margin: 0 36px 36px 36px;
+    margin: 16px 36px 0 36px;
+}
+
+.card_block tr {
+    height: 56px;
 }
 
 .time {
@@ -123,7 +131,7 @@ body {
 .time_input {
     /*text-align: center;*/
     /*font-weight: bold;*/
-    font-size: 16px;
+    font-size: 18px;
     width: 50px;
     /*color: slategray;*/
 }
@@ -134,9 +142,9 @@ body {
     color: #616161;
 }
 
-/*.input_eve {*/
-    /*font-size: 18px;*/
-/*}*/
+.input_eve {
+    font-size: 18px;
+}
 
 .colon {
     font-size: 25px;
@@ -200,8 +208,15 @@ tbody .mdl-textfield__label {
     top: 20px;
 }
 
-.add-eve-row {
-    /*padding-top: 20px;*/
+.add-eve-row td {
+    padding-bottom: 20px;
+}
+
+.card_block .mdl-button--icon, .demo-list-item .mdl-button--icon, .ele_header .mdl-button--icon{
+    height: 18px;
+    width: 18px;
+    min-width: 15px;
+    font-size: 15px;
 }
 
 .add-eve-row .mdl-button {
@@ -220,6 +235,10 @@ tbody .mdl-textfield__label {
 
 .add-eve-row i {
     color: #BCBCBC;
+}
+
+.angle-down {
+    height: 20px;
 }
 
 /*///////////////タイムイベントモーダルまわり/////////////*/
@@ -396,6 +415,7 @@ td {
 /* 円の大きさ */
 .size_normal{
     width: 20px;
+    min-width: 20px;
     height: 20px;
 }
 /* 文字の大きさ */
@@ -439,13 +459,6 @@ td {
 
 .params_title_w{
     padding-top: 0;
-}
-
-.card-wrapper-i .mdl-button--icon{
-    height: 18px;
-    width: 18px;
-    min-width: 15px;
-    font-size: 15px;
 }
 
 .mdl-list__item{
