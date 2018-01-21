@@ -424,17 +424,6 @@ tbody .mdl-textfield__label {
     font-size: 15px;
 }
 
-.add-eve-row .mdl-button {
-    height: 32px;
-    width: 32px;
-}
-
-.add-eve-row td {
-    text-align: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
 .add-eve-row button {
     display: inline-block;
 }
@@ -469,9 +458,335 @@ td {
     vertical-align: bottom;
 }
 
+/*---------------Icon Font---------------------*/
 .card_block .mdl-button--icon, .demo-list-item .mdl-button--icon, .ele_header .mdl-button--icon {
     height: 20px;
     width: 20px;
     min-width: 15px;
     font-size: 15px;
+}
+
+.add-eve-row td {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.add-eve-row .mdl-button {
+    height: 32px;
+    width: 32px;
+}
+
+/*///////////////タイムイベントモーダルまわり/////////////*/
+
+/*.circle :hover{*/
+/*border-color: #00bbff;*/
+/*}*/
+
+.modal-circle{
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/*.circle.active{*/
+/*border-color: #00bbff;*/
+/*}*/
+
+.circle1{
+    color: #C0504D;
+}
+
+.circle2{
+    color: #9BBB59;
+}
+
+.circle3{
+    color: #1F497D;
+}
+
+.circle4 {
+    color: #8064A2;
+}
+
+.modal-circle-w{
+    cursor: pointer;
+    margin-left: 24px;
+}
+
+/*override {.modal-circle-w}*/
+.modal-circle-w1{
+    margin-left: 12px;
+}
+
+.modal-circle-i{
+    /*position: relative;*/
+    font-size: 24px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.modal-circle-check{
+    /*position: absolute;*/
+    /*-webkit-transform: translateX(50%);*/
+    /*transform: translateX(50%);*/
+    font-size: 24px;
+    color: white;
+    text-align: center;
+    display: none;
+}
+
+.show {
+    display: inline;
+}
+
+#modal-circle-w {
+    vertical-align: middle;
+}
+
+/*////////////タイムイベントPopOverまわり//////////////*/
+.circle-popover {
+    height: content-box;
+    margin: 8px 32px 12px 8px;
+    text-align: left;
+}
+
+/*-------------------タグプール系----------------*/
+
+/*.chips_btn {*/
+/*color: white;*/
+/*margin: 5px;*/
+/*font-size: 22px;*/
+/*}*/
+
+/*.chips_btn_circle {*/
+/*color: white;!*.mdl-chip__action に合わせてる*!*/
+/*margin: 0;*/
+/*}*/
+
+/*.custom_tips_btn{*/
+/*font-size: 32px;*/
+/*}*/
+
+.tag_wrapper{
+    display: inline-block;
+    margin: 2px 5px;
+    cursor: pointer;
+}
+
+.mdl-chip i, .mdl-chip .fa-check{
+    color: white;
+}
+
+.mdl-chip .fa-check {
+    margin-left: 8px;
+}
+
+.mdl-chip__text {
+    cursor: pointer;
+}
+
+.mdl-chip .mdl-chip__action i:hover{
+    color: #BCBCBC;
+}
+
+.tag-add-btn {
+    color: #BCBCBC;
+    font-size: 24px;
+    height: 32px;
+    width: 32px;
+    margin-top: 8px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+.tag_pool {
+    padding: 60px 56px;
+}
+
+/*.mdl-chip{*/
+/*background-color: #F1EAE0;*/
+/*}*/
+
+/*-------------モーダル系----------------*/
+.modal-content{
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+}
+
+.blur {
+    -webkit-filter: blur(5px) grayscale(50%);
+    -moz-filter: blur(5px) grayscale(50%);
+    -ms-filter: blur(5px);
+    filter: blur(5px) grayscale(50%);
+}
+
+.modal-backdrop {
+    background-color: black;
+}
+
+#checkbox-modal-label{
+    width: auto;
+    margin-left: 16px;
+}
+
+.modal-ele {
+    display: inline-block;
+}
+
+#modal_input{
+    font-size: 14px;
+}
+
+#modal-row1{
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+#modal-row3{
+    margin-top: 20px;/*depends on padding of {.mdl-textfield}*/
+}
+
+.modal-body{
+    padding-left: 30px;
+}
+
+.modal-footer{
+    border-top: 0;
+}
+
+.modal-footer-btn{
+    cursor: pointer;
+}
+
+/*コメントまわり*/
+.comment {
+    width: 100%;
+}
+
+.comment_form {
+    padding: 12px 60px 12px 60px;
+}
+
+/*.remove_btn{*/
+/*width: 24px;*/
+/*height: 24px;*/
+/*}*/
+
+.params_check .params_slider {
+    display: none;
+    padding-right: 4px;
+}
+
+.mdl-slider {
+    width: 72px;
+}
+
+.params_slider {
+    vertical-align: bottom;
+    margin-bottom: 0;
+}
+
+.mdl-button{
+    padding: 0;
+}
+
+.drag_btn_i {
+    margin-right: 32px;
+    min-width: 16px;
+    font-size: 16px;
+    color: #BCBCBC;
+    cursor: move;
+}
+
+.params_title {
+    vertical-align: middle;
+    color: #66615b;
+    font-size: 18px;
+    padding: 0;
+}
+
+.params_title_w{
+    padding-top: 0;
+}
+
+.mdl-list__item{
+    padding-right: 8px;
+    padding-left: 8px;
+    vertical-align: middle;
+}
+
+.max_btn{
+    cursor: pointer;
+    color: #BCBCBC;
+}
+
+.add-li-btn {
+    width: border-box;
+    height: fit-content;
+}
+
+.add-li-btn button{
+    margin: 0 auto 24px auto;
+    width: 32px;
+    height: 32px;
+    display: block;
+}
+
+.add-li-btn i {
+    color: #BCBCBC;
+    font-size: 24px;
+}
+
+.param-add-popover {
+    display: flex;
+}
+
+.param-add-popover button{
+    margin: 8px;
+}
+
+.tooltip-slider p{
+    /*text-align: center;*/
+    margin: 8px;
+}
+
+.li-rm-btn {
+
+}
+
+.mdl-list {
+    /*padding-left: 24px;*/
+    /*padding-right: 30px;*/
+    /*padding-bottom: 0;*/
+    margin-bottom: 0;
+    padding: 52px 56px 0 40px;
+    /*padding-bottom: 20px;!*この値はmdl-textfieldのデフォルト値に合わせてる*!*/
+}
+
+/*.mdl-list  .mdl-textfield{*/
+/*width: 250px;*/
+/*}*/
+
+.li-rm-btn .fa-times{
+    color: #BCBCBC;
+}
+
+.mdl-list .mdl-list__item {
+    margin: 0 8px 12px 8px;
+    padding-top: 0;
+}
+
+.mdl-list .params_check {
+    margin-right: 40px;
+    margin-left: 40px;
+}
+
+
+/*.tooltip-slider select {*/
+/*margin: 0 auto;*/
+/*}*/
+
+.popover-header {
+    display: none;
 }

@@ -120,6 +120,64 @@
         </main>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="modal-row1">
+                        <span class="fa-layers modal-circle-w modal-circle-w1">
+                            <i class="fas fa-circle modal-circle-i circle1"></i>
+                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                        </span>
+                        <span class="fa-layers modal-circle-w">
+                            <i class="fas fa-circle modal-circle-i circle2"></i>
+                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                        </span>
+                        <span class="fa-layers modal-circle-w">
+                            <i class="fas fa-circle modal-circle-i circle3"></i>
+                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                        </span>
+                        <span class="fa-layers modal-circle-w">
+                            <i class="fas fa-circle modal-circle-i circle4"></i>
+                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                        </span>
+                    </div>
+
+                    <!--<div>-->
+                    <!--<span class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label modal_row">-->
+                    <!--<input class="mdl-textfield__input card_title_input" type="text" id="modal_input">-->
+                    <!--<label class="mdl-textfield__label" for="modal_input"></label>-->
+                    <!--</span>-->
+                    <!--</div>-->
+
+                    <form action="#" class="modal_row">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input card_title_input" type="text" id="modal_input">
+                            <label class="mdl-textfield__label" for="modal_input"></label>
+                            <span class="mdl-textfield__error"></span>
+                        </div>
+                    </form>
+
+                    <div id="modal-row3">
+                        <span>
+                            <span>初期状態で表示する</span>
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-modal" id="checkbox-modal-label">
+                              <input type="checkbox" id="checkbox-modal" class="mdl-checkbox__input">
+                              <span class="mdl-checkbox__label"></span>
+                            </label>
+                        </span>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-footer-btn" data-dismiss="modal">キャンセル</button>
+                    <button type="button" class="btn btn-primary modal-footer-btn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap core JavaScript jqueryのfadeOut()を使いたいので使用する版はslimではないものとする-->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -133,6 +191,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
     <script src="../dist/bootstrap-notify.min.js"></script>
     <script src="../dist/bmd/bootstrap-material-datetimepicker.js"></script>
+    <script src="../dist/mixitup.min.js"></script>
 
     <script src="../dist/recordUtil.js"></script>
     <script src="../dist/common.js"></script>
