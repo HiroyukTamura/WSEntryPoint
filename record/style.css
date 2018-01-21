@@ -59,6 +59,40 @@ body {
     width: -moz-min-content;
 }
 
+/*-------------------ヘッダタブ------------------*/
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
+}
+
+.mdl-layout__tab-bar {
+    background-color: white;
+}
+
+.mdl-layout__tab-bar .mdl-button{
+    margin: 8px 24px;
+    display: block;
+}
+
+.mdl-layout__tab-bar i{
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.mdl-layout.is-upgraded .mdl-layout__tab.is-active {
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.mdl-layout.is-upgraded .mdl-layout__tab {
+    /*color: saddlebrown;*/
+    color: rgba(0, 0, 0, 0.5);
+    /*color: saddlebrown;*/
+}
+
+.mdl-layout.is-upgraded .mdl-layout__tab.is-active::after {
+    background: #E57C3E;
+}
+
+
 /*--------------ボタン追加系------------------*/
 /*#add_btn_w{*/
 /*padding-top: 30px;*/
@@ -780,7 +814,7 @@ td {
     /*padding-right: 30px;*/
     /*padding-bottom: 0;*/
     margin-bottom: 0;
-    padding: 60px 66px 0 60px;
+    padding: 60px 72px 0 68px;
     /*padding-bottom: 20px;!*この値はmdl-textfieldのデフォルト値に合わせてる*!*/
 }
 

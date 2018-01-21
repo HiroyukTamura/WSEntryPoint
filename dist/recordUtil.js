@@ -718,7 +718,7 @@ function createNewData(dataType) {
     };
 
     if (dataType === 2 || dataType === 3 || dataType === 4) {
-        data.dataName = '';
+        data.dataName = '新しい項目';
     }
 
     if (dataType === 2 || dataType === 3){

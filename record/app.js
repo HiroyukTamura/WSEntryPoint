@@ -155,7 +155,6 @@ function onGetTamplateSnap(snapshot) {
     setElementAsMdl($('body'));
     initModal();
     setOnSaveFabClickListener();
-    setOnBtmFabClickListener();
     $('#progress').hide();
     $('#post_load').show();
 }
@@ -434,7 +433,6 @@ function createElementWithHeader(i) {
 
     wrapper.append(doc);
 
-    setElementAsMdl(wrapper);
     return wrapper[0];
 }
 
@@ -721,61 +719,4 @@ function setOnSaveFabClickListener() {
             });
             return false;
         });
-}
-
-function setOnBtmFabClickListener() {
-    $('.sub-button').on('click', function (e) {
-
-        var dataType = 0;
-        if ($(this).hasClass('br')) {
-            //タイムイベント
-            for(var val in masterJson){
-                if(masterJson.hasOwnProperty(val) && masterJson[val]['dataType'] === 1) {
-                    //todo エラー処理
-                    console.log('エラーだよね');
-                    return;
-                }
-            }
-
-            dataType = 1;
-
-        } else if ($(this).hasClass('bl')) {
-            //リスト
-            dataType = 3;
-        } else if ($(this).hasClass('tr')) {
-            //コメント
-            dataType = 4;
-        } else if ($(this).hasClass('tl')) {
-            //タグ
-            dataType = 2;
-        }
-
-        var data = createNewData(dataType);
-        var i = masterJson.length;
-        console.log(data);
-        masterJson.push(data);
-        var cardWrapper = createElementWithHeader(i, dataType);
-        var doc = $(cardWrapper.children[0]);
-
-        switch (dataType){
-            case 1:
-                operateAs1(doc, data);
-                break;
-            case 2:
-                operateAs2(doc, data);
-                break;
-            case 3:
-                operateAs3(doc, data);
-                break;
-            case 4:
-                operateAs4(doc, data);
-                break;
-        }
-
-        setHeaderTitle(doc, masterJson[i]);
-        setElementAsMdl(doc);
-        $('.card_wrapper').append($(cardWrapper));
-
-        initAllTooltips();
-    });
 }
