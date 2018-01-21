@@ -1,0 +1,105 @@
+body {
+    overflow-x: hidden;
+    background-color: #F4F3EF;
+}
+
+/*************nav bar***************/
+.mdl-layout__header{
+    background-color: white;
+    color: #66615b;
+}
+
+.mdl-layout__header .mdl-layout__drawer-button {
+    color: #66615b;
+}
+
+.card {
+    margin-left: 20px;
+    padding: 8px;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    width: 700px;/*イベントのカードの横幅default値*/
+    display: inline-block;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.card_wrapper{
+    padding: 0 20px;
+    width: fit-content;
+    /*margin: 0 auto;*/
+    /*display: -webkit-flex;*/
+    /*display: flex;*/
+    /*-webkit-flex-wrap: wrap; !* Safari *!*/
+    /*flex-wrap:         wrap;*/
+    /*justify-content: center;*/
+}
+
+#page-content-wrapper {
+    /*width: 80%;*/
+}
+
+#container-fluid {
+    margin: 40px auto;
+    width: fit-content;
+    display: flex;
+    display: -moz-flex;
+}
+
+.card-wrapper-i {
+    vertical-align: top;
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    padding: 20px 20px;
+    margin: 0 auto;
+    width: min-content;
+    width: -moz-min-content;
+}
+
+/*--------------ボタン追加系------------------*/
+/*#add_btn_w{*/
+/*padding-top: 30px;*/
+/*padding-bottom: 30px;*/
+/*width: 100%;*/
+/*text-align: center;*/
+/*}*/
+#fab-w-w {
+    width: 200px;
+    height: 120px;
+    margin-top: 220px;
+    margin-left: 16px;
+    display: inline-block;
+    position: relative;
+}
+
+#fab-wrapper .mdl-menu__container {
+    margin-bottom: 16px;
+}
+
+#fab-wrapper {
+    position: absolute;
+    height: 56px;
+    width: 56px;
+    top: 80px;
+}
+
+#overlay {
+    margin-top: 16px;
+    background-color: #E57C3E;
+}
+
+#overlay i{
+    color: white;
+}
+
+#save {
+    display: none;
+    position: absolute;
+    /*top: 60px;*/
+    color: rgba(255,255,255,1);
+    background-color: #E57C3E;
+}

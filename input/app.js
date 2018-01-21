@@ -700,17 +700,6 @@ function createOneEveRow(doc, value) {
     var inputs = block.find(".mdl-textfield__input");
     setEveInputValues(inputs, value);
 
-    //時刻の色を変える
-    // var coloreds = block.getElementsByClassName("colored");
-    // var color = getColor(value["colorNum"]);
-    // console.log(coloreds.length);
-    // for (var i=0; i<coloreds.length; i++){
-    //     console.log(i);
-    //     coloreds[i].style.color = color;
-    // }
-    // changeTimeColor(block, value);
-    // block.getElementsByClassName("mdl-textfield__input")[0].style.color = getColor(value["colorNum"]);
-    // block.getElementsByClassName("circle")[0].style.background = getColor(value["colorNum"]);
     block.find('.circle').css('background-color', colors[value["colorNum"]])
         .popover(TIME_POPOVER_CONFIG)
         .hover(function (e) {
