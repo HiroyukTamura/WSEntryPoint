@@ -18,6 +18,8 @@ body > .container {
     padding-left: 15px;
 }
 
+/*todo css共通化できるところするべきでは？*/
+
 /*!
  * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)
  * Copyright 2013-2017 Start Bootstrap
@@ -94,6 +96,7 @@ body {
 /*text-align: center;*/
 /*}*/
 #fab-w-w {
+
     width: 200px;
     height: 120px;
     margin-top: 220px;
@@ -200,13 +203,13 @@ body {
     font-size: 18px;
 }
 
-/*.colon {*/
-    /*font-size: 25px;*/
-    /*text-align: center;*/
-    /*font-weight: bold;*/
-    /*color: slategray;*/
-    /*margin-bottom: 8px;!*=16-5*!*/
-/*}*/
+.colon {
+    font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+    color: slategray;
+    margin-bottom: 8px;/*=16-5*/
+}
 
 .mdl-textfield__label{
     margin-bottom: -20px;

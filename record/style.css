@@ -15,7 +15,6 @@ body {
 
 .card {
     margin-left: 20px;
-    padding: 8px;
     border: 0;
     border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
@@ -284,7 +283,7 @@ body {
 }
 
 .card_block_w {
-    margin: 16px 60px 16px 60px;
+    margin: 16px 80px 36px 80px;
 }
 
 .card_block tr {
@@ -451,7 +450,24 @@ tbody .range-post {
 /*---------------骨組みまわり-------------------*/
 
 .ele_header {
-    padding: 10px 8px;
+    /*padding: 10px 8px;*/
+    /*margin: 0;*/
+    /*display: block;*/
+    /*margin: 72px;*/
+    font-size: 18px;
+    padding: 16px 24px 16px 24px;
+    margin: 0;
+    background-color: #FFFCF5;
+    border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+}
+
+.ele_header .svg-inline--fa {
+    color: #E57C3E;
+    margin-right: 2rem;
+    font-size: 20px;
 }
 
 td {
@@ -469,7 +485,11 @@ td {
 .add-eve-row td {
     text-align: center;
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 16px;
+}
+
+.range-add td {
+    padding-bottom: 0;
 }
 
 .add-eve-row .mdl-button {
@@ -600,7 +620,7 @@ td {
 }
 
 .tag_pool {
-    padding: 60px 56px;
+    padding: 48px 76px;
 }
 
 /*.mdl-chip{*/
@@ -665,7 +685,7 @@ td {
 }
 
 .comment_form {
-    padding: 12px 60px 12px 60px;
+    padding: 32px 80px 42px 80px;
 }
 
 /*.remove_btn{*/
@@ -760,7 +780,7 @@ td {
     /*padding-right: 30px;*/
     /*padding-bottom: 0;*/
     margin-bottom: 0;
-    padding: 52px 56px 0 40px;
+    padding: 60px 66px 0 60px;
     /*padding-bottom: 20px;!*この値はmdl-textfieldのデフォルト値に合わせてる*!*/
 }
 

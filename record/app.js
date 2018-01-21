@@ -158,7 +158,7 @@ function onGetTamplateSnap(snapshot) {
 function setHeaderTitle(doc, childSnap) {
     var title = childSnap['dataType'] == 1 ? "タイトル" : childSnap['dataName'];
     console.log(title);
-    doc.find('.ele_header').html(title);
+    doc.find('.ele_header').html('<i class="fas fa-clock"></i>'+title);
 }
 
 function initModal() {
@@ -408,7 +408,7 @@ function createTable() {
 function createElementWithHeader(i) {
     var doc =$(
         '<div class="card mix">'+
-            '<span class="ele_header"></span>'+
+            '<h4 class="ele_header"></h4>'+
         '</div>'
     );
 
@@ -647,7 +647,6 @@ function createHtmlAs3(id) {
     var inputId = "inputId" + id;
     return $(
         '<li class="mdl-list__item mdl-pre-upgrade">'+
-            '<i class="fas fa-bars drag_btn_i"></i>'+
 
             '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                 '<form action="#">' +
