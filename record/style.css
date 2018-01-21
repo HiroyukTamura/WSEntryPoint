@@ -103,3 +103,375 @@ body {
     color: rgba(255,255,255,1);
     background-color: #E57C3E;
 }
+
+/*----------------Fabまわり------------------*/
+.add-button {
+    position: absolute;
+    /*box-shadow: 0 2px 2px gray;*/
+    border-radius: 50%;
+    cursor: pointer;
+    right: 0;
+    bottom: -28px;
+    width: 56px;
+    height: 56px;
+    overflow: visible;
+    -webkit-transition: transform .4s cubic-bezier(.58,-0.37,.45,1.46),
+    color 0s ease .4s,font-size .2s;
+    -moz-transition: transform .4s cubic-bezier(.58,-0.37,.45,1.46),
+    color 0s ease .4s,font-size .2s;
+    transition: transform .4s cubic-bezier(.58,-0.37,.45,1.46),
+    color 0s ease .4s,font-size .2s;
+    text-align: center;
+    line-height: 56px;
+    font-size: 28px;
+    color: rgba(255,255,255,1);
+}
+
+.add-button:before {
+    position: relative;
+    z-index: 100;
+    content:"+";
+}
+
+.add-button:hover {
+    box-shadow: none;
+    border-radius: 0;
+    color: rgba(255,255,255,0);
+    transform: rotate(45deg);
+}
+
+.sub-button {
+    position: absolute;
+    display: inline-block;
+    cursor: pointer;
+    background-color: #BCBCBC;;
+    color: rgba(255,255,255,0);
+    width: 28px;
+    height: 28px;
+    line-height:48px;
+    font-family: "FontAwesome";
+    font-size: 12px;
+    -webkit-transition: top .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    left .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    bottom .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    right .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    width .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    height .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    transform .1s ease 0s,
+    border-radius .2s  ease .2s;
+    -moz-transition: top .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    left .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    bottom .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    right .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    width .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    height .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    transform .1s ease 0s,
+    border-radius .2s  ease .2s;
+    transition: top .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    left .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    bottom .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    right .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    width .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    height .2s cubic-bezier(.58,-0.37,.45,1.46) .2s,
+    transform .1s ease 0s,
+    border-radius .2s  ease .2s;
+}
+
+.tl {
+    top: 0;
+    left: 0;
+    border-radius: 28px 0 0 0;
+}
+
+.tr {
+    top: 0;
+    right: 0;
+    border-radius: 0 28px 0 0;
+}
+
+.bl {
+    bottom: 0;
+    left: 0;
+    border-radius: 0 0 0 28px;
+}
+
+.br {
+    bottom: 0;
+    right: 0;
+    border-radius: 0 0 28px 0;
+}
+
+
+/*.tl:before {*/
+/*content:"";*/
+/*}*/
+
+/*.tr:before {*/
+/*content:"";*/
+/*}*/
+
+/*.bl:before {*/
+/*content:"";*/
+/*}*/
+
+/*.br:before {*/
+/*content:"";*/
+/*}*/
+
+
+.add-button:hover .sub-button {
+    width: 48px;
+    height: 48px;
+    transform: rotate(-45deg);
+
+    color: rgba(255,255,255,1);
+    -webkit-transition: top .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    left .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    bottom .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    right .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    width .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    height .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    color .3s ease .8s,
+    transform .3s ease .8s,
+    border-radius .4s  ease .6s;
+    -moz-transition: top .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    left .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    bottom .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    right .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    width .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    height .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    color .3s ease .8s,
+    transform .3s ease .8s,
+    border-radius .4s  ease .6s;
+    transition: top .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    left .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    bottom .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    right .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    width .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    height .4s cubic-bezier(.58,-0.37,.45,1.46) .4s,
+    color .3s ease .8s,
+    transform .3s ease .8s,
+    border-radius .4s  ease .6s;
+}
+
+.add-button:hover .tl {
+    top: -25px;
+    left: -25px;
+    border-radius: 28px;
+}
+
+.add-button:hover .tr {
+    top: -25px;
+    right: -25px;
+    border-radius: 28px;
+}
+
+.add-button:hover .bl {
+    bottom: -25px;
+    left: -25px;
+    border-radius: 28px;
+}
+
+.add-button:hover .br {
+    bottom: -25px;
+    right: -25px;
+    border-radius: 28px;
+}
+
+/****************** time events *******************/
+.card_block {
+    width: 100%;
+}
+
+.card_block_w {
+    margin: 16px 60px 16px 60px;
+}
+
+.card_block tr {
+    height: 56px;
+}
+
+.time {
+    width: fit-content;
+    /*margin-right: -15px;*/
+}
+
+.time .mdl-textfield {
+    width: fit-content;
+}
+
+.min {
+    width: 40px;
+}
+
+.input_eve {
+
+}
+
+/*datePickerまわり*/
+
+.btn {
+    margin-left: 16px;
+    cursor: pointer;
+}
+
+.dtp-btn-cancel {
+    cursor: pointer;
+}
+
+.date-picker-radios {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+/*.date-picker-radios tr{*/
+/*display: flex;*/
+/*justify-content: space-between;*/
+/*}*/
+
+.time_input {
+    /*text-align: center;*/
+    /*font-weight: bold;*/
+    font-size: 18px;
+    width: 50px;
+    /*color: slategray;*/
+}
+
+.event_name{
+    /*margin-left: 24px;*/
+    display: inline-block;
+    color: #616161;
+}
+
+.input_eve {
+    font-size: 18px;
+}
+
+/*.colon {*/
+/*font-size: 25px;*/
+/*text-align: center;*/
+/*font-weight: bold;*/
+/*color: slategray;*/
+/*margin-bottom: 8px;!*=16-5*!*/
+/*}*/
+
+.mdl-textfield__label{
+    margin-bottom: -20px;
+    padding-bottom: 0;
+    font-size: 16px;/*depends on .mdl-textfield*/
+}
+
+.mdl-textfield{
+    padding-bottom: 0;
+}
+
+.icon_down{
+    /*margin-left: 90px;*/
+    /*margin-bottom: -20px;*/
+}
+
+.range-post .mdl-textfield {
+    margin-top: -20px;
+}
+
+/*tbody .range-post :after {*/
+/*height: 40px;*/
+/*}*/
+
+/*tbody .range-post {*/
+/*padding-top: 12px;*/
+/*}*/
+
+.circle {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    margin-right: 20px;
+    border: 3px solid transparent;
+}
+
+tbody .circle {
+    width: 10px;
+    height: 10px;
+}
+
+tbody .mdl-textfield {
+    padding-bottom: 0;
+    padding-right: 16px;
+}
+
+tbody .mdl-textfield__input {
+    padding: 0;
+}
+
+tbody .fa-times {
+    color: #BCBCBC;
+}
+
+tbody .mdl-textfield__label {
+    top: 20px;
+}
+
+.card_block .mdl-button--icon, .demo-list-item .mdl-button--icon, .ele_header .mdl-button--icon{
+    height: 20px;
+    width: 20px;
+    min-width: 15px;
+    font-size: 15px;
+}
+
+.add-eve-row .mdl-button {
+    height: 32px;
+    width: 32px;
+}
+
+.add-eve-row td {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.add-eve-row button {
+    display: inline-block;
+}
+
+.add-eve-row i {
+    color: #BCBCBC;
+}
+
+tbody .angle-down {
+    height: fit-content;
+}
+
+tbody .angle-down td{
+    padding-top: 6px;
+}
+
+tbody .range-post {
+    height: 30px;
+}
+
+.range-pre {
+    padding-bottom: 12px;
+}
+
+/*---------------骨組みまわり-------------------*/
+
+.ele_header {
+    padding: 10px 8px;
+}
+
+td {
+    vertical-align: bottom;
+}
+
+.card_block .mdl-button--icon, .demo-list-item .mdl-button--icon, .ele_header .mdl-button--icon {
+    height: 20px;
+    width: 20px;
+    min-width: 15px;
+    font-size: 15px;
+}

@@ -116,8 +116,8 @@ function onGetTamplateSnap(snapshot) {
 
     for (var i=0; i<masterJson.length; i++){
         var childSnap = masterJson[i];
-        var cardWrapper = createElementWithHeader(i, childSnap["dataName"]);
-        var doc = cardWrapper.children[1];
+        var cardWrapper = createElementWithHeader();
+        var doc = cardWrapper.children[0];
 
         switch (childSnap["dataType"]){
             case 0:
@@ -143,13 +143,23 @@ function onGetTamplateSnap(snapshot) {
 
         $('.card_wrapper').append($(cardWrapper));
     }
+
+    setElementAsMdl($('body'));
 }
 
 function operateAs1(doc, childSnap) {
     $(doc).append(createTable());
     var json = JSON.parse(childSnap["data"]["0"]);
 
-    setElementAsMdl($(doc));
+    var addRowBtn = createAssEveRow('eve-add', 10000);
+
+    $(doc).find('tbody').append(addRowBtn);
+
+    if(json["eventList"]){
+        json["eventList"].forEach(function (value) {
+            createOneEveRow(doc, value);
+        });
+    }
 }
 
 function createTable() {
@@ -164,7 +174,7 @@ function createTable() {
     );
 }
 
-function createElementWithHeader(dataNum) {
+function createElementWithHeader() {
     var doc =$(
         '<div class="card mix">'+
             '<span class="ele_header"></span>'+
@@ -175,12 +185,6 @@ function createElementWithHeader(dataNum) {
         class: 'card-wrapper-i'
     });
 
-    var circleNum = $(
-        '<div class="maru size_normal pink1">'+
-            '<div class="letter3">'+(dataNum+1)+'</div>'+
-        '</div>'
-    );
-    wrapper.append(circleNum);
     wrapper.append(doc);
 
     setElementAsMdl(wrapper);
