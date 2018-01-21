@@ -1741,7 +1741,7 @@ function createElementWithHeader(dataNum, dataType) {
     });
 
     var circleNum = $(
-        '<div class="maru size_normal pink1 mdl-shadow--2dp mdl-pre-upgrade">'+
+        '<div class="maru size_normal pink1">'+
             '<div class="letter3">'+(dataNum+1)+'</div>'+
         '</div>'
     );
@@ -1924,13 +1924,13 @@ function createHtmlAs3(id) {
                     '<form action="#">' +
                         '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
                             '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
-                            '<label class="mdl-textfield__label" for="'+inputId+'"></label>' +
-                            '<span class="mdl-textfield__error">'+ ERR_MSG_NULL_VAL +'</span>'+
+                            '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+inputId+'"></label>' +
+                            '<span class="mdl-textfield__error mdl-pre-upgrade">'+ ERR_MSG_NULL_VAL +'</span>'+
                         '</div>' +
                     '</form>' +
                 '</span>'+
 
-                '<span class="mdl-list__item-secondary-action params_check">'+
+                '<span class="mdl-list__item-secondary-action params_check mdl-pre-upgrade">'+
                     '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + checkId +'">'+
                         '<input type="checkbox" id="' + checkId + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
                     '</label>'+
