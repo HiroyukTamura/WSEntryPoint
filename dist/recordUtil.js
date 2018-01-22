@@ -640,13 +640,28 @@ function  getCommentAsNullable(childSnap) {
 }
 
 //todo ここって'comment'じゃなかったっけ？？
+//todo なんだかんだで、不正な値をmasterJsonに書き込んじゃだめじゃね？？
 function operateAs4(doc, childSnap) {
     var clone = createHtmlAs4();
     // var clone = document.getElementById("comment_dummy").cloneNode(true);
     var summery = getCommentAsNullable(childSnap);
-    if(summery){
+    var input = clone.find(".mdl-textfield__input");
+    var errSpan = clone.find('.mdl-textfield__error');
+
+    if(summery)
         clone.find(".mdl-textfield__input").attr("value", summery);
-    }
+
+    input.keyup(function (e) {
+        if (input.val().indexOf(DELIMITER) !== -1){
+            errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(DELIMITER));
+            input.parent().addClass('is-invalid');
+        } else {
+            $(e.target).parent().removeClass('is-invalid');
+        }
+        var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+        masterJson[currentDataOrder]['data'] = $(e.target).val();
+        console.log(masterJson);
+    });
 
     $(doc).append(clone);
 }
@@ -659,6 +674,7 @@ function createHtmlAs4() {
                     '<div class="mdl-textfield mdl-js-textfield comment mdl-pre-upgrade">' +
                         '<textarea class="mdl-textfield__input comment_ta mdl-pre-upgrade" type="text" rows= "3" id="comment" ></textarea>' +
                         '<label class="mdl-textfield__label mdl-pre-upgrade" for="comment">Text...</label>' +
+                        '<span class="mdl-textfield__error"></span>'+
                     '</div>' +
                 '</form>' +
             '</div>'+

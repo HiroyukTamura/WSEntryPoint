@@ -268,7 +268,7 @@ function operateAs1(doc, childSnap) {
 
     var addRowBtn = createAssEveRow('eve-add', 10000);
 
-    addRowBtn.on('click', function (e) {
+    addRowBtn.find('button').on('click', function (e) {
         console.log('addRowBtn click');
         var value = createNewTimeEveData();
         createOneEveRow(doc, value, masterJson);
@@ -314,7 +314,7 @@ function operateAs1(doc, childSnap) {
     var count = 1;//#eve-add のdata-orderは10000なので、eveListのdata-orderは10001スタートにしたい
     var addRangeBtn = createAssEveRow('range-add', 1000000);
 
-    addRangeBtn.on('click', function (e) {
+    addRangeBtn.find('button').on('click', function (e) {
         console.log('addRangeBtn clicked');
         var newRangeData = createNewRangeData();
 
