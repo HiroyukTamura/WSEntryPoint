@@ -166,6 +166,14 @@ body {
     /*left: 0*/
 /*}*/
 
+/*-------------------ページローディング-----------------*/
+#page-load-prg {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
 /*--------------ボタン追加系------------------*/
 /*#add_btn_w{*/
 /*padding-top: 30px;*/

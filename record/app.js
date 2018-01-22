@@ -4,6 +4,8 @@ const postLoad = $('#post_load');
 const tab0 = $('#tab0');
 const tab1 = $('#tab1');
 const saveBtn = $('#save');
+const load = $('#page-load-prg');
+const contentFluid = $('#container-fluid');
 var loginedUser;
 var masterJson;
 var isModalOpen = false;
@@ -12,7 +14,7 @@ var modalDataNum;
 var modalTipNum;
 var currentMoment = moment();
 const HOLIDAY_YMD = Object.keys(HOLIDAYS);
-var invalidData = false;
+var isFirstLoad = true;
 
 window.onload = function (ev) {
     var defaultApp = firebase.initializeApp(CONFIG);
@@ -21,7 +23,7 @@ window.onload = function (ev) {
     firebase.auth().onAuthStateChanged(function(userObject) {
         if (userObject) {
             console.log("ユーザログインしてます");
-            progress.hide();
+            // progress.hide();
             loginedUser = userObject;
             onLoginSuccess();
         } else {
@@ -41,8 +43,7 @@ window.onload = function (ev) {
                             // Called when the user has been successfully signed in.
                             'signInSuccess': function(userObject, credential, redirectUrl) {
                                 loginedUser = userObject;
-                                progress.hide();
-                                $('#login_w').hide();
+                                // $('#login_w').hide();
                                 return false;
                             }
                         }
@@ -66,35 +67,7 @@ window.onload = function (ev) {
 function onLoginSuccess() {
     setDrawerProfile(loginedUser);
     console.log('onLoginSuccess');
-    postLoad.show();
-
-    var scheme = makeRefScheme(['usersParam', loginedUser.uid, moment().format('YYYYMMDD')]);
-
-    defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
-        if(!snapshot.exists()){
-            var scheme = makeRefScheme(['userData', loginedUser.uid, 'template']);
-            defaultDatabase.ref(scheme).once('value').then(function (templateSnap) {
-                if(!templateSnap.exists()){
-                    console.log('!templateSnap.exists');
-                    showOpeErrNotification(defaultDatabase, -1);
-                    return;
-                }
-
-                onGetTamplateSnap(templateSnap);
-
-            }).catch(function (err) {
-                console.log(err);
-                showOpeErrNotification(defaultDatabase, -1);
-            });
-
-        } else {
-            onGetTamplateSnap(snapshot);//todo デバッグ
-        }
-
-    }).catch(function (err) {
-        console.log(err);
-        showOpeErrNotification(defaultDatabase, -1);
-    });
+    connectFbAsync();
 }
 
 function onGetTamplateSnap(snapshot) {
@@ -153,11 +126,15 @@ function onGetTamplateSnap(snapshot) {
 
     initAllTooltips();
     setElementAsMdl($('body'));
-    initModal();
-    setOnSaveFabClickListener();
-    initTabLayout();
-    $('#progress').hide();
-    $('#post_load').show();
+
+    if(isFirstLoad){
+        initModal();
+        setOnSaveFabClickListener();
+        initTabLayout();
+        $('#progress').hide();
+        $('#post_load').show();
+        isFirstLoad = false;
+    }
 }
 
 function setHeaderTitle(doc, childSnap) {
@@ -772,7 +749,7 @@ function initTabLayout() {
 
     setTabDate(tab0);
 
-    tab0.find('.layout__tab').eq(moment().day()).addClass('is-active');
+    tab0.find('.layout__tab').eq(currentMoment.day()).addClass('is-active');
 
     $('#tab-next').on('click', function (e) {
         console.log('click');
@@ -782,6 +759,7 @@ function initTabLayout() {
 
     $('#tab-prev').on('click', function (e) {
         e.preventDefault();
+        toggleTab();
         console.log('click');
         return false;
     });
@@ -805,8 +783,8 @@ function setTabDate(tab) {
         tab.eq(i).on('click', function (e) {
             onClickTab($(e.target));
             return false;
-        });
-        tab.eq(i).find('span').on('click', function (e) {
+        }).find('span').on('click', function (e) {
+            e.preventDefault();
             onClickTab($(e.target).parent());
             return false;
         });
@@ -814,7 +792,7 @@ function setTabDate(tab) {
     }
 }
 
-function toggleTab() {
+function toggleTab(isNext) {
     var hider;
     var shower;
     if (tab0.is(':visible')){
@@ -827,7 +805,8 @@ function toggleTab() {
 
     hider.fadeOut(null, function (e) {
         console.log('fadeOut');
-        currentMoment.add(7, 'd');
+        var dif = isNext ? 7 : -7;
+        currentMoment.add(dif, 'd');
         setTabDate(shower);
         shower.find('.layout__tab').eq(0).addClass('is-active');
         shower.fadeIn();
@@ -835,6 +814,118 @@ function toggleTab() {
 }
 
 function onClickTab(ele) {
+    console.log('onClickTab');
+
     ele.parents('#tab-center').find('.is-active').removeClass('is-active');
-    ele.addClass('is-active');
+    var layoutTab = getLayoutTab(ele);
+    layoutTab.addClass('is-active');
+
+    //この方法なら、二重クリック時でも大丈夫
+    var dif = layoutTab.index() - currentMoment.day();
+    currentMoment.add(dif,'d');
+    console.log(currentMoment.format('YYYYMMDD'));
+
+    if (contentFluid.is(':visible')) {
+        contentFluid.hide();
+        load.show();
+
+        masterJson = null;
+
+        var scheme = makeRefScheme(['usersParam', loginedUser.uid, currentMoment.format('YYYYMMDD')]);
+        defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
+            if(!snapshot.exists()){
+                var scheme = makeRefScheme(['userData', loginedUser.uid, 'template']);
+                defaultDatabase.ref(scheme).once('value').then(function (templateSnap) {
+                    if(!templateSnap.exists()){
+                        console.log('!templateSnap.exists');
+                        showOpeErrNotification(defaultDatabase, -1);
+                        return;
+                    }
+                    onGetTamplateSnap(templateSnap);
+
+                    if(!isFirstLoad){
+                        load.hide();
+                        contentFluid.show();
+                    }
+
+                }).catch(function (err) {
+                    load.hide();
+                    console.log(err);
+                    showOpeErrNotification(defaultDatabase, -1);
+                });
+
+            } else {
+                onGetTamplateSnap(snapshot);//todo デバッグ
+                if(!isFirstLoad){
+                    load.hide();
+                    contentFluid.show();
+                }
+            }
+
+        }).catch(function (err) {
+            console.log(err);
+            showOpeErrNotification(defaultDatabase, -1);
+            load.hide();
+        });
+    } else {
+        console.log(contentFluid.css('display'));
+    }
+}
+
+function getLayoutTab(ele) {
+    return ele.hasClass('layout__tab') ? ele : ele.parents('.layout__tab');
+}
+
+function connectFbAsync() {
+    var scheme = makeRefScheme(['usersParam', loginedUser.uid, currentMoment.format('YYYYMMDD')]);
+
+    defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
+        if(!snapshot.exists()){
+            var scheme = makeRefScheme(['userData', loginedUser.uid, 'template']);
+            defaultDatabase.ref(scheme).once('value').then(function (templateSnap) {
+                if(!templateSnap.exists()){
+                    console.log('!templateSnap.exists');
+                    showOpeErrNotification(defaultDatabase, -1);
+                    return;
+                }
+                onGetTamplateSnap(templateSnap);
+
+                if(isFirstLoad){
+                    progress.hide();
+                    postLoad.show();
+                } else {
+                    load.hide();
+                    contentFluid.show();
+                }
+
+            }).catch(function (err) {
+                if(isFirstLoad) {
+                    load.hide();
+                } else {
+                    progress.hide();
+                }
+                console.log(err);
+                showOpeErrNotification(defaultDatabase, -1);
+            });
+
+        } else {
+            onGetTamplateSnap(snapshot);//todo デバッグ
+            if(isFirstLoad){
+                load.hide();
+                contentFluid.show();
+            } else {
+                progress.hide();
+                postLoad.show();
+            }
+        }
+
+    }).catch(function (err) {
+        console.log(err);
+        showOpeErrNotification(defaultDatabase, -1);
+        if(isFirstLoad) {
+            load.hide();
+        } else {
+            progress.hide();
+        }
+    });
 }
