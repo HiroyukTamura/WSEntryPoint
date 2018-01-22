@@ -10,6 +10,7 @@ var loginedUser;
 var isModalOpen = false;
 var isModalForNewTag = false;
 var defaultDatabase;
+const saveBtn = $('#save');
 const progress = $('#progress');
 const postLoad = $('#post_load');
 
@@ -125,7 +126,7 @@ function onLoginSuccess() {
                     }
                     break;
                 case 4:
-                    operateAs4(doc, childSnap);
+                    operateAs4(doc, childSnap, masterJson);
                     break;
             }
 
@@ -335,7 +336,7 @@ function operateAs1(doc, childSnap) {
     addRowBtn.find('button').on('click', function (e) {
         console.log('addRowBtn click');
         var value = createNewTimeEveData();
-        createOneEveRow(doc, value, masterJson);
+        createOneEveRow(doc, value, masterJson, saveBtn);
         var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
         jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・ mixitUpでソートした後、いい感じにすることだ。
@@ -366,7 +367,7 @@ function operateAs1(doc, childSnap) {
 
     if(json["eventList"]){
         json["eventList"].forEach(function (value) {
-            createOneEveRow(doc, value, masterJson);
+            createOneEveRow(doc, value, masterJson, saveBtn);
         });
     }
 
@@ -867,12 +868,12 @@ function operateAs3(doc, childSnap, dataNum) {
             var poppover = $('#'+popoverId);
             poppover.find('.add-slider')
                 .on('click', function (e2) {
-                    var splited = ['1', '', '3', '5'];
+                    var splited = ['1', '新しい項目', '3', '5'];
                     onClickAddParamsLiBtn(splited, e, e2);
                 });
             poppover.find('.add-checkbox')
                 .on('click', function (e2) {
-                    var splited = ['0', '', 'true'];
+                    var splited = ['0', '新しい項目', 'true'];
                     onClickAddParamsLiBtn(splited, e, e2);
                 });
             // var popoverId = $(this).attr('aria-describedby');
@@ -1114,7 +1115,7 @@ function setOnBtmFabClickListener() {
                 operateAs3(doc, data);
                 break;
             case 4:
-                operateAs4(doc, data);
+                operateAs4(doc, data, masterJson);
                 break;
         }
 

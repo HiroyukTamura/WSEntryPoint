@@ -148,6 +148,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
+    text-align: center;
 }
 
 .layout__tab.holiday {
@@ -837,7 +838,7 @@ td {
     vertical-align: middle;
     color: #66615b;
     font-size: 18px;
-    padding: 0;
+    padding-bottom: 0;
 }
 
 .params_title_w{

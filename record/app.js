@@ -1,8 +1,9 @@
 var defaultDatabase;
 const progress = $('#progress');
 const postLoad = $('#post_load');
-var tab0 = $('#tab0');
-var tab1 = $('#tab1');
+const tab0 = $('#tab0');
+const tab1 = $('#tab1');
+const saveBtn = $('#save');
 var loginedUser;
 var masterJson;
 var isModalOpen = false;
@@ -11,6 +12,7 @@ var modalDataNum;
 var modalTipNum;
 var currentMoment = moment();
 const HOLIDAY_YMD = Object.keys(HOLIDAYS);
+var invalidData = false;
 
 window.onload = function (ev) {
     var defaultApp = firebase.initializeApp(CONFIG);
@@ -86,7 +88,7 @@ function onLoginSuccess() {
             });
 
         } else {
-
+            onGetTamplateSnap(snapshot);//todo デバッグ
         }
 
     }).catch(function (err) {
@@ -137,15 +139,10 @@ function onGetTamplateSnap(snapshot) {
                 operateAs2(doc, childSnap);
                 break;
             case 3:
-                var element = operateAs3(doc, childSnap, i);
-                if(element){
-                    createElementWithHeader(i).appendChild(element);
-                } else {
-
-                }
+                operateAs3(doc, childSnap, i);
                 break;
             case 4:
-                operateAs4(doc, childSnap);
+                operateAs4(doc, childSnap, masterJson);
                 break;
         }
 
@@ -271,7 +268,7 @@ function operateAs1(doc, childSnap) {
     addRowBtn.find('button').on('click', function (e) {
         console.log('addRowBtn click');
         var value = createNewTimeEveData();
-        createOneEveRow(doc, value, masterJson);
+        createOneEveRow(doc, value, masterJson, saveBtn);
         var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
         jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・ mixitUpでソートした後、いい感じにすることだ。
@@ -307,7 +304,7 @@ function operateAs1(doc, childSnap) {
 
     if(json["eventList"]){
         json["eventList"].forEach(function (value) {
-            createOneEveRow(doc, value, masterJson);
+            createOneEveRow(doc, value, masterJson, saveBtn);
         });
     }
 
@@ -503,9 +500,9 @@ function operateAs3(doc, childSnap, dataNum) {
             trigger: 'manual',
             placement: 'bottom',
             content:'<div class="param-add-popover">'+
-            '<button type="button" class="btn btn-secondary add-checkbox">チェックボックス</button>'+
-            '<button type="button" class="btn btn-secondary add-slider">スライダー</button>'+
-            '</div>',
+                        '<button type="button" class="btn btn-secondary add-checkbox">チェックボックス</button>'+
+                        '<button type="button" class="btn btn-secondary add-slider">スライダー</button>'+
+                    '</div>',
             html: true,
             container: 'body'
         })
@@ -518,12 +515,12 @@ function operateAs3(doc, childSnap, dataNum) {
             var poppover = $('#'+popoverId);
             poppover.find('.add-slider')
                 .on('click', function (e2) {
-                    var splited = ['1', '', '3', '5'];
+                    var splited = ['1', '新しい項目', '3', '5'];
                     onClickAddParamsLiBtn(splited, e, e2);
                 });
             poppover.find('.add-checkbox')
                 .on('click', function (e2) {
-                    var splited = ['0', '', 'true'];
+                    var splited = ['0', '新しい項目', 'true'];
                     onClickAddParamsLiBtn(splited, e, e2);
                 });
             // var popoverId = $(this).attr('aria-describedby');
@@ -615,6 +612,7 @@ function createParamsLi(splited, dataOrder, i) {
                     return false;
                 }).hover(function (e) {
                 onHoverForPopover(e);
+
             }).change(function (e) {
                 e.preventDefault();
                 var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
@@ -624,35 +622,35 @@ function createParamsLi(splited, dataOrder, i) {
                 masterJson[currentDataOrder]["data"][index] = values.join(DELIMITER);
                 console.log(masterJson[currentDataOrder]["data"][index]);
                 return false;
-            })
-                .on('click', function (e) {
-                    var popoverId = $(this).attr('aria-describedby');
-                    var popover = $('#'+popoverId);
-                    if(!popover.length || !popover.hasClass('show')) {
-                        console.log(popover.length, !popover.hasClass('show'), popoverId);
-                        $(e.target).popover('show');
-                    }
-                })
-                .popover({
-                    trigger: 'manual',
-                    placement: 'right',
-                    content: '<div class="select">'+
-                    '<p>最大値を変更&nbsp;&nbsp;&nbsp;'+
-                    '<select name="blood">' +
-                    '<option value="3">3</option>' +
-                    '<option value="4">4</option>' +
-                    '<option value="5">5</option>' +
-                    '<option value="6">6</option>' +
-                    '<option value="7">7</option>' +
-                    '<option value="8">8</option>' +
-                    '<option value="9">9</option>' +
-                    '<option value="10">10</option>' +
-                    '</select>' +
-                    '</p>'+
-                    '<div/>',
-                    html: true,
-                    container: 'body'
-                }).on('shown.bs.popover', function (e) {
+
+            }).on('click', function (e) {
+                var popoverId = $(this).attr('aria-describedby');
+                var popover = $('#'+popoverId);
+                if(!popover.length || !popover.hasClass('show')) {
+                    console.log(popover.length, !popover.hasClass('show'), popoverId);
+                    $(e.target).popover('show');
+                }
+
+            }).popover({
+                trigger: 'manual',
+                placement: 'right',
+                content: '<div class="select">'+
+                            '<p>最大値を変更&nbsp;&nbsp;&nbsp;'+
+                                '<select name="blood">' +
+                                    '<option value="3">3</option>' +
+                                    '<option value="4">4</option>' +
+                                    '<option value="5">5</option>' +
+                                    '<option value="6">6</option>' +
+                                    '<option value="7">7</option>' +
+                                    '<option value="8">8</option>' +
+                                    '<option value="9">9</option>' +
+                                    '<option value="10">10</option>' +
+                                '</select>' +
+                            '</p>'+
+                        '<div/>',
+                html: true,
+                container: 'body'
+            }).on('shown.bs.popover', function (e) {
                 console.log('shown.bs.popover', $(e.target).attr('max'));
                 var popoverId = $(this).attr('aria-describedby');
                 var popover = $('#'+popoverId);
@@ -680,6 +678,7 @@ function createParamsLi(splited, dataOrder, i) {
                         console.log(masterJson[dataOrder]['data']);
                         return false;
                     });
+
                 $(window).hover(function (e2) {
                     if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
                         return false;
@@ -729,7 +728,7 @@ function createHtmlAs3(id) {
                 '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="popover">'+
             '</p>'+
 
-            '<button class="mdl-button mdl-js-button mdl-button--icon li-rm-btn mdl-pre-upgrade">' +
+            '<button class="mdl-button mdl-js-button mdl-button--icon li-rm-btn mdl-pre-upgrade" data-toggle="tooltip" data-placement="top" title="項目を削除">' +
                 '<i class="fas fa-times"></i>' +
             '</button>'+
         '</li>'

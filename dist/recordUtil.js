@@ -76,9 +76,9 @@ function createHtmlAs1Eve() {
             '</td>'+
 
             '<td>'+
-            '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
-            '<i class="fas fa-times"></i>' +
-            '</button>' +
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn" data-toggle="tooltip" data-placement="top" title="項目を削除">' +
+                    '<i class="fas fa-times"></i>' +
+                '</button>' +
             '</td>'+
         '</tr>'
     )[0];
@@ -89,7 +89,7 @@ function setEveInputValues(inputs, value) {
     inputs.eq(1).attr("value", value["name"]);
 }
 
-function createOneEveRow(doc, value, masterJson) {
+function createOneEveRow(doc, value, masterJson, saveBtn) {
     console.log(value);
 
     var block = $(createHtmlAs1Eve());
@@ -207,6 +207,10 @@ function createOneEveRow(doc, value, masterJson) {
     block.find('.input_eve').keyup(function (e) {
         //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
         var isValid = isValidAboutNullAndDelimiter($(e.target), errSpan);
+        if(!isValid){
+            toggleBtn(false);
+            return;
+        }
 
         var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
         var index = $(e.target).parents('tr').index();
@@ -219,14 +223,13 @@ function createOneEveRow(doc, value, masterJson) {
                 errSpan.html(ERR_MSG_DUPLICATE_VAL);
                 $(e.target).parent().addClass('is-invalid');
                 console.log('こっち');
-                isValid = false;
-                break;
+                toggleBtn(false);
+                return;
             }
         }
 
-        if(isValid)
-            $(e.target).parent().removeClass('is-invalid');
-
+        $(e.target).parent().removeClass('is-invalid');
+        toggleBtn(true);
         jsonC['eventList'][index]['name'] = $(e.target).val();
         masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
     });
@@ -324,6 +327,10 @@ function createOneRangeRow(doc, count, value, masterJson) {
     startInput.keyup(function (e) {
         //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
         var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanStart);
+        if(!isValid){
+            toggleBtn(false);
+            return;
+        }
 
         var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
         var index = getRangeIndex($(e.target));
@@ -331,42 +338,46 @@ function createOneRangeRow(doc, count, value, masterJson) {
 
         if($(e.target).val() === jsonC['rangeList'][index]['end']['name']){
             showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_EACH_VAL_SAME);
-            isValid = false;
+            toggleBtn(false);
+            return;
+        }
 
-        } else {
-            console.log($(e.target).val(), jsonC['rangeList'][index]['end']['name']);
+        console.log($(e.target).val(), jsonC['rangeList'][index]['end']['name']);
 
-            for(var key in jsonC['rangeList']) {
-                if(!jsonC['rangeList'].hasOwnProperty(key))
-                    continue;
+        for(var key in jsonC['rangeList']) {
+            if(!jsonC['rangeList'].hasOwnProperty(key))
+                continue;
 
-                if(key == index)
-                    continue;
+            if(key == index)
+                continue;
 
-                if (jsonC['rangeList'][key]['start']['name'] === $(e.target).val()
-                    && jsonC['rangeList'][key]['end']['name'] === endInput.val()) {
+            if (jsonC['rangeList'][key]['start']['name'] === $(e.target).val()
+                && jsonC['rangeList'][key]['end']['name'] === endInput.val()) {
 
-                    showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_DUPLICATE_VAL);
-                    isValid = false;
-                    console.log('こっち');
-                    break;
-                }
+                showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_DUPLICATE_VAL);
+                isValid = false;
+                console.log('こっち');
+                toggleBtn(false);
+                return;
             }
         }
 
-        if (isValid){
-            $(e.target).parent().removeClass('is-invalid');
-            endInput.parent().removeClass('is-invalid');
-            console.log('うむ');
-        }
-        // jsonC['eventList'][index]['name'] = $(e.target).val();
-        // masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
+        $(e.target).parent().removeClass('is-invalid');
+        endInput.parent().removeClass('is-invalid');
+        toggleBtn(true);
+        console.log('うむ');
+        jsonC['eventList'][index]['name'] = $(e.target).val();
+        masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
     });
 
 
     endInput.keyup(function (e) {
         //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
         var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanEnd);
+        if(!isValid){
+            toggleBtn(false);
+            return;
+        }
 
         var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
         var index = getRangeIndex($(e.target));
@@ -374,34 +385,33 @@ function createOneRangeRow(doc, count, value, masterJson) {
 
         if($(e.target).val() === jsonC['rangeList'][index]['start']['name']){
             showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_EACH_VAL_SAME);
-            isValid = false;
+            toggleBtn(false);
+            return;
+        }
 
-        } else {
-            console.log($(e.target).val(), jsonC['rangeList'][index]['start']['name']);
+        console.log($(e.target).val(), jsonC['rangeList'][index]['start']['name']);
 
-            for(var key in jsonC['rangeList']) {
-                if(!jsonC['rangeList'].hasOwnProperty(key))
-                    continue;
+        for(var key in jsonC['rangeList']) {
+            if(!jsonC['rangeList'].hasOwnProperty(key))
+                continue;
 
-                if(key == index)
-                    continue;
+            if(key == index)
+                continue;
 
-                if (jsonC['rangeList'][key]['start']['name'] === startInput.val()
-                    && jsonC['rangeList'][key]['end']['name'] === $(e.target).val()) {
+            if (jsonC['rangeList'][key]['start']['name'] === startInput.val()
+                && jsonC['rangeList'][key]['end']['name'] === $(e.target).val()) {
 
-                    showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_DUPLICATE_VAL);
-                    isValid = false;
-                    console.log('こっち');
-                    break;
-                }
+                showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_DUPLICATE_VAL);
+                console.log('こっち');
+                toggleBtn(false);
+                return;
             }
         }
 
-        if (isValid){
-            $(e.target).parent().removeClass('is-invalid');
-            startInput.parent().removeClass('is-invalid');
-            console.log('うむ');
-        }
+        $(e.target).parent().removeClass('is-invalid');
+        startInput.parent().removeClass('is-invalid');
+        toggleBtn(true);
+        console.log('うむ');
     });
     //endregion
 
@@ -527,8 +537,8 @@ function craeteHtmlAs1Row() {
                 '<i class="fas fa-angle-double-down icon_down"></i>' +
             '</td>' +
             '<td colspan="1">' +
-                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
-                '<i class="fas fa-times"></i>' +
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn" data-toggle="tooltip" data-placement="top" title="項目を追加">' +
+                    '<i class="fas fa-times"></i>' +
                 '</button>' +
             '</td>' +
         '</tr>')[0];
@@ -640,8 +650,7 @@ function  getCommentAsNullable(childSnap) {
 }
 
 //todo ここって'comment'じゃなかったっけ？？
-//todo なんだかんだで、不正な値をmasterJsonに書き込んじゃだめじゃね？？
-function operateAs4(doc, childSnap) {
+function operateAs4(doc, childSnap, masterJson) {
     var clone = createHtmlAs4();
     // var clone = document.getElementById("comment_dummy").cloneNode(true);
     var summery = getCommentAsNullable(childSnap);
@@ -655,12 +664,15 @@ function operateAs4(doc, childSnap) {
         if (input.val().indexOf(DELIMITER) !== -1){
             errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(DELIMITER));
             input.parent().addClass('is-invalid');
+            toggleBtn(false);
+
         } else {
             $(e.target).parent().removeClass('is-invalid');
+            var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+            masterJson[currentDataOrder]['data'] = $(e.target).val();
+            console.log(masterJson);
+            toggleBtn(true);
         }
-        var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-        masterJson[currentDataOrder]['data'] = $(e.target).val();
-        console.log(masterJson);
     });
 
     $(doc).append(clone);
@@ -674,7 +686,7 @@ function createHtmlAs4() {
                     '<div class="mdl-textfield mdl-js-textfield comment mdl-pre-upgrade">' +
                         '<textarea class="mdl-textfield__input comment_ta mdl-pre-upgrade" type="text" rows= "3" id="comment" ></textarea>' +
                         '<label class="mdl-textfield__label mdl-pre-upgrade" for="comment">Text...</label>' +
-                        '<span class="mdl-textfield__error"></span>'+
+                        '<span class="mdl-textfield__error mdl-pre-upgrade"></span>'+
                     '</div>' +
                 '</form>' +
             '</div>'+
@@ -689,7 +701,7 @@ function initAllTooltips() {
 
 function createAddTagBtn() {
     return $(
-        '<button class="mdl-button mdl-js-button mdl-button--icon tag-add-btn mdl-pre-upgrade" data-tag-order="1000">' +
+        '<button class="mdl-button mdl-js-button mdl-button--icon tag-add-btn mdl-pre-upgrade" data-tag-order="1000" data-toggle="tooltip" data-placement="top" title="項目を追加">' +
             '<i class="material-icons">add_circle</i>' +
         '</button>');
 }
@@ -713,7 +725,7 @@ function onClickAddParamsLiBtn(splited, e, e2) {
     var ul = $(e.target).parents('.card').find('.mdl-list');
     createParamsLi(splited, currentDataOrder, ul.length)
         .appendTo(ul);
-    setElementAsMdl(ul[0]);
+    setElementAsMdl(ul);
     $(e.target).popover('hide');
 }
 
@@ -841,4 +853,12 @@ function sortByTime(eventList) {
         }
     }
     return newEveList;
+}
+
+function toggleBtn(isShow) {
+    if (isShow && $('.is-invalid').length === 0) {
+        $('#save').fadeIn();
+    } else {
+        $('#save').fadeOut();
+    }
 }
