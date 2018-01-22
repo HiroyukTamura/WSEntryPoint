@@ -1,6 +1,8 @@
 var defaultDatabase;
 const progress = $('#progress');
 const postLoad = $('#post_load');
+var tab0 = $('#tab0');
+var tab1 = $('#tab1');
 var loginedUser;
 var masterJson;
 var isModalOpen = false;
@@ -8,6 +10,7 @@ var isModalForNewTag = false;
 var modalDataNum;
 var modalTipNum;
 var currentMoment = moment();
+const HOLIDAY_YMD = Object.keys(HOLIDAYS);
 
 window.onload = function (ev) {
     var defaultApp = firebase.initializeApp(CONFIG);
@@ -155,6 +158,7 @@ function onGetTamplateSnap(snapshot) {
     setElementAsMdl($('body'));
     initModal();
     setOnSaveFabClickListener();
+    initTabLayout();
     $('#progress').hide();
     $('#post_load').show();
 }
@@ -719,4 +723,76 @@ function setOnSaveFabClickListener() {
             });
             return false;
         });
+}
+
+function initTabLayout() {
+    tab1.hide();
+
+    setTabDate(tab0);
+
+    tab0.find('.layout__tab').eq(moment().day()).addClass('.is-active');
+
+    $('#tab-next').on('click', function (e) {
+        console.log('click');
+        toggleTab();
+        return false;
+    });
+
+    $('#tab-prev').on('click', function (e) {
+        e.preventDefault();
+        console.log('click');
+        return false;
+    });
+}
+
+function setTabDate(tab) {
+    tab = tab.find('.layout__tab');
+    var momentC = currentMoment.clone().startOf('week');
+    for(var i=0; i<7; i++) {
+        var val = momentC.format('D'+'日('+ wodList[momentC.day()] +')');
+        tab.eq(i).find('span').html(val);
+        if(momentC.day() === 0){
+            tab.eq(i).addClass('holiday');
+        } else {
+            var ymdHifun = momentC.format('YYYY-MM-DD');
+            if (HOLIDAY_YMD.indexOf(ymdHifun) !== -1) {
+                tab.eq(i).addClass('holiday');
+            }
+        }
+        tab.eq(i).off('click');
+        tab.eq(i).on('click', function (e) {
+            onClickTab($(e.target));
+            return false;
+        });
+        tab.eq(i).find('span').on('click', function (e) {
+            onClickTab($(e.target).parent());
+            return false;
+        });
+        momentC.add(1, 'd');
+    }
+}
+
+function toggleTab() {
+    var hider;
+    var shower;
+    if (tab0.is(':visible')){
+        hider = tab0;
+        shower = tab1;
+    } else {
+        hider = tab1;
+        shower = tab0;
+    }
+
+    hider.fadeOut(null, function (e) {
+        console.log('fadeOut');
+        currentMoment.add(7, 'd');
+        setTabDate(shower);
+        shower.find('.layout__tab').eq(0).addClass('is-active');
+        shower.fadeIn();
+    });
+}
+
+function onClickTab(ele) {
+    ele.parents('#tab-center').find('.is-active').removeClass('is-active');
+    ele.addClass('is-active');
 }

@@ -44,7 +44,7 @@
     <div id="post_load">
 
         <!--header-->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
@@ -52,20 +52,37 @@
                 <span class="mdl-layout-title">体調を記録</span>
             </div>
             <!-- Tabs -->
-            <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-                <button class="mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">keyboard_arrow_left</i>
-                </button>
-                <a href="#" class="mdl-layout__tab is-active">Tab 1</a>
-                <a href="#" class="mdl-layout__tab">Tab 2</a>
-                <a href="#" class="mdl-layout__tab">Tab 3</a>
-                <a href="#" class="mdl-layout__tab">Tab 1</a>
-                <a href="#" class="mdl-layout__tab">Tab 2</a>
-                <a href="#" class="mdl-layout__tab">Tab 3</a>
-                <a href="#" class="mdl-layout__tab">Tab 3</a>
-                <button class="mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">keyboard_arrow_right</i>
-                </button>
+            <div id="tab-row">
+                <div id="tab-prev" class="tab-btn-w">
+                    <button class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">keyboard_arrow_left</i>
+                    </button>
+                </div>
+                <div id="tab-center">
+                    <div id="tab0">
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                    </div>
+                    <div id="tab1">
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                        <div class="layout__tab"><span>Tab 1</span></div>
+                    </div>
+                </div>
+                <div id="tab-next" class="tab-btn-w">
+                    <button class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">keyboard_arrow_right</i>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -208,6 +225,7 @@
     <script src="../dist/bootstrap-notify.min.js"></script>
     <script src="../dist/bmd/bootstrap-material-datetimepicker.js"></script>
     <script src="../dist/mixitup.min.js"></script>
+    <script src="../dist/jquery-ui/jquery-ui.min.js"></script>
 
     <script src="../dist/recordUtil.js"></script>
     <script src="../dist/common.js"></script>
