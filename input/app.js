@@ -138,6 +138,7 @@ function onLoginSuccess() {
 
         initCardDragging();
         initModal();
+        setElementAsMdl($('body'));
         initAllTooltips();
         setOnBtmFabClickListener();
         setOnSaveFabClickListener();
@@ -334,33 +335,7 @@ function operateAs1(doc, childSnap) {
     var addRowBtn = createAssEveRow('eve-add', 10000);
 
     addRowBtn.find('button').on('click', function (e) {
-        console.log('addRowBtn click');
-        var value = createNewTimeEveData();
-        createOneEveRow(doc, value, masterJson, saveBtn);
-        var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
-        var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-        jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・ mixitUpでソートした後、いい感じにすることだ。
-        masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-
-        console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
-        setElementAsMdl(doc);
-
-        //todo うごかないぞタコ！
-        mixitup($(doc).find('tbody'), {
-            load: {
-                sort: 'order:asc'
-            },
-            animation: {
-                duration: 250,
-                nudge: true,
-                reverseOut: false,
-                effects: "fade translateZ(-100px)"
-            },
-            selectors: {
-                target: $(doc).find('.card_block tbody tr'),
-                control: '.mixitup-control'//@see https://goo.gl/QpW5BR
-            }
-        }).sort("order:asc");
+        onClickAddRowBtn($(e.target), masterJson, $(doc));
     });
 
     $(doc).find('tbody').append(addRowBtn);
@@ -401,8 +376,6 @@ function operateAs1(doc, childSnap) {
             count++;
         });
     }
-
-    setElementAsMdl(doc);
 }
 
 ////////////////////////region 新規TimeEve/RangeEve作成処理
@@ -622,51 +595,51 @@ function operateAs1(doc, childSnap) {
 // }
 //endregion
 
-function setRangeDatePicker(block) {
-    var input = block.find('input').eq(0);
-    setDatePickerLisntener(input)
-        .on('change', function (event, date) {
-            var index = $(this).parents('tr').index() - $(this).parents('tr').find('.eve-add').index()-1;
-            var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
-            var dataNum = Math.floor(index/3);
-            console.log(dataNum, index%3);
-            var startOrEnd;
-            switch (index%3) {
-                case 0:
-                    startOrEnd = 'start';
-                    break;
-                case 2:
-                    startOrEnd = 'end';
-                    break;
-                default:
-                    return;
-            }
-
-            var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-            var time = moment($(event.target).val(), 'H:mm');
-            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["hourOfDay"] = time.hour();
-            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["minute"] = time.minute();
-
-            var n = index%3;
-            if(n === 2)
-                n = 1;
-
-            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["offset"]
-                = $('.dtp').eq(jsonC["eventList"].length + dataNum*2 +n)
-                    .find('.date-picker-radios input:checked')
-                    .parent().index() -1;
-            masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-            console.log(masterJson);
-    });
-
-    var datePickers = $('.dtp-actual-meridien');
-
-    // datePickerを整備
-    var radios = createHtmlRadio();
-    var row = datePickers.eq(datePickers.length-1);
-    radios.insertBefore(row);
-    row.hide();
-}
+// function setRangeDatePicker(block) {
+//     var input = block.find('input').eq(0);
+//     setDatePickerLisntener(input)
+//         .on('change', function (event, date) {
+//             var index = $(this).parents('tr').index() - $(this).parents('tr').find('.eve-add').index()-1;
+//             var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
+//             var dataNum = Math.floor(index/3);
+//             console.log(dataNum, index%3);
+//             var startOrEnd;
+//             switch (index%3) {
+//                 case 0:
+//                     startOrEnd = 'start';
+//                     break;
+//                 case 2:
+//                     startOrEnd = 'end';
+//                     break;
+//                 default:
+//                     return;
+//             }
+//
+//             var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+//             var time = moment($(event.target).val(), 'H:mm');
+//             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["hourOfDay"] = time.hour();
+//             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["minute"] = time.minute();
+//
+//             var n = index%3;
+//             if(n === 2)
+//                 n = 1;
+//
+//             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["offset"]
+//                 = $('.dtp').eq(jsonC["eventList"].length + dataNum*2 +n)
+//                     .find('.date-picker-radios input:checked')
+//                     .parent().index() -1;
+//             masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+//             console.log(masterJson);
+//     });
+//
+//     var datePickers = $('.dtp-actual-meridien');
+//
+//     // datePickerを整備
+//     var radios = createHtmlRadio();
+//     var row = datePickers.eq(datePickers.length-1);
+//     radios.insertBefore(row);
+//     row.hide();
+// }
 //endregion
 
 //region /////////////////operateAs2系列//////////////
@@ -680,56 +653,8 @@ function operateAs2(doc, childSnap) {
     Object.keys(childSnap["data"]).forEach(function (key) {
         var splited = childSnap["data"][key].split(DELIMITER);
         addTagToPool(splited, count, pool);
-
-        // var clone = createHtmlAs2();
-        //
-        // setTagUi(clone, splited);
-        //
-        // clone.attr("index", count);
-        // setElementAsMdl(clone[0]);
-        //
-        // clone.find(".mdl-chip").on('click', function (e) {
-        //     modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
-        //     modalTipNum = clone.attr("index");
-        //     var splited = masterJson[modalDataNum]["data"][modalTipNum].split(delimiter);
-        //     clickedColor = parseInt(splited[1]);
-        //
-        //     $('#modal_input').attr('value', splited[0]).val(splited[0]);
-        //     $('.modal-circle-check').eq(parseInt(splited[1])).addClass("show");
-        //
-        //     if(!!splited[2])
-        //         document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
-        //
-        //     // setCircleHoverEvent(index);
-        //
-        //     showModal();
-        // });
-        //
-        // clone.find('.mdl-chip__action i').on('click', function (e) {
-        //     e.preventDefault();
-        //     console.log('delete clicked');
-        //     var pos = clone.index();
-        //     var sublings = clone.siblings();
-        //     console.log(sublings.length);
-        //     for (var i=0; i<sublings.length; i++) {
-        //         console.log('hogehoge');
-        //         sublings.eq(i).attr('index', i);
-        //     }
-        //
-        //     var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
-        //     masterJson[dataOrder]["data"].splice(pos, 1);
-        //     console.log(masterJson[dataOrder]["data"]);
-        //
-        //     clone.remove();
-        //
-        //     return false;
-        // });
-        //
-        // pool.append(clone);
-
         count++;
     });
-
 
     dragula([pool[0]],{
         moves: function (el, container, handle) {
@@ -785,7 +710,6 @@ function addTagToPool(splited, count, pool) {
     setTagUi(clone, splited);
 
     clone.attr("index", count);
-    setElementAsMdl(clone[0]);
 
     clone.find(".mdl-chip").on('click', function (e) {
         modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
@@ -895,8 +819,6 @@ function operateAs3(doc, childSnap, dataNum) {
     // $(doc).addClass('align-center');
     $(doc).append(ul);
     $(doc).append(addLiBtn);
-
-    setElementAsMdl(doc);
 
     var oldPos;
     dragula([ul[0]], {
@@ -1321,12 +1243,12 @@ function swap(arr,x,y){
     return arr;
 }
 
-function setElementAsMdl(clone) {
-    var ele = clone.getElementsByClassName("mdl-pre-upgrade");
-    for (var i=0; i<ele.length; i++){
-        componentHandler.upgradeElement(ele[i]);
-    }
-}
+// function setElementAsMdl(clone) {
+//     var ele = clone.getElementsByClassName("mdl-pre-upgrade");
+//     for (var i=0; i<ele.length; i++){
+//         componentHandler.upgradeElement(ele[i]);
+//     }
+// }
 
 //region *****************html生成系**************
 
@@ -1374,7 +1296,7 @@ function createElementWithHeader(dataNum, dataType) {
     wrapper.append(circleNum);
     wrapper.append(doc);
 
-    setElementAsMdl(wrapper[0]);
+    setElementAsMdl(wrapper);
     return wrapper[0];
 }
 

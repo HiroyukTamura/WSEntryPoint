@@ -32,9 +32,13 @@ body {
 }
 
 /*************nav bar***************/
-.mdl-layout__header{
-    background-color: white;
-    color: #66615b;
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
+}
+
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
 }
 
 .mdl-layout__header .mdl-layout__drawer-button {
@@ -248,6 +252,10 @@ body {
     border-radius: 50%;
     margin-right: 20px;
     border: 3px solid transparent;
+}
+
+.time .mdl-textfield--floating-label.is-focused .mdl-textfield__label, .mdl-textfield--floating-label.is-dirty .mdl-textfield__label, .mdl-textfield--floating-label.has-placeholder .mdl-textfield__label {
+    top: 0;
 }
 
 /************タイムイベント系************/

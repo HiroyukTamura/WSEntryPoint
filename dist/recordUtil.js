@@ -865,3 +865,38 @@ function toggleBtn(isShow) {
         console.log($('.wrong-val'));
     }
 }
+
+function onClickAddRowBtn(ele, masterJson, doc) {
+    console.log('addRowBtn click');
+    var value = createNewTimeEveData();
+    createOneEveRow(doc, value, masterJson, saveBtn);
+    var dataOrder = ele.parents(".card-wrapper-i").attr('data-order');
+    var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
+    jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・ mixitUpでソートした後、いい感じにすることだ。
+    jsonC['eventList'] = sortByTime(jsonC['eventList']);
+
+    masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+
+    console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
+
+    mixitup($(doc).find('tbody')[0], {
+        load: {
+            sort: 'order:asc'
+        },
+        behavior: {
+            liveSort: true
+        },
+        animation: {
+            duration: 250,
+            nudge: true,
+            reverseOut: false,
+            effects: "fade translateZ(-100px)"
+        },
+        selectors: {
+            target: 'tbody tr',
+            control: '.mixitup-control'//@see https://goo.gl/QpW5BR
+        }
+    }).sort("order:asc");
+
+    setElementAsMdl(doc);
+}
