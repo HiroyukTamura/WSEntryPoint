@@ -142,6 +142,7 @@ function onLoginSuccess() {
         initAllTooltips();
         setOnBtmFabClickListener();
         setOnSaveFabClickListener();
+        setOnScrollListener();
 
         $('#progress').hide();
         $('#post_load').show();

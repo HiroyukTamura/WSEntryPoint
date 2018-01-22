@@ -900,3 +900,11 @@ function onClickAddRowBtn(ele, masterJson, doc) {
 
     setElementAsMdl(doc);
 }
+
+function setOnScrollListener() {
+    $('.mdl-layout__content').scroll(function() {
+        var scrollTop = $(this).scrollTop();
+        saveBtn.css('top', scrollTop + 'px');
+        console.log('scrolled');
+    });
+}

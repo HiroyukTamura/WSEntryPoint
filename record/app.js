@@ -863,11 +863,3 @@ function connectFbAsync() {
         }
     });
 }
-
-function setOnScrollListener() {
-    $('.mdl-layout__content').scroll(function() {
-        var scrollTop = $(this).scrollTop();
-        saveBtn.css('top', scrollTop + 'px');
-        console.log('scrolled');
-    });
-}
