@@ -1,8 +1,5 @@
 "use strict";
 
-const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
-const ERR_MSG_EACH_VAL_SAME = "項目名は開始と終了で別にしてください";
-const ERR_MSG_NO_CONTENTS = '項目は最低でもひとつ必要です';
 const SUCCESS_MSG_SAVE = '保存しました';
 
 var masterJson;
@@ -622,20 +619,6 @@ function operateAs1(doc, childSnap) {
 //         $(blocks[i]).insertBefore($(doc).find('.range-add'));
 //     }
 // }
-
-
-function showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, errMsg) {
-    errSpanStart.html(errMsg);
-    startInput.parent().addClass('is-invalid');
-    errSpanEnd.html(errMsg);
-    endInput.parent().addClass('is-invalid');
-}
-
-function getRangeIndex(target) {
-    var tr = target.closest('tr');
-    var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
-    return Math.floor(index/3);
-}
 //endregion
 
 function setRangeDatePicker(block) {

@@ -275,14 +275,18 @@ function operateAs1(doc, childSnap) {
         var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
         jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・ mixitUpでソートした後、いい感じにすることだ。
+        jsonC['eventList'] = sortByTime(jsonC['eventList']);
+
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
         console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
 
-        //todo うごかないぞタコ！
-        mixitup($(doc).find('tbody'), {
+        mixitup($(doc).find('tbody')[0], {
             load: {
                 sort: 'order:asc'
+            },
+            behavior: {
+                liveSort: true
             },
             animation: {
                 duration: 250,
@@ -291,10 +295,12 @@ function operateAs1(doc, childSnap) {
                 effects: "fade translateZ(-100px)"
             },
             selectors: {
-                target: $(doc).find('.card_block tbody tr'),
+                target: 'tbody tr',
                 control: '.mixitup-control'//@see https://goo.gl/QpW5BR
             }
         }).sort("order:asc");
+
+        setElementAsMdl($(doc));
     });
 
     $(doc).find('tbody').append(addRowBtn);
@@ -318,6 +324,7 @@ function operateAs1(doc, childSnap) {
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
         createOneRangeRow(doc, count, newRangeData, masterJson);
+        setElementAsMdl($(doc));
         console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
 
         count++;
@@ -334,6 +341,42 @@ function operateAs1(doc, childSnap) {
         });
     }
 }
+
+// function createHtmlForRangeRow() {
+//     var random = Math.random().toString(36).slice(-8);
+//     return $(
+//         '<tr>'+
+//             '<td class="circle_wrapper">' +
+//                 '<div class="circle"></div>' +
+//             '</td>' +
+//
+//             '<td>' +
+//                 '<form action="#" class="time colored">' +
+//                     '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade mdl-textfield--floating-label">' +
+//                         '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" id="sample">' +
+//                         '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
+//                     '</div>' +
+//                 '</form>' +
+//             '</td>' +
+//
+//             '<td>' +
+//                 '<form action="#" class="event_name">' +
+//                     '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
+//                         '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="'+ random +'">' +
+//                         '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ random +'"></label>'+
+//                         '<span class="mdl-textfield__error mdl-pre-upgrade"></span>' +
+//                     '</div>' +
+//                 '</form>' +
+//             '</td>'+
+//
+//             '<td>'+
+//                 '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
+//                     '<i class="fas fa-times"></i>' +
+//                 '</button>' +
+//             '</td>'+
+//         '</tr>'
+//     )[0];
+// }
 
 function operateAs2(doc, childSnap) {
     var pool = $('<div>', {
@@ -730,7 +773,7 @@ function initTabLayout() {
 
     setTabDate(tab0);
 
-    tab0.find('.layout__tab').eq(moment().day()).addClass('.is-active');
+    tab0.find('.layout__tab').eq(moment().day()).addClass('is-active');
 
     $('#tab-next').on('click', function (e) {
         console.log('click');

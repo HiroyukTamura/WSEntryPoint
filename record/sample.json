@@ -1,0 +1,74 @@
+{
+  "eventList": [
+    {
+      "cal": {
+        "year": 2017,
+        "month": 10,
+        "dayOfMonth": 26,
+        "hourOfDay": 8,
+        "minute": 0,
+        "second": 20
+      },
+      "colorNum": 2,
+      "name": "出勤",
+      "offset": 0
+    },
+    {
+      "colorNum": 0,
+      "offset": 0,
+      "name": "新しいイベント",
+      "cal": {
+        "year": 2018,
+        "month": 0,
+        "dayOfMonth": 22,
+        "hourOfDay": 13,
+        "minute": 54,
+        "second": 0
+      }
+    },
+    {
+      "cal": {
+        "year": 2017,
+        "month": 10,
+        "dayOfMonth": 26,
+        "hourOfDay": 13,
+        "minute": 54,
+        "second": 20
+      },
+      "colorNum": 0,
+      "name": "帰宅",
+      "offset": 0
+    }
+  ],
+  "rangeList": [
+    {
+      "colorNum": 0,
+      "end": {
+        "cal": {
+          "year": 2017,
+          "month": 10,
+          "dayOfMonth": 26,
+          "hourOfDay": 7,
+          "minute": 30,
+          "second": 20
+        },
+        "colorNum": 0,
+        "name": "起床",
+        "offset": 0
+      },
+      "start": {
+        "cal": {
+          "year": 2017,
+          "month": 10,
+          "dayOfMonth": 26,
+          "hourOfDay": 22,
+          "minute": 0,
+          "second": 20
+        },
+        "colorNum": 0,
+        "name": "就寝",
+        "offset": -1
+      }
+    }
+  ]
+}

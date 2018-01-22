@@ -467,6 +467,14 @@ body {
     font-size: 16px;/*depends on .mdl-textfield*/
 }
 
+.time .mdl-textfield--floating-label.is-focused .mdl-textfield__label, .mdl-textfield--floating-label.is-dirty .mdl-textfield__label, .mdl-textfield--floating-label.has-placeholder .mdl-textfield__label {
+    top: 0;
+}
+
+.time .mdl-textfield__label:after {
+    background-color: unset;
+}
+
 .mdl-textfield{
     padding-bottom: 0;
 }

@@ -1,3 +1,7 @@
+const ERR_MSG_DUPLICATE_VAL = "項目名が重複しています";
+const ERR_MSG_EACH_VAL_SAME = "項目名は開始と終了で別にしてください";
+const ERR_MSG_NO_CONTENTS = '項目は最低でもひとつ必要です';
+
 const TIME_POPOVER_CONFIG = {
     trigger: 'manual',
     placement: 'bottom',
@@ -48,34 +52,34 @@ function createHtmlAs1Eve() {
     var random = Math.random().toString(36).slice(-8);
     return $(
         '<tr>'+
-        '<td class="circle_wrapper">' +
-        '<div class="circle"></div>' +
-        '</td>' +
+            '<td class="circle_wrapper">' +
+                '<div class="circle"></div>' +
+            '</td>' +
 
-        '<td>' +
-        '<form action="#" class="time colored">' +
-        '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-        '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text"' +
-        // '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
-        '</div>' +
-        '</form>' +
-        '</td>' +
+            '<td>' +
+                '<form action="#" class="time colored">' +
+                    '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade mdl-textfield--floating-label">' +
+                        '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" id="sample">' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
+                    '</div>' +
+                '</form>' +
+            '</td>' +
 
-        '<td>' +
-        '<form action="#" class="event_name">' +
-        '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
-        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="'+ random +'">' +
-        '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ random +'"></label>'+
-        '<span class="mdl-textfield__error mdl-pre-upgrade"></span>' +
-        '</div>' +
-        '</form>' +
-        '</td>'+
+            '<td>' +
+                '<form action="#" class="event_name">' +
+                    '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade">' +
+                        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade" type="text" id="'+ random +'">' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+ random +'"></label>'+
+                        '<span class="mdl-textfield__error mdl-pre-upgrade"></span>' +
+                    '</div>' +
+                '</form>' +
+            '</td>'+
 
-        '<td>'+
-        '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
-        '<i class="fas fa-times"></i>' +
-        '</button>' +
-        '</td>'+
+            '<td>'+
+            '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade remove-btn">' +
+            '<i class="fas fa-times"></i>' +
+            '</button>' +
+            '</td>'+
         '</tr>'
     )[0];
 }
@@ -149,22 +153,25 @@ function createOneEveRow(doc, value, masterJson) {
     setDatePickerLisntener($(block).find('.time .mdl-textfield__input'))
         .on('change', function (event, date) {
             console.log(event, date);
-            var tr = $(this).parents('tr');
+            var tr = $(event.target).parents('tr');
             var index = tr.index();
-            var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
+            var dataOrder = $(event.target).parents(".card-wrapper-i").attr('data-order');
             var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
             var time = moment($(event.target).val(), 'H:mm');
             jsonC["eventList"][index]["cal"]["hourOfDay"] = time.hour();
             jsonC["eventList"][index]["cal"]["minute"] = time.minute();
+            jsonC['eventList'] = sortByTime(jsonC['eventList']);
             masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
             tr.attr('data-order', time.format('Hmm'));
             console.log(masterJson);
 
-            //todo 動かないぞタコ！
-            mixitup($(doc).find('table'), {
+            mixitup($(doc).find('tbody')[0], {
                 load: {
                     sort: 'order:asc'
+                },
+                behavior: {
+                    liveSort: true
                 },
                 animation: {
                     duration: 250,
@@ -173,7 +180,7 @@ function createOneEveRow(doc, value, masterJson) {
                     effects: "fade translateZ(-100px)"
                 },
                 selectors: {
-                    target: $(doc).find('.card_block tbody tr'),
+                    target: 'tbody tr',
                     control: '.mixitup-control'//@see https://goo.gl/QpW5BR
                 }
             }).sort("order:asc").then(function (value2) {
@@ -232,11 +239,10 @@ function onHoverForPopover(e) {
         $(e.target).popover('show');
 }
 
+
 function format0to00(value) {
-    if(value === "0" || value === 0)
-        return "00";
-    else
-        return value;
+    return value.toString().length === 1 ?
+        '0'+value : value;
 }
 
 function setDataOrderToEveList(block, hourOfDay, min) {
@@ -270,6 +276,12 @@ function createOneRangeRow(doc, count, value, masterJson) {
     setDataOrderToRangeList($(blocks[1]), count);
     blocks[2] = createHtmlAs1Eve();
 
+    //ラベルをセット
+    var label0 = $(blocks[0]).find('.time_input').parent().find('label');
+    setLabelOfOffset(label0, value['start']['offset']);
+    var level2 = $(blocks[2]).find('.time_input').parent().find('label');
+    setLabelOfOffset(level2, value['end']['offset']);
+
     setDataOrderToRangeList($(blocks[2]), count);
     $(blocks[2]).find('.remove-btn').hide();
     $(blocks[2]).addClass('range-post');
@@ -278,13 +290,14 @@ function createOneRangeRow(doc, count, value, masterJson) {
     var endInputs = $(blocks[2]).find(".mdl-textfield__input");
     setEveInputValues(endInputs, value["end"]);
 
+    //●をカラーリング
     $(blocks[0]).find('.circle').css('background-color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
     $(blocks[2]).find('.circle').css('background-color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
     $(blocks[1]).find('.icon_down').css('color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
 
     //リスナをセット
-    setRangeDatePicker($(blocks[0]));
-    setRangeDatePicker($(blocks[2]));
+    setRangeDatePicker($(blocks[0]), masterJson, value['start']['offset']);
+    setRangeDatePicker($(blocks[2]), masterJson, value['end']['offset']);
 
     $(blocks[1]).find('.remove-btn').on('click', function (ev) {
         var tr = $(this).closest('tr');
@@ -298,6 +311,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
         tr.prev().remove();
         tr.next().remove();
         tr.remove();
+        //todo ここでdatePickerも削除しないとバグるよね
     });
 
 
@@ -391,6 +405,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
     });
     //endregion
 
+    //色指定のポップオーバー
     for(var i=0; i<blocks.length; i++){
         // var element = blocks[i].cloneNode(true);
         //おわかりかと思うが、このロジックが正常に動作するためには、{#range-add}を先にdomに追加しないといけない
@@ -466,16 +481,43 @@ function createOneRangeRow(doc, count, value, masterJson) {
                 });
 
             }).on('hidden.bs.popover', function (e) {
-            console.log('onHidden');
-            $(window).off('mouseenter mouseleave');
+                console.log('onHidden');
+                $(window).off('mouseenter mouseleave');
         });
 
         $(blocks[i]).insertBefore($(doc).find('.range-add'));
     }
 }
 
+function getRangeIndex(target) {
+    var tr = target.parents('tr');
+    var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
+    return Math.floor(index/3);
+}
+
+function setLabelOfOffset(label, offset) {
+    switch (offset){
+        case -1:
+            label.html('前日');
+            break;
+        case 0:
+            label.html('');
+            break;
+        case 1:
+            label.html('翌日');
+            break;
+    }
+}
+
 function setDataOrderToRangeList(block, rangeNum) {
     block.attr('data-order', rangeNum + 10000);
+}
+
+function showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, errMsg) {
+    errSpanStart.html(errMsg);
+    startInput.parent().addClass('is-invalid');
+    errSpanEnd.html(errMsg);
+    endInput.parent().addClass('is-invalid');
 }
 
 function craeteHtmlAs1Row() {
@@ -503,12 +545,12 @@ function createHtmlAs2() {
         '</div>');
 }
 
-function setRangeDatePicker(block) {
+function setRangeDatePicker(block, masterJson, offset) {
     var input = block.find('input').eq(0);
     setDatePickerLisntener(input)
         .on('change', function (event, date) {
-            var index = $(this).parents('tr').index() - $(this).parents('tr').find('.eve-add').index()-1;
-            var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
+            var index = $(event.target).parents('tr').index() - $(event.target).parents('tbody').find('.eve-add').index()-1;
+            var dataOrder = $(event.target).closest(".card-wrapper-i").attr('data-order');
             var dataNum = Math.floor(index/3);
             console.log(dataNum, index%3);
             var startOrEnd;
@@ -532,10 +574,23 @@ function setRangeDatePicker(block) {
             if(n === 2)
                 n = 1;
 
-            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["offset"]
-                = $('.dtp').eq(jsonC["eventList"].length + dataNum*2 +n)
+            var offset = $('.dtp').eq(jsonC["eventList"].length + dataNum*2 +n)
                 .find('.date-picker-radios input:checked')
                 .parent().index() -1;
+
+            var label = $(event.target).parent().find('label');
+            switch (offset){
+                case -1:
+                    label.html('前日');
+                    break;
+                case 0:
+                    label.html('');
+                    break;
+                case 1:
+                    label.html('翌日');
+                    break;
+            }
+            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["offset"] = offset;
             masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
             console.log(masterJson);
         });
@@ -544,6 +599,7 @@ function setRangeDatePicker(block) {
 
     // datePickerを整備
     var radios = createHtmlRadio();
+    radios.find('input').eq(offset+1).attr('checked', 'checked');
     var row = datePickers.eq(datePickers.length-1);
     radios.insertBefore(row);
     row.hide();
@@ -555,7 +611,7 @@ function createHtmlRadio() {
             '<tr>'+
                 '<td>'+
                     '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-1">'+
-                        '<input type="radio" id="option-1" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1" checked="checked">'+
+                        '<input type="radio" id="option-1" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
                         '<span class="mdl-radio__label mdl-pre-upgrade">前日</span>'+
                     '</label>'+
                 '</td>'+
@@ -738,3 +794,35 @@ function createNewData(dataType) {
     return data;
 }
 //endregion
+
+/**
+ * variable 'hm' is key of one EventData to sort, but it may duplicate.
+ * so variable 'map[hm]' is typeof array. it corresponds to sort.
+ */
+function sortByTime(eventList) {
+    var map = {};
+
+    eventList.forEach(function (value) {
+        var hour = value.cal.hourOfDay;
+        var min = value.cal.minute;
+        var hm = hour.toString() + format0to00(min);
+        if(!map[hm])
+            map[hm] = [];
+
+        map[hm].push(value);
+    });
+
+    var sortedKeys = Object.keys(map).sort(function (a, b) {
+        return a-b;
+    });
+    console.log(map, sortedKeys);
+    var newEveList = [];
+    for(var key in sortedKeys) {
+        if(sortedKeys.hasOwnProperty(key)){
+            map[sortedKeys[key]].forEach(function (value) {
+                newEveList.push(value);
+            });
+        }
+    }
+    return newEveList;
+}
