@@ -8,9 +8,9 @@ body {
     color: #f4cab1;
 }
 
-.mdl-layout__header{
-    background-color: white;
-    color: #66615b;
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
 }
 
 .mdl-layout__header .mdl-layout__drawer-button {
@@ -64,10 +64,6 @@ body {
 }
 
 /*-------------------ヘッダタブ------------------*/
-.mdl-layout__header {
-    background: #524b4b;
-    color: white;
-}
 
 #tab-row {
     background-color: white;
