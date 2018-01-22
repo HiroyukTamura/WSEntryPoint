@@ -131,6 +131,7 @@ function onGetTamplateSnap(snapshot) {
         initModal();
         setOnSaveFabClickListener();
         initTabLayout();
+        setOnScrollListener();
         $('#progress').hide();
         $('#post_load').show();
         isFirstLoad = false;
@@ -927,5 +928,13 @@ function connectFbAsync() {
         } else {
             progress.hide();
         }
+    });
+}
+
+function setOnScrollListener() {
+    $('.mdl-layout__content').scroll(function() {
+        var scrollTop = $(this).scrollTop();
+        saveBtn.css('top', scrollTop + 'px');
+        console.log('scrolled');
     });
 }

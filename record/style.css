@@ -4,6 +4,10 @@ body {
 }
 
 /*************nav bar***************/
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
+}
+
 .mdl-layout__header{
     background-color: white;
     color: #66615b;
