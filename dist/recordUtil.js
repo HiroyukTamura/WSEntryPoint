@@ -183,11 +183,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
                     target: 'tbody tr',
                     control: '.mixitup-control'//@see https://goo.gl/QpW5BR
                 }
-            }).sort("order:asc").then(function (value2) {
-
-            }).catch(function (reason) {
-                console.log(reason);
-            });
+            }).sort("order:asc");
         });
 
     //項目削除イベント
@@ -214,6 +210,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
 
         var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
         var index = $(e.target).parents('tr').index();
+        console.log('index:', index);
         var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
         for(var key in jsonC['eventList']) {
             if(!jsonC['eventList'].hasOwnProperty(key) || key == index)
@@ -221,14 +218,14 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
 
             if (jsonC['eventList'][key]['name'] === $(e.target).val()) {
                 errSpan.html(ERR_MSG_DUPLICATE_VAL);
-                $(e.target).parent().addClass('is-invalid');
+                $(e.target).parent().addClass('is-invalid').addClass('wrong-val');
                 console.log('こっち');
                 toggleBtn(false);
                 return;
             }
         }
 
-        $(e.target).parent().removeClass('is-invalid');
+        $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
         toggleBtn(true);
         jsonC['eventList'][index]['name'] = $(e.target).val();
         masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
@@ -302,6 +299,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
     setRangeDatePicker($(blocks[0]), masterJson, value['start']['offset']);
     setRangeDatePicker($(blocks[2]), masterJson, value['end']['offset']);
 
+    //削除ボタンイベント
     $(blocks[1]).find('.remove-btn').on('click', function (ev) {
         var tr = $(this).closest('tr');
         var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
@@ -363,9 +361,11 @@ function createOneRangeRow(doc, count, value, masterJson) {
         }
 
         $(e.target).parent().removeClass('is-invalid');
+        $(e.target).parent().removeClass('wrong-val');
         endInput.parent().removeClass('is-invalid');
+        endInput.parent().removeClass('wrong-val');
         toggleBtn(true);
-        console.log('うむ');
+        console.log('うむむ');
         jsonC['eventList'][index]['name'] = $(e.target).val();
         masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
     });
@@ -409,9 +409,11 @@ function createOneRangeRow(doc, count, value, masterJson) {
         }
 
         $(e.target).parent().removeClass('is-invalid');
-        startInput.parent().removeClass('is-invalid');
+        $(e.target).parent().removeClass('wrong-val');
+        startInput.parent().removeClass('is-invalid')
+        startInput.parent().removeClass('wrong-val');
         toggleBtn(true);
-        console.log('うむ');
+        console.log('うむふぁｓｆだｆｄ');
     });
     //endregion
 
@@ -525,9 +527,9 @@ function setDataOrderToRangeList(block, rangeNum) {
 
 function showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, errMsg) {
     errSpanStart.html(errMsg);
-    startInput.parent().addClass('is-invalid');
+    startInput.parent().addClass('is-invalid').addClass('wrong-val');
     errSpanEnd.html(errMsg);
-    endInput.parent().addClass('is-invalid');
+    endInput.parent().addClass('is-invalid').addClass('wrong-val');
 }
 
 function craeteHtmlAs1Row() {
@@ -663,11 +665,11 @@ function operateAs4(doc, childSnap, masterJson) {
     input.keyup(function (e) {
         if (input.val().indexOf(DELIMITER) !== -1){
             errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(DELIMITER));
-            input.parent().addClass('is-invalid');
+            input.parent().addClass('is-invalid').addClass('wrong-val');
             toggleBtn(false);
 
         } else {
-            $(e.target).parent().removeClass('is-invalid');
+            $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
             var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
             masterJson[currentDataOrder]['data'] = $(e.target).val();
             console.log(masterJson);
@@ -856,9 +858,10 @@ function sortByTime(eventList) {
 }
 
 function toggleBtn(isShow) {
-    if (isShow && $('.is-invalid').length === 0) {
+    if (isShow && $('.wrong-val').length === 0) {
         $('#save').fadeIn();
     } else {
         $('#save').fadeOut();
+        console.log($('.wrong-val'));
     }
 }

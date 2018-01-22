@@ -144,12 +144,12 @@ function avoidNullValue(photoUrl, onErrVal) {
 function isValidAboutNullAndDelimiter(input, errSpan) {
     if (!input.val()){
         errSpan.html(ERR_MSG_NULL_VAL);
-        input.parent().addClass('is-invalid');
+        input.parent().addClass('is-invalid').addClass('wrong-val');
         return false;
     }
     if (input.val().indexOf(DELIMITER) !== -1){
         errSpan.html(ERR_MSG_CONTAIN_BAD_CHAR.join(DELIMITER));
-        input.parent().addClass('is-invalid');
+        input.parent().addClass('is-invalid').addClass('wrong-val');
         return false;
     }
     return true;

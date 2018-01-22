@@ -207,7 +207,7 @@ function initModal() {
         input.removeAttr("value");
         input.val('');
         document.getElementById('checkbox-modal-label').MaterialCheckbox.uncheck();
-        input.parent().removeClass('is-dirty').removeClass('is-invalid');
+        input.parent().removeClass('is-dirty').removeClass('is-invalid').removeClass('wrong-val');
     });
 
     $('.modal-footer-btn').eq(1).click(function (ev) {
@@ -225,12 +225,12 @@ function initModal() {
 
             if(title === val[i].split(DELIMITER)[0]){
                 errorSpan.html(ERR_MSG_DUPLICATE_VAL);
-                input.parent().addClass('is-invalid');
+                input.parent().addClass('is-invalid').addClass('wrong-val');
                 return;
             }
         }
 
-        input.parent().removeClass('is-invalid');
+        input.parent().removeClass('is-invalid').removeClass('wrong-val');
 
         if (isModalForNewTag) {
             // console.log('てってれー', modalDataNum, clickedColor);
@@ -559,7 +559,7 @@ function createParamsLi(splited, dataOrder, i) {
         var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
         var isValid = isValidAboutNullAndDelimiter($(this), errSpan);
         if(isValid){
-            $(e.target).parent().removeClass('is-invalid');
+            $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
         }
         masterJson[currentDataOrder]["data"][index] = $(this).val();//todo masterJsonに書き込んでいることに注意してください
     });
