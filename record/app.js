@@ -402,8 +402,7 @@ function operateAs3(doc, childSnap, dataNum) {
 
     for (var i=0; i<values.length; i++){
         var splited = values[i].split(DELIMITER);
-        var html = createHtmlAs3(dataNum + "_" + i);
-        ul.append(createParamsLi(splited, dataNum, i, html));
+        ul.append(createParamsLi(splited, dataNum, i));
     }
 
     var addLiBtn =initAddLiBtn();

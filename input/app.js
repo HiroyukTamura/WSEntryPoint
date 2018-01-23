@@ -501,8 +501,7 @@ function operateAs3(doc, childSnap, dataNum) {
 
     for (var i=0; i<values.length; i++){
         var splited = values[i].split(DELIMITER);
-        var html = createHtmlAs3(dataNum + "_" + i);
-        ul.append(createParamsLi(splited, dataNum, i, html));
+        ul.append(createParamsLi(splited, dataNum, i));
     }
 
     // $(doc).addClass('align-center');
@@ -523,12 +522,12 @@ function operateAs3(doc, childSnap, dataNum) {
     });
 }
 
-function createParamsLi(splited, dataOrder, i, clone) {
+function createParamsLi(splited, dataOrder, i) {
     // var splited = values[i].split(delimiter);
     console.log(splited);
     var witch = splited[0];
     // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
-    // var clone = createHtmlAs3(dataOrder + "_" + i);
+    var clone = createHtmlAs3(dataOrder + "_" + i);
     var paramsTitle = clone.find(".params_title");
     paramsTitle.attr("value", splited[1]);
     var errSpan = clone.find(".mdl-textfield__error");
@@ -692,6 +691,40 @@ function createParamsLi(splited, dataOrder, i, clone) {
 
     return clone;
 }
+
+function createHtmlAs3(id) {
+    var checkId = "checkId" + id;
+    var inputId = "inputId" + id;
+    return $(
+        '<li class="mdl-list__item mdl-pre-upgrade">'+
+
+            '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                '<form action="#">' +
+                    '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
+                        '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
+                        '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+inputId+'"></label>' +
+                        '<span class="mdl-textfield__error mdl-pre-upgrade">'+ ERR_MSG_NULL_VAL +'</span>'+
+                    '</div>' +
+                '</form>' +
+            '</span>'+
+
+            '<span class="mdl-list__item-secondary-action params_check mdl-pre-upgrade">'+
+                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + checkId +'">'+
+                    '<input type="checkbox" id="' + checkId + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
+                '</label>'+
+            '</span>'+
+
+            '<p class="slider_wrapper params_slider">'+
+                '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="popover">'+
+            '</p>'+
+
+            '<button class="mdl-button mdl-js-button mdl-button--icon li-rm-btn mdl-pre-upgrade" data-toggle="tooltip" data-placement="top" title="項目を削除">' +
+                '<i class="fas fa-times"></i>' +
+            '</button>'+
+        '</li>'
+    );
+}
+
 //endregion
 
 
