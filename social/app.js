@@ -18,6 +18,7 @@ var defaultDatabase;
 var user;
 var fbCoumpleteCount = 0;
 var userDataJson;
+var currentPwVal;
 
 window.onload = function (ev) {
     defaultApp = firebase.initializeApp(CONFIG);
@@ -347,7 +348,39 @@ function setOnClickListeners() {
                 console.log(reason);
                 showOpeErrNotification(defaultDatabase);
             });
-        } else if(currentDialogShown === 'change-pw') {
+        } else if(currentDialogShown === 'change-pw'  && this.returnValue) {
+            var newPw = this.returnValue;
+            console.log('newPw', this.returnValue);
+            var currentUser = firebase.auth().currentUser;
+
+            if(user.uid !== currentUser.uid){
+                //別のユーザがログインしているようだ
+                showNotification('処理に失敗しました', 'danger');
+                return;
+            }
+
+            //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
+            var credential = firebase.auth.EmailAuthProvider.credential(
+                currentUser.email,
+                currentPwVal
+            );
+
+            currentUser.reauthenticateWithCredential(credential).then(function() {
+                user.updatePassword(newPw).then(function() {
+
+                    showNotification('パスワードを変更しました', 'success');
+
+                }).catch(function(error) {
+                    console.log(error);
+                    showOpeErrNotification(defaultDatabase);
+                });
+            }).catch(function(error) {
+                console.log(error);
+                showOpeErrNotification(defaultDatabase);
+            });
+            currentPwVal = null;//現在のPwを代入してある変数は即刻削除
+
+        } else if(currentDialogShown === 'change-pw'  && !this.returnValue) {
             pwOld.val('').parent().removeClass('is-invalid');
             pwNew.val('').parent().removeClass('is-invalid');
         }
@@ -388,7 +421,7 @@ function setOnClickListeners() {
                 var joinedVal = checked.join(DELIMITER);
 
                 dialog.close(joinedVal);
-                break;
+                return;
 
             case 'change-pw':
                 console.log('pw変更でOKおしたよ！');
@@ -399,19 +432,20 @@ function setOnClickListeners() {
                 }
 
                 var isValid = true;
-                if (!pwOld.val().length < 6) {
+                if (pwOld.val().length < 6) {
                     pwOld.parent().addClass('is-invalid');
                     isValid = false;
                 }
-                if (!pwOld.val().length < 6) {
+                if (pwOld.val().length < 6) {
                     pwNew.parent().addClass('is-invalid');
                     isValid = false
                 }
 
-                if(!isValid)
-                    return;
-
-                break;
+                if(isValid){
+                    currentPwVal = pwOld.val();
+                    dialog.close(pwNew.val());
+                }
+                return;
         }
 
         dialog.close();
