@@ -713,6 +713,36 @@ function createAddLiBtn() {
     );
 }
 
+function onKeyUpParamsTitle(masterJson, input, errSpan) {
+    var index = input.closest("li").index();
+    var currentDataOrder = input.parents('.card-wrapper-i').attr('data-order');
+    var isValid = isValidAboutNullAndDelimiter(input, errSpan);
+    if(!isValid){
+        toggleBtn(false);
+        return;
+    }
+
+    for(var value in masterJson[currentDataOrder]['data']) {
+        if(masterJson[currentDataOrder]['data'].hasOwnProperty(value)) {
+            var val = masterJson[currentDataOrder]['data'][value].split(DELIMITER)[1];
+            if(input.val() === val){
+                errSpan.html(ERR_MSG_DUPLICATE_VAL);
+                input.parent().addClass('is-invalid').addClass('wrong-val');
+                toggleBtn(false);
+                console.log('こっち');
+                return;
+            }
+        }
+    }
+
+    input.parent().removeClass('is-invalid').removeClass('wrong-val');
+    toggleBtn(true);
+    var splited = masterJson[currentDataOrder]["data"][index].split(DELIMITER);
+    splited[1] = input.val();
+    masterJson[currentDataOrder]["data"][index] = splited.join(DELIMITER);
+    console.log(masterJson);
+}
+
 ////////////////////region 新規イベントデータ作成
 function createNewTimeEveData() {
     var today = moment();

@@ -533,27 +533,7 @@ function createParamsLi(splited, dataOrder, i) {
     var errSpan = clone.find(".mdl-textfield__error");
 
     paramsTitle.keyup(function (e) {
-        var index = $(this).closest("li").index();
-        var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
-        var isValid = isValidAboutNullAndDelimiter($(this), errSpan);
-        if(!isValid){
-            toggleBtn(false);
-            return;
-        }
-
-        for(var value in masterJson[dataOrder]['data']) {
-            if(masterJson[dataOrder]['data'].hasOwnProperty(value)) {
-                var val = value.split(DELIMITER)[1];
-                if($(this).val() === val){
-                    errSpan.html(ERR_MSG_DUPLICATE_VAL);
-                    toggleBtn(false);
-                    return;
-                }
-            }
-        }
-
-        $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
-        masterJson[currentDataOrder]["data"][index] = $(this).val();
+        onKeyUpParamsTitle(masterJson, $(e.target), errSpan);
     });
 
     clone.find('.li-rm-btn').on('click', function (e) {
@@ -697,6 +677,8 @@ function createHtmlAs3(id) {
     var inputId = "inputId" + id;
     return $(
         '<li class="mdl-list__item mdl-pre-upgrade">'+
+
+            '<i class="fas fa-bars drag_btn_i"></i>'+
 
             '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                 '<form action="#">' +

@@ -423,13 +423,7 @@ function createParamsLi(splited, dataOrder, i) {
     var errSpan = clone.find(".mdl-textfield__error");
 
     paramsTitle.keyup(function (e) {
-        var index = $(this).closest("li").index();
-        var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
-        var isValid = isValidAboutNullAndDelimiter($(this), errSpan);
-        if(isValid){
-            $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
-        }
-        masterJson[currentDataOrder]["data"][index] = $(this).val();//todo masterJsonに書き込んでいることに注意してください
+        onKeyUpParamsTitle(masterJson, $(e.target), errSpan);
     });
 
     clone.find('.li-rm-btn').on('click', function (e) {
