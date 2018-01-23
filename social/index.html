@@ -285,20 +285,20 @@
                                                 <span class="mdl-list__item-primary-content">
                                                     <!--<i class="material-icons mdl-list__item-icon">email</i>-->
                                                     <!--<span id="user-email" class="cursor-text"></span>-->
-                                                    <span class="mdl-textfield mdl-js-textfield">
+                                                    <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                                         <input class="mdl-textfield__input" type="text" id="my-name" readonly>
                                                         <label class="mdl-textfield__label" for="my-name"></label>
-                                                        <span class="mdl-textfield__error">Input is not a number!</span>
+                                                        <span class="mdl-textfield__error">ユーザ名を入力してください</span>
                                                     </span>
                                                 </span>
                                             </li>
                                             <li class="mdl-list__item" id="user-email-li">
                                                 <span class="mdl-list__item-primary-content">
                                                     <i class="material-icons mdl-list__item-icon">email</i>
-                                                    <span class="mdl-textfield mdl-js-textfield">
+                                                    <span class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                                         <input class="mdl-textfield__input" type="email" id="user-email" readonly>
                                                         <label class="mdl-textfield__label" for="user-email"></label>
-                                                        <span class="mdl-textfield__error">Input is not a number!</span>
+                                                        <span class="mdl-textfield__error">アドレスが不適切です</span>
                                                     </span>
                                                 </span>
                                             </li>
@@ -328,10 +328,10 @@
                                             <!--</li>-->
                                         </ul>
                                     </div>
-                                    <button class="mdl-button mdl-js-button mdl-button--icon" id="edit-prof" title="アイコンを変更">
+                                    <button class="mdl-button mdl-js-button mdl-button--icon" id="edit-prof" title="プロフィールを編集">
                                         <i class="material-icons">edit</i>
                                     </button>
-                                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" id="save-prof">
+                                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" id="save-prof" title="プロフィールを保存">
                                         <i class="material-icons">save</i>
                                     </button>
                                 </div>
@@ -456,6 +456,20 @@
                             </li>
                         </ul>
                     </div>
+                    <div id="re-auth">
+                        <ul class="mdl-list">
+                            <li class="mdl-list__item">
+                                <form action="#">
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <input class="mdl-textfield__input" type="password" id="pw-re-auth">
+                                        <label class="mdl-textfield__label" for="pw-re-auth">パスワード</label>
+                                        <span class="mdl-textfield__error">パスワードは6文字以上で構成してください</span>
+                                    </div>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div id="create-group">
                         <div class="group-icon" title="アイコンを変更">
                             <img src="img/icon.png" alt="group-image" class="rounded-circle">

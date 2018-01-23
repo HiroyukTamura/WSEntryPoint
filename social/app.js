@@ -6,11 +6,13 @@ const progress = $('#progress');
 const createGroupC = $('#create-group');
 const addGroupC = $('#add-group');
 const changePwC =$('#change-pw');
+const reauthC =$('#re-auth');
 const dialog = $('#add-group-dialog')[0];
 const dialogPsBtn = $('#add-group-btn');
 const dialogNgBtn = $('#cancel');
 const pwNew =$('#pw-new');
 const pwOld =$('#pw-old');
+const inputReAuth = $('#pw-re-auth');
 var initialErr = false;
 var currentDialogShown;
 var defaultApp;
@@ -224,20 +226,25 @@ function onGetGroupNodeData(snapshot) {
     var userName = avoidNullValue(snapshot.child('displayName').val(), "ユーザ名未設定");
 
     //プロフィール欄を表示
-    $('#my-name').attr('value', userName);
+    var nameInput = $('#my-name');
+    var mailInput = $('#user-email');
+    nameInput.attr('value', userName);
 
     var userEmail = avoidNullValue(snapshot.child('email').val(), "アドレス未設定");
-    $('#user-email').attr('value', userEmail);
+    mailInput.attr('value', userEmail);
 
     var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
     $('#profile').find('img').attr("src", photoUrl);
 
     var rightCol = $('#right-col');
     var imgDot = $('#my-img-dot');
-    var dummyPw =$('#user-pw-old .mdl-list__item-primary-content span');
-    var pwBtn =$('#user-pw-old .mdl-button');
+    var dummyPw = $('#user-pw-old .mdl-list__item-primary-content span');
+    var pwBtn = $('#user-pw-old .mdl-button');
+    var myImg = $('#my-img img');
+    var editProfBtn = $('#edit-prof');
+    var saveBtn =$('#save-prof');
     // var oldInput = $('#user-pw-old input');
-    $('#edit-prof').on('click', function (e) {
+    editProfBtn.on('click', function (e) {
         $('#post-prof-inner').fadeOut(function (e2) {
             console.log('clicked');
             rightCol.find('.mdl-textfield__input')
@@ -246,20 +253,26 @@ function onGetGroupNodeData(snapshot) {
             rightCol.find('label').show();
             // oldInput.attr('value', '');
             imgDot.css('display', 'flex');
-            $(e.target).html('<i class="material-icons mdl-pre-upgrade">save</i>')
-                .css('color', '#E57C3E')
-                .css('height', '24px')
-                .attr('title', 'プロフィールを保存');
+            // $(e.target).html('<i class="material-icons mdl-pre-upgrade">save</i>')
+            //     .css('color', '#E57C3E')
+            //     .css('height', '24px')
+            //     .attr('title', 'プロフィールを保存');
             dummyPw.hide();
             pwBtn.on('click', function (e) {
                 console.log('clicked');
                 displayDialogContent('change-pw');
             }).show();
-            // $(e.target).hide();
-            // $('#save-prof').show();
-            $(this).css('height', '32px')
-                .fadeIn();
+            editProfBtn.hide();
+            $(this).parent().css('height', '32px');
+            $(this).fadeIn();
+            saveBtn.show();
         });
+    });
+
+    saveBtn.on('click', function (e) {
+        e.preventDefault();
+        displayDialogContent('re-auth');
+        return false;
     });
 }
 
@@ -348,41 +361,101 @@ function setOnClickListeners() {
                 console.log(reason);
                 showOpeErrNotification(defaultDatabase);
             });
-        } else if(currentDialogShown === 'change-pw'  && this.returnValue) {
-            var newPw = this.returnValue;
-            console.log('newPw', this.returnValue);
-            var currentUser = firebase.auth().currentUser;
+        } else if(currentDialogShown === 'change-pw') {
 
-            if(user.uid !== currentUser.uid){
-                //別のユーザがログインしているようだ
-                showNotification('処理に失敗しました', 'danger');
-                return;
+            if (this.returnValue) {
+                var newPw = this.returnValue;
+                console.log('newPw', this.returnValue);
+                var currentUser = firebase.auth().currentUser;
+
+                if(user.uid !== currentUser.uid){
+                    //別のユーザがログインしているようだ
+                    showNotification('処理に失敗しました', 'danger');
+                } else {
+
+                    //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
+                    var credential = firebase.auth.EmailAuthProvider.credential(
+                        currentUser.email,
+                        currentPwVal
+                    );
+
+                    currentUser.reauthenticateWithCredential(credential).then(function() {
+                        user.updatePassword(newPw).then(function() {
+
+                            showNotification('パスワードを変更しました', 'success');
+
+                        }).catch(function(error) {
+                            console.log(error);
+                            showOpeErrNotification(defaultDatabase);
+                        });
+                    }).catch(function(error) {
+                        console.log(error);
+                        showOpeErrNotification(defaultDatabase);
+                    });
+                }
+
+                currentPwVal = null;//現在のPwを代入してある変数は即刻削除
             }
 
-            //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
-            var credential = firebase.auth.EmailAuthProvider.credential(
-                currentUser.email,
-                currentPwVal
-            );
+            pwOld.val('').parent().removeClass('is-invalid');
+            pwNew.val('').parent().removeClass('is-invalid');
 
-            currentUser.reauthenticateWithCredential(credential).then(function() {
-                user.updatePassword(newPw).then(function() {
+        } else if(currentDialogShown === 're-auth' && this.returnValue) {
 
-                    showNotification('パスワードを変更しました', 'success');
+            if (this.returnValue) {
+
+                var currentUserE = firebase.auth().currentUser;
+
+                if(user.uid !== currentUserE.uid){
+                    //別のユーザがログインしているようだ
+                    showNotification('処理に失敗しました', 'danger');
+                    return;
+                }
+
+                if (!nameInput.val())
+                    showNotification('warning', 'ユーザ名を入力してください');
+                if (!mailInput.val())
+                    showNotification('warning', 'アドレスを入力してください');
+                if(!nameInput.val() || !mailInput.val())
+                    return;
+
+                var photoUrl = myImg.attr('src');
+                var objToUpdate = {};
+                // if(nameInput.val() !== currentUserE.displayName)
+                objToUpdate['displayName'] = nameInput.val();
+                // if(mailInput.val() !== user.email)
+                objToUpdate['email'] = mailInput.val();
+                // if(photoUrl !== currentUserE.photoURL)
+                objToUpdate['photoURL'] = photoUrl;
+
+                //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
+                var credentialE = firebase.auth.EmailAuthProvider.credential(
+                    currentUserE.email,
+                    currentPwVal
+                );
+
+                currentUserE.reauthenticateWithCredential(credentialE).then(function() {
+
+                    currentUserE.updateProfile(objToUpdate).then(function() {
+
+                        showNotification('プロフィールを変更しました', 'success');
+
+                    }).catch(function(error) {
+                        console.log(error);
+                        showOpeErrNotification(defaultDatabase);
+                    });
 
                 }).catch(function(error) {
                     console.log(error);
                     showOpeErrNotification(defaultDatabase);
                 });
-            }).catch(function(error) {
-                console.log(error);
-                showOpeErrNotification(defaultDatabase);
-            });
-            currentPwVal = null;//現在のPwを代入してある変数は即刻削除
+            }
 
-        } else if(currentDialogShown === 'change-pw'  && !this.returnValue) {
-            pwOld.val('').parent().removeClass('is-invalid');
-            pwNew.val('').parent().removeClass('is-invalid');
+            inputReAuth.val('').parent().removeClass('is-invalid');
+
+        } else if(currentDialogShown === 're-auth' && !this.returnValue) {
+
+            console.log('re-auth', 'キャンセルされた');
         }
     });
 
@@ -446,6 +519,17 @@ function setOnClickListeners() {
                     dialog.close(pwNew.val());
                 }
                 return;
+
+            case 're-auth':
+                if(!inputReAuth.val() || inputReAuth.val().length < 6) {
+                    if(!reauthC.find('.is-invalid').length)
+                        inputReAuth.parent().addClass('is-invalid');
+
+                    return;
+                }
+
+                dialog.close(inputReAuth.val());
+                return;
         }
 
         dialog.close();
@@ -458,6 +542,10 @@ function setOnClickListeners() {
     pwNew.keyup(function (e) {
         setPwKeyUpLisntener($(this));
     }).val("");
+
+    inputReAuth.keyup(function (e) {
+        setPwKeyUpLisntener($(this));
+    });
 
 
     const groupNameInput = $('#new-group-name');
@@ -514,6 +602,7 @@ function displayDialogContent(witch) {
             createGroupC.hide();
             changePwC.hide();
             addGroupC.show();
+            reauthC.hide();
             dialogPsBtn.html('参加する');
             dialogNgBtn.html('拒否する');
             break;
@@ -521,6 +610,7 @@ function displayDialogContent(witch) {
             createGroupC.show();
             addGroupC.hide();
             changePwC.hide();
+            reauthC.hide();
             dialogPsBtn.html('グループを作成');
             dialogNgBtn.html('キャンセル');
             break;
@@ -528,7 +618,16 @@ function displayDialogContent(witch) {
             addGroupC.hide();
             createGroupC.hide();
             changePwC.show();
+            reauthC.hide();
             dialogPsBtn.html('変更');
+            dialogNgBtn.html('キャンセル');
+            break;
+        case 're-auth':
+            addGroupC.hide();
+            createGroupC.hide();
+            changePwC.hide();
+            reauthC.show();
+            dialogPsBtn.html('OK');
             dialogNgBtn.html('キャンセル');
             break;
     }
