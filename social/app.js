@@ -5,6 +5,7 @@ const postLoad = $('#post_load');
 const progress = $('#progress');
 const createGroupC = $('#create-group');
 const addGroupC = $('#add-group');
+const changePwC =$('#change-pw');
 const dialog = $('#add-group-dialog')[0];
 const dialogPsBtn = $('#add-group-btn');
 const dialogNgBtn = $('#cancel');
@@ -227,6 +228,36 @@ function onGetGroupNodeData(snapshot) {
 
     var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
     $('#profile').find('img').attr("src", photoUrl);
+
+    var rightCol = $('#right-col');
+    var imgDot = $('#my-img-dot');
+    var dummyPw =$('#user-pw-old .mdl-list__item-primary-content span');
+    var pwBtn =$('#user-pw-old .mdl-button');
+    // var oldInput = $('#user-pw-old input');
+    $('#edit-prof').on('click', function (e) {
+        $('#post-prof-inner').fadeOut(function (e2) {
+            console.log('clicked');
+            rightCol.find('.mdl-textfield__input')
+                .removeAttr('readonly')
+                .css('border-bottom', '1px solid rgba(0,0,0,.12)');
+            rightCol.find('label').show();
+            // oldInput.attr('value', '');
+            imgDot.css('display', 'flex');
+            $(e.target).html('<i class="material-icons mdl-pre-upgrade">save</i>')
+                .css('color', '#E57C3E')
+                .css('height', '24px')
+                .attr('title', 'プロフィールを保存');
+            dummyPw.hide();
+            pwBtn.on('click', function (e) {
+                console.log('clicked');
+                displayDialogContent('change-pw');
+            }).show();
+            // $(e.target).hide();
+            // $('#save-prof').show();
+            $(this).css('height', '32px')
+                .fadeIn();
+        });
+    });
 }
 
 function onGetFriendSnap(snapshot) {
@@ -326,29 +357,36 @@ function setOnClickListeners() {
         dialog.close();
     });
     dialogPsBtn.on("click", function (ev) {
-        if(currentDialogShown === 'createGroup'){
-            //todo 禁則処理に文字長は含まれていません
-            if (!isValidAboutNullAndDelimiter(groupNameInput, errSpan))
-                return false;
-            groupNameInput.parent().removeClass('is-invalid');
 
-            var checked = [];
-            var inputs = $('#friend-list .mdl-checkbox.is-checked input');
-            for(var i=0; i<inputs.length; i++) {
-                var id = inputs.eq(i).attr('id');
-                checked.push(id);
-            }
+        switch (currentDialogShown) {
+            case 'createGroup':
+                //todo 禁則処理に文字長は含まれていません
+                if (!isValidAboutNullAndDelimiter(groupNameInput, errSpan))
+                    return false;
+                groupNameInput.parent().removeClass('is-invalid');
 
-            if (!checked.length) {
-                showNotification(ERR_MSG_GROUP, 'warning');
-                return;
-            }
+                var checked = [];
+                var inputs = $('#friend-list .mdl-checkbox.is-checked input');
+                for(var i=0; i<inputs.length; i++) {
+                    var id = inputs.eq(i).attr('id');
+                    checked.push(id);
+                }
 
-            //配列の先頭にグループ名、その後メンバーのuidを追加していく。
-            checked.push(groupNameInput.val());
-            var joinedVal = checked.join(DELIMITER);
+                if (!checked.length) {
+                    showNotification(ERR_MSG_GROUP, 'warning');
+                    return;
+                }
 
-            dialog.close(joinedVal);
+                //配列の先頭にグループ名、その後メンバーのuidを追加していく。
+                checked.push(groupNameInput.val());
+                var joinedVal = checked.join(DELIMITER);
+
+                dialog.close(joinedVal);
+                break;
+
+            case 'change-pw':
+                console.log('pw変更！');
+                break;
         }
 
         dialog.close();
@@ -397,6 +435,7 @@ function displayDialogContent(witch) {
     switch (witch){
         case 'addGroup':
             createGroupC.hide();
+            changePwC.hide();
             addGroupC.show();
             dialogPsBtn.html('参加する');
             dialogNgBtn.html('拒否する');
@@ -404,7 +443,15 @@ function displayDialogContent(witch) {
         case 'createGroup':
             createGroupC.show();
             addGroupC.hide();
+            changePwC.hide();
             dialogPsBtn.html('グループを作成');
+            dialogNgBtn.html('キャンセル');
+            break;
+        case 'change-pw':
+            addGroupC.hide();
+            createGroupC.hide();
+            changePwC.show();
+            dialogPsBtn.html('変更');
             dialogNgBtn.html('キャンセル');
             break;
     }
