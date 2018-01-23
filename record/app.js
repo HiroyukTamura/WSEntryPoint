@@ -402,53 +402,11 @@ function operateAs3(doc, childSnap, dataNum) {
 
     for (var i=0; i<values.length; i++){
         var splited = values[i].split(DELIMITER);
-        ul.append(createParamsLi(splited, dataNum, i));
+        var html = createHtmlAs3(dataNum + "_" + i);
+        ul.append(createParamsLi(splited, dataNum, i, html));
     }
 
-    var addLiBtn = createAddLiBtn();
-    addLiBtn.find('button')
-        .popover({
-            trigger: 'manual',
-            placement: 'bottom',
-            content:'<div class="param-add-popover">'+
-                        '<button type="button" class="btn btn-secondary add-checkbox">チェックボックス</button>'+
-                        '<button type="button" class="btn btn-secondary add-slider">スライダー</button>'+
-                    '</div>',
-            html: true,
-            container: 'body'
-        })
-        .hover(function (e) {
-            onHoverForPopover(e);
-        })
-        .on('shown.bs.popover', function (e) {
-            console.log(e);
-            var popoverId = $(this).attr('aria-describedby');
-            var poppover = $('#'+popoverId);
-            poppover.find('.add-slider')
-                .on('click', function (e2) {
-                    var splited = ['1', '新しい項目', '3', '5'];
-                    onClickAddParamsLiBtn(splited, e, e2);
-                });
-            poppover.find('.add-checkbox')
-                .on('click', function (e2) {
-                    var splited = ['0', '新しい項目', 'true'];
-                    onClickAddParamsLiBtn(splited, e, e2);
-                });
-            // var popoverId = $(this).attr('aria-describedby');
-            $(window).hover(function (e2) {
-                if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
-                    return false;
-                } else if($(e2.target).parents('.add-li-btn').length || $(e2.target).hasClass('add-li-btn')) {
-                    return false
-                }
-                console.log('hideやね', e2.target);
-                $(e.target).popover('hide');
-            });
-        })
-        .on('hidden.bs.popover', function (e) {
-            console.log(e);
-            $(window).off('mouseenter mouseleave');
-        });
+    var addLiBtn =initAddLiBtn();
 
     // $(doc).addClass('align-center');
     $(doc).append(ul);
@@ -476,14 +434,7 @@ function createParamsLi(splited, dataOrder, i) {
     });
 
     clone.find('.li-rm-btn').on('click', function (e) {
-        e.preventDefault();
-        console.log('clicked');
-        var li = $(this).parents('li').eq(0);
-        var index = li.index();
-        var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
-        masterJson[currentDataOrder]["data"].splice(index, 1);
-        li.remove();//todo アニメーションつけようと思ったけどうまくいかない。
-        console.log(masterJson);
+        onClickLiRmBtn(e, masterJson);
         return false;
     });
 
@@ -861,5 +812,12 @@ function connectFbAsync() {
         } else {
             progress.hide();
         }
+    });
+}
+
+function setOnScrollListener() {
+    $('.mdl-layout__content').scroll(function() {
+        var scrollTop = $(this).scrollTop();
+        saveBtn.css('top', scrollTop + 'px');
     });
 }

@@ -166,24 +166,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
             tr.attr('data-order', time.format('Hmm'));
             console.log(masterJson);
 
-            mixitup($(doc).find('tbody')[0], {
-                load: {
-                    sort: 'order:asc'
-                },
-                behavior: {
-                    liveSort: true
-                },
-                animation: {
-                    duration: 250,
-                    nudge: true,
-                    reverseOut: false,
-                    effects: "fade translateZ(-100px)"
-                },
-                selectors: {
-                    target: 'tbody tr',
-                    control: '.mixitup-control'//@see https://goo.gl/QpW5BR
-                }
-            }).sort("order:asc");
+            sortByMixitUp($(doc));
         });
 
     //項目削除イベント
@@ -443,17 +426,6 @@ function createOneRangeRow(doc, count, value, masterJson) {
                 popover.find('.fa-circle')
                     .on('click', function (e2) {
                         console.log('cicle clicked');
-
-                        //todo ここでは、色をmasterJsonからではなく、domから取って処理に使用している。masterJsonに適宜書き込むかどうかを含めて、一旦考えてからこれからの処理をやってください。
-                        // var index = $(e2.target).parents('.fa-layers').index();
-                        // console.log(index);
-                        // var newColor = getColor(index);
-                        // $(e.target).css('background-color', newColor);
-                        // var dataNum = $(e.target).parents('tr').attr('data-order');
-                        // var trs = $(e.target).parents('tbody')
-                        //     .find('tr[data-order="'+ dataNum +'"]');
-                        // trs.find('.circle').css('background-color', newColor);
-                        // trs.find('.icon_down').css('color', newColor);
 
                         var currentDataOrder = $(e.target).parents('tr').attr('data-order');
                         var index = $(e2.target).parents('.fa-layers').index();
@@ -879,7 +851,11 @@ function onClickAddRowBtn(ele, masterJson, doc) {
 
     console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
 
-    mixitup($(doc).find('tbody')[0], {
+    sortByMixitUp($(doc));
+}
+
+function sortByMixitUp(doc) {
+    mixitup(doc.find('tbody')[0], {
         load: {
             sort: 'order:asc'
         },
@@ -901,10 +877,62 @@ function onClickAddRowBtn(ele, masterJson, doc) {
     setElementAsMdl(doc);
 }
 
-function setOnScrollListener() {
-    $('.mdl-layout__content').scroll(function() {
-        var scrollTop = $(this).scrollTop();
-        saveBtn.css('top', scrollTop + 'px');
-        console.log('scrolled');
-    });
+function initAddLiBtn() {
+    var addLiBtn = createAddLiBtn();
+    addLiBtn.find('button')
+        .popover({
+            trigger: 'manual',
+            placement: 'bottom',
+            content:'<div class="param-add-popover">'+
+                        '<button type="button" class="btn btn-secondary add-checkbox">チェックボックス</button>'+
+                        '<button type="button" class="btn btn-secondary add-slider">スライダー</button>'+
+                    '</div>',
+            html: true,
+            container: 'body',
+            offset: '0 8px'
+        })
+        .hover(function (e) {
+            onHoverForPopover(e);
+        })
+        .on('shown.bs.popover', function (e) {
+            console.log(e);
+            var popoverId = $(this).attr('aria-describedby');
+            var poppover = $('#'+popoverId);
+            poppover.find('.add-slider')
+                .on('click', function (e2) {
+                    var splited = ['1', '新しい項目', '3', '5'];
+                    onClickAddParamsLiBtn(splited, e, e2);
+                });
+            poppover.find('.add-checkbox')
+                .on('click', function (e2) {
+                    var splited = ['0', '新しい項目', 'true'];
+                    onClickAddParamsLiBtn(splited, e, e2);
+                });
+            // var popoverId = $(this).attr('aria-describedby');
+            $(window).hover(function (e2) {
+                if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
+                    return false;
+                } else if($(e2.target).parents('.add-li-btn').length || $(e2.target).hasClass('add-li-btn')) {
+                    return false
+                }
+                console.log('hideやね', e2.target);
+                $(e.target).popover('hide');
+            });
+        })
+        .on('hidden.bs.popover', function (e) {
+            console.log(e);
+            $(window).off('mouseenter mouseleave');
+        });
+    return addLiBtn;
+}
+
+function onClickLiRmBtn(e, masterJson) {
+    e.preventDefault();
+    console.log('clicked');
+    var li = $(this).parents('li').eq(0);
+    var index = li.index();
+    var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+    masterJson[currentDataOrder]["data"].splice(index, 1);
+    li.remove();//todo アニメーションつけようと思ったけどうまくいかない。
+    console.log(masterJson);
 }

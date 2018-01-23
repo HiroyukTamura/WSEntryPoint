@@ -13,6 +13,7 @@ var defaultDatabase;
 const saveBtn = $('#save');
 const progress = $('#progress');
 const postLoad = $('#post_load');
+const fabWrapper = $('#fab-wrapper');
 
 window.onload = function (ev) {
     var defaultApp = firebase.initializeApp(CONFIG);
@@ -68,7 +69,7 @@ function onErrConnectFb() {
 
     initAllTooltips();
     $('#fab-wrapper').hide();
-    $('#save').hide();
+    saveBtn.hide();
 }
 
 
@@ -118,12 +119,7 @@ function onLoginSuccess() {
                     operateAs2(doc, childSnap);
                     break;
                 case 3:
-                    var element = operateAs3(doc, childSnap, i);
-                    if(element){
-                        createElementWithHeader(i).appendChild(element);
-                    } else {
-                        //todo エラー時処理？？
-                    }
+                    operateAs3(doc, childSnap, i);
                     break;
                 case 4:
                     operateAs4(doc, childSnap, masterJson);
@@ -379,270 +375,6 @@ function operateAs1(doc, childSnap) {
     }
 }
 
-////////////////////////region 新規TimeEve/RangeEve作成処理
-// function createOneRangeRow(doc, count, value) {
-//
-//     var blocks = [];
-//     blocks[0] = createHtmlAs1Eve();
-//     setDataOrderToRangeList($(blocks[0]), count);
-//     $(blocks[0]).find('.remove-btn').hide();
-//     $(blocks[0]).addClass('range-pre');
-//     blocks[1] = craeteHtmlAs1Row();
-//     setDataOrderToRangeList($(blocks[1]), count);
-//     blocks[2] = createHtmlAs1Eve();
-//
-//     setDataOrderToRangeList($(blocks[2]), count);
-//     $(blocks[2]).find('.remove-btn').hide();
-//     $(blocks[2]).addClass('range-post');
-//     var startInputs = $(blocks[0]).find(".mdl-textfield__input");
-//     setEveInputValues(startInputs, value["start"]);
-//     var endInputs = $(blocks[2]).find(".mdl-textfield__input");
-//     setEveInputValues(endInputs, value["end"]);
-//
-//     $(blocks[0]).find('.circle').css('background-color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
-//     $(blocks[2]).find('.circle').css('background-color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
-//     $(blocks[1]).find('.icon_down').css('color', colors[value["colorNum"]]).attr('colorNum', value["colorNum"]);
-//
-//     //リスナをセット
-//     setRangeDatePicker($(blocks[0]));
-//     setRangeDatePicker($(blocks[2]));
-//
-//     $(blocks[1]).find('.remove-btn').on('click', function (ev) {
-//         var tr = $(this).closest('tr');
-//         var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
-//         var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
-//         var dataNum = Math.floor(index/3);
-//         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-//         jsonC["rangeList"].splice(dataNum, 1);
-//         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-//
-//         tr.prev().remove();
-//         tr.next().remove();
-//         tr.remove();
-//     });
-//
-//
-//     //region 禁則文字まわり
-//     var startInput = $(blocks[0]).find('.input_eve');
-//     var endInput = $(blocks[2]).find('.input_eve');
-//     var errSpanStart = $(blocks[0]).find('.event_name .mdl-textfield__error');
-//     var errSpanEnd = $(blocks[2]).find('.event_name .mdl-textfield__error');
-//
-//     startInput.keyup(function (e) {
-//         //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
-//         var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanStart);
-//
-//         var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-//         var index = getRangeIndex($(e.target));
-//         var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
-//
-//         if($(e.target).val() === jsonC['rangeList'][index]['end']['name']){
-//             showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_EACH_VAL_SAME);
-//             isValid = false;
-//
-//         } else {
-//             console.log($(e.target).val(), jsonC['rangeList'][index]['end']['name']);
-//
-//             for(var key in jsonC['rangeList']) {
-//                 if(!jsonC['rangeList'].hasOwnProperty(key))
-//                     continue;
-//
-//                 if(key == index)
-//                     continue;
-//
-//                 if (jsonC['rangeList'][key]['start']['name'] === $(e.target).val()
-//                     && jsonC['rangeList'][key]['end']['name'] === endInput.val()) {
-//
-//                     showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_DUPLICATE_VAL);
-//                     isValid = false;
-//                     console.log('こっち');
-//                     break;
-//                 }
-//             }
-//         }
-//
-//         if (isValid){
-//             $(e.target).parent().removeClass('is-invalid');
-//             endInput.parent().removeClass('is-invalid');
-//             console.log('うむ');
-//         }
-//         // jsonC['eventList'][index]['name'] = $(e.target).val();
-//         // masterJson[currentDataOrder]['data']['0'] = JSON.stringify(jsonC);
-//     });
-//
-//
-//     endInput.keyup(function (e) {
-//         //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
-//         var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanEnd);
-//
-//         var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-//         var index = getRangeIndex($(e.target));
-//         var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
-//
-//         if($(e.target).val() === jsonC['rangeList'][index]['start']['name']){
-//             showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_EACH_VAL_SAME);
-//             isValid = false;
-//
-//         } else {
-//             console.log($(e.target).val(), jsonC['rangeList'][index]['start']['name']);
-//
-//             for(var key in jsonC['rangeList']) {
-//                 if(!jsonC['rangeList'].hasOwnProperty(key))
-//                     continue;
-//
-//                 if(key == index)
-//                     continue;
-//
-//                 if (jsonC['rangeList'][key]['start']['name'] === startInput.val()
-//                     && jsonC['rangeList'][key]['end']['name'] === $(e.target).val()) {
-//
-//                     showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, ERR_MSG_DUPLICATE_VAL);
-//                     isValid = false;
-//                     console.log('こっち');
-//                     break;
-//                 }
-//             }
-//         }
-//
-//         if (isValid){
-//             $(e.target).parent().removeClass('is-invalid');
-//             startInput.parent().removeClass('is-invalid');
-//             console.log('うむ');
-//         }
-//     });
-//     //endregion
-//
-//     for(var i=0; i<blocks.length; i++){
-//         // var element = blocks[i].cloneNode(true);
-//         //おわかりかと思うが、このロジックが正常に動作するためには、{#range-add}を先にdomに追加しないといけない
-//         $(blocks[i]).find('.circle,.icon_down')
-//             .popover(TIME_POPOVER_CONFIG)
-//             .hover(function (e) {
-//                     onHoverForPopover(e);
-//                 })
-//             .on('shown.bs.popover', function (e) {
-//                 console.log('onShown');
-//                 // var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
-//                 // var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-//                 var tr = $(this).parents('tr');
-//                 var index = tr.index();
-//                 var colorNum = $(e.target).attr('colorNum');
-//
-//                 var popoverId = $(e.target).attr('aria-describedby');
-//                 var popover = $('#'+popoverId);
-//                 // var rgb = $(this).parents('tr').find('.circle').css('color').substring(4);
-//                 // rgb = rgb.substring(0, rgb.length-1);
-//                 // var colorNum = colors.indexOf(rgbToHex(rgb[0], rgb[1], rgb[2]));
-//                 // console.log(rgbToHex(rgb[0], rgb[1], rgb[2]));
-//                 popover.find('.fa-circle')
-//                     .on('click', function (e2) {
-//                         console.log('cicle clicked');
-//
-//                         //todo ここでは、色をmasterJsonからではなく、domから取って処理に使用している。masterJsonに適宜書き込むかどうかを含めて、一旦考えてからこれからの処理をやってください。
-//                         // var index = $(e2.target).parents('.fa-layers').index();
-//                         // console.log(index);
-//                         // var newColor = getColor(index);
-//                         // $(e.target).css('background-color', newColor);
-//                         // var dataNum = $(e.target).parents('tr').attr('data-order');
-//                         // var trs = $(e.target).parents('tbody')
-//                         //     .find('tr[data-order="'+ dataNum +'"]');
-//                         // trs.find('.circle').css('background-color', newColor);
-//                         // trs.find('.icon_down').css('color', newColor);
-//
-//                         var currentDataOrder = $(e.target).parents('tr').attr('data-order');
-//                         var index = $(e2.target).parents('.fa-layers').index();
-//                         console.log(index);
-//                         var newColor = colors[index];
-//                         $(e.target).css('background-color', newColor);
-//                         var trs = $(e.target)
-//                             .parents('tbody')
-//                             .find('tr[data-order="'+ currentDataOrder +'"]');
-//                         trs.find('.circle').css('background-color', newColor);
-//                         trs.find('.icon_down').css('color', newColor);
-//
-//                         $(e2.target).parents('.circle-popover').find('.fa-check:visible').hide();
-//                         $(e2.target).parents('.fa-layers').find('.fa-check').show();
-//
-//                         var jsonC = JSON.parse(masterJson[currentDataOrder]['data']["0"]);
-//                         jsonC["eventList"][currentDataOrder]['colorNum'] = index.toString();
-//                         masterJson[currentDataOrder]['data']["0"] = JSON.stringify(jsonC);
-//                     });
-//                 var className = '.circle'+ (parseInt(colorNum)+1);
-//                 popover.find(className).parents('.fa-layers').find('.fa-check').show();
-//                     // .eq(jsonC["rangeList"][index]['colorNum'])
-//                     // .find('.fa-check').show();
-//
-//                 $(window).hover(function (e2) {
-//                     var dataOrder = $(e.target).parents(".card-wrapper-i").attr('data-order');
-//                     //混迷を極めるhover判定
-//                     if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')) {
-//                         return false;
-//                     } else if(($(e2.target).hasClass('card') || $(e2.target).parents('tr').index() === index || $(e2.target).parents('tr').index() === index+1)
-//                         &&
-//                         ($(e2.target).parents('.card-wrapper-i[data-order='+ dataOrder +']').length || $(e2.target).attr('data-order') == dataOrder)) {
-//                         return false
-//                     }
-//                     console.log('hideやね', e2.target);
-//                     $(e.target).popover('hide');
-//                 });
-//
-//             }).on('hidden.bs.popover', function (e) {
-//                 console.log('onHidden');
-//                 $(window).off('mouseenter mouseleave');
-//             });
-//
-//         $(blocks[i]).insertBefore($(doc).find('.range-add'));
-//     }
-// }
-//endregion
-
-// function setRangeDatePicker(block) {
-//     var input = block.find('input').eq(0);
-//     setDatePickerLisntener(input)
-//         .on('change', function (event, date) {
-//             var index = $(this).parents('tr').index() - $(this).parents('tr').find('.eve-add').index()-1;
-//             var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
-//             var dataNum = Math.floor(index/3);
-//             console.log(dataNum, index%3);
-//             var startOrEnd;
-//             switch (index%3) {
-//                 case 0:
-//                     startOrEnd = 'start';
-//                     break;
-//                 case 2:
-//                     startOrEnd = 'end';
-//                     break;
-//                 default:
-//                     return;
-//             }
-//
-//             var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
-//             var time = moment($(event.target).val(), 'H:mm');
-//             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["hourOfDay"] = time.hour();
-//             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["minute"] = time.minute();
-//
-//             var n = index%3;
-//             if(n === 2)
-//                 n = 1;
-//
-//             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["offset"]
-//                 = $('.dtp').eq(jsonC["eventList"].length + dataNum*2 +n)
-//                     .find('.date-picker-radios input:checked')
-//                     .parent().index() -1;
-//             masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-//             console.log(masterJson);
-//     });
-//
-//     var datePickers = $('.dtp-actual-meridien');
-//
-//     // datePickerを整備
-//     var radios = createHtmlRadio();
-//     var row = datePickers.eq(datePickers.length-1);
-//     radios.insertBefore(row);
-//     row.hide();
-// }
-//endregion
-
 //region /////////////////operateAs2系列//////////////
 function operateAs2(doc, childSnap) {
     var pool = $('<div>', {
@@ -769,57 +501,13 @@ function operateAs3(doc, childSnap, dataNum) {
 
     for (var i=0; i<values.length; i++){
         var splited = values[i].split(DELIMITER);
-        ul.append(createParamsLi(splited, dataNum, i));
+        var html = createHtmlAs3(dataNum + "_" + i);
+        ul.append(createParamsLi(splited, dataNum, i, html));
     }
-
-    var addLiBtn = createAddLiBtn();
-    addLiBtn.find('button')
-        .popover({
-            trigger: 'manual',
-            placement: 'bottom',
-            content:'<div class="param-add-popover">'+
-                        '<button type="button" class="btn btn-secondary add-checkbox">チェックボックス</button>'+
-                        '<button type="button" class="btn btn-secondary add-slider">スライダー</button>'+
-                    '</div>',
-            html: true,
-            container: 'body'
-        })
-        .hover(function (e) {
-            onHoverForPopover(e);
-        })
-        .on('shown.bs.popover', function (e) {
-            console.log(e);
-            var popoverId = $(this).attr('aria-describedby');
-            var poppover = $('#'+popoverId);
-            poppover.find('.add-slider')
-                .on('click', function (e2) {
-                    var splited = ['1', '新しい項目', '3', '5'];
-                    onClickAddParamsLiBtn(splited, e, e2);
-                });
-            poppover.find('.add-checkbox')
-                .on('click', function (e2) {
-                    var splited = ['0', '新しい項目', 'true'];
-                    onClickAddParamsLiBtn(splited, e, e2);
-                });
-            // var popoverId = $(this).attr('aria-describedby');
-            $(window).hover(function (e2) {
-                if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
-                    return false;
-                } else if($(e2.target).parents('.add-li-btn').length || $(e2.target).hasClass('add-li-btn')) {
-                    return false
-                }
-                console.log('hideやね', e2.target);
-                $(e.target).popover('hide');
-            });
-        })
-        .on('hidden.bs.popover', function (e) {
-            console.log(e);
-            $(window).off('mouseenter mouseleave');
-        });
 
     // $(doc).addClass('align-center');
     $(doc).append(ul);
-    $(doc).append(addLiBtn);
+    $(doc).append(initAddLiBtn());
 
     var oldPos;
     dragula([ul[0]], {
@@ -835,12 +523,12 @@ function operateAs3(doc, childSnap, dataNum) {
     });
 }
 
-function createParamsLi(splited, dataOrder, i) {
+function createParamsLi(splited, dataOrder, i, clone) {
     // var splited = values[i].split(delimiter);
     console.log(splited);
     var witch = splited[0];
     // var clone = document.getElementById("params_dummy").children[0].cloneNode(true);
-    var clone = createHtmlAs3(dataOrder + "_" + i);
+    // var clone = createHtmlAs3(dataOrder + "_" + i);
     var paramsTitle = clone.find(".params_title");
     paramsTitle.attr("value", splited[1]);
     var errSpan = clone.find(".mdl-textfield__error");
@@ -849,10 +537,24 @@ function createParamsLi(splited, dataOrder, i) {
         var index = $(this).closest("li").index();
         var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
         var isValid = isValidAboutNullAndDelimiter($(this), errSpan);
-        if(isValid){
-            $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
+        if(!isValid){
+            toggleBtn(false);
+            return;
         }
-        masterJson[currentDataOrder]["data"][index] = $(this).val();//todo masterJsonに書き込んでいることに注意してください
+
+        for(var value in masterJson[dataOrder]['data']) {
+            if(masterJson[dataOrder]['data'].hasOwnProperty(value)) {
+                var val = value.split(DELIMITER)[1];
+                if($(this).val() === val){
+                    errSpan.html(ERR_MSG_DUPLICATE_VAL);
+                    toggleBtn(false);
+                    return;
+                }
+            }
+        }
+
+        $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
+        masterJson[currentDataOrder]["data"][index] = $(this).val();
     });
 
     clone.find('.li-rm-btn').on('click', function (e) {
@@ -1300,40 +1002,12 @@ function createElementWithHeader(dataNum, dataType) {
     setElementAsMdl(wrapper);
     return wrapper[0];
 }
-
-function createHtmlAs3(id) {
-    var checkId = "checkId" + id;
-    var inputId = "inputId" + id;
-    return $(
-        // '<ul class="demo-list-item mdl-list mdl-pre-upgrade">'+
-            '<li class="mdl-list__item mdl-pre-upgrade">'+
-                '<i class="fas fa-bars drag_btn_i"></i>'+
-
-                '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                    '<form action="#">' +
-                        '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade params_title_w">'+
-                            '<input class="mdl-textfield__input input_eve mdl-pre-upgrade params_title" type="text" id="'+inputId+'">' +
-                            '<label class="mdl-textfield__label mdl-pre-upgrade" for="'+inputId+'"></label>' +
-                            '<span class="mdl-textfield__error mdl-pre-upgrade">'+ ERR_MSG_NULL_VAL +'</span>'+
-                        '</div>' +
-                    '</form>' +
-                '</span>'+
-
-                '<span class="mdl-list__item-secondary-action params_check mdl-pre-upgrade">'+
-                    '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="' + checkId +'">'+
-                        '<input type="checkbox" id="' + checkId + '" class="mdl-checkbox__input mdl-pre-upgrade" />'+
-                    '</label>'+
-                '</span>'+
-
-                '<p class="slider_wrapper params_slider">'+
-                    '<input class="mdl-slider mdl-js-slider mdl-pre-upgrade" type="range" min="0" max="5" value="3" step="1" data-toggle="popover">'+
-                '</p>'+
-
-                '<button class="mdl-button mdl-js-button mdl-button--icon li-rm-btn mdl-pre-upgrade">' +
-                    '<i class="fas fa-times"></i>' +
-                '</button>'+
-            '</li>'
-        // '</ul>'
-    );
-}
 //endregion
+
+function setOnScrollListener() {
+    $('.mdl-layout__content').scroll(function() {
+        var scrollTop = $(this).scrollTop();
+        saveBtn.css('top', scrollTop + 'px');
+        fabWrapper.css('top', scrollTop + 80 + 'px');
+    });
+}
