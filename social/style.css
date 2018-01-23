@@ -334,10 +334,6 @@ body {
     display: none;
 }
 
-#user-email {
-    display: none;
-}
-
 #inner {
     display: inline-block;
 }
@@ -354,6 +350,7 @@ body {
 
 #profile-w {
     height: fit-content;
+    margin: 0 auto;
 }
 
 #profile-w .fa-user {
@@ -374,8 +371,9 @@ body {
     /*text-align: center;*/
 /*}*/
 
-#edit-prof button {
-    color: #E57C3E;
+#edit-prof {
+    margin-top: 28px;
+    color: saddlebrown;
     font-weight: 500;
     font-size: 16px;
 }
@@ -595,4 +593,59 @@ body {
 
 .notification .btns-li {
     padding-bottom: 0;
+}
+
+#my-img{
+    width: 200px;
+    height: 200px;
+    margin-top: 36px;
+}
+
+#my-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#post-prof-inner {
+    display: flex;
+    align-items: flex-start;
+    margin: 16px 56px 16px 56px;
+}
+
+#post-prof #right-col {
+    flex-grow: 2;
+    margin: 0 0 0 64px;
+    color: rgba(0, 0, 0, .87);
+}
+
+#post-prof #right-col .mdl-list__item{
+    padding: 0;
+    margin-right: 16px;
+    margin-left: 16px;
+}
+
+#my-name-li i{
+    width: 36px;
+    height: 36px;
+    font-size: 36px;
+}
+
+#my-name-li .mdl-textfield__input {
+    font-size: 24px;
+}
+
+#user-email-li .mdl-textfield__input {
+    font-size: 18px;
+}
+
+#right-col .mdl-textfield__label {
+    display: none;
+}
+#right-col .mdl-textfield__input {
+    border-bottom: none;
+}
+
+#my-name-li {
+    margin-top: 16px;
 }

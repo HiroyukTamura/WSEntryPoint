@@ -220,10 +220,10 @@ function onGetGroupNodeData(snapshot) {
     var userName = avoidNullValue(snapshot.child('displayName').val(), "ユーザ名未設定");
 
     //プロフィール欄を表示
-    $('#user-name').html(userName);
+    $('#my-name').attr('value', userName);
 
     var userEmail = avoidNullValue(snapshot.child('email').val(), "アドレス未設定");
-    $('#user-email').html(userEmail);
+    $('#user-email').attr('value', userEmail);
 
     var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
     $('#profile').find('img').attr("src", photoUrl);
