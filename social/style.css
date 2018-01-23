@@ -65,7 +65,7 @@ body {
     border: 0;
     border-radius: 10px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
-    padding: 24px 28px 24px 28px;
+    padding: 4px 28px 24px 28px;
     /*max-width: 1200px;*/
     width: fit-content;
 }
@@ -170,7 +170,7 @@ body {
 }
 
 #spacer {
-    margin: 60px auto 0 auto;
+    margin: 100px auto 0 auto;
     max-width: 1000px;
 }
 
@@ -315,13 +315,26 @@ body {
 
 .prof-header {
     padding-top: 0;
-    margin-bottom: 16px;
+    /*margin-bottom: 16px;*/
+}
+
+.prof-header .fa-user {
+    margin-right: 28px;
+}
+
+.prof-header .mdl-list__item-primary-content {
+    padding-right: 28px;
 }
 
 #user-name {
     margin-left: 16px;
     font-size: 20px;
     color: rgba(0,0,0,.87);
+    display: none;
+}
+
+#user-email {
+    display: none;
 }
 
 #inner {
@@ -369,6 +382,10 @@ body {
 
 .cursor-text {
     cursor: text;
+}
+
+#profile-w .mdl-textfield {
+
 }
 
 /*----------modal-------------*/
@@ -517,6 +534,10 @@ body {
     margin: 0 60px;
     /*padding-top: 48px;*/
     height: fit-content;
+}
+
+.notification {
+    display: none;
 }
 
 .notification .mdl-list__item-primary-content {
