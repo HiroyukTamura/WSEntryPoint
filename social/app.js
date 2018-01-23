@@ -9,6 +9,8 @@ const changePwC =$('#change-pw');
 const dialog = $('#add-group-dialog')[0];
 const dialogPsBtn = $('#add-group-btn');
 const dialogNgBtn = $('#cancel');
+const pwNew =$('#pw-new');
+const pwOld =$('#pw-old');
 var initialErr = false;
 var currentDialogShown;
 var defaultApp;
@@ -345,8 +347,12 @@ function setOnClickListeners() {
                 console.log(reason);
                 showOpeErrNotification(defaultDatabase);
             });
+        } else if(currentDialogShown === 'change-pw') {
+            pwOld.val('').parent().removeClass('is-invalid');
+            pwNew.val('').parent().removeClass('is-invalid');
         }
     });
+
     //escキー押下で離脱した場合
     dialog.addEventListener('cancel', function(e) {
         console.log('cancel');
@@ -356,8 +362,8 @@ function setOnClickListeners() {
     dialogNgBtn.on("click", function (ev) {
         dialog.close();
     });
-    dialogPsBtn.on("click", function (ev) {
 
+    dialogPsBtn.on("click", function (ev) {
         switch (currentDialogShown) {
             case 'createGroup':
                 //todo 禁則処理に文字長は含まれていません
@@ -385,12 +391,40 @@ function setOnClickListeners() {
                 break;
 
             case 'change-pw':
-                console.log('pw変更！');
+                console.log('pw変更でOKおしたよ！');
+
+                if(changePwC.find('.is-invalid').length){
+                    console.log('文字長足りず');
+                    return;
+                }
+
+                var isValid = true;
+                if (!pwOld.val().length < 6) {
+                    pwOld.parent().addClass('is-invalid');
+                    isValid = false;
+                }
+                if (!pwOld.val().length < 6) {
+                    pwNew.parent().addClass('is-invalid');
+                    isValid = false
+                }
+
+                if(!isValid)
+                    return;
+
                 break;
         }
 
         dialog.close();
     });
+
+    pwOld.keyup(function (e) {
+        setPwKeyUpLisntener($(this));
+    }).val("");
+
+    pwNew.keyup(function (e) {
+        setPwKeyUpLisntener($(this));
+    }).val("");
+
 
     const groupNameInput = $('#new-group-name');
     const errSpan = groupNameInput.parent().find('.mdl-textfield__error');
@@ -423,6 +457,15 @@ function setOnClickListeners() {
             displayDialogContent('addGroup');
         }
     });
+}
+
+function setPwKeyUpLisntener(input) {
+    var val = input.val();
+    if(!val || val.length <6) {
+        input.parent().addClass('is-invalid');
+    } else {
+        input.parent().removeClass('is-invalid');
+    }
 }
 
 function displayDialogContent(witch) {
