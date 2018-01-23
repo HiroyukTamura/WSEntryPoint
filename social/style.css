@@ -3,13 +3,22 @@
 }
 
 /*************nav bar***************/
-.mdl-layout__header{
-    background-color: white;
-    color: #66615b;
+/*.mdl-layout__header{*/
+    /*background-color: white;*/
+    /*color: #66615b;*/
+/*}*/
+
+/*.mdl-layout__header .mdl-layout__drawer-button {*/
+    /*color: #66615b;*/
+/*}*/
+
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
 }
 
-.mdl-layout__header .mdl-layout__drawer-button {
-    color: #66615b;
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
 }
 
 .mdl-layout__tab{
@@ -61,13 +70,14 @@ body {
 
 /*----------------card---------------*/
 .card {
-    margin: 24px;
+    margin: 0 24px 24px 24px;
     border: 0;
-    border-radius: 10px;
-    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
-    padding: 24px 28px 24px 28px;
+    /*border-radius: 10px;*/
+    /*box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);*/
+    padding: 0 28px 24px 28px;
     /*max-width: 1200px;*/
     width: fit-content;
+    background: transparent;
 }
 
 .average{
@@ -92,7 +102,12 @@ body {
 .group-w-title-w {
     /*margin: 32px 0 0 0;*/
     padding: 0 40px;
+    display: none;
 }
+
+/*#user-w-w .group-w-title-w {*/
+    /*display: none;*/
+/*}*/
 
 .group-w-title-w h1 {
     color: #757575;
@@ -183,10 +198,6 @@ body {
 }
 
 /*---------------ユーザ-----------------*/
-
-/*#user-w-w .group-w-title-w h1{*/
-    /**/
-/*}*/
 
 .user-image{
     height: 100px;
@@ -290,7 +301,7 @@ body {
 
 .wrapper-access > .group-wrapper {
     max-width: 1000px;
-
+    display: none;
     margin: 0 auto;
 }
 
@@ -322,6 +333,7 @@ body {
     margin-left: 16px;
     font-size: 20px;
     color: rgba(0,0,0,.87);
+    cursor: text;
 }
 
 #inner {
@@ -333,6 +345,9 @@ body {
     width: 100px;
     margin-right: 24px;
     object-fit: cover;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    min-height: auto;
 }
 
 #profile-w {
@@ -357,14 +372,14 @@ body {
     /*text-align: center;*/
 /*}*/
 
-#edit-prof button {
-    color: #E57C3E;
-    font-weight: 500;
-    font-size: 16px;
-}
+/*#edit-prof button {*/
+    /*color: #E57C3E;*/
+    /*font-weight: 500;*/
+    /*font-size: 16px;*/
+/*}*/
 
 #user-w-w {
-    padding-top: 16px;
+    /*padding-top: 16px;*/
 }
 
 .cursor-text {

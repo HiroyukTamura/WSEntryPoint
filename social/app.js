@@ -87,6 +87,8 @@ function onLoginSuccess() {
         console.log(reason);
         onSnapShotVanished();
     });
+
+    setOnClickEditProfBtn();
 }
 
 function onSnapShotVanished() {
@@ -127,7 +129,7 @@ function onGetGroupNodeData(snapshot) {
             // todo 未読を記録するnodeを作らないとね
             var html = $(
                 '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
-                    '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
+                    '<div class="mdl-card__title mdl-card--expand mdl-pre-upgrade"></div>'+
                         '<div class="mdl-card__actions mdl-pre-upgrade">'+
                             '<span class="demo-card-image__filename mdl-pre-upgrade">'+groupName+'</span>'+
                         '</div>'+
@@ -424,6 +426,7 @@ function showAll() {
 
     tippy('[title]:non(.group-icon)', {
         updateDuration: 0,
+        appendTo: $('body')[0],
         popperOptions: {
             modifiers: {
                 preventOverflow: {
@@ -469,4 +472,20 @@ function notifyInvitation() {
                         '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>'+
                     '</div>'
     });
+}
+
+function setOnClickEditProfBtn() {
+    console.log('setOnClickEditProfBtn');
+
+    $('#edit-prof').on('click', function (e) {
+        console.log('clicked');
+    });
+
+    // firebase.auth().onAuthStateChanged(function (userObject) {
+    //     if (userObject && user.uid === userObject.uid) {
+    //
+    //     } else {
+    //         location.reload();
+    //     }
+    // });
 }

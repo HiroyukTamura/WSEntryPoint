@@ -126,7 +126,7 @@ function onLoginSuccess() {
                     break;
             }
 
-            setHeaderTitle(doc, childSnap);//todo これcreateElementWithHeaderと一緒にできるでしょ
+            setHeaderTitle(doc, childSnap);
             $('.card_wrapper').append($(cardWrapper));
         }
 
@@ -718,7 +718,7 @@ function setOnBtmFabClickListener() {
             //タイムイベント
             for(var val in masterJson){
                 if(masterJson.hasOwnProperty(val) && masterJson[val]['dataType'] === 1) {
-                    //todo エラー処理
+                    showNotification('イベントタイプはひとつまでしか追加できません', 'warning');
                     console.log('エラーだよね');
                     return;
                 }
