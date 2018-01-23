@@ -13,6 +13,8 @@ const dialogNgBtn = $('#cancel');
 const pwNew =$('#pw-new');
 const pwOld =$('#pw-old');
 const inputReAuth = $('#pw-re-auth');
+const imgDot = $('#my-img-dot');
+const myImg = $('#my-img img');
 var initialErr = false;
 var currentDialogShown;
 var defaultApp;
@@ -21,10 +23,13 @@ var user;
 var fbCoumpleteCount = 0;
 var userDataJson;
 var currentPwVal;
+var storage;
+var task;
 
 window.onload = function (ev) {
     defaultApp = firebase.initializeApp(CONFIG);
     defaultDatabase = defaultApp.database();
+    storage= firebase.storage();
 
     firebase.auth().onAuthStateChanged(function(userObject) {
         if (userObject) {
@@ -237,7 +242,6 @@ function onGetGroupNodeData(snapshot) {
     $('#profile').find('img').attr("src", photoUrl);
 
     var rightCol = $('#right-col');
-    var imgDot = $('#my-img-dot');
     var dummyPw = $('#user-pw-old .mdl-list__item-primary-content span');
     var pwBtn = $('#user-pw-old .mdl-button');
     var myImg = $('#my-img img');
@@ -266,6 +270,9 @@ function onGetGroupNodeData(snapshot) {
             $(this).parent().css('height', '32px');
             $(this).fadeIn();
             saveBtn.show();
+
+            myImg.css('cursor', 'pointer');
+            imgDot.css('cursor', 'pointer');
         });
     });
 
@@ -547,6 +554,15 @@ function setOnClickListeners() {
         setPwKeyUpLisntener($(this));
     });
 
+    $('#my-img img').on('click', function (e) {
+        onClickMyImg(e);
+        return false;
+    });
+
+    imgDot.on('click', function (e) {
+        onClickMyImg(e);
+        return false;
+    });
 
     const groupNameInput = $('#new-group-name');
     const errSpan = groupNameInput.parent().find('.mdl-textfield__error');
@@ -579,6 +595,110 @@ function setOnClickListeners() {
             displayDialogContent('addGroup');
         }
     });
+
+    $('#my-img input').on('change', function (e) {
+
+        if(task !== null)
+            return;
+
+        var mimeType = e.target.files[0].type;
+        if(mimeType.toLowerCase() !== 'image/jpeg' && mimeType.toLowerCase() !== 'image/png' ) {
+            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            return;
+        }
+
+        var fileName = e.target.files[0].name;
+        var dotPos = fileName.indexOf('.');
+        if(dotPos === -1){
+            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            return;
+        }
+
+        var extension = fileName.substring(dotPos+1);
+        if (extension.toLowerCase() !== 'jpeg' && extension.toLowerCase() !== 'jpg' && extension.toLowerCase() !== 'png') {
+            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            return;
+        }
+
+        if(e.target.files[0].size > 5 * 1000 * 1000) {
+            showNotification('5MBを超えるファイルはアップロードできません', 'warning');
+            return;
+        }
+
+        // var reader  = new FileReader();
+        // reader.addEventListener("load", function () {
+        //     showProgressNotification(reader.result);
+        // }, false);
+        // reader.readAsDataURL(e.target.files[0]);
+
+        // window.URL.revokeObjectURL(blob);
+        var notification = showProgressNotification();
+
+        var key = defaultDatabase.ref('keyPusher').push().key;
+        var suf = mimeType.substring(5);//sufは'/'を含む
+        console.log(suf);
+        task = storage.ref().child('profile_icon').child(key+suf)
+            .put(e.target.files[0]);
+
+        task.on('state_changed', function(snapshot){
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+                case firebase.storage.TaskState.PAUSED: // or 'paused'
+                    console.log('Upload is paused');
+                    break;
+                case firebase.storage.TaskState.RUNNING: // or 'running'
+                    console.log('Upload is running');
+                    var msg = '<strong>'+progress+'%</strong>';
+                    notification.update({
+                        'message': msg,
+                        'progress': progress
+                    });
+                    break;
+            }
+        }, function (error) {
+            //todo エラーデバッグすること
+            task = null;//これで「キャンセルしました」が出なくなる
+            notification.close();
+            var errMsg = ERR_MSG_OPE_FAILED;
+            switch (error.code){
+                case 'storage/retry_limit_exceeded':
+                    errMsg ='タイムアウトしました';
+                    break;
+                case 'storage/invalid_checksum':
+                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                    break;
+                case 'storage/canceled':
+                    errMsg = 'キャンセルしました';
+                    break;
+                case 'storage/cannot_slice_blob':
+                    errMsg = errMsg + '。ファイルを確かめてもう一度アップロードしてみてください。';
+                    break;
+                case 'storage/server_wrong_file_size':
+                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                    break;
+            }
+            showNotification(errMsg, 'danger');
+
+        }, function () {
+            task = null;
+            notification.close();
+            showNotification('ファイルをアップロードしました', 'success');
+
+            var downloadURL = task.snapshot.downloadURL;
+            console.log(downloadURL);
+
+        });
+    });
+}
+
+function onClickMyImg(e) {
+    e.preventDefault();
+    console.log('onClickMyImg');
+    if(imgDot.css('display') === 'none')
+        return false;
+
+    $('#my-img input')[0].click();
 }
 
 function setPwKeyUpLisntener(input) {
@@ -692,4 +812,25 @@ function notifyInvitation() {
                         '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>'+
                     '</div>'
     });
+}
+
+function showProgressNotification() {
+    return $.notify({
+        title: 'アップロードしています...',
+        message: '<strong>0%</strong>',
+        icon: 'fas fa-cloud-upload-alt',
+        progressbar: 0
+    }, {
+        type: 'success',
+        newest_on_top: true,
+        allow_dismiss: true,
+        showProgressbar: true,
+        delay: 0,
+        onclosed: cancelUpload()
+    });
+}
+
+function cancelUpload() {
+    if(task)
+        task.cancel();
 }

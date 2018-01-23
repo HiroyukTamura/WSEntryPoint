@@ -692,3 +692,23 @@ body {
     display: none;
     color: #E57C3E;
 }
+
+#my-img input {
+    display: none;
+}
+
+#placeholder {
+    display: none;
+    width: 100%;
+    height: 100%;
+    z-index: -4;
+}
+
+[data-notify="progressbar"] {
+    margin-bottom: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+}
