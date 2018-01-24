@@ -10,10 +10,13 @@ const dialogAddSch = $('#add-sch-cnt');
 const dialogExclude = $('#dialog-img-w');
 const dialogRemoveContents = $('#remove-contents');
 const dialogEditComment = $('#edit-comment');
+const dialogConfigGroup =$('#group-config');
 const dialogPositibeBtn = $('#add-group-btn');
 var clickedColor = 0;
 var inputVal = null;
 var removeContentsKey;//これモーダルまわりで触る際にcontentKeyをぶち込みます　変数名変えるべきかも
+var uploadTask = [];
+var groupImageTask;
 
 const timeline = $('#left-pain');
 var asyncCount = 0;
@@ -577,9 +580,12 @@ window.onload = function (ev) {
             });
         }
     });
+
+    initDrawerDecoration();
 };
 
 function onLoginSuccess() {
+    setDrawerProfile(user);
     if (!dialog.showModal) {
         dialogPolyfill.registerDialog(dialog);
     }
@@ -663,18 +669,161 @@ function onLoginSuccess() {
     });
 }
 
+function setOnClickGroupConfigLis(menu) {
+    menu.on('click', function (e) {
+        e.preventDefault();
+        console.log('click');
+        openDialog(dialogConfigGroup, groupJson.groupName);
+        return false;
+    });
+}
+
+function setOnClickGroupMemberConfigLis(menu) {
+    menu.on('click', function (e) {
+        e.preventDefault();
+        console.log('click');
+        return false;
+    });
+}
+
+function setOnGroupImageClickLis() {
+    $('.group-icon img').on('click', function (e) {
+        console.log('click');
+        e.preventDefault();
+        $('#group-config input')[0].click();
+        return false;
+    });
+}
+
+function setOnGroupImageInputChange() {
+    $('#group-config input').on('change', function (e) {
+        e.preventDefault();
+        console.log('input change');
+
+        if(groupImageTask)
+            return;
+
+        var mimeType = e.target.files[0].type;
+        if(mimeType.toLowerCase() !== 'image/jpeg' && mimeType.toLowerCase() !== 'image/png' && mimeType.toLowerCase() !== 'image/gif') {
+            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            return;
+        }
+
+        var fileName = e.target.files[0].name;
+        var dotPos = fileName.indexOf('.');
+        if(dotPos === -1){
+            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            return;
+        }
+
+        var extension = fileName.substring(dotPos+1);
+        if (extension.toLowerCase() !== 'jpeg' && extension.toLowerCase() !== 'jpg' && extension.toLowerCase() !== 'png') {
+            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            return;
+        }
+
+        if(e.target.files[0].size > 10 * 1000 * 1000) {
+            showNotification('10MBを超えるファイルはアップロードできません', 'warning');
+            return;
+        }
+
+        var notification = showProgressNotification();
+
+        var key = defaultDatabase.ref('keyPusher').push().key;
+        var suf = mimeType.substring(5);//sufは'/'を含む
+        console.log(suf);
+        groupImageTask = firebase.storage().ref().child('sampleImageAsGroup').child(key+suf)//todo これテスト用データなんでよろしく
+            .put(e.target.files[0]);
+
+        groupImageTask.on('state_changed', function(snapshot){
+            var progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+                case firebase.storage.TaskState.PAUSED: // or 'paused'
+                    console.log('Upload is paused');
+                    break;
+                case firebase.storage.TaskState.RUNNING: // or 'running'
+                    console.log('Upload is running');
+                    var msg = '<strong>'+progress+'%</strong>';
+                    notification.update({
+                        'message': msg,
+                        'progress': progress
+                    });
+                    break;
+            }
+        }, function (error) {
+            //todo エラーデバッグすること
+            groupImageTask = null;//これで「キャンセルしました」が出なくなる
+            notification.close();
+            var errMsg = ERR_MSG_OPE_FAILED;
+            switch (error.code){
+                case 'storage/retry_limit_exceeded':
+                    errMsg ='タイムアウトしました';
+                    break;
+                case 'storage/invalid_checksum':
+                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                    break;
+                case 'storage/canceled':
+                    errMsg = 'キャンセルしました';
+                    break;
+                case 'storage/cannot_slice_blob':
+                    errMsg = errMsg + '。ファイルを確かめてもう一度アップロードしてみてください。';
+                    break;
+                case 'storage/server_wrong_file_size':
+                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                    break;
+            }
+            showNotification(errMsg, 'danger');
+
+        }, function () {
+            var downloadURL = groupImageTask.snapshot.downloadURL;
+            console.log(downloadURL);
+            $('.group-icon img').attr('src', downloadURL);
+
+            groupImageTask = null;
+            notification.close();
+            showNotification('ファイルをアップロードしました', 'success');
+        });
+    });
+}
+
+function showProgressNotification() {
+    return $.notify({
+        title: 'アップロードしています...',
+        message: '<strong>0%</strong>',
+        icon: 'fas fa-cloud-upload-alt',
+        progressbar: 0
+    }, {
+        type: 'info',
+        newest_on_top: true,
+        allow_dismiss: true,
+        showProgressbar: true,
+        delay: 0,
+        onclosed: cancelUpload()
+    });
+}
+
+function cancelUpload() {
+    if(groupImageTask)
+        groupImageTask.cancel();
+}
+
 function setLisnters() {
     window.onclick = function(event) {
-        if (event.target == dialog) {
-            closeDialog();
-        } else if($(event.target).hasClass('schedule-add') || $(event.target).parent().hasClass('schedule-add')){
+        // if (event.target == dialog && isModalOpen !== dialogConfigGroup) {
+        //     closeDialog();
+        //     return false;
+        // } else
+        if($(event.target).hasClass('schedule-add') || $(event.target).parent().hasClass('schedule-add')){
             console.log("schedule-add");
             openDialog(dialogAddSch);
+            return false;
         } else if ($(event.target).parent().parent().hasClass("modal-circle-i")) {
+            return false;
             onClickModalCircleI($(event.target).parent().parent());
         }
         console.log($(event.target).parent().parent());
-        return false;
+        // return false;
     };
 
     $('#modal_input').keyup(function () {
@@ -683,6 +832,13 @@ function setLisnters() {
             dialogPositibeBtn.removeAttr('disabled');
         }
     });
+
+    var menus = $('#setting-dp-ul').find('.mdl-menu__item');
+    setOnClickGroupConfigLis(menus.eq(0));
+    setOnClickGroupMemberConfigLis(menus.eq(1));
+    setOnGroupImageClickLis();
+    setOnGroupImageInputChange();
+    $('#setting-dp-ul').show();
 }
 
 function onClickModalCircleI(target) {
@@ -776,9 +932,12 @@ function initUserList() {
             // li.attr("title", "招待中");
         } else {
 
-            li.find(".health-rec-btn").on('click', function (ev) {
+            li.find(".health-rec-btn").on('click', function (e) {
+                e.preventDefault();
                 var userUid = sortedKeys[$(this).index()];
                 console.log('clicked uid:' + userUid);
+
+                return false;
             });
 
             var dropDown = $(
@@ -1210,28 +1369,46 @@ function openDialog(toShowEle, fileName) {
         dialogExclude.hide();
         dialogRemoveContents.hide();
         dialogEditComment.hide();
+        dialogConfigGroup.hide();
         $('#modal_input').val('');
+
     } else if (toShowEle === dialogExclude){
         dialogPositibeBtn.html('退会させる');
         dialogAddSch.hide();
         dialogRemoveContents.hide();
         dialogEditComment.hide();
+        dialogConfigGroup.hide();
         dialogPositibeBtn.removeAttr('disabled');
+
     } else if (toShowEle === dialogRemoveContents){
         dialogPositibeBtn.html('削除する');
         dialogPositibeBtn.removeAttr('disabled');
         dialogExclude.hide();
         dialogAddSch.hide();
         dialogEditComment.hide();
+        dialogConfigGroup.hide();
         dialogRemoveContents.find('p').html("本当に「" + fileName + "」を削除しますか？");
+
+    } else if (toShowEle === dialogConfigGroup) {
+        dialogPositibeBtn.removeAttr('disabled');
+        dialogPositibeBtn.html('OK');
+        dialogExclude.hide();
+        dialogRemoveContents.hide();
+        dialogAddSch.hide();
+        dialogEditComment.hide();
+        var input = $('#new-group-name').val(fileName);
+        dialog.showModal();//これつけないとlabelがテキストに重なってしまう
+        input.parent().addClass('is-dirty');
+        return;
+
     } else if (toShowEle === dialogEditComment) {
         dialogPositibeBtn.removeAttr('disabled');
         dialogPositibeBtn.html('OK');
         dialogExclude.hide();
         dialogRemoveContents.hide();
         dialogAddSch.hide();
+        dialogConfigGroup.hide();
     }
-
     dialog.showModal();
 }
 
@@ -1306,6 +1483,19 @@ function showAll() {
     setLisnters();
 
     setElementAsMdl($('body'));
+
+    tippy('.group-icon', {
+        updateDuration: 0,
+        appendTo: $('dialog')[0],
+        distance: 0,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: {
+                    enabled: false
+                }
+            }
+        }
+    });
 
     tippy('[title]', {
         updateDuration: 0,

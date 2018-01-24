@@ -661,7 +661,7 @@ function setOnClickListeners() {
             return;
 
         var mimeType = e.target.files[0].type;
-        if(mimeType.toLowerCase() !== 'image/jpeg' && mimeType.toLowerCase() !== 'image/png' ) {
+        if(mimeType.toLowerCase() !== 'image/jpeg' && mimeType.toLowerCase() !== 'image/png' && mimeType.toLowerCase() !== 'image/gif') {
             showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
             return;
         }
@@ -674,8 +674,8 @@ function setOnClickListeners() {
         }
 
         var extension = fileName.substring(dotPos+1);
-        if (extension.toLowerCase() !== 'jpeg' && extension.toLowerCase() !== 'jpg' && extension.toLowerCase() !== 'png') {
-            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+        if (extension.toLowerCase() !== 'jpeg' && extension.toLowerCase() !== 'jpg' && extension.toLowerCase() !== 'png' && extension.toLowerCase() !== 'gif') {
+            showNotification('JPEG・PNG・gifファイルのみアップロードできます', 'warning');
             return;
         }
 
@@ -700,7 +700,7 @@ function setOnClickListeners() {
             .put(e.target.files[0]);
 
         task.on('state_changed', function(snapshot){
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            var progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
             console.log('Upload is ' + progress + '% done');
             switch (snapshot.state) {
                 case firebase.storage.TaskState.PAUSED: // or 'paused'

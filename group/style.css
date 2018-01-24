@@ -10,104 +10,104 @@ body {
     background-color: #F4F3EF;
 }
 
-/*ドロワーまわり*/
-.demo-drawer {
-    border: none;
-}
-/* iOS Safari specific workaround */
-.demo-drawer .mdl-menu__container {
-    z-index: -1;
-}
-.demo-drawer .demo-navigation {
-    z-index: -2;
-}
-/* END iOS Safari specific workaround */
-.demo-drawer .mdl-menu .mdl-menu__item {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
+/*!*ドロワーまわり*!*/
+/*.demo-drawer {*/
+    /*border: none;*/
+/*}*/
+/*!* iOS Safari specific workaround *!*/
+/*.demo-drawer .mdl-menu__container {*/
+    /*z-index: -1;*/
+/*}*/
+/*.demo-drawer .demo-navigation {*/
+    /*z-index: -2;*/
+/*}*/
+/*!* END iOS Safari specific workaround *!*/
+/*.demo-drawer .mdl-menu .mdl-menu__item {*/
+    /*display: -webkit-flex;*/
+    /*display: -ms-flexbox;*/
+    /*display: flex;*/
+    /*-webkit-align-items: center;*/
+    /*-ms-flex-align: center;*/
+    /*align-items: center;*/
+/*}*/
 
-.demo-drawer-header {
-    box-sizing: border-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-justify-content: flex-end;
-    -ms-flex-pack: end;
-    justify-content: flex-end;
-    padding: 16px;
-    height: 151px;
-    background-color: white;
-}
+/*.demo-drawer-header {*/
+    /*box-sizing: border-box;*/
+    /*display: -webkit-flex;*/
+    /*display: -ms-flexbox;*/
+    /*display: flex;*/
+    /*-webkit-flex-direction: column;*/
+    /*-ms-flex-direction: column;*/
+    /*flex-direction: column;*/
+    /*-webkit-justify-content: flex-end;*/
+    /*-ms-flex-pack: end;*/
+    /*justify-content: flex-end;*/
+    /*padding: 16px;*/
+    /*height: 151px;*/
+    /*background-color: white;*/
+/*}*/
 
-.demo-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
-    margin-right: 24px;
-}
+/*.demo-avatar {*/
+    /*width: 48px;*/
+    /*height: 48px;*/
+    /*border-radius: 24px;*/
+    /*margin-right: 24px;*/
+/*}*/
 
-.demo-avatar-dropdown {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    position: relative;
-    -webkit-flex-direction: row;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    width: 100%;
-}
+/*.demo-avatar-dropdown {*/
+    /*display: -webkit-flex;*/
+    /*display: -ms-flexbox;*/
+    /*display: flex;*/
+    /*position: relative;*/
+    /*-webkit-flex-direction: row;*/
+    /*-ms-flex-direction: row;*/
+    /*flex-direction: row;*/
+    /*-webkit-align-items: center;*/
+    /*-ms-flex-align: center;*/
+    /*align-items: center;*/
+    /*width: 100%;*/
+/*}*/
 
-.demo-navigation {
-    -webkit-flex-grow: 1;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-}
+/*.demo-navigation {*/
+    /*-webkit-flex-grow: 1;*/
+    /*-ms-flex-positive: 1;*/
+    /*flex-grow: 1;*/
+/*}*/
 
-.demo-layout .demo-navigation .mdl-navigation__link {
-    display: -webkit-flex !important;
-    display: -ms-flexbox !important;
-    display: flex !important;
-    -webkit-flex-direction: row;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.56);
-    font-weight: 500;
-}
+/*.demo-layout .demo-navigation .mdl-navigation__link {*/
+    /*display: -webkit-flex !important;*/
+    /*display: -ms-flexbox !important;*/
+    /*display: flex !important;*/
+    /*-webkit-flex-direction: row;*/
+    /*-ms-flex-direction: row;*/
+    /*flex-direction: row;*/
+    /*-webkit-align-items: center;*/
+    /*-ms-flex-align: center;*/
+    /*align-items: center;*/
+    /*color: rgba(255, 255, 255, 0.56);*/
+    /*font-weight: 500;*/
+/*}*/
 
-.drawer_icon {
-    margin-right: 32px;
-}
+/*.drawer_icon {*/
+    /*margin-right: 32px;*/
+/*}*/
 
-.mdl-layout__drawer .mdl-navigation .mdl-navigation__link{
-    text-decoration: none;
-}
+/*.mdl-layout__drawer .mdl-navigation .mdl-navigation__link{*/
+    /*text-decoration: none;*/
+/*}*/
 
-.mdl-layout__drawer .mdl-navigation .mdl-navigation__link :hover {
-    text-decoration: none;
-}
+/*.mdl-layout__drawer .mdl-navigation .mdl-navigation__link :hover {*/
+    /*text-decoration: none;*/
+/*}*/
 
 /*************nav bar***************/
-.mdl-layout__header{
-    background-color: white;
-    color: #66615b;
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
 }
 
-.mdl-layout__header .mdl-layout__drawer-button {
-    color: #66615b;
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
 }
 
 .mdl-layout__tab{
@@ -115,7 +115,8 @@ body {
 }
 
 .mdl-layout__header-row{
-    padding-right: 20px;
+    /*padding-right: 20px;*/
+    /*margin-left: -16px;*/
 }
 
 #group-img {
@@ -127,6 +128,18 @@ body {
 
 #group-drp-btn {
     margin-left: 12px;
+}
+
+#setting-drp-btn .fa-cogs{
+    color: white;
+}
+
+#nav-right {
+    padding-right: 16px;
+}
+
+#setting-dp-ul {
+    display: none;
 }
 
 /*------------frame work---------------*/
@@ -165,6 +178,10 @@ body {
     display: flex;
     align-items: center;
     height: 42px;
+}
+
+#column2 .ele_header .fa-lg {
+    color: #E57C3E;
 }
 
 .card.comments .ele_header .fa-comments {
@@ -220,12 +237,12 @@ body {
     width: 100px;
 }
 
-.user-name {
-    margin: 12px 0;
-    color: #757575;
-    width: 100%;
-    text-align: center;
-}
+/*.user-name {*/
+    /*margin: 12px 0;*/
+    /*color: #757575;*/
+    /*width: 100%;*/
+    /*text-align: center;*/
+/*}*/
 
 .user-image{
     height: 100px;
@@ -579,7 +596,42 @@ body {
     display: inline;
 }
 
-/*-----------FAB-------------*/
+/*--------modal グループ変更--------*/
+#group-config .mdl-list__item-primary-content img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.group-icon > div {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: #E57C3E;
+    bottom: 24px;
+    right: 0;
+    vertical-align: center;
+    text-align: center;
+}
+
+.group-icon {
+    width: 60px;
+    height: 84px;
+    position: relative;
+    margin: 0 auto;
+    cursor: pointer;
+    padding-bottom: 24px;
+}
+
+.group-icon .fa-folder {
+    color: white;
+}
+
+.group-icon input {
+    display: none;
+}
+
+    /*-----------FAB-------------*/
 #overlay.mdl-button--fab.mdl-button--colored{
     background-color: #E57C3E;
 }
