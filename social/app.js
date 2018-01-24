@@ -244,7 +244,6 @@ function onGetGroupNodeData(snapshot) {
     var rightCol = $('#right-col');
     var dummyPw = $('#user-pw-old .mdl-list__item-primary-content span');
     var pwBtn = $('#user-pw-old .mdl-button');
-    var myImg = $('#my-img img');
     var editProfBtn = $('#edit-prof');
     var saveBtn =$('#save-prof');
     // var oldInput = $('#user-pw-old input');
@@ -554,7 +553,7 @@ function setOnClickListeners() {
         setPwKeyUpLisntener($(this));
     });
 
-    $('#my-img img').on('click', function (e) {
+    myImg.on('click', function (e) {
         onClickMyImg(e);
         return false;
     });
@@ -598,7 +597,9 @@ function setOnClickListeners() {
 
     $('#my-img input').on('change', function (e) {
 
-        if(task !== null)
+        console.log('input change');
+
+        if(task)
             return;
 
         var mimeType = e.target.files[0].type;
@@ -681,13 +682,13 @@ function setOnClickListeners() {
             showNotification(errMsg, 'danger');
 
         }, function () {
+            var downloadURL = task.snapshot.downloadURL;
+            console.log(downloadURL);
+            myImg.attr('src', downloadURL);
+
             task = null;
             notification.close();
             showNotification('ファイルをアップロードしました', 'success');
-
-            var downloadURL = task.snapshot.downloadURL;
-            console.log(downloadURL);
-
         });
     });
 }
@@ -695,7 +696,7 @@ function setOnClickListeners() {
 function onClickMyImg(e) {
     e.preventDefault();
     console.log('onClickMyImg');
-    if(imgDot.css('display') === 'none')
+    if(imgDot.css('display') === 'none' || task)
         return false;
 
     $('#my-img input')[0].click();
@@ -821,7 +822,7 @@ function showProgressNotification() {
         icon: 'fas fa-cloud-upload-alt',
         progressbar: 0
     }, {
-        type: 'success',
+        type: 'info',
         newest_on_top: true,
         allow_dismiss: true,
         showProgressbar: true,
