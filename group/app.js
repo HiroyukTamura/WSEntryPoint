@@ -658,6 +658,25 @@ function onLoginSuccess() {
                 showOpeErrNotification(defaultDatabase);
                 console.log(err);
             });
+
+        } else if (isModalOpen === dialogConfigGroup) {
+            var input = $('#new-group-name');
+            if(!input.val()){
+                input.parent().addClass('is-invalid');
+                return;
+            }
+            var photoUrl = $('#group-config img').attr('src');
+            defaultDatabase.ref('group/'+groupKey+"/").update({
+                photoUrl: photoUrl,
+                groupName: input.val()
+
+            }).then(function (value) {//todo バックエンドちゃんと動いてませんけど！
+                showNotification('更新しました');
+
+            }).catch(function (reason) {
+                console.log(reason);
+                showOpeErrNotification(defaultDatabase);
+            });
         }
         closeDialog();
         return false;
@@ -700,7 +719,7 @@ function setOnGroupImageInputChange() {
         e.preventDefault();
         console.log('input change');
 
-        if(groupImageTask)
+        if(groupImageTask || !e.target.files || !e.target.files[0])
             return;
 
         var mimeType = e.target.files[0].type;
@@ -722,17 +741,17 @@ function setOnGroupImageInputChange() {
             return;
         }
 
-        if(e.target.files[0].size > 10 * 1000 * 1000) {
-            showNotification('10MBを超えるファイルはアップロードできません', 'warning');
+        if(e.target.files[0].size > 5 * 1000 * 1000) {
+            showNotification('5MBを超えるファイルはアップロードできません', 'warning');
             return;
         }
 
         var notification = showProgressNotification();
 
         var key = defaultDatabase.ref('keyPusher').push().key;
-        var suf = mimeType.substring(5);//sufは'/'を含む
+        var suf = mimeType.substring(4);//sufは'/'を含む
         console.log(suf);
-        groupImageTask = firebase.storage().ref().child('sampleImageAsGroup').child(key+suf)//todo これテスト用データなんでよろしく
+        groupImageTask = firebase.storage().ref().child('group_icon').child(key+'.'+suf)
             .put(e.target.files[0]);
 
         groupImageTask.on('state_changed', function(snapshot){
@@ -796,16 +815,10 @@ function showProgressNotification() {
     }, {
         type: 'info',
         newest_on_top: true,
-        allow_dismiss: true,
+        allow_dismiss: false,
         showProgressbar: true,
-        delay: 0,
-        onclosed: cancelUpload()
+        delay: 0
     });
-}
-
-function cancelUpload() {
-    if(groupImageTask)
-        groupImageTask.cancel();
 }
 
 function setLisnters() {
@@ -1398,7 +1411,7 @@ function openDialog(toShowEle, fileName) {
         dialogEditComment.hide();
         var input = $('#new-group-name').val(fileName);
         dialog.showModal();//これつけないとlabelがテキストに重なってしまう
-        input.parent().addClass('is-dirty');
+        input.parent().addClass('is-dirty').removeClass('is-invalid');
         return;
 
     } else if (toShowEle === dialogEditComment) {

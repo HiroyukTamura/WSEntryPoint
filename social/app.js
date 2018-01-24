@@ -694,9 +694,9 @@ function setOnClickListeners() {
         var notification = showProgressNotification();
 
         var key = defaultDatabase.ref('keyPusher').push().key;
-        var suf = mimeType.substring(5);//sufは'/'を含む
+        var suf = mimeType.substring(4);//sufは'/'を含む
         console.log(suf);
-        task = storage.ref().child('profile_icon').child(key+suf)
+        task = storage.ref().child('profile_icon').child(key+'.'+suf)
             .put(e.target.files[0]);
 
         task.on('state_changed', function(snapshot){
