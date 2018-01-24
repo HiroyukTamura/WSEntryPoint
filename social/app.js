@@ -15,6 +15,8 @@ const pwOld =$('#pw-old');
 const inputReAuth = $('#pw-re-auth');
 const imgDot = $('#my-img-dot');
 const myImg = $('#my-img img');
+const nameInput = $('#my-name');
+const mailInput = $('#user-email');
 var initialErr = false;
 var currentDialogShown;
 var defaultApp;
@@ -231,8 +233,6 @@ function onGetGroupNodeData(snapshot) {
     var userName = avoidNullValue(snapshot.child('displayName').val(), "ユーザ名未設定");
 
     //プロフィール欄を表示
-    var nameInput = $('#my-name');
-    var mailInput = $('#user-email');
     nameInput.attr('value', userName);
 
     var userEmail = avoidNullValue(snapshot.child('email').val(), "アドレス未設定");
@@ -241,13 +241,35 @@ function onGetGroupNodeData(snapshot) {
     var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
     $('#profile').find('img').attr("src", photoUrl);
 
-    var rightCol = $('#right-col');
-    var dummyPw = $('#user-pw-old .mdl-list__item-primary-content span');
     var pwBtn = $('#user-pw-old .mdl-button');
     var editProfBtn = $('#edit-prof');
     var saveBtn =$('#save-prof');
-    // var oldInput = $('#user-pw-old input');
+    pwBtn.on('click', function (e) {
+        console.log('clicked');
+        displayDialogContent('change-pw');
+    });
+    saveBtn.on('click', function (e) {
+        e.preventDefault();
+        displayDialogContent('re-auth');
+        return false;
+    });
+
     editProfBtn.on('click', function (e) {
+        showEditToggleMode(true)
+    });
+
+    // var oldInput = $('#user-pw-old input');
+}
+
+function showEditToggleMode(isShow) {
+    var editProfBtn = $('#edit-prof');
+    var saveBtn =$('#save-prof');
+    var postProfInner = $('#post-prof-inner');
+    var rightCol = $('#right-col');
+    var dummyPw = $('#user-pw-old .mdl-list__item-primary-content span');
+    var pwBtn = $('#user-pw-old .mdl-button');
+
+    if(isShow){
         $('#post-prof-inner').fadeOut(function (e2) {
             console.log('clicked');
             rightCol.find('.mdl-textfield__input')
@@ -261,25 +283,39 @@ function onGetGroupNodeData(snapshot) {
             //     .css('height', '24px')
             //     .attr('title', 'プロフィールを保存');
             dummyPw.hide();
-            pwBtn.on('click', function (e) {
-                console.log('clicked');
-                displayDialogContent('change-pw');
-            }).show();
+            pwBtn.show();
             editProfBtn.hide();
-            $(this).parent().css('height', '32px');
+            // $(this).parent().css('height', '32px');
             $(this).fadeIn();
-            saveBtn.show();
+            saveBtn.fadeIn();
 
             myImg.css('cursor', 'pointer');
             imgDot.css('cursor', 'pointer');
         });
-    });
 
-    saveBtn.on('click', function (e) {
-        e.preventDefault();
-        displayDialogContent('re-auth');
-        return false;
-    });
+    } else {
+        postProfInner.fadeOut(function () {
+            var rightCol = $('#right-col');
+            var dummyPw = $('#user-pw-old .mdl-list__item-primary-content span');
+            var pwBtn = $('#user-pw-old .mdl-button');
+
+            rightCol.find('.mdl-textfield__input')
+                .attr('readonly', '')
+                .css('border-bottom', 'none');
+            rightCol.find('label').hide();
+            imgDot.css('display', 'none');
+            dummyPw.show();
+            pwBtn.hide();
+            editProfBtn.show();
+            // $(this).parent().css('height', '32px');
+            $(this).fadeIn();
+
+            myImg.css('cursor', 'default');
+            imgDot.css('cursor', 'default');
+        });
+
+        saveBtn.fadeOut();
+    }
 }
 
 function onGetFriendSnap(snapshot) {
@@ -291,6 +327,7 @@ function onGetFriendSnap(snapshot) {
         }
 
         var pool = $("#other-users");
+        var addUserBtn = $('#add-btn-user-w');
 
         snapshot.forEach(function (childSnap) {
             if(childSnap.key === DEFAULT)
@@ -308,7 +345,7 @@ function onGetFriendSnap(snapshot) {
                 '</div>'
             );
 
-            pool.append(ele);
+            ele.insertBefore(addUserBtn);
 
             var li = $(
                 '<li class="mdl-list__item mdl-pre-upgrade">'+
@@ -437,7 +474,7 @@ function setOnClickListeners() {
                 //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
                 var credentialE = firebase.auth.EmailAuthProvider.credential(
                     currentUserE.email,
-                    currentPwVal
+                    this.returnValue
                 );
 
                 currentUserE.reauthenticateWithCredential(credentialE).then(function() {
@@ -452,15 +489,32 @@ function setOnClickListeners() {
                     });
 
                 }).catch(function(error) {
-                    console.log(error);
-                    showOpeErrNotification(defaultDatabase);
+                    console.log(error.code, error.message);
+                    switch (error.code){
+                        case 'auth/wrong-password':
+                            showNotification('パスワードが間違っています', 'warning');
+                            showEditToggleMode(false);
+                            break;
+                        case 'auth/network-request-failed':
+                            showNotification('通信に失敗しました', 'warning');
+                            break;
+                        case 'auth/too-many-requests':
+                            showNotification('アクセスが集中しています。時間をおいて再度試してみてください。', 'warning');
+                            break;
+                        case 'auth/web-storage-unsupported':
+                            showNotification('ブラウザがウェブストレージを許可していません。設定を変更するか、別のブラウザでアクセスしてください。', 'warning');
+                            break;
+                        default:
+                            showOpeErrNotification(defaultDatabase);
+                            break;
+                    }
                 });
             }
 
             inputReAuth.val('').parent().removeClass('is-invalid');
 
         } else if(currentDialogShown === 're-auth' && !this.returnValue) {
-
+            inputReAuth.val('').parent().removeClass('is-invalid');
             console.log('re-auth', 'キャンセルされた');
         }
     });
@@ -561,6 +615,10 @@ function setOnClickListeners() {
     imgDot.on('click', function (e) {
         onClickMyImg(e);
         return false;
+    });
+
+    $('add-btn-user').on('click', function (e) {
+        console.log('clicked');
     });
 
     const groupNameInput = $('#new-group-name');
@@ -766,7 +824,7 @@ function showAll() {
 
     setElementAsMdl($("body"));
 
-    tippy('[title]:non(.group-icon)', {
+    tippy('[title]', {
         updateDuration: 0,
         popperOptions: {
             modifiers: {

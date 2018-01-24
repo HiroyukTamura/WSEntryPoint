@@ -216,19 +216,27 @@ body {
     /*text-align: center;*/
 /*}*/
 
-#add-btn-w{
-    margin: 24px;
-    height: 200px;
-    width: 100px;
+.add-btn-fab {
     display: -webkit-flex;
     display: flex;
     -webkit-justify-content: center;
     justify-content: center;
 }
 
-#add-btn-w button {
-    background-color: #E57C3E;
-    color: white;
+/*.add-btn-fab button {*/
+    /*background-color: #E57C3E;*/
+    /*color: white;*/
+/*}*/
+
+#add-btn-w{
+    margin: 24px;
+    height: 200px;
+    width: 100px;
+}
+
+#add-btn-user-w {
+    margin: 24px;
+    height: 92px;
 }
 
 #other-users-w {
@@ -680,7 +688,17 @@ body {
 
 #save-prof {
     display: none;
-    margin-top: 36px;
+    color: white;
+    background-color: #E57C3E;
+    margin-top: 32px;
+}
+
+#save-prof-w {
+    height: 92px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .mdl-button--fab {
@@ -712,3 +730,8 @@ body {
     width: 100%;
     height: 5px;
 }
+
+/*#re-auth h4 {*/
+    /*margin: 0;*/
+    /*color: saddlebrown;*/
+/*}*/
