@@ -16,7 +16,7 @@ const dialogPositibeBtn = $('#add-group-btn');
 var clickedColor = 0;
 var inputVal = null;
 var removeContentsKey;//これモーダルまわりで触る際にcontentKeyをぶち込みます　変数名変えるべきかも
-var uploadTask = [];
+var uploadTask;
 var groupImageTask;
 
 const timeline = $('#left-pain');
@@ -678,6 +678,10 @@ function onLoginSuccess() {
                 console.log(reason);
                 showOpeErrNotification(defaultDatabase);
             });
+
+        } else if (isModalOpen === dialogAddFile) {
+
+
         }
         closeDialog();
         return false;
@@ -856,7 +860,43 @@ function setLisnters() {
     setOnGroupImageInputChange();
     $('#setting-dp-ul').show();
     setOnClickAddContentsBtn();
-    setOnChangeAddContentInput();
+    addAddFileModalListener();
+}
+
+function addAddFileModalListener() {
+    var droppedFiles = false;
+    var dropDiv = $('.drop-space');
+    var isAdvancedUpload = function() {
+        var div = document.createElement('div');
+        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+    }();
+
+    if(isAdvancedUpload){
+        dropDiv.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }).on('dragover dragenter', function() {
+            dropDiv.addClass('is-dragover');
+        }).on('dragleave dragend drop', function() {
+            dropDiv.removeClass('is-dragover');
+        }).on('drop', function(e) {
+            droppedFiles = e.originalEvent.dataTransfer.files;
+            onNewFileInputChange(droppedFiles[0]);
+        });
+    } else
+        dropDiv.hide();//todo 整備
+
+    $('#add-group-dialog .mdl-button').on('click', function (e) {
+        $('#dummy-overlay')[0].click();
+        return false;
+    });
+
+    $('#dummy-overlay').on('change', function (e) {
+        e.preventDefault();
+        console.log('input change');
+        onNewFileInputChange(e.originalEvent.dataTransfer.files[0]);
+        return false;
+    });
 }
 
 function setOnClickAddContentsBtn() {
@@ -867,97 +907,97 @@ function setOnClickAddContentsBtn() {
     });
 }
 
-function setOnChangeAddContentInput() {
-    $('#dummy-overlay').on('change', function (e) {
-        e.preventDefault();
-        console.log('input change');
+function onNewFileInputChange(file) {
+    console.log('input change', file);
 
-        if(uploadTask.length || !e.target.files || !e.target.files[0])
-            return;
+    if(uploadTask || !file)
+        return;
 
-        var mimeType = e.target.files[0].type.toLowerCase();
-        if(mimeType !== 'image/jpeg' || mimeType !==  'image/png' || mimeType !== 'image/gif' || mimeType !== "text/plain" ||
-            mimeType !== "text/txt" || mimeType !== "text/html" || mimeType !== "text/css" || mimeType !== "text/xml" || mimeType !== "application/pdf") {
-            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
-            return;
+    var mimeType = file.type.toLowerCase();
+    if(mimeType !== 'image/jpeg' && mimeType !==  'image/png' && mimeType !== 'image/gif' && mimeType !== "text/plain" &&
+        mimeType !== "text/txt" && mimeType !== "text/html" && mimeType !== "text/css" && mimeType !== "text/xml" && mimeType !== "application/pdf") {
+        console.log(mimeType);
+        showNotification('そのファイル形式はアップロードできません', 'warning');
+        return;
+    }
+
+    var fileName = file.name;
+    var dotPos = fileName.indexOf('.');
+    if(dotPos === -1){
+        showNotification('そのファイル形式はアップロードできません', 'warning');
+        return;
+    }
+
+    var extension = fileName.substring(dotPos+1);
+    if(extension !== 'jpeg' && extension !==  'png' && extension !== 'gif' && extension !== "txt" &&
+        extension !== "html" && extension !== "css" && extension !== "xml" && extension !== "pdf") {
+        showNotification('そのファイル形式はアップロードできません', 'warning');
+        console.log(extension);
+        return;
+    }
+
+    if(file.size > 10 * 1000 * 1000) {
+        showNotification('10MBを超えるファイルはアップロードできません', 'warning');
+        return;
+    }
+
+    $('.drop-space').addClass('is-uploading');
+
+    // var notification = showProgressNotification();
+
+    var key = defaultDatabase.ref('keyPusher').push().key;
+    var suf = mimeType.substring(4);//sufは'/'を含む
+    console.log(suf);
+    uploadTask = firebase.storage().ref().child('sample_share_file/'+ groupKey).child(key+'.'+suf)
+        .put(file);
+
+    var bar = $('.progress .mdl-progress');
+    var p = $('.progress p');
+
+    uploadTask.on('state_changed', function(snapshot){
+        var progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        console.log('Upload is ' + progress + '% done');
+        p.html(progress +'%アップロード');
+        switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                console.log('Upload is paused');
+                break;
+            case firebase.storage.TaskState.RUNNING: // or 'running'
+                console.log('Upload is running', progress);
+                bar[0].MaterialProgress.setProgress(progress);
+                break;
         }
-
-        var fileName = e.target.files[0].name;
-        var dotPos = fileName.indexOf('.');
-        if(dotPos === -1){
-            showNotification('そのファイル形式はアップロードできません', 'warning');
-            return;
+    }, function (error) {
+        //todo エラーデバッグすること
+        uploadTask = null;//これで「キャンセルしました」が出なくなる
+        var errMsg = ERR_MSG_OPE_FAILED;
+        switch (error.code){
+            case 'storage/retry_limit_exceeded':
+                errMsg ='タイムアウトしました';
+                break;
+            case 'storage/invalid_checksum':
+                errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                break;
+            case 'storage/canceled':
+                errMsg = 'キャンセルしました';
+                break;
+            case 'storage/cannot_slice_blob':
+                errMsg = errMsg + '。ファイルを確かめてもう一度アップロードしてみてください。';
+                break;
+            case 'storage/server_wrong_file_size':
+                errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                break;
         }
+        showNotification(errMsg, 'danger');
+        //todo 元に戻す
 
-        var extension = fileName.substring(dotPos+1);
-        if (extension.toLowerCase() !== 'jpeg' && extension.toLowerCase() !== 'jpg' && extension.toLowerCase() !== 'png') {
-            showNotification('そのファイル形式はアップロードできません', 'warning');
-            return;
-        }
+    }, function () {
+        var downloadURL = uploadTask.snapshot.downloadURL;
+        console.log(downloadURL);
+        // $('.group-icon img').attr('src', downloadURL);
 
-        if(e.target.files[0].size > 10 * 1000 * 1000) {
-            showNotification('10MBを超えるファイルはアップロードできません', 'warning');
-            return;
-        }
-
-        var notification = showProgressNotification();
-
-        var key = defaultDatabase.ref('keyPusher').push().key;
-        var suf = mimeType.substring(4);//sufは'/'を含む
-        console.log(suf);
-        groupImageTask = firebase.storage().ref().child('group_icon').child(key+'.'+suf)
-            .put(e.target.files[0]);
-
-        groupImageTask.on('state_changed', function(snapshot){
-            var progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            console.log('Upload is ' + progress + '% done');
-            switch (snapshot.state) {
-                case firebase.storage.TaskState.PAUSED: // or 'paused'
-                    console.log('Upload is paused');
-                    break;
-                case firebase.storage.TaskState.RUNNING: // or 'running'
-                    console.log('Upload is running');
-                    var msg = '<strong>'+progress+'%</strong>';
-                    notification.update({
-                        'message': msg,
-                        'progress': progress
-                    });
-                    break;
-            }
-        }, function (error) {
-            //todo エラーデバッグすること
-            groupImageTask = null;//これで「キャンセルしました」が出なくなる
-            notification.close();
-            var errMsg = ERR_MSG_OPE_FAILED;
-            switch (error.code){
-                case 'storage/retry_limit_exceeded':
-                    errMsg ='タイムアウトしました';
-                    break;
-                case 'storage/invalid_checksum':
-                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
-                    break;
-                case 'storage/canceled':
-                    errMsg = 'キャンセルしました';
-                    break;
-                case 'storage/cannot_slice_blob':
-                    errMsg = errMsg + '。ファイルを確かめてもう一度アップロードしてみてください。';
-                    break;
-                case 'storage/server_wrong_file_size':
-                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
-                    break;
-            }
-            showNotification(errMsg, 'danger');
-
-        }, function () {
-            var downloadURL = groupImageTask.snapshot.downloadURL;
-            console.log(downloadURL);
-            $('.group-icon img').attr('src', downloadURL);
-
-            groupImageTask = null;
-            notification.close();
-            showNotification('ファイルをアップロードしました', 'success');
-        });
-        return false;
+        uploadTask = null;
+        showNotification('ファイルをアップロードしました', 'success');
     });
 }
 
@@ -1554,7 +1594,13 @@ function openDialog(toShowEle, fileName) {
         dialogAddFile.hide();
 
     } else if (toShowEle === dialogAddFile) {
-
+        dialogPositibeBtn.removeAttr('disabled');
+        dialogPositibeBtn.html('OK');
+        dialogExclude.hide();
+        dialogRemoveContents.hide();
+        dialogAddSch.hide();
+        dialogEditComment.hide();
+        dialogConfigGroup.hide();
     }
 
     dialog.showModal();

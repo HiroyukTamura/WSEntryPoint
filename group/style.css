@@ -642,6 +642,74 @@ body {
     display: none;
 }
 
+/*--------------ファイル追加----------------*/
+/*#add-file-modal .mdl-button{*/
+    /*background-color: #E57C3E;*/
+    /*margin: 0 auto 32px auto;*/
+    /*color: white;*/
+    /*display: block;*/
+/*}*/
+
+.drop-space {
+    margin-bottom: 16px;
+    height: 256px;
+    background-color: #FFFCF5;
+    outline: 2px dashed #92b0b3;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.drop-space > .drag-cont {
+    text-align: center;
+    z-index: 4;
+    color: darkgray;
+    margin: auto;
+}
+
+.drop-space.is-uploading .drag-cont{
+    display: none;
+}
+
+.progress {
+    margin: auto 0;
+    width: 100%;
+    background: transparent;
+}
+
+.progress .mdl-progress {
+    max-width: 60%;
+    margin: 0 auto;
+    width: unset;
+}
+
+.drop-space .progress{
+    display: none;
+}
+
+.drop-space.is-uploading .progress{
+    display: block;
+}
+
+.drop-space i {
+    font-size: 48px;
+}
+
+.choose-file {
+    margin: 0 auto 8px auto;
+    display: block;
+    color: #E57C3E;
+}
+
+.is-dragover {
+    outline-offset: -20px;
+    outline-color: #c8dadf;
+    background-color: #fff;
+}
+
 /*-----------FAB-------------*/
 
 #dummy-w {

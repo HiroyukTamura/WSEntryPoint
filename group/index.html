@@ -399,16 +399,25 @@
                     </form>
                 </div>
                 <div id="add-file-modal">
-                    <div class="group-icon" title="アイコンを変更">
-                        <img src="img/icon.png" alt="group-image" class="rounded-circle">
-                        <div class="rounded-circle">
-                            <i class="fas fa-folder fa-sm"></i>
+                    <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect">-->
+                        <!--ファイルを選択-->
+                    <!--</button>-->
+                    <form class="drop-space">
+                        <div class="drag-cont">
+                            <button class="mdl-button mdl-js-button choose-file">
+                                ファイルを選択
+                            </button>
+                            <i class="material-icons">cloud_upload</i>
+                            <p>またはここにファイルをドロップ</p>
                         </div>
-                        <input type="file" accept="image/png,image/jpeg,image/gif">
-                    </div>
+                        <div class="progress">
+                            <p>アップロード中...</p>
+                            <div class="mdl-progress mdl-js-progress"></div>
+                        </div>
+                    </form>
                     <form action="#">
-                        <div class="mdl-textfield mdl-js-textfield">
-                            <textarea class="mdl-textfield__input" type="text" rows="4" id="new-file-comment"></textarea>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <textarea class="mdl-textfield__input" type="text" rows="3" id="new-file-comment"></textarea>
                             <label class="mdl-textfield__label" for="new-file-comment">コメント</label>
                             <span class="mdl-textfield__error"></span>
                         </div>
