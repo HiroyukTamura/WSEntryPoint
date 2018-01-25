@@ -194,6 +194,11 @@ body {
     font-size: 16px;
 }
 
+/*これはユーザのヘッダの設定だけど、一応ここに書いてる。*/
+#member_conf {
+    color: #BCBCBC;
+}
+
 .event_title {
     font-size: 16px;
     margin: 0 16px 0 8px;
@@ -265,8 +270,20 @@ body {
     border-radius: 0 0 10px 10px;
 }
 
-.expand-footer .fa-caret-down{
+.expand-footer .fa-caret-down {
     color: #66615b;
+}
+
+.user-list .mdl-chip {
+    margin-top: 0;
+}
+
+.config{
+    color: #BCBCBC;
+}
+
+.config :hover {
+    color: #E57C3E;
 }
 
 /*---------user ver.2----------*/

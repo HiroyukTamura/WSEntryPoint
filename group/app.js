@@ -697,9 +697,11 @@ function setOnClickGroupConfigLis(menu) {
     });
 }
 
-function setOnClickGroupMemberConfigLis(menu) {
-    menu.on('click', function (e) {
+function setOnClickGroupMemberConfigLis() {
+    $('#member_conf').on('click', function (e) {
         e.preventDefault();
+        $('#column2 .mdl-list .mdl-chip').fadeOut();
+
         console.log('click');
         return false;
     });
@@ -928,15 +930,31 @@ function initUserList() {
             '<li class="mdl-list__item mdl-pre-upgrade">'+
                 '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                     '<img src="'+ photoUrl +'" alt="user-image">'+
-                    '<span>'+ member.name +'</span>'+
+                    '<span>'+ member.name +'&nbsp;&nbsp;<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>'+'</span>'+
                 '</span>'+
+
                 '<span class="mdl-list__item-secondary-action">'+
                     '<span class="mdl-chip health-rec-btn">'+
                         '<span class="mdl-chip__text">体調記録&nbsp;&nbsp;<i class="fas fa-external-link-square-alt fa-lg"></i></span>'+
                     '</span>'+
                 '</span>'+
+
+                '<button class="mdl-button mdl-js-button mdl-button--icon ele_header_button" data-mdl-for="'+ key +'"></button>'+
             '</li>'
         );
+
+        var list =
+            $('<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" data-mdl-for="'+key+'">'+
+                '<li class="mdl-menu__item mdl-pre-upgrade stop-share">体調記録のシェアをやめる</li>'+
+                '<li class="mdl-menu__item mdl-pre-upgrade discourage">退会させる</li>'+
+                '<li class="mdl-menu__item mdl-pre-upgrade cancel-inv">招待をとりやめる</li>'+
+                '<li class="mdl-menu__item mdl-pre-upgrade reg-my-user">自分のユーザリストに登録する</li>'+
+            '</ul>').appendTo($('.user-list'));
+
+        li.find('.config').on('click', function (e) {
+            var rect = this.getBoundingClientRect();
+            $('#nav-right .mdl-menu__container').css('top', rect.top).css('right', rect.right)[0].click();
+        });
 
         if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
             li.find('.health-rec-btn').removeClass('health-rec-btn').addClass('invited').find('.mdl-chip__text').html("招待中");
@@ -953,28 +971,28 @@ function initUserList() {
                 return false;
             });
 
-            var dropDown = $(
-                '<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" for="'+ key +'">'+
-                    '<li class="mdl-menu__item mdl-pre-upgrade">グループから退会させる</li>'+
-                '</ul>'
-            );
+            // var dropDown = $(
+            //     '<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" for="'+ key +'">'+
+            //         '<li class="mdl-menu__item mdl-pre-upgrade">グループから退会させる</li>'+
+            //     '</ul>'
+            // );
+            //
+            // dropDown.find('.mdl-menu__item').on("click", function (e) {
+            //     var index = $(this).index();
+            //     for(index; index < keys.length; index++){
+            //         if(keys[index] === DEFAULT || keys[index] ===  user.uid)
+            //             continue;
+            //         break;
+            //     }
+            //     var photoUrl = groupJson['member'][keys[index]]['photoUrl'];
+            //     img.attr('src', avoidNullValue(photoUrl, 'img/icon.png'));
+            //     var userNameVal = groupJson['member'][keys[index]]['name'];
+            //     userName.html(avoidNullValue(userNameVal, "ユーザ名未設定"));
+            //
+            //     openDialog(dialogExclude);
+            // });
 
-            dropDown.find('.mdl-menu__item').on("click", function (e) {
-                var index = $(this).index();
-                for(index; index < keys.length; index++){
-                    if(keys[index] === DEFAULT || keys[index] ===  user.uid)
-                        continue;
-                    break;
-                }
-                var photoUrl = groupJson['member'][keys[index]]['photoUrl'];
-                img.attr('src', avoidNullValue(photoUrl, 'img/icon.png'));
-                var userNameVal = groupJson['member'][keys[index]]['name'];
-                userName.html(avoidNullValue(userNameVal, "ユーザ名未設定"));
-
-                openDialog(dialogExclude);
-            });
-
-            dpList.append(dropDown);
+            // dpList.append(dropDown);
         }
 
         userList.append(li);
