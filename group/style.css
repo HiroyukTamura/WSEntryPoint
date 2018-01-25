@@ -1,10 +1,3 @@
-#overlay {
-    z-index: 4;
-    position: fixed;
-    right: 48px;
-    bottom: 32px;
-}
-
 body {
     overflow-x: auto;
     background-color: #F4F3EF;
@@ -284,6 +277,7 @@ body {
 
 .config :hover {
     color: #E57C3E;
+    cursor: pointer;
 }
 
 /*---------user ver.2----------*/
@@ -648,7 +642,29 @@ body {
     display: none;
 }
 
-    /*-----------FAB-------------*/
-#overlay.mdl-button--fab.mdl-button--colored{
+/*-----------FAB-------------*/
+
+#dummy-w {
+    display: none;
+}
+
+.overlay-fab {
+    z-index: 4;
+    position: fixed;
+    right: 36px;
+}
+
+#overlay {
     background-color: #E57C3E;
+    bottom: 32px;
+}
+
+#add-doc {
+    background-color: #E57C3E;
+    bottom: 120px;
+}
+
+#add-record {
+    background-color: #E57C3E;
+    bottom: 208px;
 }

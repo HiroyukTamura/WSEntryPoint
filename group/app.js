@@ -11,6 +11,7 @@ const dialogExclude = $('#dialog-img-w');
 const dialogRemoveContents = $('#remove-contents');
 const dialogEditComment = $('#edit-comment');
 const dialogConfigGroup =$('#group-config');
+const dialogAddFile =$('#add-file-modal');
 const dialogPositibeBtn = $('#add-group-btn');
 var clickedColor = 0;
 var inputVal = null;
@@ -854,6 +855,110 @@ function setLisnters() {
     setOnGroupImageClickLis();
     setOnGroupImageInputChange();
     $('#setting-dp-ul').show();
+    setOnClickAddContentsBtn();
+    setOnChangeAddContentInput();
+}
+
+function setOnClickAddContentsBtn() {
+    $('#overlay').on('click', function (e) {
+        console.log('add-contents');
+        openDialog(dialogAddFile);
+        return false;
+    });
+}
+
+function setOnChangeAddContentInput() {
+    $('#dummy-overlay').on('change', function (e) {
+        e.preventDefault();
+        console.log('input change');
+
+        if(uploadTask.length || !e.target.files || !e.target.files[0])
+            return;
+
+        var mimeType = e.target.files[0].type.toLowerCase();
+        if(mimeType !== 'image/jpeg' || mimeType !==  'image/png' || mimeType !== 'image/gif' || mimeType !== "text/plain" ||
+            mimeType !== "text/txt" || mimeType !== "text/html" || mimeType !== "text/css" || mimeType !== "text/xml" || mimeType !== "application/pdf") {
+            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            return;
+        }
+
+        var fileName = e.target.files[0].name;
+        var dotPos = fileName.indexOf('.');
+        if(dotPos === -1){
+            showNotification('そのファイル形式はアップロードできません', 'warning');
+            return;
+        }
+
+        var extension = fileName.substring(dotPos+1);
+        if (extension.toLowerCase() !== 'jpeg' && extension.toLowerCase() !== 'jpg' && extension.toLowerCase() !== 'png') {
+            showNotification('そのファイル形式はアップロードできません', 'warning');
+            return;
+        }
+
+        if(e.target.files[0].size > 10 * 1000 * 1000) {
+            showNotification('10MBを超えるファイルはアップロードできません', 'warning');
+            return;
+        }
+
+        var notification = showProgressNotification();
+
+        var key = defaultDatabase.ref('keyPusher').push().key;
+        var suf = mimeType.substring(4);//sufは'/'を含む
+        console.log(suf);
+        groupImageTask = firebase.storage().ref().child('group_icon').child(key+'.'+suf)
+            .put(e.target.files[0]);
+
+        groupImageTask.on('state_changed', function(snapshot){
+            var progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+                case firebase.storage.TaskState.PAUSED: // or 'paused'
+                    console.log('Upload is paused');
+                    break;
+                case firebase.storage.TaskState.RUNNING: // or 'running'
+                    console.log('Upload is running');
+                    var msg = '<strong>'+progress+'%</strong>';
+                    notification.update({
+                        'message': msg,
+                        'progress': progress
+                    });
+                    break;
+            }
+        }, function (error) {
+            //todo エラーデバッグすること
+            groupImageTask = null;//これで「キャンセルしました」が出なくなる
+            notification.close();
+            var errMsg = ERR_MSG_OPE_FAILED;
+            switch (error.code){
+                case 'storage/retry_limit_exceeded':
+                    errMsg ='タイムアウトしました';
+                    break;
+                case 'storage/invalid_checksum':
+                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                    break;
+                case 'storage/canceled':
+                    errMsg = 'キャンセルしました';
+                    break;
+                case 'storage/cannot_slice_blob':
+                    errMsg = errMsg + '。ファイルを確かめてもう一度アップロードしてみてください。';
+                    break;
+                case 'storage/server_wrong_file_size':
+                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                    break;
+            }
+            showNotification(errMsg, 'danger');
+
+        }, function () {
+            var downloadURL = groupImageTask.snapshot.downloadURL;
+            console.log(downloadURL);
+            $('.group-icon img').attr('src', downloadURL);
+
+            groupImageTask = null;
+            notification.close();
+            showNotification('ファイルをアップロードしました', 'success');
+        });
+        return false;
+    });
 }
 
 function onClickModalCircleI(target) {
@@ -943,17 +1048,20 @@ function initUserList() {
             '</li>'
         );
 
-        var list =
-            $('<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" data-mdl-for="'+key+'">'+
-                '<li class="mdl-menu__item mdl-pre-upgrade stop-share">体調記録のシェアをやめる</li>'+
-                '<li class="mdl-menu__item mdl-pre-upgrade discourage">退会させる</li>'+
-                '<li class="mdl-menu__item mdl-pre-upgrade cancel-inv">招待をとりやめる</li>'+
-                '<li class="mdl-menu__item mdl-pre-upgrade reg-my-user">自分のユーザリストに登録する</li>'+
-            '</ul>').appendTo($('.user-list'));
+        //todo ここ実装後回しで。
+        // var list =
+        //     $('<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" data-mdl-for="'+key+'">'+
+        //         '<li class="mdl-menu__item mdl-pre-upgrade stop-share">体調記録のシェアをやめる</li>'+
+        //         '<li class="mdl-menu__item mdl-pre-upgrade discourage">退会させる</li>'+
+        //         '<li class="mdl-menu__item mdl-pre-upgrade cancel-inv">招待をとりやめる</li>'+
+        //         '<li class="mdl-menu__item mdl-pre-upgrade reg-my-user">自分のユーザリストに登録する</li>'+
+        //     '</ul>').appendTo($('.user-list'));
 
         li.find('.config').on('click', function (e) {
-            var rect = this.getBoundingClientRect();
-            $('#nav-right .mdl-menu__container').css('top', rect.top).css('right', rect.right)[0].click();
+            // var rect = this.getBoundingClientRect();
+            // var ele = $('#nav-right .mdl-menu__container');
+            // ele.css('top', rect.top).css('right', rect.right);
+            // $('#setting-drp-btn')[0].click();
         });
 
         if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
@@ -1270,10 +1378,10 @@ function createHtmlAsData(header, title, comment, key, photoUrl, fileUrl) {
                 '<img class="user-icon" src="'+ photoUrl +'" alt="user-icon">'+
                 '<span class="event_title">'+ header +'</span>'+
                 '<div class="mdl-layout-spacer mdl-pre-upgrade"></div>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button mdl-pre-upgrade">'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button mdl-pre-upgrade" title="コメントを編集">'+
                     '<i class="fas fa-comment"></i>'+
                 '</button>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade" title="コンテンツを削除">'+
                     '<i class="fas fa-times"></i>'+
                 '</button>'+
                 // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_down ele_header_button mdl-pre-upgrade">'+
@@ -1401,6 +1509,7 @@ function openDialog(toShowEle, fileName) {
         dialogRemoveContents.hide();
         dialogEditComment.hide();
         dialogConfigGroup.hide();
+        dialogAddFile.hide();
         $('#modal_input').val('');
 
     } else if (toShowEle === dialogExclude){
@@ -1409,6 +1518,7 @@ function openDialog(toShowEle, fileName) {
         dialogRemoveContents.hide();
         dialogEditComment.hide();
         dialogConfigGroup.hide();
+        dialogAddFile.hide();
         dialogPositibeBtn.removeAttr('disabled');
 
     } else if (toShowEle === dialogRemoveContents){
@@ -1418,6 +1528,7 @@ function openDialog(toShowEle, fileName) {
         dialogAddSch.hide();
         dialogEditComment.hide();
         dialogConfigGroup.hide();
+        dialogAddFile.hide();
         dialogRemoveContents.find('p').html("本当に「" + fileName + "」を削除しますか？");
 
     } else if (toShowEle === dialogConfigGroup) {
@@ -1427,6 +1538,7 @@ function openDialog(toShowEle, fileName) {
         dialogRemoveContents.hide();
         dialogAddSch.hide();
         dialogEditComment.hide();
+        dialogAddFile.hide();
         var input = $('#new-group-name').val(fileName);
         dialog.showModal();//これつけないとlabelがテキストに重なってしまう
         input.parent().addClass('is-dirty').removeClass('is-invalid');
@@ -1439,7 +1551,12 @@ function openDialog(toShowEle, fileName) {
         dialogRemoveContents.hide();
         dialogAddSch.hide();
         dialogConfigGroup.hide();
+        dialogAddFile.hide();
+
+    } else if (toShowEle === dialogAddFile) {
+
     }
+
     dialog.showModal();
 }
 
@@ -1497,13 +1614,6 @@ function onGetSnapOfGroupNode(snapshot) {
     showAll();
 }
 
-function setElementAsMdl(clone) {
-    var ele = clone.find(".mdl-pre-upgrade");
-    for (var i=0; i<ele.length; i++){
-        componentHandler.upgradeElement(ele.eq(i)[0]);
-    }
-}
-
 function showAll() {
     console.log("showAll()");
     if(asyncCount !== 2){
@@ -1519,6 +1629,20 @@ function showAll() {
         updateDuration: 0,
         appendTo: $('dialog')[0],
         distance: 0,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: {
+                    enabled: false
+                }
+            }
+        }
+    });
+
+    tippy('.overlay-fab', {
+        updateDuration: 0,
+        dynamicTitle: false,
+        distance: 10,
+        placement: 'left',
         popperOptions: {
             modifiers: {
                 preventOverflow: {

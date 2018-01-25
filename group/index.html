@@ -109,9 +109,21 @@
                 </div>
 
                 <main class="mdl-layout__content">
-                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" id="overlay">
-                        <i class="material-icons">add</i>
+                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored overlay-fab" id="overlay" title="ファイルを追加">
+                        <i class="material-icons">create_new_folder</i>
                     </button>
+
+                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored overlay-fab" id="add-doc" title="ドキュメントを追加">
+                        <i class="material-icons">description</i>
+                    </button>
+
+                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored overlay-fab" id="add-record" title="体調記録を共有">
+                        <i class="material-icons">share</i>
+                    </button>
+
+                    <div id="dummy-w">
+                        <input id="dummy-overlay" type="file" accept="image/jpeg,image/png,image/gif,text/plain,text/txt,text/html,text/css,text/xml,application/pdf">
+                    </div>
 
                     <div class="page-content">
                         <!--<div id="overlay">-->
@@ -122,63 +134,6 @@
                         <!-- Your content goes here -->
                         <div id="wrapper" class="mdl-grid">
                             <div class="mdl-cell mdl-cell--7-col" id="left-pain">
-
-                                <!--<div class="card members">-->
-                                <!--<div class="ele_header">-->
-                                <!--<i class="fas fa-users fa-lg ele-icon"></i>-->
-                                <!--<span class="event_title">メンバー</span>-->
-                                <!--<div class="mdl-layout-spacer"></div>-->
-                                <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon remove_btn ele_header_button">-->
-                                <!--<i class="fas fa-times"></i>-->
-                                <!--</button>-->
-                                <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_down ele_header_button">-->
-                                <!--<i class="fas fa-angle-down"></i>-->
-                                <!--</button>-->
-                                <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_up ele_header_button">-->
-                                <!--<i class="fas fa-angle-up"></i>-->
-                                <!--</button>-->
-                                <!--</div>-->
-
-                                <!--<hr class="seem">-->
-
-                                <!--<div class="card-cont flex-box">-->
-                                <!--<div class="user-img-w">-->
-                                <!--<div class="user-image">-->
-                                <!--<img src="img/icon.png" class="user-image-i">-->
-                                <!--</div>-->
-                                <!--<p class="user-name">田村ピロシキfafafafa</p>-->
-                                <!--</div>-->
-                                <!--<div class="user-img-w">-->
-                                <!--<div class="user-image">-->
-                                <!--<img src="img/icon.png" class="user-image-i">-->
-                                <!--</div>-->
-                                <!--<p class="user-name">田村ピロシキfafafafa</p>-->
-                                <!--</div>-->
-                                <!--<div class="user-img-w">-->
-                                <!--<div class="user-image">-->
-                                <!--<img src="img/icon.png" class="user-image-i">-->
-                                <!--</div>-->
-                                <!--<p class="user-name">田村ピロシキfafafafa</p>-->
-                                <!--</div>-->
-                                <!--<div class="user-img-w">-->
-                                <!--<div class="user-image">-->
-                                <!--<img src="img/icon.png" class="user-image-i">-->
-                                <!--</div>-->
-                                <!--<p class="user-name">田村ピロシキfafafafa</p>-->
-                                <!--</div>-->
-                                <!--<div class="user-img-w">-->
-                                <!--<div class="user-image">-->
-                                <!--<img src="img/icon.png" class="user-image-i">-->
-                                <!--</div>-->
-                                <!--<p class="user-name">田村ピロシキfafafafa</p>-->
-                                <!--</div>-->
-                                <!--</div>-->
-                                <!--<div class="expand-footer">-->
-                                <!--<button class="mdl-button mdl-js-button">-->
-                                <!--<i class="fas fa-caret-down"></i>-->
-                                <!--</button>-->
-                                <!--</div>-->
-                                <!--</div>-->
 
                                 <div class="card comments dummy">
                                     <div class="ele_header">
@@ -302,46 +257,6 @@
                                         </ul>
                                     </div>
                                 </div>
-
-                                <!--<div class="card file">-->
-                                    <!--<div class="ele_header">-->
-                                        <!--<i class="fas fa-comments fa-lg ele-icon"></i>-->
-                                        <!--<span class="event_title">田村ピロシキ at 2017.4.5</span>-->
-                                        <!--<div class="mdl-layout-spacer"></div>-->
-                                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon remove_btn ele_header_button">-->
-                                            <!--<i class="fas fa-times"></i>-->
-                                        <!--</button>-->
-                                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_down ele_header_button">-->
-                                            <!--<i class="fas fa-angle-down"></i>-->
-                                        <!--</button>-->
-                                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_up ele_header_button">-->
-                                            <!--<i class="fas fa-angle-up"></i>-->
-                                        <!--</button>-->
-                                    <!--</div>-->
-
-                                    <!--<div class="flex-box file-wrapper">-->
-                                        <!--<img class="file-icon" src="img/icon.png" alt="file-icon">-->
-                                        <!--<ul class="demo-list-three mdl-list">-->
-                                            <!--<li class="mdl-list__item mdl-list__item&#45;&#45;three-line">-->
-                                                <!--<span class="mdl-list__item-primary-content">-->
-                                                    <!--<span>image.jpg</span>-->
-                                                    <!--<span class="mdl-list__item-text-body">-->
-                                                        <!--事務所の地図あげておきます-->
-                                                    <!--</span>-->
-                                                <!--</span>-->
-                                                <!--<span class="mdl-list__item-secondary-content">-->
-                                                <!--<button id="hogehogeef"-->
-                                                        <!--class="mdl-button mdl-js-button mdl-button&#45;&#45;icon">-->
-                                                    <!--<i class="material-icons">more_vert</i>-->
-                                                <!--</button>-->
-                                            <!--</span>-->
-                                            <!--</li>-->
-                                        <!--</ul>-->
-                                    <!--</div>-->
-                                    <!--<div class="show-img">-->
-                                        <!--<img src="img/icon.png" alt="file-icon">-->
-                                    <!--</div>-->
-                                <!--</div>-->
                             </div>
 
 
@@ -480,6 +395,22 @@
                             <input class="mdl-textfield__input" type="text" id="new-group-name">
                             <label class="mdl-textfield__label" for="new-group-name">グループ名</label>
                             <span class="mdl-textfield__error">グループ名を入力してください</span>
+                        </div>
+                    </form>
+                </div>
+                <div id="add-file-modal">
+                    <div class="group-icon" title="アイコンを変更">
+                        <img src="img/icon.png" alt="group-image" class="rounded-circle">
+                        <div class="rounded-circle">
+                            <i class="fas fa-folder fa-sm"></i>
+                        </div>
+                        <input type="file" accept="image/png,image/jpeg,image/gif">
+                    </div>
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <textarea class="mdl-textfield__input" type="text" rows="4" id="new-file-comment"></textarea>
+                            <label class="mdl-textfield__label" for="new-file-comment">コメント</label>
+                            <span class="mdl-textfield__error"></span>
                         </div>
                     </form>
                 </div>
