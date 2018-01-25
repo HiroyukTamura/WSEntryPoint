@@ -674,6 +674,10 @@ body {
     display: none;
 }
 
+.drop-space.is-uploaded .drag-cont{
+    display: none;
+}
+
 .progress {
     margin: auto 0;
     width: 100%;
@@ -708,6 +712,34 @@ body {
     outline-offset: -20px;
     outline-color: #c8dadf;
     background-color: #fff;
+}
+
+.box__success img {
+    border-radius: unset;
+    margin: 0 auto 16px auto;
+    display: block;
+}
+
+.box__success {
+    margin: auto;
+    padding: 16px;
+}
+
+.box__success p {
+    text-align: center;
+    margin: 0;
+}
+
+.box__success .file-name {
+    margin-bottom: 24px;
+}
+
+.box__success {
+    display: none;
+}
+
+.drop-space.is-uploaded .box__success{
+    display: block;
 }
 
 /*-----------FAB-------------*/

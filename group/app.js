@@ -914,7 +914,7 @@ function onNewFileInputChange(file) {
         return;
 
     var mimeType = file.type.toLowerCase();
-    if(mimeType !== 'image/jpeg' && mimeType !==  'image/png' && mimeType !== 'image/gif' && mimeType !== "text/plain" &&
+    if(mimeType !== 'image/jpeg' && mimeType !== 'image/png' && mimeType !== 'image/gif' && mimeType !== "text/plain" &&
         mimeType !== "text/txt" && mimeType !== "text/html" && mimeType !== "text/css" && mimeType !== "text/xml" && mimeType !== "application/pdf") {
         console.log(mimeType);
         showNotification('そのファイル形式はアップロードできません', 'warning');
@@ -929,7 +929,7 @@ function onNewFileInputChange(file) {
     }
 
     var extension = fileName.substring(dotPos+1);
-    if(extension !== 'jpeg' && extension !==  'png' && extension !== 'gif' && extension !== "txt" &&
+    if(extension !== 'jpeg' && extension !== 'jpg' && extension !==  'png' && extension !== 'gif' && extension !== "txt" &&
         extension !== "html" && extension !== "css" && extension !== "xml" && extension !== "pdf") {
         showNotification('そのファイル形式はアップロードできません', 'warning');
         console.log(extension);
@@ -948,6 +948,7 @@ function onNewFileInputChange(file) {
     var key = defaultDatabase.ref('keyPusher').push().key;
     var suf = mimeType.substring(4);//sufは'/'を含む
     console.log(suf);
+    $('.file-name').html(fileName);
     uploadTask = firebase.storage().ref().child('sample_share_file/'+ groupKey).child(key+'.'+suf)
         .put(file);
 
@@ -989,12 +990,12 @@ function onNewFileInputChange(file) {
                 break;
         }
         showNotification(errMsg, 'danger');
-        //todo 元に戻す
+        $('.drop-space').removeClass('is-uploading');
 
     }, function () {
         var downloadURL = uploadTask.snapshot.downloadURL;
         console.log(downloadURL);
-        // $('.group-icon img').attr('src', downloadURL);
+        $('.drop-space').removeClass('is-uploading').addClass('is-uploaded');
 
         uploadTask = null;
         showNotification('ファイルをアップロードしました', 'success');
