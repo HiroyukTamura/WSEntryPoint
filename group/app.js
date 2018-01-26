@@ -1236,19 +1236,20 @@ function initUserList() {
                 '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                     '<img src="'+ photoUrl +'" alt="user-image">'+
                     '<span>'+ member.name +'&nbsp;&nbsp;' +
-            // '<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>' +
-                    '<div class="btn-group">'+
-                        '<button type="button" class="btn btn-secondary dropdown-toggle rounded-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-                            '<i class="fas fa-cog"></i>' +
-                        '</button>'+
-                        '<div class="dropdown-menu dropdown-menu-right">'+
-                            '<button class="dropdown-item stop-share" type="button">体調記録のシェアをやめる</button>'+
-                            '<button class="dropdown-item reg-my-user" type="button">自分のユーザリストに登録する</button>'+
-                            '<button class="dropdown-item discourage" type="button">退会させる</button>'+
-                            '<button class="dropdown-item cancel-inv" type="button">招待をとりやめる</button>'+
+                // '<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>' +
+                        '<div class="btn-group">'+
+                            '<button type="button" class="btn btn-secondary dropdown-toggle rounded-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                                '<i class="fas fa-cog"></i>' +
+                            '</button>'+
+                            '<div class="dropdown-menu dropdown-menu-right">'+
+                                '<button class="dropdown-item stop-share" type="button">体調記録のシェアをやめる</button>'+
+                                '<button class="dropdown-item reg-my-user" type="button">自分のユーザリストに登録する</button>'+
+                                '<button class="dropdown-item discourage" type="button">退会させる</button>'+
+                                '<button class="dropdown-item cancel-inv" type="button">招待をとりやめる</button>'+
+                            '</div>'+
                         '</div>'+
-                    '</div>'+
-            // '</span>'+
+                // '</span>'+
+                    '</span>'+
                 '</span>'+
 
                 '<span class="mdl-list__item-secondary-action">'+
@@ -1267,9 +1268,11 @@ function initUserList() {
 
         li.find('.discourage').on('click', function (e) {
             console.log('discourage');
+            // todo メンバー退会動作
         });
         li.find('.cancel-inv').on('click', function (e) {
             console.log('cancel-inv');
+            // todo メンバー招待取り消し動作
         });
 
         //体調記録シェア取りやめ項目のセッティング
@@ -1286,6 +1289,17 @@ function initUserList() {
             li.find('.stop-share').hide();
         li.find('.stop-share').on('click', function (e) {
             console.log('stop-share clicked');
+            //todo 未デバッグ
+            defaultDatabase.ref('group/'+ groupKey +'/contents/' + key).set(null).then(function (value) {
+
+                showNotification('体調記録の共有を停止しました', 'success');
+                delete  groupJson['contents'][key];
+                li.find('.health-rec-btn').hide();
+
+            }).catch(function (error) {
+                console.log(error.code, error.message);
+                showOpeErrNotification(defaultDatabase);
+            });
         });
 
         //ユーザ登録項目のセッティング
@@ -1293,12 +1307,10 @@ function initUserList() {
             li.find('.reg-my-user').hide();
         li.find('.reg-my-user').on('click', function (e) {
             console.log('.reg-my-user clicked');
+
         });
 
-        li.find('.config').on('click', function (e) {
-            console.log('クリックイベント取りました－');
-        });
-
+        //chipsのセッティング
         if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
             li.find('.health-rec-btn').removeClass('health-rec-btn').addClass('invited').find('.mdl-chip__text').html("招待中");
             // li.find('.mdl-list__item-secondary-action').remove();
