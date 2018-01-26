@@ -541,10 +541,6 @@ function onLoginSuccess() {
     groupKey = getGroupKey();
     console.log("onLoginSuccess:", user, groupKey);
 
-    defaultDatabase.ref("group/" + groupKey).once("value").then(function (snapshot) {
-        onGetGroupSnap(snapshot);
-    });
-
     defaultDatabase.ref("userData/" + user.uid + "/group").once("value").then(function (snapshot) {
        onGetSnapOfGroupNode(snapshot);
     });
@@ -563,8 +559,14 @@ function onLoginSuccess() {
         if (snapshot.exists()) {
             friendJson = snapshot.toJSON();
             delete friendJson[DEFAULT];
+
+            defaultDatabase.ref("group/" + groupKey).once("value").then(function (snapshot) {
+                onGetGroupSnap(snapshot);
+            });
+
         } else {
-            console.log('friendJson !snapshot.exist()')
+            console.log('friendJson !snapshot.exist()');
+            onSnapShotVanished();
         }
     });
 
@@ -1217,11 +1219,9 @@ function onGetGroupSnap(snapshot) {
 function initUserList() {
     //userListを整備
     var userList = $('.card.user-list .mdl-list');
-    var dpList = $('#dp-list');
     var keys = Object.keys(groupJson.member);
-    var img = $(dialog).find('img');
-    var userName = $(dialog).find('h4');
     var sortedKeys = [];
+    var friends = Object.keys(friendJson);
 
     keys.forEach(function (key) {
         if(key === DEFAULT || key === user.uid)
@@ -1235,7 +1235,20 @@ function initUserList() {
             '<li class="mdl-list__item mdl-pre-upgrade">'+
                 '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                     '<img src="'+ photoUrl +'" alt="user-image">'+
-                    '<span>'+ member.name +'&nbsp;&nbsp;<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>'+'</span>'+
+                    '<span>'+ member.name +'&nbsp;&nbsp;' +
+            // '<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>' +
+                    '<div class="btn-group">'+
+                        '<button type="button" class="btn btn-secondary dropdown-toggle rounded-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                            '<i class="fas fa-cog"></i>' +
+                        '</button>'+
+                        '<div class="dropdown-menu dropdown-menu-right">'+
+                            '<button class="dropdown-item stop-share" type="button">体調記録のシェアをやめる</button>'+
+                            '<button class="dropdown-item reg-my-user" type="button">自分のユーザリストに登録する</button>'+
+                            '<button class="dropdown-item discourage" type="button">退会させる</button>'+
+                            '<button class="dropdown-item cancel-inv" type="button">招待をとりやめる</button>'+
+                        '</div>'+
+                    '</div>'+
+            // '</span>'+
                 '</span>'+
 
                 '<span class="mdl-list__item-secondary-action">'+
@@ -1243,28 +1256,48 @@ function initUserList() {
                         '<span class="mdl-chip__text">体調記録&nbsp;&nbsp;<i class="fas fa-external-link-square-alt fa-lg"></i></span>'+
                     '</span>'+
                 '</span>'+
-
-                '<button class="mdl-button mdl-js-button mdl-button--icon ele_header_button" data-mdl-for="'+ key +'"></button>'+
             '</li>'
         );
 
-        //todo ここ実装後回しで。
-        var list =
-            $('<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" data-mdl-for="'+key+'">'+
-                '<li class="mdl-menu__item mdl-pre-upgrade stop-share">体調記録のシェアをやめる</li>'+
-                '<li class="mdl-menu__item mdl-pre-upgrade discourage">退会させる</li>'+
-                '<li class="mdl-menu__item mdl-pre-upgrade cancel-inv">招待をとりやめる</li>'+
-                '<li class="mdl-menu__item mdl-pre-upgrade reg-my-user">自分のユーザリストに登録する</li>'+
-            '</ul>').appendTo($('.user-list'));
+        //退会・招待とりやめ項目のセッティング
+        if (groupJson["member"][key]['isChecked'] == true)
+            li.find('.cancel-inv').hide();
+        else
+            li.find('.discourage').hide();
 
-        // dpList.append(list);
+        li.find('.discourage').on('click', function (e) {
+            console.log('discourage');
+        });
+        li.find('.cancel-inv').on('click', function (e) {
+            console.log('cancel-inv');
+        });
 
-        // li.find('.config').on('click', function (e) {
-            // var rect = this.getBoundingClientRect();
-            // var ele = $('#nav-right .mdl-menu__container');
-            // ele.css('top', rect.top).css('right', rect.right);
-        //     $('#setting-drp-btn')[0].click();
-        // });
+        //体調記録シェア取りやめ項目のセッティング
+        var isSharedRecord = false;
+        for(var data in groupJson['contents']) {
+            if (!groupJson['contents'].hasOwnProperty(data)) continue;
+
+            if(data.type === 'data' && data.whose === key) {
+                isSharedRecord = true;
+                break;
+            }
+        }
+        if (!isSharedRecord)
+            li.find('.stop-share').hide();
+        li.find('.stop-share').on('click', function (e) {
+            console.log('stop-share clicked');
+        });
+
+        //ユーザ登録項目のセッティング
+        if (friends.indexOf(key) !== -1)
+            li.find('.reg-my-user').hide();
+        li.find('.reg-my-user').on('click', function (e) {
+            console.log('.reg-my-user clicked');
+        });
+
+        li.find('.config').on('click', function (e) {
+            console.log('クリックイベント取りました－');
+        });
 
         if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
             li.find('.health-rec-btn').removeClass('health-rec-btn').addClass('invited').find('.mdl-chip__text').html("招待中");
@@ -1280,34 +1313,12 @@ function initUserList() {
 
                 return false;
             });
-
-            // var dropDown = $(
-            //     '<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-pre-upgrade" for="'+ key +'">'+
-            //         '<li class="mdl-menu__item mdl-pre-upgrade">グループから退会させる</li>'+
-            //     '</ul>'
-            // );
-            //
-            // dropDown.find('.mdl-menu__item').on("click", function (e) {
-            //     var index = $(this).index();
-            //     for(index; index < keys.length; index++){
-            //         if(keys[index] === DEFAULT || keys[index] ===  user.uid)
-            //             continue;
-            //         break;
-            //     }
-            //     var photoUrl = groupJson['member'][keys[index]]['photoUrl'];
-            //     img.attr('src', avoidNullValue(photoUrl, 'img/icon.png'));
-            //     var userNameVal = groupJson['member'][keys[index]]['name'];
-            //     userName.html(avoidNullValue(userNameVal, "ユーザ名未設定"));
-            //
-            //     openDialog(dialogExclude);
-            // });
-
-            // dpList.append(dropDown);
         }
-
 
         userList.append(li);
     });
+
+    $('.btn-group').dropdown();
 }
 
 function initContents() {

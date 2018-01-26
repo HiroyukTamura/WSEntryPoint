@@ -135,6 +135,34 @@ body {
     display: none;
 }
 
+/*----------------ユーザリストドロップダウン------------------*/
+.dropdown-toggle::after {
+    display:none
+}
+
+.dropdown-toggle {
+    border: none;
+    cursor: pointer;
+    padding: .5rem;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    color: #BCBCBC;
+}
+
+.dropdown-menu {
+    z-index: 4;
+    width: fit-content;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+.user-list .mdl-list__item {
+    overflow: visible;
+}
+
 /*------------frame work---------------*/
 #wrapper {
     margin: 0 auto;
