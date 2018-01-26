@@ -428,6 +428,24 @@
                         <input id="dummy-overlay" type="file" accept="image/jpeg,image/png,image/gif,text/plain,text/txt,text/html,text/css,text/xml,application/pdf">
                     </div>
                 </div>
+                <div id="modal-new-doc">
+                    <!--<h4>ドキュメントを追加</h4>-->
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="new-doc-title">
+                            <label class="mdl-textfield__label" for="new-doc-title">ドキュメントのタイトル</label>
+                            <span class="mdl-textfield__error"></span>
+                        </div>
+                    </form>
+                    <form action="#" class="doc-cont-form">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <!--textereaはpattenに非対応-->
+                            <textarea class="mdl-textfield__input" type="text" rows="6" id="new-doc-cont"></textarea>
+                            <label class="mdl-textfield__label" for="new-doc-cont">内容を入力</label>
+                            <span class="mdl-textfield__error"></span>
+                        </div>
+                    </form>
+                </div>
             </div>
             <div class="mdl-dialog__actions">
                 <button type="button" class="mdl-button" id="add-group-btn">退会させる</button>

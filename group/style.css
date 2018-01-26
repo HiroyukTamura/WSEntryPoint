@@ -746,6 +746,20 @@ body {
     display: block;
 }
 
+/*------------ドキュメント追加-------------*/
+.modal-new-doc-m {
+    width: 80%;
+}
+
+/*#modal-new-doc h4{*/
+    /*text-align: center;*/
+    /*margin-bottom: 16px;*/
+    /*margin-top: 0;*/
+/*}*/
+
+.doc-cont-form , .doc-cont-form > .mdl-textfield {
+    width: 100%;
+}
 /*-----------FAB-------------*/
 
 #dummy-w {
