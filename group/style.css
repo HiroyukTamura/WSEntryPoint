@@ -505,7 +505,7 @@ body {
 }
 
 .file li {
-    padding: 0 16px 8px 16px;
+    padding: 0 32px 8px 16px;
     height: auto;
 }
 
@@ -520,6 +520,10 @@ body {
 
 .file-wrapper {
     margin-top: 8px;
+}
+
+.error-icon {
+    color: #E57C3E;
 }
 
 /*--------dialog------------*/

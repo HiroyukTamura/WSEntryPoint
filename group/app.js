@@ -647,7 +647,11 @@ function onLoginSuccess() {
             uploadingData['comment'] = inputComment.val();
             defaultDatabase.ref('group/'+ groupKey +'/contents/'+ uploadingData.contentKey).update(uploadingData).then(function (value) {
 
-                showNotification('更新しました', 'success');//todo これでいいのかデバッグ
+                showNotification('更新しました', 'success');
+                groupJson.contents[uploadingData.contentKey] = uploadingData;
+                addOneContent(uploadingData.contentKey);
+                //todo 先頭にするべきでは？
+
                 uploadingData = null;
 
             }).catch(function (error) {
@@ -1148,37 +1152,34 @@ function initUserList() {
 }
 
 function initContents() {
-    if(!groupJson.contents){
-        //todo データがない旨表示
-        return;
-    }
+    if(groupJson.contents)
+        for (var key in groupJson.contents)
+            if (groupJson.contents.hasOwnProperty(key))
+                addOneContent(key);
+}
 
-    for (var key in groupJson.contents){
-        if(!groupJson.contents.hasOwnProperty(key))
-            continue;
-
-        var contentData = groupJson["contents"][key];
-        console.log(contentData);
-        switch (contentData.type){
-            case "document":
-                appendContentAsDoc(contentData, key);
-                break;
-            case "image/jpeg":
-            case "image/png":
-            case "image/gif":
-                new ContentAppenderForImg(contentData, key, timeline);
-                break;
-            case "data":
-                break;
-            case "text/plain":
-            case "text/txt":
-            case "text/html":
-            case "text/css":
-            case "text/xml":
-            case "application/pdf":
-                new ContentAppenderAsOtherFile(contentData, key, timeline);
-                break;
-        }
+function addOneContent(key) {
+    var contentData = groupJson["contents"][key];
+    console.log(contentData);
+    switch (contentData.type){
+        case "document":
+            appendContentAsDoc(contentData, key);
+            break;
+        case "image/jpeg":
+        case "image/png":
+        case "image/gif":
+            new ContentAppenderForImg(contentData, key, timeline);
+            break;
+        case "data":
+            break;
+        case "text/plain":
+        case "text/txt":
+        case "text/html":
+        case "text/css":
+        case "text/xml":
+        case "application/pdf":
+            new ContentAppenderAsOtherFile(contentData, key, timeline);
+            break;
     }
 }
 
@@ -1216,7 +1217,7 @@ function appendContentAsDoc(contentData, key) {
         return false;
     });
 
-    timeline.append(element);
+    timeline.prepend(element);
 }
 
 (function() {
@@ -1249,7 +1250,7 @@ function appendContentAsDoc(contentData, key) {
             ele.find('.edit-comment').hide();
         }
 
-        this.mTmeline.append(ele);
+        this.mTmeline.prepend(ele);
         var img = ele.find('.show-img img');
         firebase.storage().ref("shareFile/" + groupKey +"/"+ this.mKey).getDownloadURL().then(function(url) {
             // Insert url into an <img> tag to "download"
@@ -1260,12 +1261,14 @@ function appendContentAsDoc(contentData, key) {
         }).catch(function(error) {
             var errIcon = $(
                 '<span class="mdl-list__item-secondary-content mdl-pre-upgrade">'+
-                    '<i class="material-icons" title="画像を取得できませんでした">sms_failed</i>'+
+                    '<i class="material-icons error-icon" title="画像を取得できませんでした">sms_failed</i>'+
                 '</span>'
                 );
 
             ele.find('li.mdl-list__item').append(errIcon);
+            ele.find('.show-img').hide();
             setElementAsMdl(ele);
+            initTippyNormal();
 
             // A full list of error codes is available at
             // https://firebase.google.com/docs/storage/web/handle-errors
@@ -1326,7 +1329,7 @@ function appendContentAsDoc(contentData, key) {
 
         ele.find('.show-img').hide();
 
-        this.mTmeline.append(ele);
+        this.mTmeline.prepend(ele);
 
         firebase.storage().ref("shareFile/" + groupKey +"/"+ this.mKey).getDownloadURL().then(function(url) {
             var openFileIcon = $(
@@ -1671,6 +1674,12 @@ function showAll() {
         }
     });
 
+    initTippyNormal();
+
+    postLoad.show();
+}
+
+function initTippyNormal() {
     tippy('[title]', {
         updateDuration: 0,
         dynamicTitle: false,
@@ -1682,6 +1691,4 @@ function showAll() {
             }
         }
     });
-
-    postLoad.show();
 }
