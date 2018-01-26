@@ -17,6 +17,7 @@ var clickedColor = 0;
 var inputVal = null;
 var removeContentsKey;//これモーダルまわりで触る際にcontentKeyをぶち込みます　変数名変えるべきかも
 var uploadTask;
+var uploadingData;
 var groupImageTask;
 
 const timeline = $('#left-pain');
@@ -29,64 +30,6 @@ var groupNodeJson;
 var groupKey;
 var isModalOpen = false;
 var calendar;
-const holidays = {
-    "2017-01-01": "元日",
-    "2017-01-02": "元日 振替休日",
-    "2017-01-09": "成人の日",
-    "2017-02-11": "建国記念の日",
-    "2017-03-20": "春分の日",
-    "2017-04-29": "昭和の日",
-    "2017-05-03": "憲法記念日",
-    "2017-05-04": "みどりの日",
-    "2017-05-05": "こどもの日",
-    "2017-07-17": "海の日",
-    "2017-08-11": "山の日",
-    "2017-09-18": "敬老の日",
-    "2017-09-23": "秋分の日",
-    "2017-10-09": "体育の日",
-    "2017-11-03": "文化の日",
-    "2017-11-23": "勤労感謝の日",
-    "2017-12-23": "天皇誕生日",
-    "2018-01-01": "元日",
-    "2018-01-08": "成人の日",
-    "2018-02-11": "建国記念の日",
-    "2018-02-12": "建国記念の日 振替休日",
-    "2018-03-21": "春分の日",
-    "2018-04-29": "昭和の日",
-    "2018-04-30": "昭和の日 振替休日",
-    "2018-05-03": "憲法記念日",
-    "2018-05-04": "みどりの日",
-    "2018-05-05": "こどもの日",
-    "2018-07-16": "海の日",
-    "2018-08-11": "山の日",
-    "2018-09-17": "敬老の日",
-    "2018-09-23": "秋分の日",
-    "2018-09-24": "秋分の日 振替休日",
-    "2018-10-08": "体育の日",
-    "2018-11-03": "文化の日",
-    "2018-11-23": "勤労感謝の日",
-    "2018-12-23": "天皇誕生日",
-    "2018-12-24": "天皇誕生日 振替休日",
-    "2019-01-01": "元日",
-    "2019-01-14": "成人の日",
-    "2019-02-11": "建国記念の日",
-    "2019-03-21": "春分の日",
-    "2019-04-29": "昭和の日",
-    "2019-05-03": "憲法記念日",
-    "2019-05-04": "みどりの日",
-    "2019-05-05": "こどもの日",
-    "2019-05-06": "こどもの日 振替休日",
-    "2019-07-15": "海の日",
-    "2019-08-11": "山の日",
-    "2019-08-12": "山の日 振替休日",
-    "2019-09-16": "敬老の日",
-    "2019-09-23": "秋分の日",
-    "2019-10-14": "体育の日",
-    "2019-11-03": "文化の日",
-    "2019-11-04": "文化の日 振替休日",
-    "2019-11-23": "勤労感謝の日",
-    "2019-12-23": "天皇誕生日"
-};
 
 //region/////////////////EventCalendar(手を加えていない部分)////////////////////
 !function() {
@@ -236,7 +179,7 @@ const holidays = {
                 name.classList.add("sunday");
                 number.classList.add("sunday");
             }
-            if(Object.keys(holidays).indexOf(day.format('YYYY-MM-DD')) !== -1) {
+            if(Object.keys(HOLIDAYS).indexOf(day.format('YYYY-MM-DD')) !== -1) {
                 name.classList.add("holiday");
                 number.classList.add("holiday");
             }
@@ -614,6 +557,10 @@ function onLoginSuccess() {
 
     //init dialog
     $(dialog).find(".close").on("click", function (e) {
+        if (isModalOpen === dialogAddFile && uploadTask) {
+            uploadTask.cancel();
+            uploadingData = null;
+        }
         closeDialog();
         return false;
     });
@@ -628,6 +575,8 @@ function onLoginSuccess() {
             defaultDatabase.ref(scheme).set(null).then(function (value) {
                 delete groupJson['contents'][removeContentsKey];
                 $('.card[key="' + removeContentsKey + '"]').remove();
+                showNotification('削除しました', 'success');
+
             }).catch(function (err) {
                 showOpeErrNotification(defaultDatabase);
                 console.log(err);
@@ -672,7 +621,8 @@ function onLoginSuccess() {
                 groupName: input.val()
 
             }).then(function (value) {//todo バックエンドちゃんと動いてませんけど！
-                showNotification('更新しました');
+
+                showNotification('更新しました', 'success');
 
             }).catch(function (reason) {
                 console.log(reason);
@@ -685,11 +635,23 @@ function onLoginSuccess() {
             if (inputComment.val().indexOf(DELIMITER) !== -1) {
                 inputComment.parent().addClass('is-invalid');
                 return;
-            } else if (!$('.drop-space').hasClass('is-uploaded')) {
+            } else if (!$('.drop-space').hasClass('is-uploaded') || !uploadingData) {
                 console.log('is-uploaded');
                 showNotification('ファイルを選択してください', 'warning');
                 return;
             }
+
+            uploadingData['comment'] = inputComment.val();
+            defaultDatabase.ref('group/'+ groupKey +'/contents/'+ uploadingData.contentKey).update(uploadingData).then(function (value) {
+
+                showNotification('更新しました', 'success');//todo これでいいのかデバッグ
+                uploadingData = null;
+
+            }).catch(function (error) {
+                console.log(error.code, error.message);
+                showOpeErrNotification(defaultDatabase);
+                uploadingData = null;
+            });
         }
         closeDialog();
         return false;
@@ -885,12 +847,15 @@ function addAddFileModalListener() {
             e.preventDefault();
             e.stopPropagation();
         }).on('dragover dragenter', function() {
-            dropDiv.addClass('is-dragover');
+            if(!uploadingData && !uploadTask)
+                dropDiv.addClass('is-dragover');
         }).on('dragleave dragend drop', function() {
             dropDiv.removeClass('is-dragover');
         }).on('drop', function(e) {
-            droppedFiles = e.originalEvent.dataTransfer.files;
-            onNewFileInputChange(droppedFiles[0]);
+            if(!uploadingData && !uploadTask) {
+                droppedFiles = e.originalEvent.dataTransfer.files;
+                onNewFileInputChange(droppedFiles[0]);
+            }
         });
     } else
         dropDiv.hide();//todo 整備
@@ -916,10 +881,14 @@ function setOnClickAddContentsBtn() {
     });
 }
 
+/**
+ * if(uploadTask) -> アップロード最中
+ * if(uploadingData) -> アップロードは完了済み
+ */
 function onNewFileInputChange(file) {
     console.log('input change', file);
 
-    if(uploadTask || !file)
+    if(uploadTask || !file || uploadingData)
         return;
 
     var mimeType = file.type.toLowerCase();
@@ -958,6 +927,14 @@ function onNewFileInputChange(file) {
     var suf = mimeType.substring(4);//sufは'/'を含む
     console.log(suf);
 
+    uploadingData = {
+        contentKey: key,
+        contentName: fileName,
+        type: mimeType,
+        whose: user.uid,
+        lastEditor: user.uid,
+        lastEdit: moment().format('YYYYMMDD')
+    };
     uploadTask = firebase.storage().ref().child('sample_share_file/'+ groupKey).child(key+'.'+suf)
         .put(file);
 
@@ -980,6 +957,7 @@ function onNewFileInputChange(file) {
     }, function (error) {
         //todo エラーデバッグすること
         uploadTask = null;//これで「キャンセルしました」が出なくなる
+        uploadingData = null;
         var errMsg = ERR_MSG_OPE_FAILED;
         switch (error.code){
             case 'storage/retry_limit_exceeded':
@@ -1006,7 +984,7 @@ function onNewFileInputChange(file) {
         console.log(downloadURL);
 
         $('.file-name').html(fileName);
-        $('.box__success img').prop('src', );
+        $('.box__success img').prop('src', getFileTypeImageUrl(mimeType));
 
         $('.drop-space').removeClass('is-uploading').addClass('is-uploaded');
 
@@ -1586,7 +1564,8 @@ function openDialog(toShowEle, fileName) {
         dialogAddSch.hide();
         dialogEditComment.hide();
         dialogConfigGroup.hide();
-
+        $('#new-file-comment').val('').parent().removeClass('is-invalid');
+        $('.drop-space').removeClass('is-uploading').removeClass('is-uploaded');
     }
 
     dialog.showModal();
