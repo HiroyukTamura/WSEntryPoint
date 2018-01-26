@@ -10,9 +10,10 @@ const dialogAddSch = $('#add-sch-cnt');
 const dialogExclude = $('#dialog-img-w');
 const dialogRemoveContents = $('#remove-contents');
 const dialogEditComment = $('#edit-comment');
-const dialogConfigGroup =$('#group-config');
-const dialogAddFile =$('#add-file-modal');
-const dialogNewDoc =$('#modal-new-doc');
+const dialogConfigGroup = $('#group-config');
+const dialogAddFile = $('#add-file-modal');
+const dialogNewDoc = $('#modal-new-doc');
+const dialogShareRec = $('#share-rec');
 const dialogPositibeBtn = $('#add-group-btn');
 var clickedColor = 0;
 var inputVal = null;
@@ -712,7 +713,29 @@ function onLoginSuccess() {
             }).catch(function (error) {
                 console.log(error.code, error.message);
                 showOpeErrNotification(defaultDatabase);
-            })
+            });
+
+        } else if (isModalOpen === dialogShareRec) {
+            var keyD = defaultDatabase.ref('keyPusher').push().key;
+            var ymdD = moment().format('YYYYMMDD');
+            var updateObjectD ={
+                contentKey: keyD,
+                contentName: user.displayName + 'さんの記録',
+                lastEdit: ymdD,
+                lastEditor: user.uid,
+                whose: user.uid,
+                type: 'data'
+            };
+            defaultDatabase.ref('group/'+ groupKey +'/contents/'+ keyD).set(updateObjectD).then(function (value) {
+
+                groupJson.contents[updateObjectD.contentKey] = updateObjectD;
+                showNotification('更新しました', 'success');
+                $('#add-record').off('click').fadeOut();
+
+            }).catch(function (error) {
+                console.log(error.code, error.message);
+                showOpeErrNotification(defaultDatabase);
+            });
         }
         closeDialog();
         return false;
@@ -940,6 +963,8 @@ function setFileModalListeners() {
 }
 
 function setOnClickFabBtns() {
+    $('.overlay-fab').show();
+
     $('#overlay').on('click', function (e) {
         console.log('add-contents');
         openDialog(dialogAddFile);
@@ -950,6 +975,28 @@ function setOnClickFabBtns() {
         openDialog(dialogNewDoc);
         return false;
     });
+
+    var recordBtn = $('#add-record');
+    if (groupJson.contents) {
+        var contents = Object.values(groupJson.contents);
+        var isMine = false;
+        for(var i=0; i<contents.length; i++) {
+            if(contents.type === 'data' && contents.whose === user.uid){
+                isMine = true;
+                break;
+            }
+        }
+
+        if (isMine) {
+            recordBtn.on('click', function (e) {
+                openDialog(dialogShareRec);
+                return false;
+            });
+        } else
+            recordBtn.hide();
+
+    } else
+        recordBtn.hide();
 }
 
 /**
@@ -1587,6 +1634,7 @@ function openDialog(toShowEle, fileName) {
         dialogConfigGroup.hide();
         dialogAddFile.hide();
         dialogNewDoc.hide();
+        dialogShareRec.hide();
         $('#modal_input').val('');
 
     } else if (toShowEle === dialogExclude){
@@ -1597,6 +1645,7 @@ function openDialog(toShowEle, fileName) {
         dialogConfigGroup.hide();
         dialogAddFile.hide();
         dialogNewDoc.hide();
+        dialogShareRec.hide();
         dialogPositibeBtn.removeAttr('disabled');
 
     } else if (toShowEle === dialogRemoveContents){
@@ -1608,6 +1657,7 @@ function openDialog(toShowEle, fileName) {
         dialogConfigGroup.hide();
         dialogAddFile.hide();
         dialogNewDoc.hide();
+        dialogShareRec.hide();
         dialogRemoveContents.find('p').html("本当に「" + fileName + "」を削除しますか？");
 
     } else if (toShowEle === dialogConfigGroup) {
@@ -1619,6 +1669,7 @@ function openDialog(toShowEle, fileName) {
         dialogEditComment.hide();
         dialogAddFile.hide();
         dialogNewDoc.hide();
+        dialogShareRec.hide();
         var input = $('#new-group-name').val(fileName);
         dialog.showModal();//これつけないとlabelがテキストに重なってしまう
         input.parent().addClass('is-dirty').removeClass('is-invalid');
@@ -1633,6 +1684,7 @@ function openDialog(toShowEle, fileName) {
         dialogConfigGroup.hide();
         dialogAddFile.hide();
         dialogNewDoc.hide();
+        dialogShareRec.hide();
 
     } else if (toShowEle === dialogAddFile) {
         dialogPositibeBtn.removeAttr('disabled');
@@ -1643,6 +1695,7 @@ function openDialog(toShowEle, fileName) {
         dialogEditComment.hide();
         dialogConfigGroup.hide();
         dialogNewDoc.hide();
+        dialogShareRec.hide();
         $('#new-file-comment').val('').parent().removeClass('is-invalid');
         $('.drop-space').removeClass('is-uploading').removeClass('is-uploaded');
 
@@ -1655,9 +1708,21 @@ function openDialog(toShowEle, fileName) {
         dialogEditComment.hide();
         dialogAddFile.hide();
         dialogConfigGroup.hide();
+        dialogShareRec.hide();
 
         $('#new-doc-title').val('').parent().removeClass('is-invalid').removeClass('wrong-val');
         $('#new-doc-cont').val('').parent().removeClass('is-invalid').removeClass('wrong-val');
+
+    } else if (toShowEle === dialogShareRec) {
+        dialogPositibeBtn.removeAttr('disabled');
+        dialogPositibeBtn.html('OK');
+        dialogExclude.hide();
+        dialogRemoveContents.hide();
+        dialogAddSch.hide();
+        dialogEditComment.hide();
+        dialogAddFile.hide();
+        dialogConfigGroup.hide();
+        dialogNewDoc.hide();
     }
 
     if(toShowEle === dialogNewDoc) {

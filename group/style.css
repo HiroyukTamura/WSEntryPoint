@@ -770,6 +770,7 @@ body {
     z-index: 4;
     position: fixed;
     right: 36px;
+    display: none;
 }
 
 #overlay {
