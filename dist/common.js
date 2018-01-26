@@ -187,3 +187,11 @@ function getFileTypeImageUrl(type) {
             return 'img/file.png';
     }
 }
+
+function getFileFromTranfer(e) {
+    if(e.originalEvent && e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files){
+        return e.originalEvent.dataTransfer.files[0];
+    } else {
+        return e.target.files[0];
+    }
+}

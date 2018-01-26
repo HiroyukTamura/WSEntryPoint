@@ -557,6 +557,9 @@ function onLoginSuccess() {
 
     //init dialog
     $(dialog).find(".close").on("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('キャンセルクリック');
         if (isModalOpen === dialogAddFile && uploadTask) {
             uploadTask.cancel();
             uploadingData = null;
@@ -800,7 +803,7 @@ function showProgressNotification() {
 
 function setLisnters() {
     window.onclick = function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         // if (event.target == dialog && isModalOpen !== dialogConfigGroup) {
         //     closeDialog();
         //     return false;
@@ -812,8 +815,13 @@ function setLisnters() {
         } else if ($(event.target).parent().parent().hasClass("modal-circle-i")) {
             return false;
             onClickModalCircleI($(event.target).parent().parent());
+        } else if($(event.target) === $('#dummy-overlay')) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('こっち');
+            return false;
         }
-        console.log($(event.target).parent().parent());
+        console.log($(event.target));
         // return false;
     };
 
@@ -835,7 +843,6 @@ function setLisnters() {
 }
 
 function addAddFileModalListener() {
-    var droppedFiles = false;
     var dropDiv = $('.drop-space');
     var isAdvancedUpload = function() {
         var div = document.createElement('div');
@@ -853,22 +860,23 @@ function addAddFileModalListener() {
             dropDiv.removeClass('is-dragover');
         }).on('drop', function(e) {
             if(!uploadingData && !uploadTask) {
-                droppedFiles = e.originalEvent.dataTransfer.files;
-                onNewFileInputChange(droppedFiles[0]);
+                onNewFileInputChange(getFileFromTranfer(e));
             }
         });
-    } else
-        dropDiv.hide();//todo 整備
+    } else {
+        dropDiv.find('.drag-cont i, .drag-cont p').hide();//todo 整備
+    }
 
-    $('#add-group-dialog .mdl-button').on('click', function (e) {
-        $('#dummy-overlay')[0].click();
+    $('.choose-file').on('click', function (e) {
+        console.log('click');
+        e.preventDefault();
+        $('#dummy-overlay').trigger('click');
         return false;
     });
 
     $('#dummy-overlay').on('change', function (e) {
-        e.preventDefault();
         console.log('input change');
-        onNewFileInputChange(e.originalEvent.dataTransfer.files[0]);
+        onNewFileInputChange(getFileFromTranfer(e));
         return false;
     });
 }
