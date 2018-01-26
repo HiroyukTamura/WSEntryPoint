@@ -680,8 +680,16 @@ function onLoginSuccess() {
             });
 
         } else if (isModalOpen === dialogAddFile) {
-
-
+            console.log('okボタンおされたよね');
+            var inputComment =$('#new-file-comment');
+            if (inputComment.val().indexOf(DELIMITER) !== -1) {
+                inputComment.parent().addClass('is-invalid');
+                return;
+            } else if (!$('.drop-space').hasClass('is-uploaded')) {
+                console.log('is-uploaded');
+                showNotification('ファイルを選択してください', 'warning');
+                return;
+            }
         }
         closeDialog();
         return false;
@@ -830,6 +838,7 @@ function showProgressNotification() {
 
 function setLisnters() {
     window.onclick = function(event) {
+        event.preventDefault();
         // if (event.target == dialog && isModalOpen !== dialogConfigGroup) {
         //     closeDialog();
         //     return false;
@@ -948,7 +957,7 @@ function onNewFileInputChange(file) {
     var key = defaultDatabase.ref('keyPusher').push().key;
     var suf = mimeType.substring(4);//sufは'/'を含む
     console.log(suf);
-    $('.file-name').html(fileName);
+
     uploadTask = firebase.storage().ref().child('sample_share_file/'+ groupKey).child(key+'.'+suf)
         .put(file);
 
@@ -995,6 +1004,10 @@ function onNewFileInputChange(file) {
     }, function () {
         var downloadURL = uploadTask.snapshot.downloadURL;
         console.log(downloadURL);
+
+        $('.file-name').html(fileName);
+        $('.box__success img').prop('src', );
+
         $('.drop-space').removeClass('is-uploading').addClass('is-uploaded');
 
         uploadTask = null;
@@ -1233,18 +1246,7 @@ function appendContentAsDoc(contentData, key) {
             commentPre.replace(/(?:\r\n|\r|\n)/g, "<br />") : null;
         var photoUrl = avoidNullValue(groupJson["member"][this.mContentData.whose]["photoUrl"], 'img/icon.png');
 
-        var fileUrl = null;
-        switch (contentData.type){
-            case "image/jpeg":
-                fileUrl = 'img/jpg.png';
-                break;
-            case "image/png":
-                fileUrl = 'img/png.png';
-                break;
-            case "image/gif":
-                fileUrl = 'img/file.png';
-                break;
-        }
+        var fileUrl = getFileTypeImageUrl(contentData.type);
         // ele.find('.file-icon').attr('src', fileUrl);
         console.log("fileUrl: ", fileUrl);
         var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment, key, photoUrl, fileUrl);
@@ -1320,25 +1322,7 @@ function appendContentAsDoc(contentData, key) {
             commentPre.replace(/(?:\r\n|\r|\n)/g, "<br />") : null;
         var photoUrl = avoidNullValue(groupJson["member"][this.mContentData.whose]["photoUrl"], 'img/icon.png');
 
-        var fileUrl = null;
-        switch (contentData.type){
-            case "text/plain":
-            case "text/txt":
-                fileUrl = 'img/txt.png';
-                break;
-            case "text/html":
-                fileUrl = 'img/html.png';
-                break;
-            case "text/css":
-                fileUrl = 'img/css.png';
-                break;
-            case "text/xml":
-                fileUrl = 'img/xml.png';
-                break;
-            case "application/pdf":
-                fileUrl = 'img/pdf.png';
-                break;
-        }
+        var fileUrl = getFileTypeImageUrl(contentData.type);
 
         var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment, key, photoUrl, fileUrl);
 
@@ -1602,6 +1586,7 @@ function openDialog(toShowEle, fileName) {
         dialogAddSch.hide();
         dialogEditComment.hide();
         dialogConfigGroup.hide();
+
     }
 
     dialog.showModal();

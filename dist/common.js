@@ -165,3 +165,25 @@ function showOpeErrNotification(defaultDatabase, delay) {
         }
     });
 }
+
+function getFileTypeImageUrl(type) {
+    switch (type){
+        case "text/plain":
+        case "text/txt":
+            return 'img/txt.png';
+        case "text/html":
+            return 'img/html.png';
+        case "text/css":
+            return 'img/css.png';
+        case "text/xml":
+            return 'img/xml.png';
+        case "application/pdf":
+            return 'img/pdf.png';
+        case "image/jpeg":
+            return 'img/jpg.png';
+        case "image/png":
+            return 'img/png.png';
+        case "image/gif":
+            return 'img/file.png';
+    }
+}
