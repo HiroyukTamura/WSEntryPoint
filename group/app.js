@@ -730,7 +730,8 @@ function onLoginSuccess() {
 
                 groupJson.contents[updateObjectD.contentKey] = updateObjectD;
                 showNotification('更新しました', 'success');
-                $('#add-record').off('click').fadeOut();
+                $('#add-record').fadeOut();
+                $('#remove-my-rec').show();
 
             }).catch(function (error) {
                 console.log(error.code, error.message);
@@ -747,11 +748,42 @@ function onLoginSuccess() {
     });
 }
 
-function setOnClickGroupConfigLis(menu) {
-    menu.on('click', function (e) {
+function setOnClickMenu(menus) {
+    menus.eq(0).on('click', function (e) {
         e.preventDefault();
         console.log('click');
         openDialog(dialogConfigGroup, groupJson.groupName);
+        return false;
+    });
+    menus.eq(1).on('click', function (e) {
+        e.preventDefault();
+        console.log('click');
+
+        var key = null;
+        if(groupJson.contents){
+            for(var contentKey in groupJson.contents)
+                if (groupJson.contents.hasOwnProperty(contentKey))
+                    if(groupJson['contents'][contentKey]['type'] === 'data' && groupJson['contents'][contentKey]['whose'] === user.uid) {
+                        key = contentKey;
+                        break;
+                    }
+        }
+
+        if(key) {
+            defaultDatabase.ref('group/'+ groupKey + '/contents/' + contentKey).set(null).then(function (value) {
+                delete groupJson['contents'][contentKey];
+                menus.eq(1).hide();
+                console.log(groupJson);
+                showNotification('体調記録の共有を停止しました');
+                $('#add-record').show();
+
+            }).catch(function (error) {
+                console.log(error.code, error.message);
+                showOpeErrNotification(defaultDatabase);
+            });
+        } else
+            showNotification(ERR_MSG_OPE_FAILED, 'danger');
+
         return false;
     });
 }
@@ -914,8 +946,8 @@ function setLisnters() {
     });
 
     var menus = $('#setting-dp-ul').find('.mdl-menu__item');
-    setOnClickGroupConfigLis(menus.eq(0));
-    setOnClickGroupMemberConfigLis(menus.eq(1));
+    setOnClickMenu(menus);
+    setOnClickGroupMemberConfigLis();
     setOnGroupImageClickLis();
     setOnGroupImageInputChange();
     $('#setting-dp-ul').show();
@@ -976,24 +1008,27 @@ function setOnClickFabBtns() {
         return false;
     });
 
-    var recordBtn = $('#add-record');
+    var recordBtn = $('#add-record').on('click', function (e) {
+        openDialog(dialogShareRec);
+        return false;
+    });
+
     if (groupJson.contents) {
         var contents = Object.values(groupJson.contents);
         var isMine = false;
         for(var i=0; i<contents.length; i++) {
-            if(contents.type === 'data' && contents.whose === user.uid){
+            if(contents[i]['type'] === 'data' && contents[i]['whose'] === user.uid){
                 isMine = true;
                 break;
             }
         }
 
-        if (isMine) {
-            recordBtn.on('click', function (e) {
-                openDialog(dialogShareRec);
-                return false;
-            });
-        } else
+        if (isMine)
             recordBtn.hide();
+        else {
+            console.log('こっち');
+            $('#setting-dp-ul .mdl-menu__item').eq(1).hide();
+        }
 
     } else
         recordBtn.hide();
@@ -1320,7 +1355,7 @@ function appendContentAsDoc(contentData, key) {
         }
     }
 
-    element.find('.remove_btn ').on('click', function (ev) {
+    element.find('.remove_btn').on('click', function (ev) {
         removeContentsKey = key;
         openDialog(dialogRemoveContents, contentData.contentName);
         return false;
@@ -1671,6 +1706,9 @@ function openDialog(toShowEle, fileName) {
         dialogNewDoc.hide();
         dialogShareRec.hide();
         var input = $('#new-group-name').val(fileName);
+        var img = $('#group-config img');
+        console.log(img, img.length, groupJson.photoUrl);
+            img.attr('src', groupJson.photoUrl);
         dialog.showModal();//これつけないとlabelがテキストに重なってしまう
         input.parent().addClass('is-dirty').removeClass('is-invalid');
         return;
