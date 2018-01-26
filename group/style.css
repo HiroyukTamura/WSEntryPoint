@@ -760,6 +760,11 @@ body {
 .doc-cont-form , .doc-cont-form > .mdl-textfield {
     width: 100%;
 }
+/*----------------------------------*/
+#invite-group .mdl-list__item-secondary-action {
+    padding-left: 48px;
+}
+
 /*-----------FAB-------------*/
 
 #dummy-w {

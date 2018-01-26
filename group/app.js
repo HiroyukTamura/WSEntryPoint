@@ -15,12 +15,14 @@ const dialogAddFile = $('#add-file-modal');
 const dialogNewDoc = $('#modal-new-doc');
 const dialogShareRec = $('#share-rec');
 const dialogPositibeBtn = $('#add-group-btn');
+const dialogInvite =$('#invite-group');
 var clickedColor = 0;
 var inputVal = null;
 var removeContentsKey;//これモーダルまわりで触る際にcontentKeyをぶち込みます　変数名変えるべきかも
 var uploadTask;
 var uploadingData;
 var groupImageTask;
+var friendJson;
 
 const timeline = $('#left-pain');
 var asyncCount = 0;
@@ -557,6 +559,15 @@ function onLoginSuccess() {
         showAll();
     });
 
+    defaultDatabase.ref('friend/'+ user.uid).once('value').then(function (snapshot) {
+        if (snapshot.exists()) {
+            friendJson = snapshot.toJSON();
+            delete friendJson[DEFAULT];
+        } else {
+            console.log('friendJson !snapshot.exist()')
+        }
+    });
+
     //init dialog
     $(dialog).find(".close").on("click", function (e) {
         e.preventDefault();
@@ -791,9 +802,8 @@ function setOnClickMenu(menus) {
 function setOnClickGroupMemberConfigLis() {
     $('#member_conf').on('click', function (e) {
         e.preventDefault();
-        $('#column2 .mdl-list .mdl-chip').fadeOut();
-
         console.log('click');
+        openDialog(dialogInvite);
         return false;
     });
 }
@@ -929,6 +939,11 @@ function setLisnters() {
             return false;
             onClickModalCircleI($(event.target).parent().parent());
         } else if($(event.target) === $('#dummy-overlay')) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('こっち');
+            return false;
+        } else if ($(event.target) === $('#invite-group .mdl-checkbox__ripple-container')) {
             event.preventDefault();
             event.stopPropagation();
             console.log('こっち');
@@ -1394,6 +1409,12 @@ function appendContentAsDoc(contentData, key) {
             ele.find('.edit-comment').hide();
         }
 
+        ele.find('.remove_btn').on('click', function (ev) {
+            removeContentsKey = key;
+            openDialog(dialogRemoveContents, contentData.contentName);
+            return false;
+        });
+
         this.mTmeline.prepend(ele);
         var img = ele.find('.show-img img');
         firebase.storage().ref("shareFile/" + groupKey +"/"+ this.mKey).getDownloadURL().then(function(url) {
@@ -1653,6 +1674,7 @@ function closeDialog() {
     isModalOpen = false;
 }
 
+//todo ここセレクタ使ってまとめるべし
 function openDialog(toShowEle, fileName) {
     if(isModalOpen)
         return;
@@ -1670,6 +1692,7 @@ function openDialog(toShowEle, fileName) {
         dialogAddFile.hide();
         dialogNewDoc.hide();
         dialogShareRec.hide();
+        dialogInvite.hide();
         $('#modal_input').val('');
 
     } else if (toShowEle === dialogExclude){
@@ -1681,6 +1704,7 @@ function openDialog(toShowEle, fileName) {
         dialogAddFile.hide();
         dialogNewDoc.hide();
         dialogShareRec.hide();
+        dialogInvite.hide();
         dialogPositibeBtn.removeAttr('disabled');
 
     } else if (toShowEle === dialogRemoveContents){
@@ -1693,6 +1717,7 @@ function openDialog(toShowEle, fileName) {
         dialogAddFile.hide();
         dialogNewDoc.hide();
         dialogShareRec.hide();
+        dialogInvite.hide();
         dialogRemoveContents.find('p').html("本当に「" + fileName + "」を削除しますか？");
 
     } else if (toShowEle === dialogConfigGroup) {
@@ -1705,6 +1730,9 @@ function openDialog(toShowEle, fileName) {
         dialogAddFile.hide();
         dialogNewDoc.hide();
         dialogShareRec.hide();
+        dialogInvite.hide();
+        $(dialog).removeClass('modal-new-doc-m');
+
         var input = $('#new-group-name').val(fileName);
         var img = $('#group-config img');
         console.log(img, img.length, groupJson.photoUrl);
@@ -1723,6 +1751,7 @@ function openDialog(toShowEle, fileName) {
         dialogAddFile.hide();
         dialogNewDoc.hide();
         dialogShareRec.hide();
+        dialogInvite.hide();
 
     } else if (toShowEle === dialogAddFile) {
         dialogPositibeBtn.removeAttr('disabled');
@@ -1734,6 +1763,7 @@ function openDialog(toShowEle, fileName) {
         dialogConfigGroup.hide();
         dialogNewDoc.hide();
         dialogShareRec.hide();
+        dialogInvite.hide();
         $('#new-file-comment').val('').parent().removeClass('is-invalid');
         $('.drop-space').removeClass('is-uploading').removeClass('is-uploaded');
 
@@ -1747,6 +1777,7 @@ function openDialog(toShowEle, fileName) {
         dialogAddFile.hide();
         dialogConfigGroup.hide();
         dialogShareRec.hide();
+        dialogInvite.hide();
 
         $('#new-doc-title').val('').parent().removeClass('is-invalid').removeClass('wrong-val');
         $('#new-doc-cont').val('').parent().removeClass('is-invalid').removeClass('wrong-val');
@@ -1761,6 +1792,62 @@ function openDialog(toShowEle, fileName) {
         dialogAddFile.hide();
         dialogConfigGroup.hide();
         dialogNewDoc.hide();
+        dialogInvite.hide();
+
+    } else if (toShowEle === dialogInvite) {
+
+        var ul = $('#invite-group .mdl-list');
+        ul.children().remove();
+        console.log(friendJson);
+        for(var friendKey in friendJson) {
+            if (!friendJson.hasOwnProperty(friendKey)) continue;
+
+            var isAdded = false;
+            for (var key in groupJson['member']) {
+                if (!groupJson['member'].hasOwnProperty(key)) continue;
+                if (friendKey === key) {
+                    isAdded = true;
+                    break;
+                }
+            }
+
+            // if (isAdded) continue;
+
+            var friendName = avoidNullValue(groupJson['member'][key]['name'], 'ユーザ名未設定');
+            var photoUrl = avoidNullValue(groupJson['member'][key]['photoUrl'], '../dist/img/icon.png');
+            $(
+                '<li class="mdl-list__item mdl-pre-upgrade" key="'+ key +'">'+
+                    '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                        '<img src="'+ photoUrl +'" class="mdl-list__item-avatar mdl-pre-upgrade">'+
+                        '<span>'+ friendName +'</span>'+
+                    '</span>'+
+                    '<div class="mdl-layout-spacer"></div>'+
+                    '<div class="mdl-list__item-secondary-action mdl-pre-upgrade">'+
+                        '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="'+ key +'">'+
+                            '<input type="checkbox" id="'+ key +'" class="mdl-checkbox__input mdl-pre-upgrade">'+
+                        '</label>'+
+                    '</div>'+
+                '</li>'
+            ).appendTo(ul);
+        }
+
+        // if(ul.children().length === 0){
+        //     showNotification('追加できるユーザがいません', 'warning');
+        //     return;
+        // }
+
+        setElementAsMdl(ul);
+
+        dialogPositibeBtn.removeAttr('disabled');
+        dialogPositibeBtn.html('OK');
+        dialogExclude.hide();
+        dialogRemoveContents.hide();
+        dialogAddSch.hide();
+        dialogEditComment.hide();
+        dialogAddFile.hide();
+        dialogConfigGroup.hide();
+        dialogNewDoc.hide();
+        dialogShareRec.hide();
     }
 
     if(toShowEle === dialogNewDoc) {
@@ -1791,6 +1878,7 @@ function onGetSnapOfGroupNode(snapshot) {
     }
 
     groupNodeJson = snapshot.toJSON();
+    console.log(groupJson);
     var ul = $("#group-dp-ul");
     var count = 0;
     console.log(groupNodeJson);
