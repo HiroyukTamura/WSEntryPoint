@@ -137,7 +137,7 @@ function onGetGroupNodeData(snapshot) {
 
         if(childSnap.child('added').val() == true) {
 
-            createGroupHtml(groupName, groupPhotoUrl).insertBefore($('#group #add-btn-w'));
+            createGroupHtml(groupName, groupPhotoUrl, childSnap.key).insertBefore($('#group #add-btn-w'));
 
         } else {
             var section = $(
@@ -209,6 +209,7 @@ function onGetGroupNodeData(snapshot) {
                 });
 
                 section.find('.add-btn').on('click', function (e) {
+                    console.log(userDataJson);
                     var commandKey = defaultDatabase.ref('keyPusher').push().key;
                     var obj = createFbCommandObj(ADD_GROUP_AS_INVITED, user.uid);
                     obj['groupKey'] = childSnap.key;
@@ -216,6 +217,8 @@ function onGetGroupNodeData(snapshot) {
 
                         section.fadeOut('slow', function (e) {
                             section.remove();
+                            var html = createGroupHtml(groupName, groupPhotoUrl, childSnap.key);
+                            html.insertBefore($('#group #add-btn-w'));
 
                             showNotification('グループに参加しました', 'success');
                         });
@@ -281,9 +284,7 @@ function createGroupHtml(groupName, photoUrl, groupKey) {
     // $('#group #add-btn-w').insertBefore($(html));
     html.css('background', photoUrl);
     html.on('click', function (e) {
-        if(userDataJson["group"][groupKey]["added"]){
-            window.location.href = "../group/index.html?key=" + groupKey;
-        }
+        window.location.href = "../group/index.html?key=" + groupKey;
     });
     return html;
 }
