@@ -68,6 +68,9 @@ const ERR_MSG_NULL_VAL = "項目名を入力してください";
 const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません';
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 
+const ADD_GROUP_NEW_USER = 'ADD_GROUP_NEW_USER';
+const ADD_FRIEND = 'ADD_FRIEND';
+
 const CONFIG = {
     apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
     authDomain: "wordsupport3.firebaseapp.com",

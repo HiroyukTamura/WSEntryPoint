@@ -761,10 +761,7 @@ function onLoginSuccess() {
             }
 
             var commandKey = defaultDatabase.ref('keyPusher').push().key;
-            var obj = {};
-            obj['whose'] = user.uid;
-            obj['time'] = moment().millisecond();
-            obj['code'] = 'ADD_GROUP_NEW_USER';
+            var obj = createFbCommandObj(ADD_GROUP_NEW_USER);
             obj['groupKey'] = groupKey;
             var keys = [];
             for (var i=0; i<checked.length; i++) {
@@ -1397,14 +1394,38 @@ function createUserLi(key, friends) {
     var isFriend = friends.indexOf(key) !== -1;
     if (isFriend)
         li.find('.reg-my-user').hide();
+
     li.find('.reg-my-user').on('click', function (e) {
-        console.log('.reg-my-user clicked');
-        // todo 整備
+
+        var commandKey = defaultDatabase.ref('keyPusher').push().key;
+        var targetUserKey = $(e.target).parents('.mdl-list__item').attr('key');
+        var obj = createFbCommandObj(ADD_FRIEND);
+        obj['key'] = user.uid;
+        obj['targetUserKey'] = targetUserKey;
+        var self = $(this).closest('.mdl-list__item');
+
+        defaultDatabase.ref('writeTask/'+ commandKey).update(obj).then(function () {
+
+            showNotification('フレンドユーザに登録しました');
+            friendJson[targetUserKey] = {
+                name: groupJson['member'][targetUserKey]['name'],
+                photoUrl: groupJson['member'][targetUserKey]['photoUrl'],
+                isChecked: false
+            };
+            self.find('.reg-my-user').hide();
+            if (!self.find('.dropdown-item:visible').length) {
+                self.find('.dropdown-menu').hide();
+            }
+
+        }).catch(function (reason) {
+            console.log(reason.code, reason.message);
+            showOpeErrNotification(defaultDatabase);
+        });
     });
 
     //全ての項目を表示させない場合、ドロップダウンを表示させない
     if (!isAdded && !isSharedRecord && isFriend)
-        li.find('.dropdown-toggle').attr('disabled', '');
+        li.find('.dropdown-menu').hide();
 
     //chipsのセッティング
     if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
@@ -1424,6 +1445,14 @@ function createUserLi(key, friends) {
     }
 
     return li;
+}
+
+function createFbCommandObj(code) {
+    return {
+        whose: user.uid,
+        time: moment().millisecond(),
+        code: code
+    };
 }
 
 function initContents() {
