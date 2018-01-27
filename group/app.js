@@ -850,7 +850,38 @@ function setOnClickGroupMemberConfigLis() {
     $('#member_conf').on('click', function (e) {
         e.preventDefault();
         console.log('click');
-        openDialog(dialogInvite);
+
+        if ($.isEmptyObject(friendJson)){
+            showNotification('フレンドユーザが一人もいません。');
+            return;
+        }
+
+        //誰か一人でもグループに参加していない友人がいるかチェック
+        var isAddedFrined = false;
+        for(var friendKey in friendJson) {
+            if (!friendJson.hasOwnProperty(friendKey)) continue;
+
+            var isAdded = false;
+            for (var key in groupJson['member']) {
+                if (!groupJson['member'].hasOwnProperty(key) || key === user.uid)
+                    continue;
+                if (friendKey === key) {
+                    isAdded = true;
+                    break;
+                }
+            }
+
+            if(!isAdded){
+                isAddedFrined = true;
+                break;
+            }
+        }
+
+        if (!isAddedFrined) {
+            showNotification('このグループに参加していないフレンドユーザが一人もいません');
+        } else {
+            openDialog(dialogInvite);
+        }
         return false;
     });
 }
