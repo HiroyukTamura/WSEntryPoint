@@ -232,6 +232,9 @@ body {
     margin: 24px;
     height: 200px;
     width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #add-btn-user-w {
@@ -335,11 +338,12 @@ body {
     padding-right: 28px;
 }
 
-#user-name {
-    margin-left: 16px;
-    font-size: 20px;
-    color: rgba(0,0,0,.87);
-    display: none;
+.user-name {
+    /*margin-left: 16px;*/
+    /*font-size: 20px;*/
+    /*color: rgba(0,0,0,.87);*/
+    text-align: center;
+    margin-top: 8px;
 }
 
 #inner {

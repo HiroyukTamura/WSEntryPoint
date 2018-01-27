@@ -398,7 +398,7 @@ function setOnClickListeners() {
 
             defaultDatabase.ref('groupSample/'+groupKey).update(map).then(function () {
                 console.log('うまいこといったよ！よかったね！');
-                //ここで、memberのkeyのみを書き込んでいることに注意してください。photoUrlやdisplayNameと整合性がとれない場合があるため、
+                //todo ここで、memberのkeyのみを書き込んでいることに注意してください。photoUrlやdisplayNameと整合性がとれない場合があるため、
                 // 必ずcloudFunction側で検査を行い、検査にpassしたら、書き込みを許します。
             }).catch(function (reason) {
                 console.log(reason);
