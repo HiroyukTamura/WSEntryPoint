@@ -190,7 +190,7 @@ function onGetGroupNodeData(snapshot) {
                         return;
 
                     //未参加の場合はメンバーとして表示しない
-                    if(childMemberSnap.child('isChecked').val() == false)
+                    if(!childMemberSnap.child('isChecked').val())
                         return;
 
                     var memberName = avoidNullValue(childMemberSnap.child('name').val(), "ユーザ名未設定");
@@ -205,17 +205,28 @@ function onGetGroupNodeData(snapshot) {
                 });
 
                 section.find('.reject-btn').on('click', function (e) {
+
+
                     section.fadeOut('slow', function (e) {
                        section.remove();
+                        //todo 拒否動作を実装すること　多分バックエンドと連携するんだろうね
                        showNotification('招待を拒否しました', 'success');
                     });
                 });
 
                 section.find('.add-btn').on('click', function (e) {
-                    //todo 参加動作を実装すること　多分バックエンドと連携するんだろうね
-                    section.fadeOut('slow', function (e) {
-                        section.remove();
-                        showNotification('参加しました', 'success');
+                    var commandKey = defaultDatabase.ref('keyPusher').push().key;
+                    var obj = createFbCommandObj(ADD_GROUP_AS_INVITED, user.uid);
+                    obj['groupKey'] = childSnap.key;
+                    defaultDatabase.ref('writeTask/'+ commandKey).update(obj).then(function (value) {
+
+                        section.fadeOut('slow', function (e) {
+                            section.remove();
+                            showNotification('グループに参加しました', 'success');
+                        });
+
+                    }).catch(function (error) {
+                        console.log(error.code, error.message);
                     });
                 });
 

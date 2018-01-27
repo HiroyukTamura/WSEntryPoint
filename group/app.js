@@ -761,7 +761,7 @@ function onLoginSuccess() {
             }
 
             var commandKey = defaultDatabase.ref('keyPusher').push().key;
-            var obj = createFbCommandObj(ADD_GROUP_NEW_USER);
+            var obj = createFbCommandObj(INVITE_GROUP, user.uid);
             obj['groupKey'] = groupKey;
             var keys = [];
             for (var i=0; i<checked.length; i++) {
@@ -1399,7 +1399,7 @@ function createUserLi(key, friends) {
 
         var commandKey = defaultDatabase.ref('keyPusher').push().key;
         var targetUserKey = $(e.target).parents('.mdl-list__item').attr('key');
-        var obj = createFbCommandObj(ADD_FRIEND);
+        var obj = createFbCommandObj(ADD_FRIEND, user.uid);
         obj['key'] = user.uid;
         obj['targetUserKey'] = targetUserKey;
         var self = $(this).closest('.mdl-list__item');
@@ -1445,14 +1445,6 @@ function createUserLi(key, friends) {
     }
 
     return li;
-}
-
-function createFbCommandObj(code) {
-    return {
-        whose: user.uid,
-        time: moment().millisecond(),
-        code: code
-    };
 }
 
 function initContents() {

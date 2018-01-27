@@ -68,7 +68,8 @@ const ERR_MSG_NULL_VAL = "項目名を入力してください";
 const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません';
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 
-const ADD_GROUP_NEW_USER = 'ADD_GROUP_NEW_USER';
+const INVITE_GROUP = 'INVITE_GROUP';
+const ADD_GROUP_AS_INVITED ='ADD_GROUP_AS_INVITED';
 const ADD_FRIEND = 'ADD_FRIEND';
 
 const CONFIG = {
@@ -197,4 +198,12 @@ function getFileFromTranfer(e) {
     } else {
         return e.target.files[0];
     }
+}
+
+function createFbCommandObj(code, userUid) {
+    return {
+        whose: userUid,
+        time: moment().format('YYYYMMDD'),
+        code: code
+    };
 }

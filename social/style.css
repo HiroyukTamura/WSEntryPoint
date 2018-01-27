@@ -550,9 +550,9 @@ body {
     height: fit-content;
 }
 
-.notification {
-    display: none;
-}
+/*.notification {*/
+    /*display: none;*/
+/*}*/
 
 .notification .mdl-list__item-primary-content {
     padding: 0 16px 8px 16px;
