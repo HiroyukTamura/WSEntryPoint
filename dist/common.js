@@ -71,6 +71,7 @@ const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"]
 const INVITE_GROUP = 'INVITE_GROUP';
 const ADD_GROUP_AS_INVITED ='ADD_GROUP_AS_INVITED';
 const ADD_FRIEND = 'ADD_FRIEND';
+const LEAVE_GROUP = 'LEAVE_GROUP';
 
 const CONFIG = {
     apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",

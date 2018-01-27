@@ -137,19 +137,7 @@ function onGetGroupNodeData(snapshot) {
 
         if(childSnap.child('added').val() == true) {
 
-            // todo 未読を記録するnodeを作らないとね
-            var html = $(
-                '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
-                    '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
-                        '<div class="mdl-card__actions mdl-pre-upgrade">'+
-                            '<span class="demo-card-image__filename mdl-pre-upgrade">'+groupName+'</span>'+
-                        '</div>'+
-                    '</div>'+
-                '</div>');
-
-            // $('#group #add-btn-w').insertBefore($(html));
-            html.css('background', photoUrl);
-            html.insertBefore($('#group #add-btn-w'));
+            createGroupHtml(groupName, groupPhotoUrl).insertBefore($('#group #add-btn-w'));
 
         } else {
             var section = $(
@@ -205,12 +193,18 @@ function onGetGroupNodeData(snapshot) {
                 });
 
                 section.find('.reject-btn').on('click', function (e) {
+                    var commandKey = defaultDatabase.ref('keyPusher').push().key;
+                    var obj = createFbCommandObj(LEAVE_GROUP, user.uid);
+                    obj['groupKey'] = childSnap.key;
+                    defaultDatabase.ref('writeTask/'+ commandKey).update(obj).then(function () {
 
+                        section.fadeOut('slow', function (e) {
+                            section.remove();
+                            showNotification('招待を拒否しました', 'success');
+                        });
 
-                    section.fadeOut('slow', function (e) {
-                       section.remove();
-                        //todo 拒否動作を実装すること　多分バックエンドと連携するんだろうね
-                       showNotification('招待を拒否しました', 'success');
+                    }).catch(function (error) {
+                        console.log(error.code, error.message);
                     });
                 });
 
@@ -218,10 +212,11 @@ function onGetGroupNodeData(snapshot) {
                     var commandKey = defaultDatabase.ref('keyPusher').push().key;
                     var obj = createFbCommandObj(ADD_GROUP_AS_INVITED, user.uid);
                     obj['groupKey'] = childSnap.key;
-                    defaultDatabase.ref('writeTask/'+ commandKey).update(obj).then(function (value) {
+                    defaultDatabase.ref('writeTask/'+ commandKey).update(obj).then(function () {
 
                         section.fadeOut('slow', function (e) {
                             section.remove();
+
                             showNotification('グループに参加しました', 'success');
                         });
 
@@ -270,6 +265,27 @@ function onGetGroupNodeData(snapshot) {
     });
 
     // var oldInput = $('#user-pw-old input');
+}
+
+function createGroupHtml(groupName, photoUrl, groupKey) {
+    // todo 未読を記録するnodeを作らないとね
+    var html = $(
+        '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
+            '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
+                '<div class="mdl-card__actions mdl-pre-upgrade">'+
+                    '<span class="demo-card-image__filename mdl-pre-upgrade">'+groupName+'</span>'+
+                '</div>'+
+            '</div>'+
+        '</div>');
+
+    // $('#group #add-btn-w').insertBefore($(html));
+    html.css('background', photoUrl);
+    html.on('click', function (e) {
+        if(userDataJson["group"][groupKey]["added"]){
+            window.location.href = "../group/index.html?key=" + groupKey;
+        }
+    });
+    return html;
 }
 
 function showEditToggleMode(isShow) {
@@ -628,7 +644,7 @@ function setOnClickListeners() {
         return false;
     });
 
-    $('add-btn-user').on('click', function (e) {
+    $('#add-btn-user').on('click', function (e) {
         console.log('clicked');
     });
 
@@ -642,26 +658,6 @@ function setOnClickListeners() {
         console.log('image clicked');
 
         return false;
-    });
-
-    $('#group .demo-card-image').on("click", function (ev) {
-        var groupKeys = Object.keys(userDataJson["group"]);
-        var index = $(this).index();
-        var groupKey = groupKeys[index];
-        if(groupKey === DEFAULT){
-            groupKey = groupKeys[index + 1];
-        }
-
-        console.log(groupKey, userDataJson["group"]);
-        if(userDataJson["group"][groupKey]["added"]){
-            if(clickedAndMovePage){
-               clickedAndMovePage = true;
-            } else {
-                window.location.href = "../group/index.html?key=" + groupKey;
-            }
-        } else {
-            displayDialogContent('addGroup');
-        }
     });
 
     $('#my-img input').on('change', function (e) {
