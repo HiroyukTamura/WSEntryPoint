@@ -750,6 +750,51 @@ function onLoginSuccess() {
                 console.log(error.code, error.message);
                 showOpeErrNotification(defaultDatabase);
             });
+
+        } else if (isModalOpen === dialogInvite) {
+
+            console.log('招待するでごんす');
+            var checked = $('#invite-group').find('.mdl-checkbox.is-checked');
+            if (!checked.length){
+                closeDialog();
+                return;
+            }
+
+            var commandKey = defaultDatabase.ref('keyPusher').push().key;
+            var obj = {};
+            obj['whose'] = user.uid;
+            obj['time'] = moment().millisecond();
+            obj['code'] = 'ADD_GROUP_NEW_USER';
+            obj['groupKey'] = groupKey;
+            var keys = [];
+            for (var i=0; i<checked.length; i++) {
+                keys.push(checked.eq(i).find('.mdl-checkbox__input').attr('id'));
+            }
+
+            obj['keys'] = keys.join('_');//keyは絶対に'_'が含まれないためこのような実装が可能。
+
+            //todo デバッグ済です
+            defaultDatabase.ref('writeTask/'+ commandKey).update(obj).then(function () {
+
+                var friends = Object.keys(friendJson);
+                keys.forEach(function (key) {
+                    showNotification('招待しました', 'success');
+                    var invitedUser ={
+                        isChecked: false,
+                        photoUrl: friendJson[key]['photoUrl'],
+                        name: friendJson[key]['name']
+                    };
+                    groupJson['member'][key] = invitedUser;
+                    console.log(groupJson);
+
+                    var li = createUserLi(key, friends);
+                    $('#column2 .mdl-list').append(li);
+                });
+
+            }).catch(function (error) {
+                console.log(error.code, error.message);
+                showOpeErrNotification(defaultDatabase);
+            });
         }
         closeDialog();
         return false;
@@ -1226,111 +1271,128 @@ function initUserList() {
     keys.forEach(function (key) {
         if(key === DEFAULT || key === user.uid)
             return;
-
-        sortedKeys.push(key);
-
-        var member = groupJson["member"][key];
-        var photoUrl = avoidNullValue(member.photoUrl, 'img/icon.png');
-        var li = $(
-            '<li class="mdl-list__item mdl-pre-upgrade">'+
-                '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                    '<img src="'+ photoUrl +'" alt="user-image">'+
-                    '<span>'+ member.name +'&nbsp;&nbsp;' +
-                // '<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>' +
-                        '<div class="btn-group">'+
-                            '<button type="button" class="btn btn-secondary dropdown-toggle rounded-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-                                '<i class="fas fa-cog"></i>' +
-                            '</button>'+
-                            '<div class="dropdown-menu dropdown-menu-right">'+
-                                '<button class="dropdown-item stop-share" type="button">体調記録のシェアをやめる</button>'+
-                                '<button class="dropdown-item reg-my-user" type="button">自分のユーザリストに登録する</button>'+
-                                '<button class="dropdown-item discourage" type="button">退会させる</button>'+
-                                '<button class="dropdown-item cancel-inv" type="button">招待をとりやめる</button>'+
-                            '</div>'+
-                        '</div>'+
-                // '</span>'+
-                    '</span>'+
-                '</span>'+
-
-                '<span class="mdl-list__item-secondary-action">'+
-                    '<span class="mdl-chip health-rec-btn">'+
-                        '<span class="mdl-chip__text">体調記録&nbsp;&nbsp;<i class="fas fa-external-link-square-alt fa-lg"></i></span>'+
-                    '</span>'+
-                '</span>'+
-            '</li>'
-        );
-
-        //退会・招待とりやめ項目のセッティング
-        if (groupJson["member"][key]['isChecked'] == true)
-            li.find('.cancel-inv').hide();
-        else
-            li.find('.discourage').hide();
-
-        li.find('.discourage').on('click', function (e) {
-            console.log('discourage');
-            // todo メンバー退会動作
-        });
-        li.find('.cancel-inv').on('click', function (e) {
-            console.log('cancel-inv');
-            // todo メンバー招待取り消し動作
-        });
-
-        //体調記録シェア取りやめ項目のセッティング
-        var isSharedRecord = false;
-        for(var data in groupJson['contents']) {
-            if (!groupJson['contents'].hasOwnProperty(data)) continue;
-
-            if(data.type === 'data' && data.whose === key) {
-                isSharedRecord = true;
-                break;
-            }
-        }
-        if (!isSharedRecord)
-            li.find('.stop-share').hide();
-        li.find('.stop-share').on('click', function (e) {
-            console.log('stop-share clicked');
-            //todo 未デバッグ
-            defaultDatabase.ref('group/'+ groupKey +'/contents/' + key).set(null).then(function (value) {
-
-                showNotification('体調記録の共有を停止しました', 'success');
-                delete  groupJson['contents'][key];
-                li.find('.health-rec-btn').hide();
-
-            }).catch(function (error) {
-                console.log(error.code, error.message);
-                showOpeErrNotification(defaultDatabase);
-            });
-        });
-
-        //ユーザ登録項目のセッティング
-        if (friends.indexOf(key) !== -1)
-            li.find('.reg-my-user').hide();
-        li.find('.reg-my-user').on('click', function (e) {
-            console.log('.reg-my-user clicked');
-
-        });
-
-        //chipsのセッティング
-        if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
-            li.find('.health-rec-btn').removeClass('health-rec-btn').addClass('invited').find('.mdl-chip__text').html("招待中");
-            // li.find('.mdl-list__item-secondary-action').remove();
-            // li.find('div').addClass("mdl-badge").addClass('mdl-pre-upgrade').attr('data-badge', " ");
-            // li.attr("title", "招待中");
-        } else {
-
-            li.find(".health-rec-btn").on('click', function (e) {
-                e.preventDefault();
-                var userUid = sortedKeys[$(this).index()];
-                console.log('clicked uid:' + userUid);
-
-                return false;
-            });
-        }
-
-        userList.append(li);
+        userList.append(createUserLi(key, friends));
     });
 
     $('.btn-group').dropdown();
+}
+
+function createUserLi(key, friends) {
+    var member = groupJson["member"][key];
+    var photoUrl = avoidNullValue(member.photoUrl, 'img/icon.png');
+    var li = $(
+        '<li class="mdl-list__item mdl-pre-upgrade" key="'+key+'">'+
+            '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                '<img src="'+ photoUrl +'" alt="user-image">'+
+                '<span>'+ member.name +'&nbsp;&nbsp;' +
+                // '<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>' +
+                    '<div class="btn-group">'+
+                        '<button type="button" class="btn btn-secondary dropdown-toggle rounded-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                            '<i class="fas fa-cog"></i>' +
+                        '</button>'+
+                        '<div class="dropdown-menu dropdown-menu-right">'+
+                            '<button class="dropdown-item stop-share" type="button">体調記録のシェアをやめる</button>'+
+                            '<button class="dropdown-item reg-my-user" type="button">自分のユーザリストに登録する</button>'+
+                            '<button class="dropdown-item discourage" type="button">退会させる</button>'+
+                            // '<button class="dropdown-item cancel-inv" type="button">招待をとりやめる</button>'+
+                        '</div>'+
+                    '</div>'+
+                    // '</span>'+
+                '</span>'+
+            '</span>'+
+
+            '<span class="mdl-list__item-secondary-action">'+
+                '<span class="mdl-chip health-rec-btn">'+
+                    '<span class="mdl-chip__text">体調記録&nbsp;&nbsp;<i class="fas fa-external-link-square-alt fa-lg"></i></span>'+
+                '</span>'+
+            '</span>'+
+        '</li>'
+    );
+
+    //退会・招待とりやめ項目のセッティング
+    var isAdded = groupJson["member"][key]['isChecked'];
+    if (!isAdded)
+        li.find('.discourage').hide();
+
+    li.find('.discourage').on('click', function (e) {
+        console.log('discourage');
+        var li = $(this).parents('.mdl-list__item');
+        var userKey = li.attr('key');
+        var updates = {};
+        updates['/group/'+ groupKey +'/member/'+ userKey] = null;
+        updates['/userData/'+ userKey + '/group/'+ groupKey] = null;//todo バックエンドでは体調管理の共有があった場合にそのコンテンツを削除します。そのデバッグをやってください。
+
+        defaultDatabase.ref().update(updates).then(function () {
+
+            showNotification('ユーザを退会させました', 'success');
+            li.remove();//todo これアニメつけたいなあ。
+            delete groupJson["member"][userKey];
+            //もし、退会させたユーザが友達ユーザである場合、そのユーザはグループに招待可能とならないといけない。でも、modalはその都度friendJsonから作成するから問題ない
+
+        }).catch(function (error) {
+            console.log(error.code, error.message);
+            showOpeErrNotification(defaultDatabase);
+        });
+    });
+
+    //体調記録シェア取りやめ項目のセッティング
+    var isSharedRecord = false;
+    for(var data in groupJson['contents']) {
+        if (!groupJson['contents'].hasOwnProperty(data)) continue;
+
+        if(data.type === 'data' && data.whose === key) {
+            isSharedRecord = true;
+            break;
+        }
+    }
+    if (!isSharedRecord)
+        li.find('.stop-share').hide();
+    li.find('.stop-share').on('click', function (e) {
+        console.log('stop-share clicked');
+        //todo 未デバッグ バックエンドは不要
+        defaultDatabase.ref('group/'+ groupKey +'/contents/' + key).set(null).then(function (value) {
+
+            showNotification('体調記録の共有を停止しました', 'success');
+            delete  groupJson['contents'][key];
+            li.find('.health-rec-btn').hide();
+
+        }).catch(function (error) {
+            console.log(error.code, error.message);
+            showOpeErrNotification(defaultDatabase);
+        });
+    });
+
+    //ユーザ登録項目のセッティング
+    var isFriend = friends.indexOf(key) !== -1;
+    if (isFriend)
+        li.find('.reg-my-user').hide();
+    li.find('.reg-my-user').on('click', function (e) {
+        console.log('.reg-my-user clicked');
+        // todo 整備
+    });
+
+    //全ての項目を表示させない場合、ドロップダウンを表示させない
+    if (!isAdded && !isSharedRecord && isFriend)
+        li.find('.dropdown-toggle').attr('disabled', '');
+
+    //chipsのセッティング
+    if(!member.isChecked){//todo isCheckedなのか、isAddedなのか
+        li.find('.health-rec-btn').removeClass('health-rec-btn').addClass('invited').find('.mdl-chip__text').html("招待中");
+        // li.find('.mdl-list__item-secondary-action').remove();
+        // li.find('div').addClass("mdl-badge").addClass('mdl-pre-upgrade').attr('data-badge', " ");
+        // li.attr("title", "招待中");
+    } else {
+
+        li.find(".health-rec-btn").on('click', function (e) {
+            e.preventDefault();
+            var userUid = sortedKeys[$(this).index()];
+            console.log('clicked uid:' + userUid);
+
+            return false;
+        });
+    }
+
+    return li;
 }
 
 function initContents() {
@@ -1827,27 +1889,28 @@ function openDialog(toShowEle, fileName) {
 
             var isAdded = false;
             for (var key in groupJson['member']) {
-                if (!groupJson['member'].hasOwnProperty(key)) continue;
+                if (!groupJson['member'].hasOwnProperty(key) || key === user.uid)
+                    continue;
                 if (friendKey === key) {
                     isAdded = true;
                     break;
                 }
             }
 
-            // if (isAdded) continue;
+            if (isAdded) continue;
 
-            var friendName = avoidNullValue(groupJson['member'][key]['name'], 'ユーザ名未設定');
-            var photoUrl = avoidNullValue(groupJson['member'][key]['photoUrl'], '../dist/img/icon.png');
+            var friendName = avoidNullValue(friendJson[friendKey]['name'], 'ユーザ名未設定');
+            var photoUrl = avoidNullValue(friendJson[friendKey]['photoUrl'], '../dist/img/icon.png');
             $(
-                '<li class="mdl-list__item mdl-pre-upgrade" key="'+ key +'">'+
+                '<li class="mdl-list__item mdl-pre-upgrade" key="'+ friendKey +'">'+
                     '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                         '<img src="'+ photoUrl +'" class="mdl-list__item-avatar mdl-pre-upgrade">'+
                         '<span>'+ friendName +'</span>'+
                     '</span>'+
                     '<div class="mdl-layout-spacer"></div>'+
                     '<div class="mdl-list__item-secondary-action mdl-pre-upgrade">'+
-                        '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="'+ key +'">'+
-                            '<input type="checkbox" id="'+ key +'" class="mdl-checkbox__input mdl-pre-upgrade">'+
+                        '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="'+ friendKey +'">'+
+                            '<input type="checkbox" id="'+ friendKey +'" class="mdl-checkbox__input mdl-pre-upgrade">'+
                         '</label>'+
                     '</div>'+
                 '</li>'
