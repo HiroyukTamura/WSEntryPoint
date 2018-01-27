@@ -403,35 +403,45 @@ function setOnClickListeners() {
     //     console.log("edit-prof clicked");
     // });
 
-    var clickedAndMovePage = false;
+    // var clickedAndMovePage = false;
     if(!dialog.showModal){
         dialogPolyfill.registerDialog(dialog);
     }
 
     dialog.addEventListener('close', function () {
         console.log('dialog close');
-        var checkBoxes = $('#friend-list .mdl-checkbox');
-        if(checkBoxes.length)
-            checkBoxes[0].MaterialCheckbox.uncheck();
 
         if(currentDialogShown === 'createGroup' && this.returnValue){
             console.log(this.returnValue);
-            var dataArr = this.returnValue.split(DELIMITER);
+
+            var input =('#new-group-name');
+            if (!isValidAboutNullAndDelimiter(input, input.parent().find('.span')))
+                return;
+
+            input.removeClass('is-invalid').removeClass('wrong-val');
+
+            var dataArr = this.returnValue.split(DELIMITER+DELIMITER+DELIMITER);
             var groupKey = defaultDatabase.ref('group').push().key;
             var map = {
                 host: user.uid,
-                groupName: dataArr[0],
-                member: dataArr.shift()
+                groupName: ,
+                member:
             };
+            var update = createFbCommandObj(CREATE_GROUP, user.uid);
+            update['groupName'] = dataArr[0];
+            update['keys'] = dataArr.shift().join('_');
 
-            defaultDatabase.ref('groupSample/'+groupKey).update(map).then(function () {
-                console.log('うまいこといったよ！よかったね！');
-                //todo ここで、memberのkeyのみを書き込んでいることに注意してください。photoUrlやdisplayNameと整合性がとれない場合があるため、
-                // 必ずcloudFunction側で検査を行い、検査にpassしたら、書き込みを許します。
+            var commandKey = defaultDatabase.ref('keyPusher/').push().key;
+            defaultDatabase.ref('writeTask/'+ commandKey).update(update).then(function () {
+
+                showNotification('グループを作成しました', 'success');
+                //todo UI処理
+
             }).catch(function (reason) {
                 console.log(reason);
                 showOpeErrNotification(defaultDatabase);
             });
+
         } else if(currentDialogShown === 'change-pw') {
 
             if (this.returnValue) {
@@ -579,7 +589,7 @@ function setOnClickListeners() {
 
                 //配列の先頭にグループ名、その後メンバーのuidを追加していく。
                 checked.push(groupNameInput.val());
-                var joinedVal = checked.join(DELIMITER);
+                var joinedVal = checked.join(DELIMITER+DELIMITER+DELIMITER);
 
                 dialog.close(joinedVal);
                 return;
@@ -800,6 +810,13 @@ function displayDialogContent(witch) {
             reauthC.hide();
             dialogPsBtn.html('グループを作成');
             dialogNgBtn.html('キャンセル');
+
+            var checkBoxes = $('#friend-list .mdl-checkbox');
+            if(checkBoxes.length)
+                checkBoxes[0].MaterialCheckbox.uncheck();
+            $('#new-group-name').val('');
+
+
             break;
         case 'change-pw':
             addGroupC.hide();
