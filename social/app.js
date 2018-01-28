@@ -27,6 +27,8 @@ var userDataJson;
 var currentPwVal;
 var storage;
 var task;
+var createGroupKeys = [];
+var createGroupPhotoUrl;
 
 window.onload = function (ev) {
     defaultApp = firebase.initializeApp(CONFIG);
@@ -414,22 +416,24 @@ function setOnClickListeners() {
         if(currentDialogShown === 'createGroup' && this.returnValue){
             console.log(this.returnValue);
 
-            var input =('#new-group-name');
-            if (!isValidAboutNullAndDelimiter(input, input.parent().find('.span')))
-                return;
+            var input = $(this).find('#new-group-name');
+            var groupName = input.val();//dialogのokボタン押した際にバリデーション済
+            var img = $(this).find('#create-group .group-icon img');
+            var photoUrlE = avoidNullValue(img.attr('src'), 'null');
+            if (photoUrlE === 'img/icon.png')
+                photoUrlE = 'null';
 
-            input.removeClass('is-invalid').removeClass('wrong-val');
+            var checked = [];
+            var inputs = $(this).find('#friend-list .mdl-checkbox.is-checked input');
+            for(var i=0; i<inputs.length; i++) {
+                var id = inputs.eq(i).attr('id');
+                checked.push(id);
+            }
 
-            var dataArr = this.returnValue.split(DELIMITER+DELIMITER+DELIMITER);
-            var groupKey = defaultDatabase.ref('group').push().key;
-            var map = {
-                host: user.uid,
-                groupName: ,
-                member:
-            };
             var update = createFbCommandObj(CREATE_GROUP, user.uid);
-            update['groupName'] = dataArr[0];
-            update['keys'] = dataArr.shift().join('_');
+            update['groupName'] = groupName;
+            update['keys'] = checked.join('_');
+            update['photoUrl'] = photoUrlE;
 
             var commandKey = defaultDatabase.ref('keyPusher/').push().key;
             defaultDatabase.ref('writeTask/'+ commandKey).update(update).then(function () {
@@ -588,10 +592,10 @@ function setOnClickListeners() {
                 }
 
                 //配列の先頭にグループ名、その後メンバーのuidを追加していく。
-                checked.push(groupNameInput.val());
-                var joinedVal = checked.join(DELIMITER+DELIMITER+DELIMITER);
+                // checked.push(groupNameInput.val());
+                // var joinedVal = checked.join(DELIMITER+DELIMITER+DELIMITER);
 
-                dialog.close(joinedVal);
+                dialog.close('いいよいいよー');
                 return;
 
             case 'change-pw':
