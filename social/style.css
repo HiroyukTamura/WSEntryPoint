@@ -722,6 +722,11 @@ body {
     width: calc(300px - 56px);
 }
 
+#user-email-li .mdl-list__item-secondary-action .mdl-button {
+    color: #E57C3E;
+    display: none;
+}
+
 #right-col .mdl-textfield__label {
     display: none;
 }

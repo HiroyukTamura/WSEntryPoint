@@ -26,6 +26,8 @@ const SUCCESS ='SUCCESS';
 const NO_VALID_RESULT = 'NO_VALID_RESULT';
 const OPERATION_ERROR = 'OPERATION_ERROR';
 
+const NTF_UPDATE_EMAIL = 'アドレスを更新しました';
+
 var initialErr = false;
 var currentDialogShown;
 var defaultApp;
@@ -277,6 +279,71 @@ function onGetGroupNodeData(snapshot) {
         showEditToggleMode(true)
     });
 
+    $('#user-email-li .mdl-list__item-secondary-action .mdl-button').on('click', function (e) {
+        e.preventDefault();
+        console.log('click');
+        var inputVal = mailInput.val();
+
+        if (!inputVal) {
+            showNotification('warning', 'アドレスを入力してください');
+            return false;
+        }
+
+        var currentUser = firebase.auth().currentUser;
+        if(user.uid !== currentUser.uid){
+            //別のユーザがログインしているようだ
+            showNotification('処理に失敗しました。ログインしなおしてください。', 'danger');
+            return false;
+        }
+
+        //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
+        var credential = firebase.auth.EmailAuthProvider.credential(
+            currentUser.email,
+            currentPwVal
+        );
+
+        currentUser.reauthenticateWithCredential(credential).then(function() {
+
+            user.updateEmail(inputVal).then(function() {
+
+                var commandKey = defaultDatabase.ref('keyPusher').push().key;
+                var updates = createFbCommandObj(UPDATE_EMAIL, user.uid);
+                updates['newEmail'] = inputVal;
+                defaultDatabase.ref('WriteTask/'+ commandKey).set(updates).then(function () {
+
+                    showNotification(NTF_UPDATE_EMAIL, 'success');
+
+                }).catch(function (error) {
+                    console.log(error);
+                    showOpeErrNotification(defaultDatabase);
+                });
+
+            }).catch(function(error) {
+                console.log(error);
+                onErrorAuth(error);
+            });
+
+        }).catch(function(error) {
+            console.log(error);
+            onErrorAuth(error);
+        });
+        // currentUser.reauthenticateWithCredential(credential).then(function() {
+        //     user.updatePassword(newPw).then(function() {
+        //
+        //         showNotification('パスワードを変更しました', 'success');
+        //
+        //     }).catch(function(error) {
+        //         console.log(error);
+        //         onErrorAuth(error);
+        //     });
+        // }).catch(function(error) {
+        //     console.log(error);
+        //     showOpeErrNotification(defaultDatabase);
+        // });
+
+        return false;
+    });
+
     // var oldInput = $('#user-pw-old input');
 }
 
@@ -306,6 +373,7 @@ function showEditToggleMode(isShow) {
     var rightCol = $('#right-col');
     var dummyPw = $('#user-pw-old .mdl-list__item-primary-content span');
     var pwBtn = $('#user-pw-old .mdl-button');
+    var saveEmailBtn =$('#user-email-li .mdl-list__item-secondary-action .mdl-button');
 
     if(isShow){
         $('#post-prof-inner').fadeOut(function (e2) {
@@ -323,6 +391,7 @@ function showEditToggleMode(isShow) {
             dummyPw.hide();
             pwBtn.show();
             editProfBtn.hide();
+            saveEmailBtn.show();
             // $(this).parent().css('height', '32px');
             $(this).fadeIn();
             saveBtn.fadeIn();
@@ -345,6 +414,7 @@ function showEditToggleMode(isShow) {
             dummyPw.show();
             pwBtn.hide();
             editProfBtn.show();
+            saveEmailBtn.hide();
             // $(this).parent().css('height', '32px');
             $(this).fadeIn();
 
