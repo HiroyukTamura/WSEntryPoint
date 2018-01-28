@@ -7,6 +7,7 @@ const createGroupC = $('#create-group');
 const addGroupC = $('#add-group');
 const changePwC =$('#change-pw');
 const reauthC =$('#re-auth');
+const searchUserC =$('#search-user');
 const dialog = $('#add-group-dialog')[0];
 const dialogPsBtn = $('#add-group-btn');
 const dialogNgBtn = $('#cancel');
@@ -663,6 +664,11 @@ function setOnClickListeners() {
 
     $('#add-btn-user').on('click', function (e) {
         console.log('clicked');
+        displayDialogContent('search-user');
+    });
+
+    $('#search-user-input').keyup(function (e) {
+        onKeyUpSearchUser(e);
     });
 
     const groupNameInput = $('#new-group-name');
@@ -793,6 +799,13 @@ function setPwKeyUpLisntener(input) {
     }
 }
 
+function onKeyUpSearchUser(e) {
+    var val = $(e.target).val();
+    if(val) {
+        console.log('apiカモン！');
+    }
+}
+
 function displayDialogContent(witch) {
     if(dialog.hasAttribute('opened')) {
         console.log(dialog.hasAttribute('opened'), witch);
@@ -806,6 +819,7 @@ function displayDialogContent(witch) {
             changePwC.hide();
             addGroupC.show();
             reauthC.hide();
+            searchUserC.hide();
             dialogPsBtn.html('参加する');
             dialogNgBtn.html('拒否する');
             break;
@@ -814,6 +828,7 @@ function displayDialogContent(witch) {
             addGroupC.hide();
             changePwC.hide();
             reauthC.hide();
+            searchUserC.hide();
             dialogPsBtn.html('グループを作成');
             dialogNgBtn.html('キャンセル');
 
@@ -829,6 +844,7 @@ function displayDialogContent(witch) {
             createGroupC.hide();
             changePwC.show();
             reauthC.hide();
+            searchUserC.hide();
             dialogPsBtn.html('変更');
             dialogNgBtn.html('キャンセル');
             break;
@@ -837,8 +853,20 @@ function displayDialogContent(witch) {
             createGroupC.hide();
             changePwC.hide();
             reauthC.show();
+            searchUserC.hide();
             dialogPsBtn.html('OK');
             dialogNgBtn.html('キャンセル');
+            break;
+
+        case 'search-user':
+            addGroupC.hide();
+            createGroupC.hide();
+            changePwC.hide();
+            reauthC.hide();
+            searchUserC.show();
+            dialogNgBtn.hide();
+            dialogPsBtn.html('戻る');
+
             break;
     }
 

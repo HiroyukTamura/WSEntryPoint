@@ -501,6 +501,16 @@ body {
     background: #E57C3E;
 }
 
+/*ユーザ検索*/
+.user-icon-search {
+    width: 60px;
+    height: 60px;
+}
+
+#search-user-header {
+
+}
+
 /*------------Bootstrap notify------------*/
 .alert-minimalist {
     background-color: rgb(241, 242, 240);
