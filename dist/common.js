@@ -62,11 +62,12 @@ const HOLIDAYS = {
     "2019-11-23": "勤労感謝の日",
     "2019-12-23": "天皇誕生日"
 };
-
+//bootstrap_notifyで用いられるエラー
 const ERR_MSG_OPE_FAILED = '処理に失敗しました';
 const ERR_MSG_NULL_VAL = "項目名を入力してください";
 const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません';
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
+const ERR_MSG_TRANSFER = '通信に失敗しました';
 
 const INVITE_GROUP = 'INVITE_GROUP';
 const ADD_GROUP_AS_INVITED ='ADD_GROUP_AS_INVITED';

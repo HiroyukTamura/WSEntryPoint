@@ -501,14 +501,51 @@ body {
     background: #E57C3E;
 }
 
-/*ユーザ検索*/
+/*--------------ユーザ検索------------*/
 .user-icon-search {
     width: 60px;
     height: 60px;
 }
 
-#search-user-header {
+#search-user-header .mdl-button {
+    color: #E57C3E;
+}
 
+.search-content .search__error {
+    display: none;
+}
+
+.search-content.on-error .search__error{
+    display: inline;
+}
+
+.search-content .mdl-list {
+    display: none;
+}
+
+.search-content.on-success .mdl-list{
+    display: block;
+}
+
+.search-content .search__loading {
+    display: none;
+    padding-top: 24px;
+}
+
+.search-content.on-loading .search__loading {
+    display: block;
+}
+
+.spinner-spacer {
+    width: 50%;
+}
+
+.search-content .mdl-list .person_add{
+    color: #E57C3E;
+}
+
+.search-content .mdl-list .friend-added{
+    color: dodgerblue;
 }
 
 /*------------Bootstrap notify------------*/

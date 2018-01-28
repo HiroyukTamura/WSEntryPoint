@@ -18,6 +18,14 @@ const imgDot = $('#my-img-dot');
 const myImg = $('#my-img img');
 const nameInput = $('#my-name');
 const mailInput = $('#user-email');
+
+//APIまわりのresultコード
+const NO_RESULT = 'NO_RESULT';
+const OVER_50 = 'OVER_50';
+const SUCCESS ='SUCCESS';
+const NO_VALID_RESULT = 'NO_VALID_RESULT';
+const OPERATION_ERROR = 'OPERATION_ERROR';
+
 var initialErr = false;
 var currentDialogShown;
 var defaultApp;
@@ -25,6 +33,7 @@ var defaultDatabase;
 var user;
 var fbCoumpleteCount = 0;
 var userDataJson;
+var friendJson;
 var currentPwVal;
 var storage;
 var task;
@@ -355,7 +364,8 @@ function onGetFriendSnap(snapshot) {
             return;
         }
 
-        var pool = $("#other-users");
+        friendJson = snapshot.toJSON();
+        // var pool = $("#other-users");
         var addUserBtn = $('#add-btn-user-w');
 
         snapshot.forEach(function (childSnap) {
@@ -561,6 +571,10 @@ function setOnClickListeners() {
         } else if(currentDialogShown === 're-auth' && !this.returnValue) {
             inputReAuth.val('').parent().removeClass('is-invalid');
             console.log('re-auth', 'キャンセルされた');
+
+        } else if (currentDialogShown === 'search-user') {
+            $('#search-user-input').val('').removeClass('is-invalid');
+            $('.search-content').removeClass('on-success').removeClass('on-error');
         }
     });
 
@@ -667,8 +681,75 @@ function setOnClickListeners() {
         displayDialogContent('search-user');
     });
 
-    $('#search-user-input').keyup(function (e) {
-        onKeyUpSearchUser(e);
+    $('#search-user-header .mdl-button').on('click', function (e) {
+        e.preventDefault();
+
+        var content = $('.search-content');
+        if (content.hasClass('is-loading'))
+            return;
+
+        content.removeClass('on-error');
+
+        var div = $(this).parents('#search-user-header').find('.mdl-textfield');
+        // var ul = content.find('.mdl-list');
+        // var spinner = content.find('.mdl-spinner');
+        var errMsg =content.find('.search__error');
+        var input = div.find('.mdl-textfield__input');
+
+        var val = input.val();
+
+        if (val) {
+            div.removeClass('is-invalid');
+            var data = {
+                keyword : val,
+                whose: user.uid
+            };
+            content.addClass('on-loading');
+            firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+                $.ajax({
+                    url: 'https://us-central1-wordsupport3.cloudfunctions.net/searchUser/searchUser',
+                    type:'POST',
+                    dataType: 'json',
+                    contentType:"application/json; charset=utf-8",
+                    data : JSON.stringify(data),
+                    timeout:20000,
+                    headers: {"Authorization": "Bearer " + idToken}
+
+                }).done(function(data) {
+                    console.log(data);
+                    switch (data.status) {
+                        case NO_RESULT:
+                        case NO_VALID_RESULT:
+                            errMsg.html('ヒットしませんでした');
+                            content.removeClass('on-loading').addClass('on-error');
+                            break;
+                        case OVER_50:
+                            errMsg.html('ヒット数が多すぎます');
+                            content.removeClass('on-loading').addClass('on-error');
+                            break;
+                        case OPERATION_ERROR:
+                            errMsg.html(OPERATION_ERROR);
+                            content.removeClass('on-loading').addClass('on-error');
+                            break;
+                        case SUCCESS:
+                            onGetSearchUsers(data.result);
+                            content.removeClass('on-loading').addClass('on-success');
+                            break;
+                    }
+                }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                    errMsg.html(OPERATION_ERROR);
+                    content.removeClass('on-loading').addClass('on-error');
+                });
+            }).catch(function(error) {
+                console.log(error);
+                showOpeErrNotification(defaultDatabase);
+            });
+        } else {
+            div.addClass('is-invalid');
+        }
+
+        return false;
     });
 
     const groupNameInput = $('#new-group-name');
@@ -781,6 +862,88 @@ function setOnClickListeners() {
     });
 }
 
+/**
+ * ここで、得られる検索結果は最新のものであっても、変数userDataは古いものであることに注意してください。サーバ側でしっかりバリデーションしましょう。
+ */
+function onGetSearchUsers(resultArr) {
+    console.log('onGetSearchUsers');
+    var ul = $('.search-content .mdl-list');
+
+    var friendKeys = Object.keys(friendJson);
+    resultArr.forEach(function (person) {
+
+        if (person.uid === user.uid) return;
+
+        var isFriend = false;
+        // for(var i=0; i<friendKeys.length; i++){
+        //     if (friendKeys[i] === person.uid) {
+        //         isFriend = true;
+        //         break;
+        //     }
+        // }
+
+        var photoUrl = avoidNullValue(person.photoUrl, '../dist/img/icon.png');
+        var html =
+            $(
+                '<li class="mdl-list__item" key="'+ person.uid +'">'+
+                    '<span class="mdl-list__item-primary-content">'+
+                        '<img src="'+ photoUrl +'" alt="user-image" class="user-icon-search rounded-circle">'+
+                        '<span>'+ person.displayName +'</span>'+
+                    '</span>'+
+                    '<span class="mdl-list__item-secondary-action">'+
+                        '<span class="mdl-button mdl-js-button mdl-button--icon">'+
+                        '</span>'+
+                    '</span>'+
+                '</li>'
+            );
+
+        var icon = isFriend ? $('<i class="material-icons friend-added">check_circle</i>')
+            : $('<i class="material-icons person_add">person_add</i>');
+        var title = isFriend ? '既にフレンドユーザに追加されています' : 'フレンドユーザに追加';
+        var btn = html.find('.mdl-button').append(icon).attr('title', title);
+
+        if (!isFriend) {
+            btn.on('click', function (e) {
+                e.preventDefault();
+
+                var commandKey = defaultDatabase.ref('keyPusher').push().key;
+                var item = $(e.target).parents('.mdl-list__item');
+                var targetUserKey = item.attr('key');
+                var obj = createFbCommandObj(ADD_FRIEND, user.uid);
+                obj['key'] = user.uid;
+                obj['targetUserKey'] = targetUserKey;
+
+                defaultDatabase.ref('writeTask/' + commandKey).update(obj).then(function () {
+
+                    showNotification('フレンドユーザに登録しました');
+                    friendJson[targetUserKey] = {
+                        name: item.find('.mdl-list__item-primary-content span').val(),
+                        photoUrl: item.find('.mdl-list__item-primary-content .user-icon-search').attr('img'),
+                        isChecked: false
+                    };
+                    item.find('.mdl-button').fadeOut(function () {
+                        $(this).attr('title', '既にフレンドユーザとして登録されています')
+                            .find('.material-icons')
+                            .remove();
+                        $(this).append($('<i class="material-icons friend-added">check_circle</i>'))
+                            .off('click');
+                        tippyForDialog('.mdl-button', 'left', 5);
+                        $(this).fadeIn();
+                    });
+
+                }).catch(function (error) {
+                    console.log(error.code, error.message);
+                    showOpeErrNotification(defaultDatabase);
+                });
+                return false;
+            });
+        }
+        ul.append(html);
+    });
+
+    tippyForDialog('.mdl-button', 'left', 5);
+}
+
 function onClickMyImg(e) {
     e.preventDefault();
     console.log('onClickMyImg');
@@ -799,13 +962,6 @@ function setPwKeyUpLisntener(input) {
     }
 }
 
-function onKeyUpSearchUser(e) {
-    var val = $(e.target).val();
-    if(val) {
-        console.log('apiカモン！');
-    }
-}
-
 function displayDialogContent(witch) {
     if(dialog.hasAttribute('opened')) {
         console.log(dialog.hasAttribute('opened'), witch);
@@ -820,6 +976,7 @@ function displayDialogContent(witch) {
             addGroupC.show();
             reauthC.hide();
             searchUserC.hide();
+            dialogNgBtn.show();
             dialogPsBtn.html('参加する');
             dialogNgBtn.html('拒否する');
             break;
@@ -829,6 +986,7 @@ function displayDialogContent(witch) {
             changePwC.hide();
             reauthC.hide();
             searchUserC.hide();
+            dialogNgBtn.show();
             dialogPsBtn.html('グループを作成');
             dialogNgBtn.html('キャンセル');
 
@@ -845,9 +1003,11 @@ function displayDialogContent(witch) {
             changePwC.show();
             reauthC.hide();
             searchUserC.hide();
+            dialogNgBtn.show();
             dialogPsBtn.html('変更');
             dialogNgBtn.html('キャンセル');
             break;
+
         case 're-auth':
             addGroupC.hide();
             createGroupC.hide();
@@ -855,6 +1015,7 @@ function displayDialogContent(witch) {
             reauthC.show();
             searchUserC.hide();
             dialogPsBtn.html('OK');
+            dialogNgBtn.show();
             dialogNgBtn.html('キャンセル');
             break;
 
@@ -883,18 +1044,7 @@ function showAll() {
 
     setElementAsMdl($("body"));
 
-    tippy('.group-icon', {
-        updateDuration: 0,
-        appendTo: $('dialog')[0],
-        distance: 0,
-        popperOptions: {
-            modifiers: {
-                preventOverflow: {
-                    enabled: false
-                }
-            }
-        }
-    });
+    tippyForDialog('.group-icon', 'top', 0);
 
     tippy('[title]', {
         updateDuration: 0,
@@ -908,6 +1058,22 @@ function showAll() {
     });
 
     notifyInvitation();
+}
+
+function tippyForDialog(selectorVal, placement, distance) {
+    tippy(selectorVal, {
+        updateDuration: 0,
+        appendTo: $('dialog')[0],
+        distance: distance,
+        placement: placement,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: {
+                    enabled: false
+                }
+            }
+        }
+    });
 }
 
 function notifyInvitation() {
