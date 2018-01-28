@@ -296,6 +296,25 @@ function onGetGroupNodeData(snapshot) {
             return false;
         }
 
+        user.updateEmail(inputVal).then(function() {
+
+            var commandKey = defaultDatabase.ref('keyPusher').push().key;
+            var updates = createFbCommandObj(UPDATE_EMAIL, user.uid);
+            updates['newEmail'] = inputVal;
+            defaultDatabase.ref('WriteTask/'+ commandKey).set(updates).then(function () {
+
+                showNotification(NTF_UPDATE_EMAIL, 'success');
+
+            }).catch(function (error) {
+                console.log(error);
+                showOpeErrNotification(defaultDatabase);
+            });
+
+        }).catch(function(error) {
+            console.log(error);
+            onErrorAuth(error);
+        });
+
         //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
         var credential = firebase.auth.EmailAuthProvider.credential(
             currentUser.email,
@@ -304,26 +323,12 @@ function onGetGroupNodeData(snapshot) {
 
         currentUser.reauthenticateWithCredential(credential).then(function() {
 
-            user.updateEmail(inputVal).then(function() {
-
-                var commandKey = defaultDatabase.ref('keyPusher').push().key;
-                var updates = createFbCommandObj(UPDATE_EMAIL, user.uid);
-                updates['newEmail'] = inputVal;
-                defaultDatabase.ref('WriteTask/'+ commandKey).set(updates).then(function () {
-
-                    showNotification(NTF_UPDATE_EMAIL, 'success');
-
-                }).catch(function (error) {
-                    console.log(error);
-                    showOpeErrNotification(defaultDatabase);
-                });
-
-            }).catch(function(error) {
-                console.log(error);
-                onErrorAuth(error);
-            });
-
         }).catch(function(error) {
+
+            if (error.code === 'auth/requires-recent-login') {
+                //todo 再認証だ！
+            }
+
             console.log(error);
             onErrorAuth(error);
         });
