@@ -402,6 +402,25 @@ function onGetFriendSnap(snapshot) {
         });
 }
 
+function onErrorAuth(error) {
+    switch (error.code){
+        case 'auth/wrong-password':
+            showNotification('パスワードが間違っています', 'warning');
+            break;
+        case 'auth/network-request-failed':
+            showNotification('通信に失敗しました', 'warning');
+            break;
+        case 'auth/too-many-requests':
+            showNotification('アクセスが集中しています。時間をおいて再度試してみてください。', 'warning');
+            break;
+        case 'auth/web-storage-unsupported':
+            showNotification('ブラウザがウェブストレージを許可していません。設定を変更するか、別のブラウザでアクセスしてください。', 'warning');
+            break;
+        default:
+            showOpeErrNotification(defaultDatabase);
+            break;
+    }
+}
 
 function setOnClickListeners() {
     $('#group #add-btn-w').on("click", function (ev) {
@@ -484,7 +503,7 @@ function setOnClickListeners() {
 
                         }).catch(function(error) {
                             console.log(error);
-                            showOpeErrNotification(defaultDatabase);
+                            onErrorAuth(error);
                         });
                     }).catch(function(error) {
                         console.log(error);
@@ -532,11 +551,25 @@ function setOnClickListeners() {
                     this.returnValue
                 );
 
+                var updates = createFbCommandObj(UPDATE_PROFILE, user.uid);
+                updates['newUserName'] = nameInput.val();
+                updates['newEmail'] = mailInput.val();
+                updates['newPhotoUrl'] = photoUrl;
+
                 currentUserE.reauthenticateWithCredential(credentialE).then(function() {
 
                     currentUserE.updateProfile(objToUpdate).then(function() {
 
-                        showNotification('プロフィールを変更しました', 'success');
+                        var commandKey = defaultDatabase.ref('keyPusher').push().key;
+                        defaultDatabase.ref('writeTask/'+ commandKey).set(updates).then(function () {
+
+                            showNotification('プロフィールを変更しました', 'success');
+                            //todo drawerの画像変更
+
+                        }).catch(function (reason) {
+                            console.log(reason);
+                            showOpeErrNotification(defaultDatabase);
+                        });
 
                     }).catch(function(error) {
                         console.log(error);
@@ -545,24 +578,7 @@ function setOnClickListeners() {
 
                 }).catch(function(error) {
                     console.log(error.code, error.message);
-                    switch (error.code){
-                        case 'auth/wrong-password':
-                            showNotification('パスワードが間違っています', 'warning');
-                            showEditToggleMode(false);
-                            break;
-                        case 'auth/network-request-failed':
-                            showNotification('通信に失敗しました', 'warning');
-                            break;
-                        case 'auth/too-many-requests':
-                            showNotification('アクセスが集中しています。時間をおいて再度試してみてください。', 'warning');
-                            break;
-                        case 'auth/web-storage-unsupported':
-                            showNotification('ブラウザがウェブストレージを許可していません。設定を変更するか、別のブラウザでアクセスしてください。', 'warning');
-                            break;
-                        default:
-                            showOpeErrNotification(defaultDatabase);
-                            break;
-                    }
+                    onErrorAuth(error);
                 });
             }
 
