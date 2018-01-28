@@ -27,8 +27,6 @@ var userDataJson;
 var currentPwVal;
 var storage;
 var task;
-var createGroupKeys = [];
-var createGroupPhotoUrl;
 
 window.onload = function (ev) {
     defaultApp = firebase.initializeApp(CONFIG);
@@ -430,16 +428,20 @@ function setOnClickListeners() {
                 checked.push(id);
             }
 
+            var newGroupKey = defaultDatabase.ref('keyPusher').push().key;
+
             var update = createFbCommandObj(CREATE_GROUP, user.uid);
             update['groupName'] = groupName;
             update['keys'] = checked.join('_');
             update['photoUrl'] = photoUrlE;
+            update['newGroupKey'] = newGroupKey;
 
             var commandKey = defaultDatabase.ref('keyPusher/').push().key;
             defaultDatabase.ref('writeTask/'+ commandKey).update(update).then(function () {
 
                 showNotification('グループを作成しました', 'success');
-                //todo UI処理
+                var html = createGroupHtml(groupName, photoUrlE, newGroupKey);
+                html.insertBefore($('#group #add-btn-w'));
 
             }).catch(function (reason) {
                 console.log(reason);
@@ -853,8 +855,10 @@ function showAll() {
 
     setElementAsMdl($("body"));
 
-    tippy('[title]', {
+    tippy('.group-icon', {
         updateDuration: 0,
+        appendTo: $('dialog')[0],
+        distance: 0,
         popperOptions: {
             modifiers: {
                 preventOverflow: {
@@ -864,10 +868,8 @@ function showAll() {
         }
     });
 
-    tippy('.group-icon', {
+    tippy('[title]', {
         updateDuration: 0,
-        appendTo: $('dialog')[0],
-        distance: 0,
         popperOptions: {
             modifiers: {
                 preventOverflow: {
