@@ -713,6 +713,10 @@ body {
     font-size: 24px;
 }
 
+/*#my-name-li .mdl-list__item-primary-content .mdl-textfield{*/
+    /*width: 356px;*/
+/*}*/
+
 #my-name-li .mdl-list__item-secondary-action .mdl-button {
     font-size: 18px;
     color: #E57C3E;
@@ -720,11 +724,15 @@ body {
 
 #user-email-li .mdl-textfield__input, #user-pw-old .mdl-textfield__input, #user-pw-new .mdl-textfield__input {
     font-size: 18px;
-    /*width: calc(300px - 56px);*/
+    width: calc(300px - 56px);
 }
 
 #user-email-li .mdl-textfield__label, #user-pw-old .mdl-textfield__label, #user-pw-new .mdl-textfield__label {
-    /*width: calc(300px - 56px);*/
+    width: calc(300px - 56px);
+}
+
+#user-email-li .mdl-textfield, #user-pw-old .mdl-textfield {
+    width: calc(300px - 56px);
 }
 
 #user-email-li .mdl-list__item-secondary-action .mdl-button {
@@ -747,10 +755,8 @@ body {
     color: transparent;
 }
 
-#save-prof {
-    display: none;
-    color: white;
-    background-color: #E57C3E;
+#edit-prof {
+    color: #E57C3E;
     margin-top: 32px;
 }
 

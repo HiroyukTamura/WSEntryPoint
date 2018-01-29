@@ -77,9 +77,14 @@ const CREATE_GROUP = 'CREATE_GROUP';
 const UPDATE_PROFILE = 'UPDATE_PROFILE';
 const UPDATE_EMAIL = 'UPDATE_EMAIL';
 const UPDATE_DISPLAY_NAME = 'UPDATE_DISPLAY_NAME';
+const UPDATE_PROF_PHOTO = 'UPDATE_PROF_PHOTO';
 
 const UNSET_USER_NAME = 'ユーザ名未設定';
 const UNSET_EMAIL = 'アドレス未設定';
+
+const NTF_FILE_IMG_W = 'JPEG・PNG・GIFファイルのみアップロードできます';
+const NTF_LIMIT_SIZE5 = '5MBを超えるファイルはアップロードできません';
+const NTF_UPDATED_PROF_IMG ='プロフィール画像を変更しました';
 
 const CONFIG = {
     apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",

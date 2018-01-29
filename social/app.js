@@ -6,7 +6,7 @@ const progress = $('#progress');
 const createGroupC = $('#create-group');
 const addGroupC = $('#add-group');
 const changePwC =$('#change-pw');
-const reauthC =$('#re-auth');
+// const reauthC =$('#re-auth');
 const searchUserC =$('#search-user');
 const dialog = $('#add-group-dialog')[0];
 const dialogPsBtn = $('#add-group-btn');
@@ -271,47 +271,71 @@ function onGetGroupNodeData(snapshot) {
 
     var pwBtn = $('#user-pw-old .mdl-button');
     var editProfBtn = $('#edit-prof');
-    var saveBtn =$('#save-prof');
+    // var saveBtn =$('#save-prof');
     pwBtn.on('click', function (e) {
         console.log('clicked');
         displayDialogContent('change-pw');
     });
-    saveBtn.on('click', function (e) {
-        e.preventDefault();
-        displayDialogContent('re-auth');
-        return false;
-    });
+    // saveBtn.on('click', function (e) {
+    //     e.preventDefault();
+    //     displayDialogContent('re-auth');
+    //     return false;
+    // });
 
     editProfBtn.on('click', function (e) {
-        showEditToggleMode(true)
+        firebase.auth().onAuthStateChanged(function(userObject) {
+            if (userObject) {
+                postLoad.show();
+                showEditToggleMode(true);
+            } else {
+                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                    .then(function() {
+
+                        var uiConfig = createFbUiConfig(function(userObject, credential, redirectUrl) {
+                            user = userObject;
+                            progress.hide();
+                            $('#login_w').hide();
+                            postLoad.show();
+                            return false;
+                        });
+
+                        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                        postLoad.hide();
+                        progress.hide();
+                        $('#login_w').show();
+                        ui.start('#firebaseui-auth-container', uiConfig);
+
+                    }).catch(function(error) {
+                        console.log(error.code, error.message);
+                        showOpeErrNotification(defaultDatabase, -1);
+                    });
+            }
+        });
     });
 
     $('#my-name-li .mdl-list__item-secondary-action .mdl-button').on('click', function (e) {
         e.preventDefault();
         var inputVal = nameInput.val();
         if (!inputVal) {
-            showNotification('warning', 'ユーザ名を入力してください');
+            showNotification('ユーザ名を入力してください', 'warning');
             return false;
         }
 
         var currentUser = firebase.auth().currentUser;
         if(user.uid !== currentUser.uid){
-            //別のユーザがログインしているようだ
-            showReAuthUi(uiConfigForName);
+            showNotification(ERR_MSG_OPE_FAILED, 'danger');
             return false;
         }
 
         currentUser.updateProfile({
             displayName: inputVal
         }).then(function() {
+
             updateDisplayNameDb(inputVal);
 
         }).catch(function(error) {
             console.log(error);
-            if (error.code === 'auth/requires-recent-login')
-                showReAuthUi(uiConfigForName);
-            else
-                showOpeErrNotification(defaultDatabase);
+            onErrorAuth(error);
         });
 
 
@@ -324,19 +348,18 @@ function onGetGroupNodeData(snapshot) {
         var inputVal = mailInput.val();
 
         if (!inputVal) {
-            showNotification('warning', 'アドレスを入力してください');
+            showNotification('アドレスを入力してください', 'warning');
             return false;
         }
 
         if (mailInput.parent().hasClass('is-invalid')) {
-            showNotification('warning', '不適切なアドレスです');
+            showNotification('不適切なアドレスです', 'warning');
             return false;
         }
 
         var currentUser = firebase.auth().currentUser;
         if(user.uid !== currentUser.uid){
-            //別のユーザがログインしているようだ
-            showReAuthUi(uiConfigForEmail);
+            showNotification(ERR_MSG_OPE_FAILED, 'danger');
             return false;
         }
 
@@ -348,12 +371,7 @@ function onGetGroupNodeData(snapshot) {
 
         }).catch(function(error) {
             console.log(error);
-
-            if (error.code === 'auth/requires-recent-login') {
-                showReAuthUi(uiConfigForEmail);
-            } else {
-                showOpeErrNotification(defaultDatabase);
-            }
+            onErrorAuth(error);
         });
 
         return false;
@@ -418,7 +436,7 @@ function createGroupHtml(groupName, photoUrl, groupKey) {
 
 function showEditToggleMode(isShow) {
     var editProfBtn = $('#edit-prof');
-    var saveBtn =$('#save-prof');
+    // var saveBtn =$('#save-prof');
     var postProfInner = $('#post-prof-inner');
     var rightCol = $('#right-col');
     var dummyPw = $('#user-pw-old .mdl-list__item-primary-content span');
@@ -440,15 +458,15 @@ function showEditToggleMode(isShow) {
             //     .attr('title', 'プロフィールを保存');
             dummyPw.hide();
             pwBtn.show();
-            editProfBtn.hide();
             saveEmailBtn.show();
             // $(this).parent().css('height', '32px');
             $(this).fadeIn();
-            saveBtn.fadeIn();
+            // saveBtn.fadeIn();
 
             myImg.css('cursor', 'pointer');
             imgDot.css('cursor', 'pointer');
         });
+        editProfBtn.fadeOut();
 
     } else {
         postProfInner.fadeOut(function () {
@@ -472,7 +490,8 @@ function showEditToggleMode(isShow) {
             imgDot.css('cursor', 'default');
         });
 
-        saveBtn.fadeOut();
+        editProfBtn.fadeIn();
+        // saveBtn.fadeOut();
     }
 }
 
@@ -637,76 +656,76 @@ function setOnClickListeners() {
             pwOld.val('').parent().removeClass('is-invalid');
             pwNew.val('').parent().removeClass('is-invalid');
 
-        } else if(currentDialogShown === 're-auth' && this.returnValue) {
-
-            if (this.returnValue) {
-
-                var currentUserE = firebase.auth().currentUser;
-
-                if(user.uid !== currentUserE.uid){
-                    //別のユーザがログインしているようだ
-                    showNotification('処理に失敗しました', 'danger');
-                    return;
-                }
-
-                if (!nameInput.val())
-                    showNotification('warning', 'ユーザ名を入力してください');
-                if (!mailInput.val())
-                    showNotification('warning', 'アドレスを入力してください');
-                if(!nameInput.val() || !mailInput.val())
-                    return;
-
-                var photoUrl = myImg.attr('src');
-                var objToUpdate = {};
-                // if(nameInput.val() !== currentUserE.displayName)
-                objToUpdate['displayName'] = nameInput.val();
-                // if(mailInput.val() !== user.email)
-                objToUpdate['email'] = mailInput.val();
-                // if(photoUrl !== currentUserE.photoURL)
-                objToUpdate['photoURL'] = photoUrl;
-
-                //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
-                var credentialE = firebase.auth.EmailAuthProvider.credential(
-                    currentUserE.email,
-                    this.returnValue
-                );
-
-                var updates = createFbCommandObj(UPDATE_PROFILE, user.uid);
-                updates['newUserName'] = nameInput.val();
-                updates['newEmail'] = mailInput.val();
-                updates['newPhotoUrl'] = photoUrl;
-
-                currentUserE.reauthenticateWithCredential(credentialE).then(function() {
-
-                    currentUserE.updateProfile(objToUpdate).then(function() {
-
-                        var commandKey = defaultDatabase.ref('keyPusher').push().key;
-                        defaultDatabase.ref('writeTask/'+ commandKey).set(updates).then(function () {
-
-                            showNotification('プロフィールを変更しました', 'success');
-                            //todo drawerの画像変更
-
-                        }).catch(function (reason) {
-                            console.log(reason);
-                            showOpeErrNotification(defaultDatabase);
-                        });
-
-                    }).catch(function(error) {
-                        console.log(error);
-                        showOpeErrNotification(defaultDatabase);
-                    });
-
-                }).catch(function(error) {
-                    console.log(error.code, error.message);
-                    onErrorAuth(error);
-                });
-            }
-
-            inputReAuth.val('').parent().removeClass('is-invalid');
-
-        } else if(currentDialogShown === 're-auth' && !this.returnValue) {
-            inputReAuth.val('').parent().removeClass('is-invalid');
-            console.log('re-auth', 'キャンセルされた');
+        // } else if(currentDialogShown === 're-auth' && this.returnValue) {
+        //
+        //     if (this.returnValue) {
+        //
+        //         var currentUserE = firebase.auth().currentUser;
+        //
+        //         if(user.uid !== currentUserE.uid){
+        //             //別のユーザがログインしているようだ
+        //             showNotification('処理に失敗しました', 'danger');
+        //             return;
+        //         }
+        //
+        //         if (!nameInput.val())
+        //             showNotification('warning', 'ユーザ名を入力してください');
+        //         if (!mailInput.val())
+        //             showNotification('warning', 'アドレスを入力してください');
+        //         if(!nameInput.val() || !mailInput.val())
+        //             return;
+        //
+        //         var photoUrl = myImg.attr('src');
+        //         var objToUpdate = {};
+        //         // if(nameInput.val() !== currentUserE.displayName)
+        //         objToUpdate['displayName'] = nameInput.val();
+        //         // if(mailInput.val() !== user.email)
+        //         objToUpdate['email'] = mailInput.val();
+        //         // if(photoUrl !== currentUserE.photoURL)
+        //         objToUpdate['photoURL'] = photoUrl;
+        //
+        //         //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
+        //         var credentialE = firebase.auth.EmailAuthProvider.credential(
+        //             currentUserE.email,
+        //             this.returnValue
+        //         );
+        //
+        //         var updates = createFbCommandObj(UPDATE_PROFILE, user.uid);
+        //         updates['newUserName'] = nameInput.val();
+        //         updates['newEmail'] = mailInput.val();
+        //         updates['newPhotoUrl'] = photoUrl;
+        //
+        //         currentUserE.reauthenticateWithCredential(credentialE).then(function() {
+        //
+        //             currentUserE.updateProfile(objToUpdate).then(function() {
+        //
+        //                 var commandKey = defaultDatabase.ref('keyPusher').push().key;
+        //                 defaultDatabase.ref('writeTask/'+ commandKey).set(updates).then(function () {
+        //
+        //                     showNotification('プロフィールを変更しました', 'success');
+        //                     //todo drawerの画像変更
+        //
+        //                 }).catch(function (reason) {
+        //                     console.log(reason);
+        //                     showOpeErrNotification(defaultDatabase);
+        //                 });
+        //
+        //             }).catch(function(error) {
+        //                 console.log(error);
+        //                 showOpeErrNotification(defaultDatabase);
+        //             });
+        //
+        //         }).catch(function(error) {
+        //             console.log(error.code, error.message);
+        //             onErrorAuth(error);
+        //         });
+        //     }
+        //
+        //     inputReAuth.val('').parent().removeClass('is-invalid');
+        //
+        // } else if(currentDialogShown === 're-auth' && !this.returnValue) {
+        //     inputReAuth.val('').parent().removeClass('is-invalid');
+        //     console.log('re-auth', 'キャンセルされた');
 
         } else if (currentDialogShown === 'search-user') {
             $('#search-user-input').val('').removeClass('is-invalid');
@@ -775,16 +794,16 @@ function setOnClickListeners() {
                 }
                 return;
 
-            case 're-auth':
-                if(!inputReAuth.val() || inputReAuth.val().length < 6) {
-                    if(!reauthC.find('.is-invalid').length)
-                        inputReAuth.parent().addClass('is-invalid');
-
-                    return;
-                }
-
-                dialog.close(inputReAuth.val());
-                return;
+            // case 're-auth':
+            //     if(!inputReAuth.val() || inputReAuth.val().length < 6) {
+            //         if(!reauthC.find('.is-invalid').length)
+            //             inputReAuth.parent().addClass('is-invalid');
+            //
+            //         return;
+            //     }
+            //
+            //     dialog.close(inputReAuth.val());
+            //     return;
         }
 
         dialog.close();
@@ -864,7 +883,7 @@ function setOnClickListeners() {
                             content.removeClass('on-loading').addClass('on-error');
                             break;
                         case OPERATION_ERROR:
-                            errMsg.html(OPERATION_ERROR);
+                            errMsg.html(ERR_MSG_OPE_FAILED);
                             content.removeClass('on-loading').addClass('on-error');
                             break;
                         case SUCCESS:
@@ -874,7 +893,7 @@ function setOnClickListeners() {
                     }
                 }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
-                    errMsg.html(OPERATION_ERROR);
+                    errMsg.html(ERR_MSG_OPE_FAILED);
                     content.removeClass('on-loading').addClass('on-error');
                 });
             }).catch(function(error) {
@@ -909,25 +928,25 @@ function setOnClickListeners() {
 
         var mimeType = e.target.files[0].type;
         if(mimeType.toLowerCase() !== 'image/jpeg' && mimeType.toLowerCase() !== 'image/png' && mimeType.toLowerCase() !== 'image/gif') {
-            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            showNotification(NTF_FILE_IMG_W, 'warning');
             return;
         }
 
         var fileName = e.target.files[0].name;
         var dotPos = fileName.indexOf('.');
         if(dotPos === -1){
-            showNotification('JPEGまたはPNGファイルのみアップロードできます', 'warning');
+            showNotification(NTF_FILE_IMG_W, 'warning');
             return;
         }
 
         var extension = fileName.substring(dotPos+1);
         if (extension.toLowerCase() !== 'jpeg' && extension.toLowerCase() !== 'jpg' && extension.toLowerCase() !== 'png' && extension.toLowerCase() !== 'gif') {
-            showNotification('JPEG・PNG・gifファイルのみアップロードできます', 'warning');
+            showNotification(NTF_FILE_IMG_W, 'warning');
             return;
         }
 
         if(e.target.files[0].size > 5 * 1000 * 1000) {
-            showNotification('5MBを超えるファイルはアップロードできません', 'warning');
+            showNotification(NTF_LIMIT_SIZE5, 'warning');
             return;
         }
 
@@ -946,55 +965,95 @@ function setOnClickListeners() {
         task = storage.ref().child('profile_icon').child(key+'.'+suf)
             .put(e.target.files[0]);
 
-        task.on('state_changed', function(snapshot){
-            var progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            console.log('Upload is ' + progress + '% done');
-            switch (snapshot.state) {
-                case firebase.storage.TaskState.PAUSED: // or 'paused'
-                    console.log('Upload is paused');
-                    break;
-                case firebase.storage.TaskState.RUNNING: // or 'running'
-                    console.log('Upload is running');
-                    var msg = '<strong>'+progress+'%</strong>';
-                    notification.update({
-                        'message': msg,
-                        'progress': progress
+        (function (notification) {
+            task.on('state_changed', function(snapshot){
+                var progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 80);//残りの20%はDB更新動作など！
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                        console.log('Upload is paused');
+                        break;
+                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                        console.log('Upload is running');
+                        updateProgressNtf(notification, progress);
+                        break;
+                }
+            }, function (error) {
+                //todo エラーデバッグすること
+                task = null;//これで「キャンセルしました」が出なくなる
+                notification.close();
+                var errMsg = ERR_MSG_OPE_FAILED;
+                switch (error.code){
+                    case 'storage/retry_limit_exceeded':
+                        errMsg ='タイムアウトしました';
+                        break;
+                    case 'storage/invalid_checksum':
+                        errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                        break;
+                    case 'storage/canceled':
+                        errMsg = 'キャンセルしました';
+                        break;
+                    case 'storage/cannot_slice_blob':
+                        errMsg = errMsg + '。ファイルを確かめてもう一度アップロードしてみてください。';
+                        break;
+                    case 'storage/server_wrong_file_size':
+                        errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                        break;
+                }
+                showNotification(errMsg, 'danger');
+
+            }, function () {
+                var downloadURL = task.snapshot.downloadURL;
+                console.log(downloadURL);
+
+                var commandKey = defaultDatabase.ref('keyPusher').push().key;
+                var updates = createFbCommandObj(UPDATE_PROF_PHOTO, user.uid);
+                updates['newPhotoUrl'] = downloadURL;
+                defaultDatabase.ref('writeTask/'+ commandKey).set(updates).then(function () {
+
+                    var currentUser = firebase.auth().currentUser;
+                    if (user !== currentUser){
+                        task = null;
+                        notification.close();
+                        showNotification(ERR_MSG_OPE_FAILED, 'danger');
+                        return;
+                    }
+
+                    updateProgressNtf(notification, 90);
+
+                    user.updateProfile({
+                        photoURL: downloadURL
+                    }).then(function() {
+
+                        updateProgressNtf(notification, 100);
+                        task = null;
+                        notification.close();
+                        showNotification(NTF_UPDATED_PROF_IMG, 'success');
+                        myImg.attr('src', downloadURL);
+                        $('.demo-drawer-header .demo-avatar img').attr('src', downloadURL);
+
+                    }).catch(function(error) {
+                        task = null;
+                        notification.close();
+                        onErrorAuth(error);
                     });
-                    break;
-            }
-        }, function (error) {
-            //todo エラーデバッグすること
-            task = null;//これで「キャンセルしました」が出なくなる
-            notification.close();
-            var errMsg = ERR_MSG_OPE_FAILED;
-            switch (error.code){
-                case 'storage/retry_limit_exceeded':
-                    errMsg ='タイムアウトしました';
-                    break;
-                case 'storage/invalid_checksum':
-                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
-                    break;
-                case 'storage/canceled':
-                    errMsg = 'キャンセルしました';
-                    break;
-                case 'storage/cannot_slice_blob':
-                    errMsg = errMsg + '。ファイルを確かめてもう一度アップロードしてみてください。';
-                    break;
-                case 'storage/server_wrong_file_size':
-                    errMsg = errMsg + '。もう一度アップロードしてみてください。';
-                    break;
-            }
-            showNotification(errMsg, 'danger');
 
-        }, function () {
-            var downloadURL = task.snapshot.downloadURL;
-            console.log(downloadURL);
-            myImg.attr('src', downloadURL);
+                }).catch(function (reason) {
+                    console.log(reason.code, reason.message);
+                    task = null;
+                    notification.close();
+                    showOpeErrNotification(defaultDatabase);
+                });
+            });
+        }(notification));
+    });
+}
 
-            task = null;
-            notification.close();
-            showNotification('ファイルをアップロードしました', 'success');
-        });
+function updateProgressNtf(notification, progress) {
+    var msg = '<strong>'+progress+'%</strong>';
+    notification.update({
+        'message': msg,
+        'progress': progress
     });
 }
 
@@ -1110,7 +1169,7 @@ function displayDialogContent(witch) {
             createGroupC.hide();
             changePwC.hide();
             addGroupC.show();
-            reauthC.hide();
+            // reauthC.hide();
             searchUserC.hide();
             dialogNgBtn.show();
             dialogPsBtn.html('参加する');
@@ -1120,7 +1179,7 @@ function displayDialogContent(witch) {
             createGroupC.show();
             addGroupC.hide();
             changePwC.hide();
-            reauthC.hide();
+            // reauthC.hide();
             searchUserC.hide();
             dialogNgBtn.show();
             dialogPsBtn.html('グループを作成');
@@ -1137,29 +1196,29 @@ function displayDialogContent(witch) {
             addGroupC.hide();
             createGroupC.hide();
             changePwC.show();
-            reauthC.hide();
+            // reauthC.hide();
             searchUserC.hide();
             dialogNgBtn.show();
             dialogPsBtn.html('変更');
             dialogNgBtn.html('キャンセル');
             break;
 
-        case 're-auth':
-            addGroupC.hide();
-            createGroupC.hide();
-            changePwC.hide();
-            reauthC.show();
-            searchUserC.hide();
-            dialogPsBtn.html('OK');
-            dialogNgBtn.show();
-            dialogNgBtn.html('キャンセル');
-            break;
+        // case 're-auth':
+        //     addGroupC.hide();
+        //     createGroupC.hide();
+        //     changePwC.hide();
+        //     reauthC.show();
+        //     searchUserC.hide();
+        //     dialogPsBtn.html('OK');
+        //     dialogNgBtn.show();
+        //     dialogNgBtn.html('キャンセル');
+        //     break;
 
         case 'search-user':
             addGroupC.hide();
             createGroupC.hide();
             changePwC.hide();
-            reauthC.hide();
+            // reauthC.hide();
             searchUserC.show();
             dialogNgBtn.hide();
             dialogPsBtn.html('戻る');
