@@ -77,6 +77,9 @@ const CREATE_GROUP = 'CREATE_GROUP';
 const UPDATE_PROFILE = 'UPDATE_PROFILE';
 const UPDATE_EMAIL = 'UPDATE_EMAIL';
 
+const UNSET_USER_NAME = 'ユーザ名未設定';
+const UNSET_EMAIL = 'アドレス未設定';
+
 const CONFIG = {
     apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
     authDomain: "wordsupport3.firebaseapp.com",
@@ -211,4 +214,22 @@ function createFbCommandObj(code, userUid) {
         time: moment().format('YYYYMMDD'),
         code: code
     };
+}
+
+function createFbUiConfig(onSignInSuccess) {
+    return {
+        signInOptions: [
+            // Leave the lines as is for the providers you want to offer your users.
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+            firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            firebase.auth.PhoneAuthProvider.PROVIDER_ID
+        ],
+        // Terms of service url.
+        tosUrl: 'sampleTosUrl',
+        'callbacks': {
+            // Called when the user has been successfully signed in.
+            'signInSuccess': onSignInSuccess
+        }
+    }
 }

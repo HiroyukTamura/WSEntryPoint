@@ -49,31 +49,19 @@ window.onload = function (ev) {
         if (userObject) {
             console.log("ユーザログインしてます");
             progress.hide();
+            $('#login_w').hide();
             user = userObject;
             onLoginSuccess();
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
-                    var uiConfig = {
-                        signInOptions: [
-                            // Leave the lines as is for the providers you want to offer your users.
-                            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-                            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                            firebase.auth.PhoneAuthProvider.PROVIDER_ID
-                        ],
-                        // Terms of service url.
-                        tosUrl: 'sampleTosUrl',
-                        'callbacks': {
-                            // Called when the user has been successfully signed in.
-                            'signInSuccess': function(userObject, credential, redirectUrl) {
-                                user = userObject;
-                                progress.hide();
-                                $('#login_w').hide();
-                                return false;
-                            }
-                        }
-                    };
+
+                    var uiConfig = createFbUiConfig(function(userObject, credential, redirectUrl) {
+                        user = userObject;
+                        progress.hide();
+                        $('#login_w').hide();
+                        return false;
+                    });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
                     progress.hide();
@@ -143,7 +131,7 @@ function onGetGroupNodeData(snapshot) {
         if(childSnap.key === DEFAULT)
             return;
 
-        var groupName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
+        var groupName = avoidNullValue(childSnap.child("name").val(), UNSET_USER_NAME);
         var groupPhotoUrl = avoidNullValue(childSnap.child('photoUrl').val(), "img/icon.png");
 
 
@@ -193,7 +181,7 @@ function onGetGroupNodeData(snapshot) {
                     if(!childMemberSnap.child('isChecked').val())
                         return;
 
-                    var memberName = avoidNullValue(childMemberSnap.child('name').val(), "ユーザ名未設定");
+                    var memberName = avoidNullValue(childMemberSnap.child('name').val(), UNSET_USER_NAME);
                     var memberPhotoUrl = avoidNullValue(childMemberSnap.child('photoUrl').val(), 'img/icon.png');
 
                     var chipsHtml =
@@ -251,12 +239,12 @@ function onGetGroupNodeData(snapshot) {
         }
     });
 
-    var userName = avoidNullValue(snapshot.child('displayName').val(), "ユーザ名未設定");
+    var userName = avoidNullValue(snapshot.child('displayName').val(), UNSET_USER_NAME);
 
     //プロフィール欄を表示
     nameInput.attr('value', userName);
 
-    var userEmail = avoidNullValue(snapshot.child('email').val(), "アドレス未設定");
+    var userEmail = avoidNullValue(snapshot.child('email').val(), UNSET_EMAIL);
     mailInput.attr('value', userEmail);
 
     var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
@@ -289,67 +277,67 @@ function onGetGroupNodeData(snapshot) {
             return false;
         }
 
-        var currentUser = firebase.auth().currentUser;
-        if(user.uid !== currentUser.uid){
-            //別のユーザがログインしているようだ
-            showNotification('処理に失敗しました。ログインしなおしてください。', 'danger');
+        if (mailInput.parent().hasClass('is-invalid')) {
+            showNotification('warning', '不適切なアドレスです');
             return false;
         }
 
+        var currentUser = firebase.auth().currentUser;
+        if(user.uid !== currentUser.uid){
+            //別のユーザがログインしているようだ
+            showReAuthUi();
+            return false;
+        }
+
+        //エラーコード:auth/requires-recent-loginが起きた際、reauthenticateWithCredentialメソッドは使用しない。なぜなら、その都度パスワードを入力しなくてはならないから。
+        //FirebaseUIを用いれば、UIを作る手間や、パスワードを入力する手間が省ける。
         user.updateEmail(inputVal).then(function() {
 
-            var commandKey = defaultDatabase.ref('keyPusher').push().key;
-            var updates = createFbCommandObj(UPDATE_EMAIL, user.uid);
-            updates['newEmail'] = inputVal;
-            defaultDatabase.ref('WriteTask/'+ commandKey).set(updates).then(function () {
-
-                showNotification(NTF_UPDATE_EMAIL, 'success');
-
-            }).catch(function (error) {
-                console.log(error);
-                showOpeErrNotification(defaultDatabase);
-            });
+            updateEmailProfileDb(inputVal);
 
         }).catch(function(error) {
             console.log(error);
-            onErrorAuth(error);
-        });
-
-        //todo ん？EmailAuthProviderだけでいいのか？要デバッグ
-        var credential = firebase.auth.EmailAuthProvider.credential(
-            currentUser.email,
-            currentPwVal
-        );
-
-        currentUser.reauthenticateWithCredential(credential).then(function() {
-
-        }).catch(function(error) {
 
             if (error.code === 'auth/requires-recent-login') {
-                //todo 再認証だ！
+                showReAuthUi();
+            } else {
+                showOpeErrNotification(defaultDatabase);
             }
-
-            console.log(error);
-            onErrorAuth(error);
         });
-        // currentUser.reauthenticateWithCredential(credential).then(function() {
-        //     user.updatePassword(newPw).then(function() {
-        //
-        //         showNotification('パスワードを変更しました', 'success');
-        //
-        //     }).catch(function(error) {
-        //         console.log(error);
-        //         onErrorAuth(error);
-        //     });
-        // }).catch(function(error) {
-        //     console.log(error);
-        //     showOpeErrNotification(defaultDatabase);
-        // });
 
         return false;
     });
+}
 
-    // var oldInput = $('#user-pw-old input');
+function updateEmailProfileDb(inputVal) {
+    var commandKey = defaultDatabase.ref('keyPusher').push().key;
+    var updates = createFbCommandObj(UPDATE_EMAIL, user.uid);
+    updates['newEmail'] = inputVal;
+    defaultDatabase.ref('writeTask/'+ commandKey).set(updates).then(function () {
+
+        showNotification(NTF_UPDATE_EMAIL, 'success');
+        showEditToggleMode(false);
+
+    }).catch(function (error) {
+        console.log(error);
+        showOpeErrNotification(defaultDatabase);
+    });
+}
+
+function showReAuthUi() {
+    var uiConfig = createFbUiConfig(function (userObject, credential, redirectUrl) {
+        user = userObject;
+        progress.hide();
+        $('#login_w').hide();
+        postLoad.show();
+        updateEmailProfileDb(inputVal);
+        return false;
+    });
+
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    postLoad.hide();
+    $('#login_w').show();
+    ui.start('#firebaseui-auth-container', uiConfig);
 }
 
 function createGroupHtml(groupName, photoUrl, groupKey) {
@@ -447,7 +435,7 @@ function onGetFriendSnap(snapshot) {
             if(childSnap.key === DEFAULT)
                 return;
 
-            var userName = avoidNullValue(childSnap.child("name").val(), "ユーザ名未設定");
+            var userName = avoidNullValue(childSnap.child("name").val(), UNSET_USER_NAME);
             var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), "img/icon.png");
             console.log(photoUrl);
             var ele = $(
