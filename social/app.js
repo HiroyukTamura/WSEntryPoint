@@ -27,6 +27,7 @@ const NO_VALID_RESULT = 'NO_VALID_RESULT';
 const OPERATION_ERROR = 'OPERATION_ERROR';
 
 const NTF_UPDATE_EMAIL = 'アドレスを更新しました';
+const NTF_UPDATE_NAME = 'ユーザ名を更新しました';
 
 var initialErr = false;
 var currentDialogShown;
@@ -39,6 +40,24 @@ var friendJson;
 var currentPwVal;
 var storage;
 var task;
+
+var uiConfigForEmail = createFbUiConfig(function (userObject, credential, redirectUrl) {
+    user = userObject;
+    progress.hide();
+    $('#login_w').hide();
+    postLoad.show();
+    updateEmailProfileDb(inputVal);
+    return false;
+});
+
+var uiConfigForName = createFbUiConfig(function (userObject, credential, redirectUrl) {
+    user = userObject;
+    progress.hide();
+    $('#login_w').hide();
+    postLoad.show();
+    updateDisplayNameDb(inputVal);
+    return false;
+});
 
 window.onload = function (ev) {
     defaultApp = firebase.initializeApp(CONFIG);
@@ -267,6 +286,38 @@ function onGetGroupNodeData(snapshot) {
         showEditToggleMode(true)
     });
 
+    $('#my-name-li .mdl-list__item-secondary-action .mdl-button').on('click', function (e) {
+        e.preventDefault();
+        var inputVal = nameInput.val();
+        if (!inputVal) {
+            showNotification('warning', 'ユーザ名を入力してください');
+            return false;
+        }
+
+        var currentUser = firebase.auth().currentUser;
+        if(user.uid !== currentUser.uid){
+            //別のユーザがログインしているようだ
+            showReAuthUi(uiConfigForName);
+            return false;
+        }
+
+        currentUser.updateProfile({
+            displayName: inputVal
+        }).then(function() {
+            updateDisplayNameDb(inputVal);
+
+        }).catch(function(error) {
+            console.log(error);
+            if (error.code === 'auth/requires-recent-login')
+                showReAuthUi(uiConfigForName);
+            else
+                showOpeErrNotification(defaultDatabase);
+        });
+
+
+        return false;
+    });
+
     $('#user-email-li .mdl-list__item-secondary-action .mdl-button').on('click', function (e) {
         e.preventDefault();
         console.log('click');
@@ -285,13 +336,13 @@ function onGetGroupNodeData(snapshot) {
         var currentUser = firebase.auth().currentUser;
         if(user.uid !== currentUser.uid){
             //別のユーザがログインしているようだ
-            showReAuthUi();
+            showReAuthUi(uiConfigForEmail);
             return false;
         }
 
         //エラーコード:auth/requires-recent-loginが起きた際、reauthenticateWithCredentialメソッドは使用しない。なぜなら、その都度パスワードを入力しなくてはならないから。
         //FirebaseUIを用いれば、UIを作る手間や、パスワードを入力する手間が省ける。
-        user.updateEmail(inputVal).then(function() {
+        currentUser.updateEmail(inputVal).then(function() {
 
             updateEmailProfileDb(inputVal);
 
@@ -299,13 +350,28 @@ function onGetGroupNodeData(snapshot) {
             console.log(error);
 
             if (error.code === 'auth/requires-recent-login') {
-                showReAuthUi();
+                showReAuthUi(uiConfigForEmail);
             } else {
                 showOpeErrNotification(defaultDatabase);
             }
         });
 
         return false;
+    });
+}
+
+function updateDisplayNameDb(inputVal) {
+    var commandKey = defaultDatabase.ref('keyPusher').push().key;
+    var updates = createFbCommandObj(UPDATE_DISPLAY_NAME, user.uid);
+    updates['newDisplayName'] = inputVal;
+    defaultDatabase.ref('writeTask/'+ commandKey).set(updates).then(function () {
+
+        showNotification(NTF_UPDATE_NAME, 'success');
+        showEditToggleMode(false);
+
+    }).catch(function (error) {
+        console.log(error);
+        showOpeErrNotification(defaultDatabase);
     });
 }
 
@@ -324,16 +390,7 @@ function updateEmailProfileDb(inputVal) {
     });
 }
 
-function showReAuthUi() {
-    var uiConfig = createFbUiConfig(function (userObject, credential, redirectUrl) {
-        user = userObject;
-        progress.hide();
-        $('#login_w').hide();
-        postLoad.show();
-        updateEmailProfileDb(inputVal);
-        return false;
-    });
-
+function showReAuthUi(uiConfig) {
     var ui = new firebaseui.auth.AuthUI(firebase.auth());
     postLoad.hide();
     $('#login_w').show();

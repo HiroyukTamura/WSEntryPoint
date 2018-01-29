@@ -703,23 +703,28 @@ body {
     margin-left: 16px;
 }
 
-#my-name-li i{
-    width: 36px;
-    height: 36px;
-    font-size: 36px;
-}
+/*#my-name-li i{*/
+    /*width: 36px;*/
+    /*height: 36px;*/
+    /*font-size: 36px;*/
+/*}*/
 
 #my-name-li .mdl-textfield__input {
     font-size: 24px;
 }
 
+#my-name-li .mdl-list__item-secondary-action .mdl-button {
+    font-size: 18px;
+    color: #E57C3E;
+}
+
 #user-email-li .mdl-textfield__input, #user-pw-old .mdl-textfield__input, #user-pw-new .mdl-textfield__input {
     font-size: 18px;
-    width: calc(300px - 56px);
+    /*width: calc(300px - 56px);*/
 }
 
 #user-email-li .mdl-textfield__label, #user-pw-old .mdl-textfield__label, #user-pw-new .mdl-textfield__label {
-    width: calc(300px - 56px);
+    /*width: calc(300px - 56px);*/
 }
 
 #user-email-li .mdl-list__item-secondary-action .mdl-button {
