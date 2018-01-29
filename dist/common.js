@@ -150,6 +150,18 @@ function setDrawerProfile(loginedUser) {
     $('.demo-avatar img').attr('src', photoUrl);
     var displayName = avoidNullValue(loginedUser.displayName, "ユーザ名未設定");
     $('.user-name').html(displayName);
+
+    $('#accbtn').show();
+
+    $('#dr-header-logout').on('click', function (e) {
+        e.preventDefault();
+        firebase.auth().signOut().then(function() {
+            window.location.href = '../startbootstrap-creative-gh-pages/';
+        }).catch(function(error) {
+            onErrorAuth(error);
+        });
+        return false;
+    });
 }
 
 function avoidNullValue(photoUrl, onErrVal) {
@@ -237,5 +249,25 @@ function createFbUiConfig(onSignInSuccess) {
             // Called when the user has been successfully signed in.
             'signInSuccess': onSignInSuccess
         }
+    }
+}
+
+function onErrorAuth(error) {
+    switch (error.code){
+        case 'auth/wrong-password':
+            showNotification('パスワードが間違っています', 'warning');
+            break;
+        case 'auth/network-request-failed':
+            showNotification('通信に失敗しました', 'warning');
+            break;
+        case 'auth/too-many-requests':
+            showNotification('アクセスが集中しています。時間をおいて再度試してみてください。', 'warning');
+            break;
+        case 'auth/web-storage-unsupported':
+            showNotification('ブラウザがウェブストレージを許可していません。設定を変更するか、別のブラウザでアクセスしてください。', 'warning');
+            break;
+        default:
+            showOpeErrNotification(defaultDatabase);
+            break;
     }
 }

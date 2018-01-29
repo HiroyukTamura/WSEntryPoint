@@ -84,6 +84,7 @@ window.onload = function (ev) {
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
                     progress.hide();
+                    postLoad.hide();
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
 
@@ -288,27 +289,28 @@ function onGetGroupNodeData(snapshot) {
                 postLoad.show();
                 showEditToggleMode(true);
             } else {
-                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-                    .then(function() {
-
-                        var uiConfig = createFbUiConfig(function(userObject, credential, redirectUrl) {
-                            user = userObject;
-                            progress.hide();
-                            $('#login_w').hide();
-                            postLoad.show();
-                            return false;
-                        });
-
-                        var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                        postLoad.hide();
-                        progress.hide();
-                        $('#login_w').show();
-                        ui.start('#firebaseui-auth-container', uiConfig);
-
-                    }).catch(function(error) {
-                        console.log(error.code, error.message);
-                        showOpeErrNotification(defaultDatabase, -1);
-                    });
+                location.reload();
+                // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                //     .then(function() {
+                //
+                //         var uiConfig = createFbUiConfig(function(userObject, credential, redirectUrl) {
+                //             user = userObject;
+                //             progress.hide();
+                //             $('#login_w').hide();
+                //             postLoad.show();
+                //             return false;
+                //         });
+                //
+                //         var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                //         postLoad.hide();
+                //         progress.hide();
+                //         $('#login_w').show();
+                //         ui.start('#firebaseui-auth-container', uiConfig);
+                //
+                //     }).catch(function(error) {
+                //         console.log(error.code, error.message);
+                //         showOpeErrNotification(defaultDatabase, -1);
+                //     });
             }
         });
     });
@@ -539,26 +541,6 @@ function onGetFriendSnap(snapshot) {
             );
             ($('#friend-list')).append(li);
         });
-}
-
-function onErrorAuth(error) {
-    switch (error.code){
-        case 'auth/wrong-password':
-            showNotification('パスワードが間違っています', 'warning');
-            break;
-        case 'auth/network-request-failed':
-            showNotification('通信に失敗しました', 'warning');
-            break;
-        case 'auth/too-many-requests':
-            showNotification('アクセスが集中しています。時間をおいて再度試してみてください。', 'warning');
-            break;
-        case 'auth/web-storage-unsupported':
-            showNotification('ブラウザがウェブストレージを許可していません。設定を変更するか、別のブラウザでアクセスしてください。', 'warning');
-            break;
-        default:
-            showOpeErrNotification(defaultDatabase);
-            break;
-    }
 }
 
 function setOnClickListeners() {

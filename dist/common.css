@@ -134,6 +134,7 @@ noscript h4{
 
 #accbtn {
     float: right;
+    display: none;
 }
 
 .demo-navigation {
