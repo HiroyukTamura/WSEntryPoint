@@ -176,3 +176,8 @@ noscript h4{
 .mdl-layout__drawer .mdl-navigation .mdl-navigation__link.current-page  {
     color: #E57C3E;
 }
+
+/*-------------footer------------*/
+.mdl-mini-footer {
+    margin-top: 72px;
+}
