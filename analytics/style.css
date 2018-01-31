@@ -389,6 +389,60 @@ body {
     color: #CCC5B9;
 }
 
+#column-right-i {
+    padding-right: 48px;
+    padding-top: 48px;
+}
+
+#column-right-i .card-title {
+    color: rgba(0, 0 , 0, .87);
+    font-size: 20px;
+}
+
+#second-card {
+    font-size: 18px;
+}
+
+#second-card td {
+    padding: 0 24px;
+}
+
+#second-card .table-space {
+    height: 24px;
+}
+
+#third-card td {
+    padding: 0 24px;
+    font-size: 16px;
+    line-height: 2rem;
+}
+
+#third-card .fa-circle {
+    color: #C0504D;
+    margin-right: 1rem;
+}
+
+#third-card .table-space {
+    height: 24px;
+}
+
+#third-card {
+    color: rgba(0, 0 , 0, .87);
+}
+
+.card-out-title {
+    font-size: 15px;
+    margin: 24px 24px 0 24px;
+    color: #E57C3E;
+}
+
+#column-right .card {
+    margin-top: 0;
+}
+
+.fa-calendar, .fa-list-ul {
+    margin-right: 1rem;
+}
 /*tippy jsのthemeの変え方がわからない・・・*/
 /*.tippy-tooltip.translucent-theme {*/
     /*!* Your styling here. Example: *!*/
