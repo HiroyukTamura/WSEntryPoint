@@ -657,6 +657,7 @@ body {
 #my-img{
     width: 200px;
     height: 200px;
+    min-width: 200px;
     margin-top: 36px;
     position: relative;
 }
@@ -720,6 +721,7 @@ body {
 #my-name-li .mdl-list__item-secondary-action .mdl-button {
     font-size: 18px;
     color: #E57C3E;
+    display: none;
 }
 
 #user-email-li .mdl-textfield__input, #user-pw-old .mdl-textfield__input, #user-pw-new .mdl-textfield__input {

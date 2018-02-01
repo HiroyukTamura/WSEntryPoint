@@ -1,7 +1,11 @@
 body {
-    overflow-x: hidden;
+    overflow: hidden;
     background-color: #F4F3EF;
 }
+
+/*::-webkit-scrollbar {*/
+    /*display: none;*/
+/*}*/
 
 /*************nav bar***************/
 .mdl-layout__drawer-button i{
