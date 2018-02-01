@@ -451,11 +451,11 @@ function operateAs3(doc, childSnap, dataNum) {
         ul.append(createParamsLi(splited, dataNum, i));
     }
 
-    var addLiBtn =initAddLiBtn();
+    // var addLiBtn =initAddLiBtn();
 
     // $(doc).addClass('align-center');
     $(doc).append(ul);
-    $(doc).append(addLiBtn);
+    // $(doc).append(addLiBtn);
 }
 
 function createParamsLi(splited, dataOrder, i) {
@@ -472,10 +472,7 @@ function createParamsLi(splited, dataOrder, i) {
         onKeyUpParamsTitle(masterJson, $(e.target), errSpan);
     });
 
-    clone.find('.li-rm-btn').on('click', function (e) {
-        onClickLiRmBtn(e, masterJson);
-        return false;
-    });
+    clone.find('.li-rm-btn').remove();
 
     switch(witch){
         case "0":

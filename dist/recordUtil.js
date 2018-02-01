@@ -956,13 +956,13 @@ function initAddLiBtn() {
     return addLiBtn;
 }
 
-function onClickLiRmBtn(e, masterJson) {
-    e.preventDefault();
-    console.log('clicked');
-    var li = $(this).parents('li').eq(0);
-    var index = li.index();
-    var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-    masterJson[currentDataOrder]["data"].splice(index, 1);
-    li.remove();//todo アニメーションつけようと思ったけどうまくいかない。
-    console.log(masterJson);
-}
+// function onClickLiRmBtn(e, masterJson) {
+//     e.preventDefault();
+//     console.log('clicked');
+//     var li = $(this).parents('li');
+//     var index = li.index();
+//     var currentDataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+//     masterJson[currentDataOrder]["data"].splice(index, 1);
+//     li.remove();//todo アニメーションつけようと思ったけどうまくいかない。
+//     console.log(masterJson);
+// }
