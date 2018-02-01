@@ -234,24 +234,6 @@ function createFbCommandObj(code, userUid) {
     };
 }
 
-function createFbUiConfig(onSignInSuccess) {
-    return {
-        signInOptions: [
-            // Leave the lines as is for the providers you want to offer your users.
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            firebase.auth.PhoneAuthProvider.PROVIDER_ID
-        ],
-        // Terms of service url.
-        tosUrl: 'sampleTosUrl',
-        'callbacks': {
-            // Called when the user has been successfully signed in.
-            'signInSuccess': onSignInSuccess
-        }
-    }
-}
-
 function onErrorAuth(error) {
     switch (error.code){
         case 'auth/wrong-password':
@@ -269,5 +251,23 @@ function onErrorAuth(error) {
         default:
             showOpeErrNotification(defaultDatabase);
             break;
+    }
+}
+
+function createFbUiConfig(onSignInSuccess) {
+    return {
+        signInOptions: [
+            // Leave the lines as is for the providers you want to offer your users.
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+            firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            firebase.auth.PhoneAuthProvider.PROVIDER_ID
+        ],
+        // Terms of service url.
+        tosUrl: 'https://github.com/HiroyukTamura/WSEntryPoint/wiki/%E3%83%97%E3%83%A9%E3%82%A4%E3%83%90%E3%82%B7%E3%83%BC%E3%83%9D%E3%83%AA%E3%82%B7%E3%83%BC',
+        'callbacks': {
+            // Called when the user has been successfully signed in.
+            'signInSuccess': onSignInSuccess
+        }
     }
 }

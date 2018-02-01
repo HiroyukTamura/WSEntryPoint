@@ -38,39 +38,17 @@ window.onload = function init() {
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
-                    var uiConfig = {
-                        signInOptions: [
-                            // Leave the lines as is for the providers you want to offer your users.
-                            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-                            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                            firebase.auth.PhoneAuthProvider.PROVIDER_ID
-                        ],
-                        // Terms of service url.
-                        tosUrl: 'sampleTosUrl',
-                        'callbacks': {
-                            // Called when the user has been successfully signed in.
-                            'signInSuccess': function(user, credential, redirectUrl) {
-                                console.log(user.uid);
-                                //urlとは別のuidのユーザとしてログインすることもある。
-                                // if(user.uid !== getUid()){
-                                //     var currentUrl = $(location).attr('href');
-                                //     window.location.href = currentUrl.substring(0, currentUrl.indexOf("?"));
-                                // } else {
-                                //     onLoginSuccess(user.uid);
-                                // }
-                                progress.css('display', "none");
-                                $('#login_w').css('display', "none");
-                                loginedUser = user;
-                                onLoginSuccess();
-                                return false;
-                            }
-                        }
-                    };
+                    var uiConfig = createFbUiConfig(function (user, credential, redirectUrl) {
+                        progress.css('display', "none");
+                        $('#login_w').css('display', "none");
+                        loginedUser = user;
+                        onLoginSuccess();
+                        return false;
+                    });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.css('display', "none");
-                    $('#login_w').css('display', "inline");
+                    progress.hide();
+                    $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
 
                 }).catch(function(error) {

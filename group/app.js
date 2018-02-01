@@ -496,27 +496,13 @@ window.onload = function (ev) {
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
-                    var uiConfig = {
-                        signInOptions: [
-                            // Leave the lines as is for the providers you want to offer your users.
-                            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-                            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                            firebase.auth.PhoneAuthProvider.PROVIDER_ID
-                        ],
-                        // Terms of service url.
-                        tosUrl: 'sampleTosUrl',
-                        'callbacks': {
-                            // Called when the user has been successfully signed in.
-                            'signInSuccess': function(userObject, credential, redirectUrl) {
-                                console.log(userObject);
-                                user = userObject;
-                                progress.hide();
-                                $('#login_w').hide();
-                                return false;
-                            }
-                        }
-                    };
+                    var uiConfig = createFbUiConfig(function (userObject, credential, redirectUrl) {
+                        console.log(userObject);
+                        user = userObject;
+                        progress.hide();
+                        $('#login_w').hide();
+                        return false;
+                    });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
                     progress.hide();
