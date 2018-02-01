@@ -68,7 +68,7 @@ body {
 }
 
 body {
-    overflow-x: hidden;
+    overflow-x: auto;
     background-color: #F4F3EF;
 }
 
@@ -90,10 +90,8 @@ body {
 }
 
 #table-others-w{
-    margin: 36px 0;
-    padding: 36px 72px; /*todo これは端末の画面サイズなどによって変える？？*/
-    display: flex;
-    justify-content: center;
+    margin: 72px auto;
+    width: fit-content;
 }
 
 .mdl-layout__content{
@@ -198,7 +196,7 @@ body {
 }
 
 .chart-ave {
-    overflow: auto;
+    /*overflow: auto;*/
     /*width: 100%;*/
 }
 
@@ -399,7 +397,7 @@ body {
 }
 
 #tab2-sec-card {
-    display: flex;
+    display: none;/*todo これ本来はnoneではない*/
     justify-content: center;
     max-width: 1200px;
 }

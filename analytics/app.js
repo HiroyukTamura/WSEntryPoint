@@ -312,11 +312,15 @@ function displayTest() {
     showAverage(timeData);
 
     initTabLayout2();
+    // var table = $('#table-others');
+    // var tableWidth = table.css({ position: "absolute", visibility: "hidden", display: "block" });
+    // table.css({ position: "", visibility: "", display: "" });
+    // $('.mdl-mini-footer').css('min-width', tableWidth+1);
 
     // innerProgress.css('display', "none");
     progress.css('display', "none");
-    pageContent.css('display', 'inline');
-    postLoad.css('display', 'inline');
+    pageContent.css('display', 'block');
+    postLoad.css('display', 'block');
 
     myChart.update();
 
@@ -653,11 +657,11 @@ function showAverage(timeData) {
    //データが皆無であればその旨を表示
     var tableOhters = $('#table-others');
     if(count === 0){
-        errNonData.css('display', "inline");
+        errNonData.css('display', "block");
         tableOhters.css('display', "none");
     } else {
         errNonData.css('display', "none");
-        tableOhters.css('display', "inline");
+        tableOhters.css('display', "block");
     }
 
 }
