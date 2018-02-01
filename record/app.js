@@ -163,29 +163,30 @@ function initModal() {
     /* blur on modal open, unblur on close */
     modal.on('show.bs.modal', function () {
         $('.container').addClass('blur');
-        if(input.attr("value")){
-            console.log("てってれー");
-            input.parent().addClass('is-dirty');
-        }
+        // if(input.attr("value")){
+        //     console.log("てってれー");
+        //     input.parent().addClass('is-dirty');
+        // }
     });
 
     modal.on('hide.bs.modal', function () {
-        if(isModalForNewTag){
-            isModalForNewTag = false;
-        } else {
-            var splited = masterJson[modalDataNum]["data"][modalTipNum].split(DELIMITER);
-            var tip = $('.card').eq(modalDataNum).find(".tag_wrapper").eq(modalTipNum);
-            setTagUi(tip, splited);
-        }
+        // if(isModalForNewTag){
+        //     isModalForNewTag = false;
+        // } else {
+        //     var splited = masterJson[modalDataNum]["data"][modalTipNum].split(DELIMITER);
+        //     var tip = $('.card').eq(modalDataNum).find(".tag_wrapper").eq(modalTipNum);
+        //     setTagUi(tip, splited);
+        // }
     });
 
     modal.on('hidden.bs.modal', function () {
         $('.container').removeClass('blur');
-        $('.modal-circle-check.show').removeClass("show");
-        input.removeAttr("value");
-        input.val('');
-        document.getElementById('checkbox-modal-label').MaterialCheckbox.uncheck();
-        input.parent().removeClass('is-dirty').removeClass('is-invalid').removeClass('wrong-val');
+        $('#modal-temp2 div').children().remove();
+        // $('.modal-circle-check.show').removeClass("show");
+        // input.removeAttr("value");
+        // input.val('');
+        // document.getElementById('checkbox-modal-label').MaterialCheckbox.uncheck();
+        // input.parent().removeClass('is-dirty').removeClass('is-invalid').removeClass('wrong-val');
     });
 
     $('.modal-footer-btn').eq(1).click(function (ev) {
@@ -295,18 +296,55 @@ function operateAs2(doc, childSnap) {
 
     Object.keys(childSnap["data"]).forEach(function (key) {
         var splited = childSnap["data"][key].split(DELIMITER);
-        addTagToPool(splited, count, pool);
+        if(splited[2] === 'true')
+            addTagToPool(splited, count, pool);
         count++;
     });
 
     var addTagBtn = createAddTagBtn();
     addTagBtn.on('click', function (e) {
+        var modalPool = $('#modal-temp2 div');
         console.log('addBtn clicked');
-        isModalForNewTag = true;
-        clickedColor = 0;
-        modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
-        $('.modal-circle-check').eq(0).addClass("show");
-        showModal();
+        modalDataNum = $(this).parents('[data-order]').attr('data-order');
+        console.log(modalDataNum);
+
+        var isModalExist = false;
+        for (var i=0; i<masterJson[modalDataNum]['data'].length; i++) {
+            var data = masterJson[modalDataNum]['data'][i];
+            var splited = data.split(DELIMITER);
+            if (splited[2] !== 'false')
+                continue;
+
+            var clone = createHtmlAs2ForModal();
+
+            // setTagUi(clone, splited);
+            $(clone).find(".mdl-chip__text").html(splited[0]);
+            $(clone).find(".mdl-chip").css("background-color", highlightColors[parseInt(splited[1])]);
+
+            clone.attr("index", i).appendTo(modalPool);
+            isModalExist = true;
+
+            clone.on('click', function (e) {
+                var indexClicked = $(this).attr('index');
+                console.log(indexClicked);
+                var splitedClicked = masterJson[modalDataNum]['data'][indexClicked].split(DELIMITER);
+                splitedClicked[2] = true;
+                masterJson[modalDataNum]['data'][indexClicked] = splitedClicked.join(DELIMITER);
+                $('#exampleModal').modal('hide');
+                addTagToPool(splitedClicked, indexClicked, pool);
+                console.log(masterJson[modalDataNum]);
+            });
+        }
+
+        if (!isModalExist) {
+            showNotification('全てのタグが追加されています', 'warning');
+        } else {
+            showModal();
+        }
+        // isModalForNewTag = true;
+        // clickedColor = 0;
+        // modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
+        // $('.modal-circle-check').eq(0).addClass("show");
         return false;
     });
     pool.append(addTagBtn);
@@ -314,41 +352,49 @@ function operateAs2(doc, childSnap) {
     $(doc).append(pool);
 }
 
+function createHtmlAs2ForModal() {
+    return $(
+        '<div class="tag_wrapper">'+
+            '<span class="mdl-chip">' +
+                '<span class="mdl-chip__text"></span>' +
+            '</span>'+
+        '</div>');
+}
+
 function addTagToPool(splited, count, pool) {
     var clone = createHtmlAs2();
 
-    setTagUi(clone, splited);
+    // setTagUi(clone, splited);
+    $(clone).find(".fa-check").hide();
+    $(clone).find(".mdl-chip__text").html(splited[0]);
+    $(clone).find(".mdl-chip").css("background-color", highlightColors[parseInt(splited[1])]);
 
     clone.attr("index", count);
 
-    clone.find(".mdl-chip").on('click', function (e) {
-        modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
-        modalTipNum = clone.attr("index");
-        var splited = masterJson[modalDataNum]["data"][modalTipNum].split(DELIMITER);
-        clickedColor = parseInt(splited[1]);
-
-        $('#modal_input').attr('value', splited[0]).val(splited[0]);
-        $('.modal-circle-check').eq(parseInt(splited[1])).addClass("show");
-
-        if(!!splited[2])
-            document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
-
-        showModal();
-    });
+    // clone.find(".mdl-chip").on('click', function (e) {
+    //     modalDataNum = parseInt(pool.parents('.card-wrapper-i').attr("data-order"));
+    //     modalTipNum = clone.attr("index");
+    //     var splited = masterJson[modalDataNum]["data"][modalTipNum].split(DELIMITER);
+    //     clickedColor = parseInt(splited[1]);
+    //
+    //     $('#modal_input').attr('value', splited[0]).val(splited[0]);
+    //     $('.modal-circle-check').eq(parseInt(splited[1])).addClass("show");
+    //
+    //     if(!!splited[2])
+    //         document.getElementById('checkbox-modal-label').MaterialCheckbox.check();
+    //
+    //     showModal();
+    // });
 
     clone.find('.mdl-chip__action i').on('click', function (e) {
         e.preventDefault();
         console.log('delete clicked');
-        var pos = clone.index();
-        var sublings = clone.siblings();
-        console.log(sublings.length);
-        for (var i=0; i<sublings.length; i++) {
-            console.log('hogehoge');
-            sublings.eq(i).attr('index', i);
-        }
 
         var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
-        masterJson[dataOrder]["data"].splice(pos, 1);
+        var index = $(this).parents('.tag_wrapper').attr('index');
+        var splited = masterJson[dataOrder]["data"][index].split(DELIMITER);
+        splited[2] = false;
+        masterJson[dataOrder]["data"][index] = splited.join(DELIMITER);
         console.log(masterJson[dataOrder]["data"]);
 
         clone.remove();

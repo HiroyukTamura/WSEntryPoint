@@ -690,6 +690,18 @@ td {
     vertical-align: middle;
 }
 
+/*///////////////モーダルタグプール追加まわり////////////*/
+#modal-temp2 > h4 {
+    font-size: 20px;
+    color: rgba(0, 0, 0, .87);
+    margin-top: 12px;
+    margin-bottom: 36px;
+}
+
+#modal-temp2 > div {
+    margin-bottom: 36px;
+}
+
 /*////////////タイムイベントPopOverまわり//////////////*/
 .circle-popover {
     height: content-box;
