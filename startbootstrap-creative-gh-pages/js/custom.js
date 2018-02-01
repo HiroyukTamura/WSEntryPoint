@@ -24,7 +24,7 @@ var uiConfig = {
         // Called when the user has been successfully signed in.
         'signInSuccess': function(user, credential, redirectUrl) {
             console.log(user.uid);
-            window.location.href = '../input/index.html' + "?uid=" + user.uid;
+            window.location.href = '../record/index.html';
             return false;
         }
     }
@@ -35,9 +35,8 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         console.log("こっち");
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         ui.start('#firebaseui-auth-container', uiConfig);
+
     }).catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        $('#about').css("display", "hide");
+        console.log(error.code, error.message);
+        $('#about').hide();
     });

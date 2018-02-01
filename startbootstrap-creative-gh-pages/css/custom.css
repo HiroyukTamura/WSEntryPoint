@@ -29,3 +29,6 @@ hr {
     padding: unset;
 }
 
+.mdl-mini-footer {
+    background: none;
+}
