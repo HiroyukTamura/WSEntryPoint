@@ -44,10 +44,10 @@ window.onload = function init() {
                         loginedUser = user;
                         onLoginSuccess();
                         return false;
-                    }, function () {
-                        progress.hide();
                     });
 
+                    progress.hide();
+                    postLoad.hide();
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);

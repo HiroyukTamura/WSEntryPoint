@@ -462,11 +462,11 @@ window.onload = function (ev) {
                         progress.hide();
                         $('#login_w').hide();
                         return false;
-                    }, function () {
-                        progress.hide();
                     });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                    progress.hide();
+                    postLoad.hide();
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
                 }).catch(function(error) {
@@ -1982,7 +1982,7 @@ function onGetSnapOfGroupNode(snapshot) {
 
             li.on('click', function (ev) {
                 var index = $(this).index();
-                window.location.href = 'WSEntryPoint/group/index.html?key=' + liGroupKeys[index];//todo ここリリース時は変更してね
+                window.location.href = 'ChalengedKit../group/index.html?key=' + liGroupKeys[index];//todo ここリリース時は変更してね
                 return false;
             });
 

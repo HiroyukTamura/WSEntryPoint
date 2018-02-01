@@ -79,12 +79,11 @@ window.onload = function (ev) {
                         progress.hide();
                         $('#login_w').hide();
                         return false;
-                    }, function () {
-                        progress.hide();
                     });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
                     postLoad.hide();
+                    progress.hide();
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
 

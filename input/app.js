@@ -33,12 +33,11 @@ window.onload = function (ev) {
                         loginedUser = userObject;
                         $('#login_w').hide();
                         return false;
-                    }, function () {
-                        progress.hide();
                     });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
                     $('#login_w').show();
+                    postLoad.hide();
                     ui.start('#firebaseui-auth-container', uiConfig);
 
                 }).catch(function(error) {
