@@ -841,7 +841,7 @@ function generateTableBorder(className) {
 function initTabLayout2() {
     var bgColumns = [];
     var smColumns = {};
-    $('<td>', {rowspan: 2})
+    $('<td>', {rowspan: 2}).html('日にち')
         .appendTo(bgParam);
     for(var key in masterJson){
         if(masterJson.hasOwnProperty(key) && masterJson[key]){

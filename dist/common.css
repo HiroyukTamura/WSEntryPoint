@@ -180,4 +180,5 @@ noscript h4{
 /*-------------footer------------*/
 .mdl-mini-footer {
     margin-top: 72px;
+    background: none;
 }

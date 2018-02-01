@@ -22,105 +22,7 @@ body {
     background-color: #F4F3EF;
 }
 
-/*ドロワーまわり*/
-.demo-drawer {
-    border: none;
-}
-/* iOS Safari specific workaround */
-.demo-drawer .mdl-menu__container {
-    z-index: -1;
-}
-.demo-drawer .demo-navigation {
-    z-index: -2;
-}
-/* END iOS Safari specific workaround */
-.demo-drawer .mdl-menu .mdl-menu__item {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-
-.demo-drawer-header {
-    box-sizing: border-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-justify-content: flex-end;
-    -ms-flex-pack: end;
-    justify-content: flex-end;
-    padding: 16px;
-    height: 151px;
-    background-color: white;
-}
-
-.demo-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
-    margin-right: 24px;
-}
-
-.demo-avatar-dropdown {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    position: relative;
-    -webkit-flex-direction: row;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    width: 100%;
-}
-
-.demo-navigation {
-    -webkit-flex-grow: 1;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-}
-
-.demo-layout .demo-navigation .mdl-navigation__link {
-    display: -webkit-flex !important;
-    display: -ms-flexbox !important;
-    display: flex !important;
-    -webkit-flex-direction: row;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.56);
-    font-weight: 500;
-}
-
-.drawer_icon {
-    margin-right: 32px;
-}
-
-.mdl-layout__drawer .mdl-navigation .mdl-navigation__link{
-    text-decoration: none;
-}
-
-.mdl-layout__drawer .mdl-navigation .mdl-navigation__link :hover {
-    text-decoration: none;
-}
-
 /*************nav bar***************/
-.mdl-layout__header{
-    background-color: white;
-    color: #66615b;
-}
-
-.mdl-layout__header .mdl-layout__drawer-button {
-    color: #66615b;
-}
 
 .mdl-layout__tab{
     background-color: white;
@@ -128,6 +30,19 @@ body {
 
 .mdl-layout__header-row{
     padding-right: 20px;
+}
+
+#group-drp-btn {
+    display: none;
+}
+
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
+}
+
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
 }
 
 /*----------------login---------------*/
@@ -160,7 +75,7 @@ body {
 #chart_w{
     max-width: 1200px;
     margin: 0 auto;
-    padding: 72px 48px 120px 48px;
+    padding: 72px 48px 0 48px;
     position: relative;
 }
 
@@ -174,14 +89,11 @@ body {
     min-width: fit-content;
 }
 
-#card-wrapper{
-    padding: 0 48px;
-}
-
 #table-others-w{
-    margin: 36px auto;
-    padding: 36px 72px;
-    min-width: 1200px;/*todo これは端末の画面サイズなどによって変える？？*/
+    margin: 36px 0;
+    padding: 36px 72px; /*todo これは端末の画面サイズなどによって変える？？*/
+    display: flex;
+    justify-content: center;
 }
 
 .mdl-layout__content{
@@ -257,7 +169,7 @@ body {
 
 /*********************分析時間*********************/
 .sub_chart{
-    margin: 0 32px 48px 32px;
+    margin: 0 32px 0 32px;
 }
 
 #chart-ave-eve{
@@ -336,12 +248,13 @@ body {
 }
 
 #table-others thead{
-    border-bottom: 1px solid #dbdad7;
+    background-color: #524b4b;
+    color: #F4F3EF;
+    border-bottom: 1px solid #E57C3E;
 }
 
 #table-others thead td{
     height: 36px;
-    background-color: #FFFCF5;
     font-size: 16px;
     padding-top: 8px;
     padding-bottom: 8px;
@@ -389,6 +302,7 @@ body {
     color: #CCC5B9;
 }
 
+/*-------------ここからエディット--------------*/
 #column-right-i {
     padding-right: 48px;
     padding-top: 48px;
@@ -443,6 +357,56 @@ body {
 .fa-calendar, .fa-list-ul {
     margin-right: 1rem;
 }
+
+/*サード*/
+#bottom-card .card{
+    margin: 0 72px;
+}
+
+#bottom-card .fa-clock {
+    margin-right: 1rem;
+}
+
+#bottom-card .card-out-title {
+    padding: 0 120px;
+    font-size: 20px;
+    margin: 48px 0 24px 0;
+}
+
+.mdl-layout__tab-bar {
+    height: 48px;
+    background-color: transparent;
+}
+
+.mdl-layout--fixed-tabs .mdl-layout__tab-bar {
+    width: fit-content;
+    margin: 0 auto 0 48px;
+}
+
+.mdl-layout__tab {
+    width: 10rem;
+    text-align: center;
+    background-color: transparent;
+    color: #f4cab1;
+}
+
+.mdl-layout.is-upgraded .mdl-layout__tab.is-active::after {
+    background-color: #E57C3E;
+}
+
+.mdl-layout.is-upgraded .mdl-layout__tab.is-active {
+    color: white;
+}
+
+#tab2-sec-card {
+    display: flex;
+    justify-content: center;
+    max-width: 1200px;
+}
+
+/*.mdl-layout__tab-bar-container {*/
+    /*display: none;*/
+/*}*/
 /*tippy jsのthemeの変え方がわからない・・・*/
 /*.tippy-tooltip.translucent-theme {*/
     /*!* Your styling here. Example: *!*/
