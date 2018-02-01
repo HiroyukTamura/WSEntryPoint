@@ -1982,7 +1982,7 @@ function onGetSnapOfGroupNode(snapshot) {
 
             li.on('click', function (ev) {
                 var index = $(this).index();
-                window.location.href = 'ChalengedKit../group/index.html?key=' + liGroupKeys[index];//todo ここリリース時は変更してね
+                // window.location.href = 'http://wppsc.php.xdomain.jp/ChalengedKit/group/index.html?key=' + liGroupKeys[index];//todo これから
                 return false;
             });
 
