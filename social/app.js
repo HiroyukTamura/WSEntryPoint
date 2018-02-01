@@ -421,7 +421,7 @@ function createGroupHtml(groupName, photoUrl, groupKey) {
     // todo 未読を記録するnodeを作らないとね
     var html = $(
         '<div class="demo-card-image mdl-card mdl-shadow--2dp mdl-pre-upgrade">'+
-            '<div class="mdl-card__title mdl-card--expand mdl-badge mdl-pre-upgrade" data-badge="44"></div>'+
+            '<div class="mdl-card__title mdl-card--expand mdl-pre-upgrade"></div>'+
                 '<div class="mdl-card__actions mdl-pre-upgrade">'+
                     '<span class="demo-card-image__filename mdl-pre-upgrade">'+groupName+'</span>'+
                 '</div>'+
@@ -1234,7 +1234,7 @@ function showAll() {
         }
     });
 
-    notifyInvitation();
+    // notifyInvitation();
 }
 
 function tippyForDialog(selectorVal, placement, distance) {

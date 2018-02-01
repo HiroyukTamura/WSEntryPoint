@@ -3,13 +3,13 @@
 }
 
 /*************nav bar***************/
-.mdl-layout__header{
-    background-color: white;
-    color: #66615b;
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
 }
 
-.mdl-layout__header .mdl-layout__drawer-button {
-    color: #66615b;
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
 }
 
 .mdl-layout__tab{
@@ -54,7 +54,7 @@
 }
 
 body {
-    overflow-x: scroll;
+    overflow-x: auto;
     background-color: #F4F3EF;
     min-width: 760px;
 }
@@ -302,8 +302,11 @@ body {
 
 .wrapper-access > .group-wrapper {
     max-width: 1000px;
-
     margin: 0 auto;
+}
+
+.dummy {
+    display: none;
 }
 
 /*.quick-access .demo-card-image__filename {*/
