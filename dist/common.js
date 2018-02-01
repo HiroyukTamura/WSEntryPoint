@@ -156,7 +156,7 @@ function setDrawerProfile(loginedUser) {
     $('#dr-header-logout').on('click', function (e) {
         e.preventDefault();
         firebase.auth().signOut().then(function() {
-            window.location.href = '../startbootstrap-creative-gh-pages/';
+            window.location.href = '../home/';
         }).catch(function(error) {
             onErrorAuth(error);
         });
