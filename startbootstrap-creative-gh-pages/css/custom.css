@@ -11,3 +11,11 @@
 #login_hr{
     margin-bottom: 60px;
 }
+
+#portfolio {
+    background-color: #f48f79;
+}
+
+#mainNav .navbar-brand {
+    text-transform: none;
+}
