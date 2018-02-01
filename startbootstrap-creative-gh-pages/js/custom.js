@@ -19,20 +19,12 @@ var uiConfig = {
         firebase.auth.PhoneAuthProvider.PROVIDER_ID
     ],
     // Terms of service url.
-    tosUrl: 'samplaTosUrl',
-    'callbacks': {
-        // Called when the user has been successfully signed in.
-        'signInSuccess': function(user, credential, redirectUrl) {
-            console.log(user.uid);
-            window.location.href = '../record/index.html';
-            return false;
-        }
-    }
+    tosUrl: 'https://github.com/HiroyukTamura/WSEntryPoint/wiki/%E3%83%97%E3%83%A9%E3%82%A4%E3%83%90%E3%82%B7%E3%83%BC%E3%83%9D%E3%83%AA%E3%82%B7%E3%83%BC',
+    signInSuccessUrl: '../record/index.html'
 };
 
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(function() {
-        console.log("こっち");
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         ui.start('#firebaseui-auth-container', uiConfig);
 
