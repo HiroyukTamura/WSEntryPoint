@@ -1,12 +1,12 @@
 "use strict";
 
-var defaultApp;
+var defaultDatabase;
 var masterJson = {};
 var myChart;
 const MODE_WEEK = 7;
 const MODE_MONTH = 0;
 var displayMode;
-const wodList = ["日", "月", "火", "水", "木", "金", "土"];
+var loginedUser;
 var menuMon = $('#dpdn-month');
 var menuWeek = $('#dpdn-week');
 var currentMoment = moment();
@@ -23,83 +23,18 @@ var progress = $('#progress');
 var pageContent = $('.page-content');
 // var innerProgress =$('.inner-progress');
 
-const delimiter = '9mVSv';
-const holidays = {
-    "2017-01-01": "元日",
-    "2017-01-02": "元日 振替休日",
-    "2017-01-09": "成人の日",
-    "2017-02-11": "建国記念の日",
-    "2017-03-20": "春分の日",
-    "2017-04-29": "昭和の日",
-    "2017-05-03": "憲法記念日",
-    "2017-05-04": "みどりの日",
-    "2017-05-05": "こどもの日",
-    "2017-07-17": "海の日",
-    "2017-08-11": "山の日",
-    "2017-09-18": "敬老の日",
-    "2017-09-23": "秋分の日",
-    "2017-10-09": "体育の日",
-    "2017-11-03": "文化の日",
-    "2017-11-23": "勤労感謝の日",
-    "2017-12-23": "天皇誕生日",
-    "2018-01-01": "元日",
-    "2018-01-08": "成人の日",
-    "2018-02-11": "建国記念の日",
-    "2018-02-12": "建国記念の日 振替休日",
-    "2018-03-21": "春分の日",
-    "2018-04-29": "昭和の日",
-    "2018-04-30": "昭和の日 振替休日",
-    "2018-05-03": "憲法記念日",
-    "2018-05-04": "みどりの日",
-    "2018-05-05": "こどもの日",
-    "2018-07-16": "海の日",
-    "2018-08-11": "山の日",
-    "2018-09-17": "敬老の日",
-    "2018-09-23": "秋分の日",
-    "2018-09-24": "秋分の日 振替休日",
-    "2018-10-08": "体育の日",
-    "2018-11-03": "文化の日",
-    "2018-11-23": "勤労感謝の日",
-    "2018-12-23": "天皇誕生日",
-    "2018-12-24": "天皇誕生日 振替休日",
-    "2019-01-01": "元日",
-    "2019-01-14": "成人の日",
-    "2019-02-11": "建国記念の日",
-    "2019-03-21": "春分の日",
-    "2019-04-29": "昭和の日",
-    "2019-05-03": "憲法記念日",
-    "2019-05-04": "みどりの日",
-    "2019-05-05": "こどもの日",
-    "2019-05-06": "こどもの日 振替休日",
-    "2019-07-15": "海の日",
-    "2019-08-11": "山の日",
-    "2019-08-12": "山の日 振替休日",
-    "2019-09-16": "敬老の日",
-    "2019-09-23": "秋分の日",
-    "2019-10-14": "体育の日",
-    "2019-11-03": "文化の日",
-    "2019-11-04": "文化の日 振替休日",
-    "2019-11-23": "勤労感謝の日",
-    "2019-12-23": "天皇誕生日"
-};
 
+window.onload = function init() {
 
-function init() {
-    var config = {
-        apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
-        authDomain: "wordsupport3.firebaseapp.com",
-        databaseURL: "https://wordsupport3.firebaseio.com",
-        projectId: "wordsupport3",
-        storageBucket: "wordsupport3.appspot.com",
-        messagingSenderId: "60633268871"
-    };
-    defaultApp = firebase.initializeApp(config);
+    var defaultApp = firebase.initializeApp(CONFIG);
+    defaultDatabase = defaultApp.database();
 
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             console.log("ユーザログインしてます");
             // progress.css("display", "none");
-            onLoginSuccess(user.uid);
+            loginedUser = user;
+            onLoginSuccess();
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
@@ -126,7 +61,8 @@ function init() {
                                 // }
                                 progress.css('display', "none");
                                 $('#login_w').css('display', "none");
-                                onLoginSuccess(user.uid);
+                                loginedUser = user;
+                                onLoginSuccess();
                                 return false;
                             }
                         }
@@ -136,15 +72,16 @@ function init() {
                     progress.css('display', "none");
                     $('#login_w').css('display', "inline");
                     ui.start('#firebaseui-auth-container', uiConfig);
+
                 }).catch(function(error) {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    console.log(errorCode, errorMessage);
-                    //todo エラー時の処理
+                    console.log(error.code, error.message);
+                    showOpeErrNotification(defaultDatabase);
             });
         }
     });
-}
+
+    initDrawerDecoration();
+};
 
 function setDisplayMode(mode) {
     switch (mode){
@@ -182,7 +119,7 @@ function getDaysOfMonth() {
     return days;
 }
 
-function onLoginSuccess(uid) {
+function onLoginSuccess() {
     if(!displayMode){
         menuWeek.on({"click": function (ev) {
                 if(displayMode !== MODE_WEEK && headerBtnEnable){
@@ -195,7 +132,7 @@ function onLoginSuccess(uid) {
                     pageContent.css('display', 'none');
                     // innerProgress.css('display', "inline");
                     restUi();
-                    showData(uid);
+                    showData(loginedUser.uid);
                 }
                 return false;
             }});
@@ -211,7 +148,7 @@ function onLoginSuccess(uid) {
                     pageContent.css('display', 'none');
                     // innerProgress.css('display', "inline");
                     restUi();
-                    showData(uid);
+                    showData(loginedUser.uid);
                 }
                 return false;
             }});
@@ -232,7 +169,7 @@ function onLoginSuccess(uid) {
             pageContent.css('display', 'none');
             // innerProgress.css('display', "inline");
             restUi();
-            showData(uid);
+            showData(loginedUser.uid);
 
             return false;
         }});
@@ -253,7 +190,7 @@ function onLoginSuccess(uid) {
             pageContent.css('display', 'none');
             // innerProgress.css('display', "inline");
             restUi();
-            showData(uid);
+            showData(loginedUser.uid);
 
             return false;
         }});
@@ -261,7 +198,9 @@ function onLoginSuccess(uid) {
 
     setDisplayMode(MODE_MONTH);
 
-    showData(uid);
+    showData(loginedUser.uid);
+
+    setDrawerProfile(loginedUser);
 }
 
 function showData(uid) {
@@ -277,7 +216,6 @@ function showData(uid) {
 
     var getCount = 0;
     console.log(dates);
-    var defaultDatabase = defaultApp.database();
 
     dates.forEach(function (day) {
         var node = "usersParam/" + uid + "/" + day;
@@ -584,7 +522,7 @@ function getTimeVal(entryC) {
 }
 
 function pushData(arr, date, colorNum, label, timeVal) {
-    var color = getColor(colorNum);
+    var color = colors[colorNum];
     var radiuses = setRadius(arr, date);
     myChart.data.datasets.push({
         data: arr,
@@ -652,32 +590,6 @@ function getRangeEnd(date, end) {
     console.log(arrE);
     return arrE;
 }
-
-function getColor(num) {
-    switch(num){
-        case 0:
-            return "#C0504D";
-        case 1:
-            return "#9BBB59";
-        case 2:
-            return "#1F497D";
-        case 3:
-            return "#8064A2";
-    }
-}
-
-function getHighLightedColor(num) {
-    switch (num){
-        case 0:
-            return "#D79599";
-        case 1:
-            return "#C5D79D";
-        case 2:
-            return "#5C8BBF";
-        case 3:
-            return "#AEA3C5";
-    }
-}
 /*---------------描画まわりここまで-------------*/
 
 /*---------------分析画面系ここから-------------*/
@@ -703,7 +615,7 @@ function showAverage(timeData) {
                    '<td class="ave-digit-td no-wrap">'+ aveLen +'</td>' +
                '</tr>';
            var row1 = $(dom);
-           row1.find('.fa-angle-double-right').css('color', getColor(ranges[key]['colorNum']));
+           row1.find('.fa-angle-double-right').css('color', colors[ranges[key]['colorNum']]);
            var caption =
                '<tr class="caption">' +
                    '<td class="no-wrap">先週より+2h15min</td>' +
@@ -890,7 +802,7 @@ function addBgColumn(bgColumns, bgParam, data) {
 
 function addSmColumn(smColumns, smParam, data, valuePos) {
     data.data.forEach(function (value) {
-        var html = value.split(delimiter)[valuePos];
+        var html = value.split(DELIMITER)[valuePos];
         if(!smColumns[data.dataName]){
             smColumns[data.dataName] = [];
         }
@@ -951,9 +863,9 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
 
         //休日であれば赤色にしてtippy表示
         var holidayKey = cal.format("YYYY-MM-DD");
-        var holidayPos = Object.keys(holidays).indexOf(holidayKey);
+        var holidayPos = Object.keys(HOLIDAYS).indexOf(holidayKey);
         if(holidayPos !== -1){
-            rowHead.attr('title',   holidays[holidayKey]);
+            rowHead.attr('title',   HOLIDAYS[holidayKey]);
             rowHead.addClass('holiday');
         }
 
@@ -981,7 +893,7 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                     case 3:
                         for(var m=0; m<data.data.length; m++){
                             var pos = count+m+1;
-                            var vals = data.data[m].split(delimiter);
+                            var vals = data.data[m].split(DELIMITER);
                             var tdE = tr.find('td').eq(pos);
                             var titleValE = data.dataName + " : "+ vals[1] +" "+ title;
                             if(vals[0] === "0"){
@@ -1050,11 +962,11 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
 
 function setTagInCell(td, data, title) {
     for(var m=0; m<data.data.length; m++){
-        var vals = data.data[m].split(delimiter);
+        var vals = data.data[m].split(DELIMITER);
         if(vals[2] === "true")
             continue;
 
-        var color = getHighLightedColor(parseInt(vals[1]));
+        var color = highlightColors[parseInt(vals[1])];
         var chipsHtml = $(
             '<span class="mdl-chip mdl-pre-upgrade" style="background-color: '+ color +'" title="'+ title +'">'+
                 '<span class="mdl-chip__text">'+vals[0]+'</span>'+
