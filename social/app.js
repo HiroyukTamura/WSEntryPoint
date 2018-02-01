@@ -67,7 +67,6 @@ window.onload = function (ev) {
     firebase.auth().onAuthStateChanged(function(userObject) {
         if (userObject) {
             console.log("ユーザログインしてます");
-            progress.hide();
             $('#login_w').hide();
             user = userObject;
             onLoginSuccess();
@@ -80,10 +79,11 @@ window.onload = function (ev) {
                         progress.hide();
                         $('#login_w').hide();
                         return false;
+                    }, function () {
+                        progress.hide();
                     });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.hide();
                     postLoad.hide();
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
@@ -99,6 +99,7 @@ window.onload = function (ev) {
 };
 
 function onLoginSuccess() {
+    progress.hide();
     postLoad.show();
 
     setDrawerProfile(user);

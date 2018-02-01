@@ -32,10 +32,11 @@ window.onload = function (ev) {
                     createFbUiConfig(function (userObject, credential, redirectUrl) {
                         loginedUser = userObject;
                         return false;
+                    }, function () {
+                        progress.hide();
                     });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.hide();
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
 

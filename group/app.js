@@ -443,46 +443,6 @@ var calendar;
     }
 }();
 
-// !function() {
-//     var data = [
-//         { eventName: 'Lunch Meeting w/ Mark', calendar: 'Work', color: 'orange' },
-//         { eventName: 'Interview - Jr. Web Developer', calendar: 'Work', color: 'orange' },
-//         { eventName: 'Demo New App to the Board', calendar: 'Work', color: 'orange' },
-//         { eventName: 'Dinner w/ Marketing', calendar: 'Work', color: 'orange' },
-//
-//         { eventName: 'Game vs Portalnd', calendar: 'Sports', color: 'blue' },
-//         { eventName: 'Game vs Houston', calendar: 'Sports', color: 'blue' },
-//         { eventName: 'Game vs Denver', calendar: 'Sports', color: 'blue' },
-//         { eventName: 'Game vs San Degio', calendar: 'Sports', color: 'blue' },
-//
-//         { eventName: 'School Play', calendar: 'Kids', color: 'yellow' },
-//         { eventName: 'Parent/Teacher Conference', calendar: 'Kids', color: 'yellow' },
-//         { eventName: 'Pick up from Soccer Practice', calendar: 'Kids', color: 'yellow' },
-//         { eventName: 'Ice Cream Night', calendar: 'Kids', color: 'yellow' },
-//
-//         { eventName: 'Free Tamale Night', calendar: 'Other', color: 'green' },
-//         { eventName: 'Bowling Team', calendar: 'Other', color: '0' },
-//         { eventName: 'Teach Kids to Code', calendar: 'Other', color: 'green' },
-//         { eventName: 'Startup Weekend', calendar: 'Other', color: 'green' }
-//     ];
-//
-//
-//     function addDate(ev) {
-//         data.push(ev);
-//         calendar.renderEvents()
-//     }
-// }();
-
-// function onClickBtn() {
-//     console.log("btn clicked");
-//     var newData = {
-//         eventName: '全く新しい予定', calendar: 'Work', color: 'orange'
-//     };
-//     addDate(newData);
-// }
-//endregion////////////////////////////////////////////////////////////////////////
-
-
 window.onload = function (ev) {
     defaultApp = firebase.initializeApp(CONFIG);
     defaultDatabase = defaultApp.database();
@@ -502,10 +462,11 @@ window.onload = function (ev) {
                         progress.hide();
                         $('#login_w').hide();
                         return false;
+                    }, function () {
+                        progress.hide();
                     });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.hide();
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
                 }).catch(function(error) {

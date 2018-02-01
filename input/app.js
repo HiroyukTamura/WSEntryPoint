@@ -23,6 +23,7 @@ window.onload = function (ev) {
         if (userObject) {
             console.log("ユーザログインしてます");
             progress.hide();
+            $('#login_w').hide();
             loginedUser = userObject;
             onLoginSuccess();
         } else {
@@ -30,13 +31,13 @@ window.onload = function (ev) {
                 .then(function() {
                     var uiConfig = createFbUiConfig(function (userObject, credential, redirectUrl) {
                         loginedUser = userObject;
-                        progress.hide();
                         $('#login_w').hide();
                         return false;
+                    }, function () {
+                        progress.hide();
                     });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.hide();
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
 
@@ -60,8 +61,6 @@ function onErrConnectFb() {
 
 
 function onLoginSuccess() {
-    postLoad.show();
-
     setDrawerProfile(loginedUser);
 
     defaultDatabase.ref(makeRefScheme(['userData', loginedUser.uid, 'template'])).once('value').then(function(snapshot) {
@@ -126,8 +125,8 @@ function onLoginSuccess() {
         setOnSaveFabClickListener();
         setOnScrollListener();
 
-        $('#progress').hide();
-        $('#post_load').show();
+        progress.hide();
+        postLoad.show();
     });
 }
 

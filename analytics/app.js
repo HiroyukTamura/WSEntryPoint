@@ -39,15 +39,16 @@ window.onload = function init() {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
                     var uiConfig = createFbUiConfig(function (user, credential, redirectUrl) {
-                        progress.css('display', "none");
-                        $('#login_w').css('display', "none");
+                        progress.hide();
+                        $('#login_w').hide();
                         loginedUser = user;
                         onLoginSuccess();
                         return false;
+                    }, function () {
+                        progress.hide();
                     });
 
                     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-                    progress.hide();
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
 
