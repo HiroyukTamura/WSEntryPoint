@@ -66,7 +66,7 @@ body {
 /*-------------------ヘッダタブ------------------*/
 
 #tab-row {
-    background-color: white;
+    background-color: #fcfcfb;
     width: 100%;
     height: 48px;
     /*-webkit-flex-grow: 1; !* Safari *!*/

@@ -76,7 +76,8 @@ noscript h4{
     /*justify-content: flex-end;*/
     padding: 16px;
     height: 151px;
-    background-color: white;
+    background-color: #524b4b;
+    color: #F4F3EF;
 }
 
 .demo-avatar {
@@ -159,6 +160,10 @@ noscript h4{
 
 .drawer_icon {
     margin-right: 32px;
+}
+
+.mdl-layout__drawer {
+    border-right: none;
 }
 
 .mdl-layout__drawer .mdl-navigation .mdl-navigation__link{
