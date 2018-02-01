@@ -19,3 +19,13 @@
 #mainNav .navbar-brand {
     text-transform: none;
 }
+
+hr {
+    display: block;
+    height: unset;
+    border-width: 3px;
+    border-color: #f05f40;
+    margin: 0 auto;
+    padding: unset;
+}
+
