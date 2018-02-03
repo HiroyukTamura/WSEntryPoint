@@ -329,9 +329,21 @@ body {
     line-height: 2rem;
 }
 
-#third-card .fa-circle {
-    color: #C0504D;
-    margin-right: 1rem;
+#third-card .right-column {
+    padding-left: 0;
+}
+
+/*#third-card .fa-circle {*/
+    /*color: #C0504D;*/
+    /*margin-right: 1rem;*/
+    /*height: 16px;*/
+    /*width: 16px;*/
+/*}*/
+
+#third-card .mdl-list__item-primary-content {
+    border-left-width: 3px;
+    border-left-style: solid;
+    padding-left: 12px;
 }
 
 #third-card .table-space {
@@ -357,6 +369,15 @@ body {
 }
 
 /*サード*/
+/*.sche-title {*/
+    /*margin: 0;*/
+    /*font-size: 16px;*/
+/*}*/
+
+/*.sche-subtitle {*/
+    /*margin: 0;*/
+/*}*/
+
 #bottom-card .card{
     margin: 0 72px;
 }

@@ -131,13 +131,13 @@
                     <!--<div class="card">-->
                     <div class="mdl-grid">
                         <!--todo ここ本来はmdl-cell--8-colです-->
-                        <div class="mdl-cell mdl-cell--12-col">
+                        <div class="mdl-cell mdl-cell--8-col">
                             <div id="chart_w">
                                 <canvas id="chart_div"></canvas>
                             </div>
                         </div>
 
-                        <div class="mdl-cell mdl-cell--4-col dummy" id="column-right">
+                        <div class="mdl-cell mdl-cell--4-col" id="column-right">
                             <div id="column-right-i">
                                 <div id="second-card">
                                     <h2 class="card-out-title"><i class="fas fa-list-ul"></i>ステータス</h2>
@@ -187,13 +187,19 @@
                                                 </tr>
                                                 <tr>
                                                     <td rowspan="2">4(水)</td>
-                                                    <td class="right-column">
-                                                        <i class="fas fa-circle fa-sm"></i>陽和病院にて診察
+                                                    <td class="right-column mdl-list__item mdl-list__item--two-line">
+                                                        <span class="mdl-list__item-primary-content">
+                                                            <span>陽和病院にて診察</span>
+                                                            <span class="mdl-list__item-sub-title">デイケア</span>
+                                                        </span>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="right-column">
-                                                        <i class="fas fa-circle fa-sm"></i>浦島太郎にて工作
+                                                        <div>
+                                                            <p class="sche-title">陽和病院にて診察</p>
+                                                            <p class="sche-subtitle">陽和病院</p>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -204,7 +210,7 @@
                         </div>
                     </div>
 
-                    <div id="bottom-card" class="dummy">
+                    <div id="bottom-card">
                         <h2 class="card-out-title">
                             <i class="fas fa-clock average-icon"></i>平均時間
                         </h2>

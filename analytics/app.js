@@ -180,7 +180,69 @@ function onLoginSuccess() {
     showData(loginedUser.uid);
 
     setDrawerProfile(loginedUser);
+
+    new ScheduleParser().getScheduleAsync();
 }
+
+(function () {
+
+    var tbody =$('#third-card tbody');
+
+    function ScheduleParser() {
+        console.log('ScheduleParser()');
+    }
+
+    ScheduleParser.prototype.getScheduleAsync = function () {
+        var scheme = makeRefScheme(['combinedCalendar', loginedUser.uid, currentMoment.format('YYYYMM')]);
+        defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
+            if (!snapshot.exists()) {
+                //todo スケジュールがありません
+                return;
+            }
+
+            var specMoment = moment(snapshot.key, 'YYYYMM');
+
+            snapshot.forEach(function (childSnap) {
+                var date = childSnap.key;
+                specMoment.date(date);
+                var htmlE = date +'('+ wodList[specMoment.day()] +')';
+                var tr = $('<tr>');
+                var td = $('<td>', {
+                   rowspan: childSnap.numChildren()
+                }).html(htmlE);
+                tr.append(td).appendTo(tbody);
+
+                var isFirstItem = true;
+                childSnap.forEach(function (schSnap) {
+                    var title = schSnap.child('title').val();
+                    var groupKey = schSnap.child('groupKey').val();//todo グループ名照合
+                    var colorVal = schSnap.child('colorNum').val();
+                    var tdItem = createTd(title, groupKey);
+                    tdItem.find('.mdl-list__item-primary-content').css('border-left-color', colors[parseInt(colorVal)]);
+                    if (isFirstItem)
+                        tr.append(tdItem);
+                    else {
+                        isFirstItem = false;
+                        $('<tr>').append(tdItem).appendTo(tbody);
+                    }
+                });
+            });
+        });
+
+        setElementAsMdl(tbody);
+    };
+
+    function createTd(title, groupName) {
+        return $('<td class="right-column mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
+            '<span class="mdl-list__item-primary-content mdl-pre-upgrade ">'+
+                '<span>'+ title +'</span>'+
+                '<span class="mdl-list__item-sub-title mdl-pre-upgrade">'+ groupName +'</span>'+
+            '</span>'+
+        '</td>');
+    }
+
+    window.ScheduleParser = ScheduleParser;
+}());
 
 function showData(uid) {
     var dates;
