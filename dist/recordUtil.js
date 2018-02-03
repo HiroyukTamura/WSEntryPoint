@@ -620,7 +620,7 @@ function  getCommentAsNullable(childSnap) {
     if (!childSnap["data"]){
         return null;
     }
-    return childSnap["data"].val();
+    return childSnap["data"];
 }
 
 //todo ここって'comment'じゃなかったっけ？？

@@ -846,9 +846,9 @@ td {
     margin-bottom: 0;
 }
 
-.mdl-button{
-    padding: 0;
-}
+/*.mdl-button{*/
+    /*padding: 0;*/
+/*}*/
 
 .drag_btn_i {
     margin-right: 32px;

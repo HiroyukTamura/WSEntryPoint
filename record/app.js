@@ -29,7 +29,7 @@ window.onload = function (ev) {
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
-                    createFbUiConfig(function (userObject, credential, redirectUrl) {
+                    var uiConfig = createFbUiConfig(function (userObject, credential, redirectUrl) {
                         loginedUser = userObject;
                         return false;
                     });
@@ -41,8 +41,8 @@ window.onload = function (ev) {
                     ui.start('#firebaseui-auth-container', uiConfig);
 
                 }).catch(function(error) {
-                console.log(error.code, error.message);
-                onErrConnectFb();
+                    console.log(error.code, error.message);
+                    showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
             });
         }
     });
