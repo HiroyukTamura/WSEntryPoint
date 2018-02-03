@@ -187,6 +187,7 @@ function onLoginSuccess() {
 (function () {
 
     var tbody =$('#third-card tbody');
+    // var userDataSnap, scheduleSnap;
 
     function ScheduleParser() {
         console.log('ScheduleParser()');
@@ -194,6 +195,7 @@ function onLoginSuccess() {
 
     ScheduleParser.prototype.getScheduleAsync = function () {
         var scheme = makeRefScheme(['combinedCalendar', loginedUser.uid, currentMoment.format('YYYYMM')]);
+
         defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
             if (!snapshot.exists()) {
                 //todo スケジュールがありません
@@ -208,16 +210,16 @@ function onLoginSuccess() {
                 var htmlE = date +'('+ wodList[specMoment.day()] +')';
                 var tr = $('<tr>');
                 var td = $('<td>', {
-                   rowspan: childSnap.numChildren()
+                    rowspan: childSnap.numChildren()
                 }).html(htmlE);
                 tr.append(td).appendTo(tbody);
 
                 var isFirstItem = true;
                 childSnap.forEach(function (schSnap) {
                     var title = schSnap.child('title').val();
-                    var groupKey = schSnap.child('groupKey').val();//todo グループ名照合
+                    var groupName = schSnap.child('groupName').val();
                     var colorVal = schSnap.child('colorNum').val();
-                    var tdItem = createTd(title, groupKey);
+                    var tdItem = createTd(title, groupName);
                     tdItem.find('.mdl-list__item-primary-content').css('border-left-color', colors[parseInt(colorVal)]);
                     if (isFirstItem)
                         tr.append(tdItem);
@@ -227,10 +229,66 @@ function onLoginSuccess() {
                     }
                 });
             });
+
+            setElementAsMdl(tbody);
         });
 
-        setElementAsMdl(tbody);
+        // defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
+        //     scheduleSnap = snapshot;
+        //     this.onGetData();
+        // });
     };
+
+    // ScheduleParser.prototype.onGetData = function () {
+    //     if (!userDataSnap || !scheduleSnap)
+    //         return;
+    //
+    //     if (!userDataSnap.exsits()) {
+    //         //todo 処理に失敗しました
+    //         return;
+    //     }
+    //     if (!scheduleSnap.exsits()) {
+    //         //todo スケジュールがありません
+    //         return;
+    //     }
+    //
+    //     var specMoment = moment(snapshot.key, 'YYYYMM');
+    //
+    //     scheduleSnap.forEach(function (childSnap) {
+    //         var date = childSnap.key;
+    //         specMoment.date(date);
+    //         var htmlE = date +'('+ wodList[specMoment.day()] +')';
+    //         var tr = $('<tr>');
+    //         var td = $('<td>', {
+    //             rowspan: childSnap.numChildren()
+    //         }).html(htmlE);
+    //         tr.append(td).appendTo(tbody);
+    //
+    //         var isFirstItem = true;
+    //         childSnap.forEach(function (schSnap) {
+    //             var title = schSnap.child('title').val();
+    //             var groupName = this.getGroupNamebyKey(schSnap.child('groupKey').val());
+    //             var colorVal = schSnap.child('colorNum').val();
+    //             var tdItem = createTd(title, groupName);
+    //             tdItem.find('.mdl-list__item-primary-content').css('border-left-color', colors[parseInt(colorVal)]);
+    //             if (isFirstItem)
+    //                 tr.append(tdItem);
+    //             else {
+    //                 isFirstItem = false;
+    //                 $('<tr>').append(tdItem).appendTo(tbody);
+    //             }
+    //         });
+    //     });
+
+    //     setElementAsMdl(tbody);
+    // };
+
+    // ScheduleParser.prototype.getGroupNamebyKey = function (groupKey) {
+    //     var userDataJson = userDataSnap.toJSON();
+    //     for (var key in userDataJson['group'])
+    //         if (userDataJson['group'].hasOwnProperty(key) && key === groupKey)
+    //             return userDataJson['group'][groupKey]['name']
+    // };
 
     function createTd(title, groupName) {
         return $('<td class="right-column mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
