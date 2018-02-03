@@ -490,14 +490,14 @@ function createParamsLi(splited, dataOrder, i) {
             // var slider = clone.getElementsByClassName("mdl-slider")[0];
             slider.prop("value", splited[2])
                 .prop("max", splited[3])
-                .on('input', function (e) {
-                    e.preventDefault();
-                    $(e.target).popover('hide');
-                    return false;
-                }).hover(function (e) {
-                onHoverForPopover(e);
+                // .on('input', function (e) {
+                //     e.preventDefault();
+                //     $(e.target).popover('hide');
+                //     return false;
+                // }).hover(function (e) {
+                // onHoverForPopover(e);
 
-            }).change(function (e) {
+            .change(function (e) {
                 e.preventDefault();
                 var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
                 var index = $(this).closest("li").index();
@@ -506,80 +506,80 @@ function createParamsLi(splited, dataOrder, i) {
                 masterJson[currentDataOrder]["data"][index] = values.join(DELIMITER);
                 console.log(masterJson[currentDataOrder]["data"][index]);
                 return false;
-
-            }).on('click', function (e) {
-                var popoverId = $(this).attr('aria-describedby');
-                var popover = $('#'+popoverId);
-                if(!popover.length || !popover.hasClass('show')) {
-                    console.log(popover.length, !popover.hasClass('show'), popoverId);
-                    $(e.target).popover('show');
-                }
-
-            }).popover({
-                trigger: 'manual',
-                placement: 'right',
-                content: '<div class="select">'+
-                            '<p>最大値を変更&nbsp;&nbsp;&nbsp;'+
-                                '<select name="blood">' +
-                                    '<option value="3">3</option>' +
-                                    '<option value="4">4</option>' +
-                                    '<option value="5">5</option>' +
-                                    '<option value="6">6</option>' +
-                                    '<option value="7">7</option>' +
-                                    '<option value="8">8</option>' +
-                                    '<option value="9">9</option>' +
-                                    '<option value="10">10</option>' +
-                                '</select>' +
-                            '</p>'+
-                        '<div/>',
-                html: true,
-                container: 'body'
-            }).on('shown.bs.popover', function (e) {
-                console.log('shown.bs.popover', $(e.target).attr('max'));
-                var popoverId = $(this).attr('aria-describedby');
-                var popover = $('#'+popoverId);
-                popover.addClass('tooltip-slider')
-                    .find('select')
-                    .val($(e.target).attr('max'))
-                    .change(function (e2) {
-                        e2.preventDefault();
-                        var newMax = $(this).val();
-                        console.log('changed', $(this).val());
-                        $(e.target).popover('hide');
-
-                        //masterJson反映
-                        var dataNum = $(e.target).parents('li').index();
-                        var dataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
-                        var splited = masterJson[dataOrder]['data'][dataNum].split(DELIMITER);
-                        splited[3] = newMax;
-                        if (parseInt(splited[2]) > newMax) {
-                            splited[2] = newMax;
-                            $(e.target).val(newMax);
-                        }
-                        $(e.target).attr('max', newMax);
-
-                        masterJson[dataOrder]['data'][dataNum] = splited.join(DELIMITER);
-                        console.log(masterJson[dataOrder]['data']);
-                        return false;
-                    });
-
-                $(window).hover(function (e2) {
-                    if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
-                        return false;
-                    } else if($(e2.target).parents('.mdl-list__item').length || $(e2.target).hasClass('mdl-list__item')) {
-                        return false
-                    }
-                    console.log('hideやね', e2);
-                    $(e.target).popover('hide');
-                });
-
-            }).on('hidden.bs.popover', function (e) {
-                var popoverId = $(this).prop('aria-describedby');
-                $('#'+popoverId).removeClass('tooltip-slider');
-                console.log('hover off');
-
-                $(window).off('mouseenter mouseleave');
             });
+                // .on('click', function (e) {
+            //     var popoverId = $(this).attr('aria-describedby');
+            //     var popover = $('#'+popoverId);
+            //     if(!popover.length || !popover.hasClass('show')) {
+            //         console.log(popover.length, !popover.hasClass('show'), popoverId);
+            //         $(e.target).popover('show');
+            //     }
+            //
+            // }).popover({
+            //     trigger: 'manual',
+            //     placement: 'right',
+            //     content: '<div class="select">'+
+            //                 '<p>最大値を変更&nbsp;&nbsp;&nbsp;'+
+            //                     '<select name="blood">' +
+            //                         '<option value="3">3</option>' +
+            //                         '<option value="4">4</option>' +
+            //                         '<option value="5">5</option>' +
+            //                         '<option value="6">6</option>' +
+            //                         '<option value="7">7</option>' +
+            //                         '<option value="8">8</option>' +
+            //                         '<option value="9">9</option>' +
+            //                         '<option value="10">10</option>' +
+            //                     '</select>' +
+            //                 '</p>'+
+            //             '<div/>',
+            //     html: true,
+            //     container: 'body'
+            // }).on('shown.bs.popover', function (e) {
+            //     console.log('shown.bs.popover', $(e.target).attr('max'));
+            //     var popoverId = $(this).attr('aria-describedby');
+            //     var popover = $('#'+popoverId);
+            //     popover.addClass('tooltip-slider')
+            //         .find('select')
+            //         .val($(e.target).attr('max'))
+            //         .change(function (e2) {
+            //             e2.preventDefault();
+            //             var newMax = $(this).val();
+            //             console.log('changed', $(this).val());
+            //             $(e.target).popover('hide');
+            //
+            //             //masterJson反映
+            //             var dataNum = $(e.target).parents('li').index();
+            //             var dataOrder = $(e.target).parents('.card-wrapper-i').attr('data-order');
+            //             var splited = masterJson[dataOrder]['data'][dataNum].split(DELIMITER);
+            //             splited[3] = newMax;
+            //             if (parseInt(splited[2]) > newMax) {
+            //                 splited[2] = newMax;
+            //                 $(e.target).val(newMax);
+            //             }
+            //             $(e.target).attr('max', newMax);
+            //
+            //             masterJson[dataOrder]['data'][dataNum] = splited.join(DELIMITER);
+            //             console.log(masterJson[dataOrder]['data']);
+            //             return false;
+            //         });
+            //
+            //     $(window).hover(function (e2) {
+            //         if($(e2.target).parents('.popover').length || $(e2.target).hasClass('popover')){
+            //             return false;
+            //         } else if($(e2.target).parents('.mdl-list__item').length || $(e2.target).hasClass('mdl-list__item')) {
+            //             return false
+            //         }
+            //         console.log('hideやね', e2);
+            //         $(e.target).popover('hide');
+            //     });
+            //
+            // }).on('hidden.bs.popover', function (e) {
+            //     var popoverId = $(this).prop('aria-describedby');
+            //     $('#'+popoverId).removeClass('tooltip-slider');
+            //     console.log('hover off');
+            //
+            //     $(window).off('mouseenter mouseleave');
+            // });
             break;
     }
 
@@ -637,8 +637,8 @@ function setOnSaveFabClickListener() {
 
             masterJson.unshift(createNewData(0));
 
-            var ymd = currentMoment.fomat('YYYYMMDD');
-            defaultDatabase.ref('usersParamSample/'+ loginedUser.uid +'/'+ ymd).set(masterJson).then(function () {
+            var ymd = currentMoment.format('YYYYMMDD');
+            defaultDatabase.ref('usersParam/'+ loginedUser.uid +'/'+ ymd).set(masterJson).then(function () {
                 showNotification(SUCCESS_MSG_SAVE, 'success');
                 masterJson.splice(0, 1);
 

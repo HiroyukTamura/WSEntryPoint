@@ -69,6 +69,8 @@ const ERR_MSG_NO_INTERNET = 'インターネットに接続されていません
 const ERR_MSG_CONTAIN_BAD_CHAR = ["文字列「", "」は使用できません"];
 const ERR_MSG_TRANSFER = '通信に失敗しました';
 
+const SUCCESS_MSG_SAVE = '保存しました';
+
 const INVITE_GROUP = 'INVITE_GROUP';
 const ADD_GROUP_AS_INVITED ='ADD_GROUP_AS_INVITED';
 const ADD_FRIEND = 'ADD_FRIEND';

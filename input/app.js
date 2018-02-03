@@ -1,7 +1,5 @@
 "use strict";
 
-const SUCCESS_MSG_SAVE = '保存しました';
-
 var masterJson;
 var modalDataNum;
 var modalTipNum;
