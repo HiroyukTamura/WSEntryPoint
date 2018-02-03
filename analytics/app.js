@@ -182,8 +182,11 @@ function onLoginSuccess() {
     setDrawerProfile(loginedUser);
 
     new ScheduleParser().getScheduleAsync();
+
+    new SummeryParser().getSummeryDataAsync();
 }
 
+//todo モード別
 (function () {
 
     var tbody =$('#third-card tbody');
@@ -232,63 +235,7 @@ function onLoginSuccess() {
 
             setElementAsMdl(tbody);
         });
-
-        // defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
-        //     scheduleSnap = snapshot;
-        //     this.onGetData();
-        // });
     };
-
-    // ScheduleParser.prototype.onGetData = function () {
-    //     if (!userDataSnap || !scheduleSnap)
-    //         return;
-    //
-    //     if (!userDataSnap.exsits()) {
-    //         //todo 処理に失敗しました
-    //         return;
-    //     }
-    //     if (!scheduleSnap.exsits()) {
-    //         //todo スケジュールがありません
-    //         return;
-    //     }
-    //
-    //     var specMoment = moment(snapshot.key, 'YYYYMM');
-    //
-    //     scheduleSnap.forEach(function (childSnap) {
-    //         var date = childSnap.key;
-    //         specMoment.date(date);
-    //         var htmlE = date +'('+ wodList[specMoment.day()] +')';
-    //         var tr = $('<tr>');
-    //         var td = $('<td>', {
-    //             rowspan: childSnap.numChildren()
-    //         }).html(htmlE);
-    //         tr.append(td).appendTo(tbody);
-    //
-    //         var isFirstItem = true;
-    //         childSnap.forEach(function (schSnap) {
-    //             var title = schSnap.child('title').val();
-    //             var groupName = this.getGroupNamebyKey(schSnap.child('groupKey').val());
-    //             var colorVal = schSnap.child('colorNum').val();
-    //             var tdItem = createTd(title, groupName);
-    //             tdItem.find('.mdl-list__item-primary-content').css('border-left-color', colors[parseInt(colorVal)]);
-    //             if (isFirstItem)
-    //                 tr.append(tdItem);
-    //             else {
-    //                 isFirstItem = false;
-    //                 $('<tr>').append(tdItem).appendTo(tbody);
-    //             }
-    //         });
-    //     });
-
-    //     setElementAsMdl(tbody);
-    // };
-
-    // ScheduleParser.prototype.getGroupNamebyKey = function (groupKey) {
-    //     var userDataJson = userDataSnap.toJSON();
-    //     for (var key in userDataJson['group'])
-    //         if (userDataJson['group'].hasOwnProperty(key) && key === groupKey)
-    //             return userDataJson['group'][groupKey]['name']
-    // };
 
     function createTd(title, groupName) {
         return $('<td class="right-column mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
@@ -301,6 +248,151 @@ function onLoginSuccess() {
 
     window.ScheduleParser = ScheduleParser;
 }());
+
+//todo モード別
+(function () {
+
+    var scheme, schemePrev;
+    var snap, snapPrev;
+    var recordCount;
+    var ratio;
+    var clonedMoment;
+    var prevMoment;
+
+    function SummeryParser() {
+        console.log('SummeryParser()');
+        clonedMoment = currentMoment.clone();
+        prevMoment = clonedMoment.clone().add('M', -1);
+        this.setSchemes();
+    }
+
+    SummeryParser.prototype.getSummeryDataAsync = function () {
+        var self = this;
+        defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
+            if (!snapshot.exists()) {
+                //todo データがありません
+                return;
+            }
+
+            snap = snapshot;
+            recordCount = snapshot.child('recordCount').val();
+            $('#date-bg-cap').html(recordCount +'日');
+            ratio = self.calcRatio(recordCount, clonedMoment);
+            $('#ratio-bg-cap').html(ratio +'%');
+
+            self.setAverageTable();
+
+            defaultDatabase.ref(schemePrev).once('value').then(function (snapshot) {
+                self.onGetPrevData(snapshot);
+            });
+        });
+    };
+
+    SummeryParser.prototype.setSchemes = function () {
+        scheme = makeRefScheme(['analytics', loginedUser.uid, clonedMoment.format('YYYYMM')]);
+        schemePrev = makeRefScheme(['analytics', loginedUser.uid, prevMoment.format('YYYYMM')]);
+    };
+
+    SummeryParser.prototype.onGetPrevData = function (snapshot) {
+        if (!snapshot.exists()) {
+            console.log('データなし onGetPrevData');
+            //todo データがありません?
+            return;
+        }
+
+        var recordCountPrev = snapshot.child('recordCount').val();
+        var diffCount = snapshot.child('recordCount').val() - recordCount;
+        var symbol = recordCountPrev < 0 ? '' : '+';
+        var html = '先月より' + symbol + diffCount +'日';
+        $('#date-cap').html(html);
+
+        var ratioPrev = this.calcRatio(recordCount, prevMoment);
+        var diffRatio = ratioPrev - ratio;
+        var symbol2 = diffRatio < 0 ? '' : '+';
+        var ratioHtml = '先月より' + symbol2 + ratioPrev +'%';
+        $('#ratio-cap').html(ratioHtml);
+    };
+
+    SummeryParser.prototype.calcRatio = function (recordCount, moment) {
+        return Math.floor(recordCount / moment.daysInMonth() * 100);
+    };
+
+    SummeryParser.prototype.setAverageTable = function () {
+        var regExp = new RegExp(DELIMITER, "g");
+
+        snap.child('rangeEve').forEach(function (snapshot) {
+
+            var rangeTitle = snapshot.key.replace(regExp, '  <i class="fas fa-angle-double-right color-orange"></i>  ');
+            var startMinTotal = snapshot.child('startMin').val();
+            var endMinTotal = snapshot.child('endMin').val();
+            var count = snapshot.child('count').val();
+
+            var startMin = Math.floor(startMinTotal / count);
+            var startTime = min2TimeVal(startMin);
+            var endMin = Math.floor(endMinTotal / count);
+            var endTime = min2TimeVal(endMin);
+            var lenTime = roundWithDigit(Math.abs(startMin - endMin)/60, 10) + "h";
+
+            var dom =
+                '<tr class="ave-digit">' +
+                    '<td class="range-title" rowspan="2">'+ rangeTitle +'</td>' +
+                        '<td class="ave-digit-td no-wrap">'+ startTime +'</td>' +
+                        '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' +
+                            '<i class="fas fa-angle-double-right fa-lg color-orange"></i>' +
+                        '</td>' +
+                        '<td class="ave-digit-td no-wrap">'+ endTime +'</td>' +
+                    '<td class="ave-digit-td no-wrap">'+ lenTime +'</td>' +
+                '</tr>';
+
+            var row1 = $(dom);
+            row1.find('.fa-angle-double-right').css('color', colors[0]);
+            var caption =
+                '<tr class="caption">' +
+                    '<td class="no-wrap cap-start"></td>' +
+                    '<td class="no-wrap cap-end"></td>' +
+                    '<td class="no-wrap cap-length"></td>' +
+                '</tr>';
+            var row2 = $(caption);
+            var space = generateTableBorder("table-space");
+
+            if(count %2 === 1){
+                space.addClass("back-orange");
+                row1.addClass("back-orange");
+                row2.addClass("back-orange");
+            }
+
+            tbody.append(space)
+                .append(row1)
+                .append(row2)
+                .append(space.clone(true));
+        });
+    };
+
+    function min2TimeVal(min) {
+        // var min = Math.abs(minTotal / count);
+        if (min >= 60*24) {
+            min = min - 60*24;
+            return moment({
+                hour: Math.floor(min / 60),
+                minute: min % 60
+            }).format('HH:mm') + '(翌日)';
+        } else if (min <= 0) {
+            min = min + 60*24;
+            return moment({
+                hour: Math.floor(min / 60),
+                minute: min % 60
+            }).format('HH:mm') + '(前日)';
+        } else {
+            console.log(min % 60, Math.floor(min / 60));
+            return moment({
+                hour: Math.floor(min / 60),
+                minute: min % 60
+            }).format('HH:mm') ;
+        }
+    }
+
+    window.SummeryParser = SummeryParser;
+})();
 
 function showData(uid) {
     var dates;
@@ -429,7 +521,7 @@ function displayTest() {
         date++;
     });
 
-    showAverage(timeData);
+    // showAverage(timeData);
 
     initTabLayout2();
     // var table = $('#table-others');
@@ -696,153 +788,151 @@ function getRangeEnd(date, end) {
 /*---------------描画まわりここまで-------------*/
 
 /*---------------分析画面系ここから-------------*/
-// todo これ計算あってるかどうか、必ずサンプルをいくつか用意して確かめてください
-//todo ここで、イベント及びrangeの判別はnameのみで、色は判別に使われていません。つまり、「nameは同じだが色は違う」というのは同じとして扱う必要があります！！
-function showAverage(timeData) {
-   var ranges = generateAveArr(timeData);
-   var count = 0;
-   for(var key in ranges){
-       if(ranges.hasOwnProperty(key)){
-           var aveStart = getAverage(ranges[key]["start"]);
-           var aveEnd = getAverage(ranges[key]["end"]);
-           var aveLen = roundWithDigit(Math.abs(aveStart - aveEnd)/60, 10) + "h";
-           //DOMを挿入
-           var dom =
-               '<tr class="ave-digit">' +
-                   '<td class="range-title" rowspan="2">'+ key +'</td>' +
-                   '<td class="ave-digit-td no-wrap">'+ min2HHMM(aveStart)+'</td>' +
-                   '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' +
-                        '<i class="fas fa-angle-double-right fa-lg color-orange"></i>' +
-                   '</td>' +
-                   '<td class="ave-digit-td no-wrap">'+ min2HHMM(aveEnd) +'</td>' +
-                   '<td class="ave-digit-td no-wrap">'+ aveLen +'</td>' +
-               '</tr>';
-           var row1 = $(dom);
-           row1.find('.fa-angle-double-right').css('color', colors[ranges[key]['colorNum']]);
-           var caption =
-               '<tr class="caption">' +
-                   '<td class="no-wrap">先週より+2h15min</td>' +
-                   '<td class="no-wrap">先週より-45min</td>' +
-                   '<td class="no-wrap">先週より+2h15min</td>' +
-               '</tr>';
-           var row2 = $(caption);
-           var space = generateTableBorder("table-space");
-           if(count %2 === 1){
-               space.addClass("back-orange");
-               row1.addClass("back-orange");
-               row2.addClass("back-orange");
-               // row1.find('i').addClass("color-orange");
-           // } else {
-           //     row1.find('i').addClass("color-disable");
-           }
-           // var seem = generateTableBorder("table-seem");
-           tbody.append(space)
-               .append(row1)
-               .append(row2)
-               .append(space.clone(true));
+// function showAverage(timeData) {
+//    var ranges = generateAveArr(timeData);
+//    var count = 0;
+//    for(var key in ranges){
+//        if(ranges.hasOwnProperty(key)){
+//            var aveStart = getAverage(ranges[key]["start"]);
+//            var aveEnd = getAverage(ranges[key]["end"]);
+//            var aveLen = roundWithDigit(Math.abs(aveStart - aveEnd)/60, 10) + "h";
+//            //DOMを挿入
+//            var dom =
+//                '<tr class="ave-digit">' +
+//                    '<td class="range-title" rowspan="2">'+ key +'</td>' +
+//                    '<td class="ave-digit-td no-wrap">'+ min2HHMM(aveStart)+'</td>' +
+//                    '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' +
+//                         '<i class="fas fa-angle-double-right fa-lg color-orange"></i>' +
+//                    '</td>' +
+//                    '<td class="ave-digit-td no-wrap">'+ min2HHMM(aveEnd) +'</td>' +
+//                    '<td class="ave-digit-td no-wrap">'+ aveLen +'</td>' +
+//                '</tr>';
+//            var row1 = $(dom);
+//            row1.find('.fa-angle-double-right').css('color', colors[ranges[key]['colorNum']]);
+//            var caption =
+//                '<tr class="caption">' +
+//                    '<td class="no-wrap">先週より+2h15min</td>' +
+//                    '<td class="no-wrap">先週より-45min</td>' +
+//                    '<td class="no-wrap">先週より+2h15min</td>' +
+//                '</tr>';
+//            var row2 = $(caption);
+//            var space = generateTableBorder("table-space");
+//            if(count %2 === 1){
+//                space.addClass("back-orange");
+//                row1.addClass("back-orange");
+//                row2.addClass("back-orange");
+//                // row1.find('i').addClass("color-orange");
+//            // } else {
+//            //     row1.find('i').addClass("color-disable");
+//            }
+//            // var seem = generateTableBorder("table-seem");
+//            tbody.append(space)
+//                .append(row1)
+//                .append(row2)
+//                .append(space.clone(true));
+//
+//            count++;
+//        }
+//    }
+//
+//    var eveList = generateAveArrEve(timeData);
+//    for(var eveKey in eveList){
+//        if(eveList.hasOwnProperty(eveKey)){
+//            var average = min2HHMM(getAverage(eveList[eveKey]));
+//            var row = $(
+//                '<tr class="ave-digit">'+
+//                    '<td class="range-title" rowspan="2">'+ eveKey +'</td>'+
+//                    '<td class="ave-digit-td no-wrap centering" colspan="4">'+ average +'</td>'+
+//                '</tr>'+
+//                '<tr class="caption">'+
+//                     '<td class="no-wrap centering" colspan="4">先週より+2h15min</td>'+
+//                '</tr>');
+//
+//            var space0 = space.clone(true);
+//            var space1 = space.clone(true);
+//            if(count %2 === 1){
+//                space0.addClass("back-orange");
+//                space1.addClass("back-orange");
+//                row.addClass("back-orange");
+//            }
+//
+//            tbody.append(space0)
+//                .append(row)
+//                .append(space1);
+//
+//            count++;
+//        }
+//    }
+//
+//    //データが皆無であればその旨を表示
+//     var tableOhters = $('#table-others');
+//     if(count === 0){
+//         errNonData.css('display', "block");
+//         tableOhters.css('display', "none");
+//     } else {
+//         errNonData.css('display', "none");
+//         tableOhters.css('display', "block");
+//     }
+//
+// }
 
-           count++;
-       }
-   }
-
-   var eveList = generateAveArrEve(timeData);
-   for(var eveKey in eveList){
-       if(eveList.hasOwnProperty(eveKey)){
-           var average = min2HHMM(getAverage(eveList[eveKey]));
-           var row = $(
-               '<tr class="ave-digit">'+
-                   '<td class="range-title" rowspan="2">'+ eveKey +'</td>'+
-                   '<td class="ave-digit-td no-wrap centering" colspan="4">'+ average +'</td>'+
-               '</tr>'+
-               '<tr class="caption">'+
-                    '<td class="no-wrap centering" colspan="4">先週より+2h15min</td>'+
-               '</tr>');
-
-           var space0 = space.clone(true);
-           var space1 = space.clone(true);
-           if(count %2 === 1){
-               space0.addClass("back-orange");
-               space1.addClass("back-orange");
-               row.addClass("back-orange");
-           }
-
-           tbody.append(space0)
-               .append(row)
-               .append(space1);
-
-           count++;
-       }
-   }
-
-   //データが皆無であればその旨を表示
-    var tableOhters = $('#table-others');
-    if(count === 0){
-        errNonData.css('display', "block");
-        tableOhters.css('display', "none");
-    } else {
-        errNonData.css('display', "none");
-        tableOhters.css('display', "block");
-    }
-
-}
-
-function generateAveArr(timeData) {
-    var ranges = {};
-    for(var key in timeData){
-        if(timeData.hasOwnProperty(key)){
-            timeData[key]["rangeList"].forEach(function (range) {
-                var name = range.start.name + '  <i class="fas fa-angle-double-right color-orange"></i>  ' + range.end.name;
-                if(!ranges.hasOwnProperty(name)){
-                    ranges[name] = {};
-                    ranges[name].start = [];
-                    ranges[name].end = [];
-                }
-                var startTime = range.start.cal.hourOfDay *60 + range.start.cal.minute + range.end.offset *24*60;
-                var endTime = range.end.cal.hourOfDay *60 + range.end.cal.minute + range.end.offset *24*60;
-                ranges[name].start.push(startTime);
-                ranges[name].end.push(endTime);
-            });
-        }
-    }
-    return ranges;
-}
-
-function generateAveArrEve(timeData) {
-    var eves = {};
-    for(var key in timeData){
-        if(timeData.hasOwnProperty(key)){
-            timeData[key]["eventList"].forEach(function (event) {
-                if(!eves.hasOwnProperty(event.name)){
-                    eves[event.name] = [];
-                }
-                eves[event.name].push(event.cal.hourOfDay *60 + event.cal.minute);
-            });
-        }
-    }
-    return eves;
-}
-
-function getAverage(arr) {
-    var sum = 0;
-    arr.forEach(function (time) {
-        sum += time;
-    });
-    if(sum){
-        var aveStart = sum / (arr.length);
-        sum = Math.round(aveStart);
-    }
-    return sum;
-}
+// function generateAveArr(timeData) {
+//     var ranges = {};
+//     for(var key in timeData){
+//         if(timeData.hasOwnProperty(key)){
+//             timeData[key]["rangeList"].forEach(function (range) {
+//                 var name = range.start.name + '  <i class="fas fa-angle-double-right color-orange"></i>  ' + range.end.name;
+//                 if(!ranges.hasOwnProperty(name)){
+//                     ranges[name] = {};
+//                     ranges[name].start = [];
+//                     ranges[name].end = [];
+//                 }
+//                 var startTime = range.start.cal.hourOfDay *60 + range.start.cal.minute + range.end.offset *24*60;
+//                 var endTime = range.end.cal.hourOfDay *60 + range.end.cal.minute + range.end.offset *24*60;
+//                 ranges[name].start.push(startTime);
+//                 ranges[name].end.push(endTime);
+//             });
+//         }
+//     }
+//     return ranges;
+// }
+//
+// function generateAveArrEve(timeData) {
+//     var eves = {};
+//     for(var key in timeData){
+//         if(timeData.hasOwnProperty(key)){
+//             timeData[key]["eventList"].forEach(function (event) {
+//                 if(!eves.hasOwnProperty(event.name)){
+//                     eves[event.name] = [];
+//                 }
+//                 eves[event.name].push(event.cal.hourOfDay *60 + event.cal.minute);
+//             });
+//         }
+//     }
+//     return eves;
+// }
+//
+// function getAverage(arr) {
+//     var sum = 0;
+//     arr.forEach(function (time) {
+//         sum += time;
+//     });
+//     if(sum){
+//         var aveStart = sum / (arr.length);
+//         sum = Math.round(aveStart);
+//     }
+//     return sum;
+// }
 
 function roundWithDigit(num, digit) {
     return Math.round(num*digit)/digit;
 }
 
-function min2HHMM(min) {
-    var m = moment();
-    m.minute(min);
-    return m.format('HH:mm');
-}
+// function min2HHMM(min) {
+//     var m = moment();
+//     m.minute(min);
+//     return m.format('HH:mm');
+// }
 
 function generateTableBorder(className) {
     var td = ($('<td>', {
