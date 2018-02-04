@@ -166,9 +166,9 @@ body {
 }
 
 /*********************分析時間*********************/
-.sub_chart{
-    margin: 0 32px 0 32px;
-}
+/*.sub_chart{*/
+    /*margin: 0 32px 0 32px;*/
+/*}*/
 
 #chart-ave-eve{
     margin-top: 48px;
@@ -215,6 +215,14 @@ body {
 
 .chart-ave td{
     padding: 0 24px;
+}
+
+.chart-ave thead {
+    padding-bottom: 12px;
+}
+
+.chart-ave thead td {
+    padding: 12px;
 }
 
 .chart-ave .table-space{
@@ -300,7 +308,7 @@ body {
     color: #CCC5B9;
 }
 
-/*-------------ここからエディット--------------*/
+    /*-------------ここからエディット--------------*/
 #column-right-i {
     padding-right: 48px;
     padding-top: 48px;
@@ -313,13 +321,36 @@ body {
 
 #second-card {
     font-size: 18px;
+    margin: 28px 0 72px 0;
 }
 
-#second-card td {
+#second-card tbody td {
     padding: 0 24px;
 }
 
 #second-card .table-space {
+    height: 24px;
+}
+
+#third-card .mdl-card ,#second-card .mdl-card {
+    width: 100%;
+    padding-bottom: 24px;
+}
+
+#third-card table, #second-card table {
+    width: 100%;
+}
+
+#third-card .header td, #second-card .header td {
+    padding: 8px 24px;
+    font-size: 16px;
+    background-color: #524b4b;
+    color: #F4F3EF;
+    border-bottom: 1px solid #E57C3E;
+    line-height: 2rem;
+}
+
+#third-card .spacer td, #second-card .spacer td {
     height: 24px;
 }
 
@@ -377,6 +408,10 @@ body {
 /*.sche-subtitle {*/
     /*margin: 0;*/
 /*}*/
+#bottom-card {
+    margin-top: 72px;
+    padding-bottom: 24px;
+}
 
 #bottom-card .card{
     margin: 0 72px;
@@ -390,6 +425,26 @@ body {
     padding: 0 120px;
     font-size: 20px;
     margin: 48px 0 24px 0;
+}
+
+#bottom-card .centering {
+    text-align: center;
+}
+
+#bottom-card .card {
+    padding: 0;
+}
+
+#bottom-card thead {
+    font-size: 16px;
+    background-color: #524b4b;
+    color: #F4F3EF;
+    border-bottom: 1px solid #E57C3E;
+}
+
+#bottom-card .mdl-card{
+    width: fit-content;
+    margin: 0 72px;
 }
 
 .mdl-layout__tab-bar {

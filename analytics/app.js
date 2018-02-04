@@ -258,6 +258,10 @@ function onLoginSuccess() {
     var ratio;
     var clonedMoment;
     var prevMoment;
+    var regExp = new RegExp(DELIMITER, "g");
+    var spaceRow = generateTableBorder("table-space");
+    var rangeDatas = {};
+    var eveDatas = {};
 
     function SummeryParser() {
         console.log('SummeryParser()');
@@ -270,9 +274,14 @@ function onLoginSuccess() {
         var self = this;
         defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
             if (!snapshot.exists()) {
-                //todo データがありません
+                //todo データがありません(右上のテーブルにも)
+                errNonData.css('display', "block");
+                $('#table-others').hide();
                 return;
             }
+
+            errNonData.hide();
+            $('#table-others').css('display', "block");
 
             snap = snapshot;
             recordCount = snapshot.child('recordCount').val();
@@ -283,7 +292,8 @@ function onLoginSuccess() {
             self.setAverageTable();
 
             defaultDatabase.ref(schemePrev).once('value').then(function (snapshot) {
-                self.onGetPrevData(snapshot);
+                snapPrev = snapshot;
+                self.onGetPrevData();
             });
         });
     };
@@ -293,15 +303,15 @@ function onLoginSuccess() {
         schemePrev = makeRefScheme(['analytics', loginedUser.uid, prevMoment.format('YYYYMM')]);
     };
 
-    SummeryParser.prototype.onGetPrevData = function (snapshot) {
-        if (!snapshot.exists()) {
+    SummeryParser.prototype.onGetPrevData = function () {
+        if (!snapPrev.exists()) {
             console.log('データなし onGetPrevData');
             //todo データがありません?
             return;
         }
 
-        var recordCountPrev = snapshot.child('recordCount').val();
-        var diffCount = snapshot.child('recordCount').val() - recordCount;
+        var recordCountPrev = snapPrev.child('recordCount').val();
+        var diffCount = snapPrev.child('recordCount').val() - recordCount;
         var symbol = recordCountPrev < 0 ? '' : '+';
         var html = '先月より' + symbol + diffCount +'日';
         $('#date-cap').html(html);
@@ -311,6 +321,8 @@ function onLoginSuccess() {
         var symbol2 = diffRatio < 0 ? '' : '+';
         var ratioHtml = '先月より' + symbol2 + ratioPrev +'%';
         $('#ratio-cap').html(ratioHtml);
+
+        this.setPrevCaption();
     };
 
     SummeryParser.prototype.calcRatio = function (recordCount, moment) {
@@ -318,8 +330,8 @@ function onLoginSuccess() {
     };
 
     SummeryParser.prototype.setAverageTable = function () {
-        var regExp = new RegExp(DELIMITER, "g");
 
+        var rowCount = 0;
         snap.child('rangeEve').forEach(function (snapshot) {
 
             var rangeTitle = snapshot.key.replace(regExp, '  <i class="fas fa-angle-double-right color-orange"></i>  ');
@@ -331,31 +343,43 @@ function onLoginSuccess() {
             var startTime = min2TimeVal(startMin);
             var endMin = Math.floor(endMinTotal / count);
             var endTime = min2TimeVal(endMin);
-            var lenTime = roundWithDigit(Math.abs(startMin - endMin)/60, 10) + "h";
+            var timeLen = roundWithDigit(Math.abs(startMin - endMin)/60, 10);
+            rangeDatas[snapshot.key] = {};
+            rangeDatas[snapshot.key]['startMin'] = startMin;
+            rangeDatas[snapshot.key]['endMin'] = endMin;
+            rangeDatas[snapshot.key]['hourLen'] = timeLen;
+            rangeDatas[snapshot.key]['count'] = count;
+            var lenTime = timeLen + "h";
 
             var dom =
                 '<tr class="ave-digit">' +
+                    '<td></td>'+
                     '<td class="range-title" rowspan="2">'+ rangeTitle +'</td>' +
+                        '<td class="range-title">'+ count + '回' +'</td>'+
                         '<td class="ave-digit-td no-wrap">'+ startTime +'</td>' +
                         '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' +
                             '<i class="fas fa-angle-double-right fa-lg color-orange"></i>' +
                         '</td>' +
                         '<td class="ave-digit-td no-wrap">'+ endTime +'</td>' +
                     '<td class="ave-digit-td no-wrap">'+ lenTime +'</td>' +
+                    '<td></td>'+
                 '</tr>';
 
             var row1 = $(dom);
-            row1.find('.fa-angle-double-right').css('color', colors[0]);
+            // row1.find('.fa-angle-double-right').css('color', colors[0]);
             var caption =
                 '<tr class="caption">' +
-                    '<td class="no-wrap cap-start"></td>' +
-                    '<td class="no-wrap cap-end"></td>' +
-                    '<td class="no-wrap cap-length"></td>' +
+                    '<td></td>'+
+                    '<td class="no-wrap cap-count" data-title="'+ snapshot.key +'"></td>' +
+                    '<td class="no-wrap cap-start" data-title="'+ snapshot.key +'"></td>' +
+                    '<td class="no-wrap cap-end" data-title="'+ snapshot.key +'"></td>' +
+                    '<td class="no-wrap cap-length" data-title="'+ snapshot.key +'"></td>' +
+                    '<td></td>'+
                 '</tr>';
             var row2 = $(caption);
-            var space = generateTableBorder("table-space");
+            var space = spaceRow.clone(true);
 
-            if(count %2 === 1){
+            if(rowCount %2 === 1){
                 space.addClass("back-orange");
                 row1.addClass("back-orange");
                 row2.addClass("back-orange");
@@ -365,6 +389,97 @@ function onLoginSuccess() {
                 .append(row1)
                 .append(row2)
                 .append(space.clone(true));
+
+            rowCount++;
+        });
+
+        snap.child('timeEve').forEach(function (snapshot) {
+            var rangeTitle = snapshot.key.replace(regExp, '  <i class="fas fa-angle-double-right color-orange"></i>  ');
+            var min = snapshot.child('min').val();
+            var count = snapshot.child('count').val();
+            var hour = Math.floor(min / count);
+            var timeVal = min2TimeVal(hour);
+            eveDatas[snapshot.key] = {};
+            eveDatas[snapshot.key]['min'] = min;
+            eveDatas[snapshot.key]['count'] = count;
+
+            // var average = min2HHMM(getAverage(eveList[eveKey]));
+           var row = $(
+               '<tr class="ave-digit">'+
+                    '<td></td>'+
+                   '<td class="range-title" rowspan="2">'+ rangeTitle +'</td>'+
+                    '<td class="range-title">'+ count + '回' +'</td>'+
+                   '<td class="ave-digit-td no-wrap centering" colspan="4">'+ timeVal +'</td>'+
+                    '<td></td>'+
+               '</tr>'+
+               '<tr class="caption">'+
+                    '<td></td>'+
+                    '<td class="no-wrap cap-count" data-title="'+ snapshot.key +'"></td>' +
+                    '<td class="no-wrap centering cap-time-eve" colspan="4" data-title="'+ snapshot.key +'"></td>'+
+                    '<td></td>'+
+               '</tr>');
+
+           var space0 = spaceRow.clone(true);
+           var space1 = spaceRow.clone(true);
+           if(rowCount %2 === 1){
+               space0.addClass("back-orange");
+               space1.addClass("back-orange");
+               row.addClass("back-orange");
+           }
+
+           tbody.append(space0)
+               .append(row)
+               .append(space1);
+
+           rowCount++;
+        });
+    };
+
+    SummeryParser.prototype.setPrevCaption = function () {
+        snapPrev.child('rangeEve').forEach(function (snapshot) {
+
+            var startMinTotal = snapshot.child('startMin').val();
+            var endMinTotal = snapshot.child('endMin').val();
+            var count = snapshot.child('count').val();
+
+            var startMin = Math.floor(startMinTotal / count);
+            var endMin = Math.floor(endMinTotal / count);
+            var specStartMin = rangeDatas[snapshot.key]['startMin'];
+            var specEndMin = rangeDatas[snapshot.key]['endMin'];
+            var diffLenTime = roundWithDigit(Math.abs(specStartMin - specEndMin)/60, 10) - roundWithDigit(Math.abs(startMin - endMin)/60, 10);
+            var symbol = diffLenTime < 0 ? '' : '+';
+            var val = '先月より'+ symbol + diffLenTime + 'h';
+            $('.cap-length[data-title='+ snapshot.key +']').html(val);
+
+            var diffHourStart = roundWithDigit((specStartMin - startMin)/60, 10);
+            var symbolStart = diffHourStart < 0 ? '' : '+';
+            var valStart = '先月より'+ symbolStart + diffHourStart + 'h';
+            $('.cap-start[data-title='+ snapshot.key +']').html(valStart);
+
+            var diffHourEnd = roundWithDigit((specEndMin - endMin)/60, 10);
+            var symbolEnd = diffHourEnd < 0 ? '' : '+';
+            var valEnd = '先月より'+ symbolEnd + diffHourEnd + 'h';
+            $('.cap-end[data-title='+ snapshot.key +']').html(valEnd);
+
+            var diffCount = rangeDatas[snapshot.key]['count'] - count;
+            var symbolCount = diffCount < 0 ? '' : '+';
+            var valCount = '先月より'+ symbolCount + diffCount + '回';
+            $('.cap-count[data-title='+ snapshot.key +']').html(valCount);
+        });
+
+        snapPrev.child('timeEve').forEach(function (snapshot) {
+            var min = snapshot.child('min').val();
+            var count = snapshot.child('count').val();
+            var hour = roundWithDigit(Math.floor(min / count), 10);
+            var diffHour = roundWithDigit(eveDatas[snapshot.key]['min'], 10) - hour;
+            var symbol = diffHour<0 ? '': '+';
+            var val = '先月より'+ symbol + diffHour + 'h';
+            $('.cap-time-eve[data-title='+ snapshot.key +']').html(val);
+
+            var diffCount = eveDatas[snapshot.key]['count'] - count;
+            var symbolCount = diffCount < 0 ? '' : '+';
+            var valCount = '先月より'+ symbolCount + diffCount + '回';
+            $('.cap-count[data-title='+ snapshot.key +']').html(valCount);
         });
     };
 
@@ -937,7 +1052,7 @@ function roundWithDigit(num, digit) {
 function generateTableBorder(className) {
     var td = ($('<td>', {
         class: className,
-        colspan: 5
+        colspan: 8
     }));
     return $('<tr>').append(td);
 }
