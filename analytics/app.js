@@ -446,7 +446,7 @@ function onLoginSuccess() {
             var endMin = Math.floor(endMinTotal / count);
             var specStartMin = rangeDatas[snapshot.key]['startMin'];
             var specEndMin = rangeDatas[snapshot.key]['endMin'];
-            var diffLenTime = roundWithDigit(Math.abs(specStartMin - specEndMin)/60, 10) - roundWithDigit(Math.abs(startMin - endMin)/60, 10);
+            var diffLenTime = roundWithDigit(roundWithDigit(Math.abs(specStartMin - specEndMin)/60, 10) - roundWithDigit(Math.abs(startMin - endMin)/60, 10), 10);//ここ、なぜか四捨五入した数値を足し引きすると値がおかしくなる
             var symbol = diffLenTime < 0 ? '' : '+';
             var val = '先月より'+ symbol + diffLenTime + 'h';
             $('.cap-length[data-title='+ snapshot.key +']').html(val);
