@@ -22,6 +22,7 @@ var headerBtnEnable = false;//これがfalseのとき、ヘッダボタンを押
 var progress = $('#progress');
 var pageContent = $('.page-content');
 // var innerProgress =$('.inner-progress');
+var query;
 
 
 window.onload = function init() {
@@ -32,7 +33,6 @@ window.onload = function init() {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             console.log("ユーザログインしてます");
-            // progress.css("display", "none");
             loginedUser = user;
             onLoginSuccess();
         } else {
@@ -87,7 +87,7 @@ function getDaysOfWeek() {
 }
 
 function getDaysOfMonth() {
-    var now = moment(currentMoment).add(-1, 'M');//todo これテスト用なので直すこと
+    var now = moment(currentMoment);
     var start = moment(now).startOf('month');
     var end = now.endOf('month').date();
     var days = [];
@@ -99,38 +99,56 @@ function getDaysOfMonth() {
 }
 
 function onLoginSuccess() {
+    query = window.location.href.slice(window.location.href.indexOf('?key=') + 1);
+    console.log(query);
+
+    if (window.location.href.indexOf('?key=') === -1) {
+        showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
+        return;
+    }
+
+    if (query === loginedUser.uid) {
+        console.log('ご本人でーす');
+    } else {
+        console.log('他人でーす');
+    }
+
     if(!displayMode){
-        menuWeek.on({"click": function (ev) {
-                if(displayMode !== MODE_WEEK && headerBtnEnable){
-                    headerBtnEnable = false;
-                    displayMode = MODE_WEEK;
-                    $(this).attr('disabled', '');
-                    menuMon.removeAttr('disabled');
-                    setDisplayMode(MODE_WEEK);
+        menuWeek.on('click', function (e) {
+            if(displayMode !== MODE_WEEK && headerBtnEnable){
+                headerBtnEnable = false;
+                displayMode = MODE_WEEK;
+                $(this).attr('disabled', '');
+                menuMon.removeAttr('disabled');
+                setDisplayMode(MODE_WEEK);
 
-                    pageContent.css('display', 'none');
-                    // innerProgress.css('display', "inline");
-                    restUi();
-                    showData(loginedUser.uid);
-                }
-                return false;
-            }});
+                pageContent.hide();
+                // innerProgress.css('display', "inline");
+                restUi();
+                showData(query);
+                new ScheduleParser().getScheduleAsync();
+                new SummeryParser().getSummeryDataAsync();
+            }
+            return false;
+        });
 
-        menuMon.on({"click": function (ev) {
-                if(displayMode !== MODE_MONTH && headerBtnEnable){
-                    headerBtnEnable = false;
-                    displayMode = MODE_MONTH;
-                    $(this).attr('disabled', '');
-                    menuWeek.removeAttr('disabled');
-                    setDisplayMode(MODE_MONTH);
+        menuMon.on('click', function (e) {
+            if(displayMode !== MODE_MONTH && headerBtnEnable){
+                headerBtnEnable = false;
+                displayMode = MODE_MONTH;
+                $(this).attr('disabled', '');
+                menuWeek.removeAttr('disabled');
+                setDisplayMode(MODE_MONTH);
 
-                    pageContent.css('display', 'none');
-                    // innerProgress.css('display', "inline");
-                    restUi();
-                    showData(loginedUser.uid);
-                }
-                return false;
-            }});
+                pageContent.hide();
+                // innerProgress.css('display', "inline");
+                restUi();
+                showData(query);
+                new ScheduleParser().getScheduleAsync();
+                new SummeryParser().getSummeryDataAsync();
+            }
+            return false;
+        });
 
         $('#prev_btn').on({"click": function (ev) {
             if(!headerBtnEnable)
@@ -145,10 +163,12 @@ function onLoginSuccess() {
                     break;
             }
 
-            pageContent.css('display', 'none');
+            pageContent.hide();
             // innerProgress.css('display', "inline");
             restUi();
-            showData(loginedUser.uid);
+            showData(query);
+            new ScheduleParser().getScheduleAsync();
+            new SummeryParser().getSummeryDataAsync();
 
             return false;
         }});
@@ -169,7 +189,9 @@ function onLoginSuccess() {
             pageContent.css('display', 'none');
             // innerProgress.css('display', "inline");
             restUi();
-            showData(loginedUser.uid);
+            showData(query);
+            new ScheduleParser().getScheduleAsync();
+            new SummeryParser().getSummeryDataAsync();
 
             return false;
         }});
@@ -177,7 +199,7 @@ function onLoginSuccess() {
 
     setDisplayMode(MODE_MONTH);
 
-    showData(loginedUser.uid);
+    showData(query);
 
     setDrawerProfile(loginedUser);
 
@@ -197,7 +219,7 @@ function onLoginSuccess() {
     }
 
     ScheduleParser.prototype.getScheduleAsync = function () {
-        var scheme = makeRefScheme(['combinedCalendar', loginedUser.uid, currentMoment.format('YYYYMM')]);
+        var scheme = makeRefScheme(['combinedCalendar', query, currentMoment.format('YYYYMM')]);
 
         defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
             if (!snapshot.exists()) {
@@ -299,8 +321,8 @@ function onLoginSuccess() {
     };
 
     SummeryParser.prototype.setSchemes = function () {
-        scheme = makeRefScheme(['analytics', loginedUser.uid, clonedMoment.format('YYYYMM')]);
-        schemePrev = makeRefScheme(['analytics', loginedUser.uid, prevMoment.format('YYYYMM')]);
+        scheme = makeRefScheme(['analytics', query, clonedMoment.format('YYYYMM')]);
+        schemePrev = makeRefScheme(['analytics', query, prevMoment.format('YYYYMM')]);
     };
 
     SummeryParser.prototype.onGetPrevData = function () {
@@ -513,10 +535,10 @@ function showData(uid) {
     var dates;
     switch (displayMode){
         case MODE_WEEK:
-            dates = getDaysOfWeek(moment());
+            dates = getDaysOfWeek(currentMoment);
             break;
         case MODE_MONTH:
-            dates = getDaysOfMonth(moment());
+            dates = getDaysOfMonth(currentMoment);
             break;
     }
 
@@ -559,10 +581,8 @@ function restUi() {
     bgParam.html("");
     smParam.html("");
     bgParam.parent().next().html("");
-    var children = chartWrapper.children("*");
-    for(var i=0; i<children.length; i++){
-        children.eq(i).remove();
-    }
+    chartWrapper.children().remove();
+
     $('<canvas>', {
        id: 'chart_div'
     }).appendTo(chartWrapper);
@@ -597,19 +617,19 @@ function displayTest() {
 
                         if (entry.start.offset === entry.end.offset){
 
-                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.colorNum, label, timeVal);
+                            pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.colorNum, label, timeVal, true, true);
 
                         } else if (entry.end.offset - entry.start.offset === 1){
 
                             date -= entry.start.offset;
-                            pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal);
+                            pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal, true, false);
                             date += 1;
-                            pushData(getRangeEnd(date, end), date, entry.colorNum, label, timeVal);
+                            pushData(getRangeEnd(date, end), date, entry.colorNum, label, timeVal, false, true);
 
                         } else if (entry.end.offset - entry.start.offset === 2){
 
                             date -= entry.start.offset;
-                            pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal);
+                            pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal, true, false);
 
                             date += 1;
                             var arrH = [];
@@ -617,10 +637,10 @@ function displayTest() {
                                 arrH.push(date);
                             }
 
-                            pushData(arrH, date);
+                            pushData(arrH, date, false, false);
 
                             date += 1;
-                            pushData(getRangeEnd(date, start), date, entry.colorNum, label, timeVal);
+                            pushData(getRangeEnd(date, start), date, entry.colorNum, label, timeVal, false, true);
                         }
                     });
 
@@ -645,7 +665,7 @@ function displayTest() {
     // $('.mdl-mini-footer').css('min-width', tableWidth+1);
 
     // innerProgress.css('display', "none");
-    progress.css('display', "none");
+    progress.hide();
     pageContent.css('display', 'block');
     postLoad.css('display', 'block');
 
@@ -796,7 +816,7 @@ function getMaximumFromMode(mode) {
         case MODE_WEEK:
             return 7;
         case MODE_MONTH:
-            return moment().endOf('month').date();
+            return currentMoment.endOf('month').date();
     }
 }
 
@@ -831,9 +851,9 @@ function getTimeVal(entryC) {
     return time.format('HH:mm');
 }
 
-function pushData(arr, date, colorNum, label, timeVal) {
+function pushData(arr, date, colorNum, label, timeVal, showStartRadius, showEndRadius) {
     var color = colors[colorNum];
-    var radiuses = setRadius(arr, date);
+    var radiuses = setRadius(arr, date, showStartRadius, showEndRadius);
     myChart.data.datasets.push({
         data: arr,
         label: label,
@@ -847,13 +867,13 @@ function pushData(arr, date, colorNum, label, timeVal) {
     });
 }
 
-function setRadius(dataArr, date) {
+function setRadius(dataArr, date, showStartRadius, showEndRadius) {
     var start = dataArr.indexOf(date);
     var end = dataArr.lastIndexOf(date);
     console.log(start +", "+ end);
     var radiusArr = [];
     for (var i=0; i<dataArr.length; i++){
-        if (i === start || i===end){
+        if ((showStartRadius && i === start) || (showEndRadius && i === end)) {
             radiusArr.push(5);
         } else {
             radiusArr.push(0);

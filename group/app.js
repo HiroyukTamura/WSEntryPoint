@@ -1384,8 +1384,9 @@ function createUserLi(key, friends) {
 
         li.find(".health-rec-btn").on('click', function (e) {
             e.preventDefault();
-            var userUid = sortedKeys[$(this).index()];
-            console.log('clicked uid:' + userUid);
+            var key = $(this).parents('.mdl-list__item').attr('key');
+            console.log('clicked uid:' + key);
+            open('../analytics/index.html?key=' + key, '_blank');
 
             return false;
         });
@@ -1975,6 +1976,7 @@ function onGetSnapOfGroupNode(snapshot) {
         if(key === groupKey) {
             $('.mdl-layout__header-row .mdl-layout-title').html(groupNodeJson[key]['name']);
             $('.mdl-layout__header-row img').attr('src', avoidNullValue(groupNodeJson[key]['photoUrl'], 'img/icon.png'));
+
         } else {
             var li = $('<li>', {
                 class: "mdl-menu__item"
@@ -1982,7 +1984,7 @@ function onGetSnapOfGroupNode(snapshot) {
 
             li.on('click', function (ev) {
                 var index = $(this).index();
-                // window.location.href = 'http://wppsc.php.xdomain.jp/ChalengedKit/group/index.html?key=' + liGroupKeys[index];//todo これから
+                window.location.href = 'http://wppsc.php.xdomain.jp/ChalengedKit/group/index.html?key=' + liGroupKeys[index];//todo これから
                 return false;
             });
 

@@ -164,6 +164,13 @@ function setDrawerProfile(loginedUser) {
         });
         return false;
     });
+
+    $('#analytics-link').on('click', function (e) {
+        e.preventDefault();
+        console.log('analytics click');
+        window.location.href = '../analytics/index.html?key=' + loginedUser.uid;
+        return false;
+    });
 }
 
 function avoidNullValue(photoUrl, onErrVal) {
@@ -190,10 +197,10 @@ function isValidAboutNullAndDelimiter(input, errSpan) {
 function showOpeErrNotification(defaultDatabase, delay) {
     var connectedRef = defaultDatabase.ref(".info/connected");
     connectedRef.on("value", function(snap) {
-        if (snap.val() === false) {
-            showNotification(ERR_MSG_NO_INTERNET, 'danger', delay);
-        } else {
+        if (snap.val() === true) {
             showNotification(ERR_MSG_OPE_FAILED, 'danger', delay);
+        } else {
+            showNotification(ERR_MSG_NO_INTERNET, 'danger', delay);
         }
     });
 }
