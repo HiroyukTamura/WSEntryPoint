@@ -599,14 +599,14 @@ function displayTest() {
 
                             pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.colorNum, label, timeVal);
 
-                        } else if (entry.start.offset - entry.end.offset === 1){
+                        } else if (entry.end.offset - entry.start.offset === 1){
 
                             date -= entry.start.offset;
                             pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal);
                             date += 1;
                             pushData(getRangeEnd(date, end), date, entry.colorNum, label, timeVal);
 
-                        } else if (entry.start.offset - entry.end.offset === 2){
+                        } else if (entry.end.offset - entry.start.offset === 2){
 
                             date -= entry.start.offset;
                             pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal);
@@ -867,7 +867,7 @@ function getRangeArr(date, start, end, offset) {
     date = date + offset;
     var limit = 24*4;
     for(var n=0; n<=limit; n++){
-        if (start*4<=n && n<=end*4){
+        if (start*4<=n && n<end*4+1){
             arrC.push(date);
         } else {
             arrC.push(null);
@@ -891,7 +891,7 @@ function getRangeStart(date, start) {
 function getRangeEnd(date, end) {
     var arrE = [];
     for (var n=0; n<=24*4; n++){
-        if (n*4 < end){
+        if (n <= end*4){
             arrE.push(date);
         } else {
             arrE.push(null);
