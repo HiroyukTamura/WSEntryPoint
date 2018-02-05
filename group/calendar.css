@@ -134,6 +134,7 @@
 
 .day.other {
  color: rgba(255, 255, 255, .3);
+  cursor: default;
 }
 
 .day.today {

@@ -169,7 +169,8 @@ var calendar;
         //Outer Day
         var outer = createElement('div', this.getDayClass(day));
         outer.addEventListener('click', function() {
-            self.openDay(this);
+            if (!$(outer).hasClass('other'))
+                self.openDay(this);
         });
 
         //Day Name
@@ -214,11 +215,7 @@ var calendar;
                 if(!dailyData.hasOwnProperty(scheduleKey))
                     continue;
 
-                console.log("ほげほげ");
-
-                var colorNum = "colorNum" + dailyData[scheduleKey]['colorNum'];
-                var evSpan = createElement('span', colorNum);
-                element.appendChild(evSpan);
+                this.addDot(element, dailyData, scheduleKey);
             }
         }
     }
@@ -313,15 +310,17 @@ var calendar;
                     var chipsNum = toolTip.index();
                     var clickedEventKey = Object.keys(events)[chipsNum];
                     var scheme = makeRefScheme(['calendar', groupKey, self.openedDay.format('YYYYMM'), self.openedDay.date(), clickedEventKey]);
-                    defaultDatabase.ref(scheme).set(null).then(function (value) {
+                    defaultDatabase.ref(scheme).set(null).then(function () {
                         delete events[clickedEventKey];
                         toolTip.remove();
-                        if($('.events.in').children().length === 1){
+                        showNotification(NTF_DELETE_SCHE, 'success');
+                        if($('.events.in').children().length === 2){
                             $(createEmptySpan()).insertBefore($('#add-schedule'));
                         }
+                        $('#calendar [key='+ eventKey +']').remove();
                     }).catch(function (err) {
                         console.log('foirebase err', err);
-                        showNotification('処理に失敗しました', 'danger');
+                        showNotification(ERR_MSG_OPE_FAILED, 'danger');
                     });
                 });
                 wrapper.appendChild(chips);
@@ -396,6 +395,13 @@ var calendar;
             '<a href="#" class="mdl-chip__action mdl-pre-upgrade"><i class="material-icons">cancel</i></a>';
         return ele;
     }
+
+    Calendar.prototype.addDot = function (element, dailyData, scheduleKey) {
+        var colorNum = "colorNum" + dailyData[scheduleKey]['colorNum'];
+        var evSpan = createElement('span', colorNum);
+        $(evSpan).attr('key', scheduleKey);
+        element.appendChild(evSpan);
+    };
 
     window.Calendar = Calendar;
 
@@ -1206,12 +1212,13 @@ function addSchedule() {
             calendar.events[ym][calendar.openedDay.date()] = {};
 
         calendar.events[ym][calendar.openedDay.date()][eventKey] = newData;
-        var chips = calendar.createChips(inputVal, 'colorNum' + clickedColor);
-        var eventEmpty = $('.events.in').find('.event.empty');
-        if(eventEmpty){
-            eventEmpty.remove();
-        }
-        $(chips).insertBefore($('#add-schedule'));
+        calendar.renderEvents(calendar.events[ym][calendar.openedDay.date()], $('#calendar .details.in')[0]);
+
+        var date = calendar.openedDay.date();
+        var dayInWeek = calendar.openedDay.clone().date(1).day();
+        var currentDayEle = $('#calendar .day').eq(date + dayInWeek -1);
+        calendar.addDot(currentDayEle.find('.day-events')[0], calendar.events[ym][calendar.openedDay.date()], eventKey);
+
         console.log(calendar.events);
 
     }).catch(function (err) {
@@ -1325,7 +1332,7 @@ function createUserLi(key, friends) {
     li.find('.stop-share').on('click', function (e) {
         console.log('stop-share clicked');
         //todo 未デバッグ バックエンドは不要
-        defaultDatabase.ref('group/'+ groupKey +'/contents/' + key).set(null).then(function (value) {
+        defaultDatabase.ref('group/'+ groupKey +'/contents/' + key).set(null).then(function () {
 
             showNotification('体調記録の共有を停止しました', 'success');
             delete  groupJson['contents'][key];

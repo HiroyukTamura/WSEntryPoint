@@ -87,6 +87,7 @@ const UNSET_EMAIL = 'アドレス未設定';
 const NTF_FILE_IMG_W = 'JPEG・PNG・GIFファイルのみアップロードできます';
 const NTF_LIMIT_SIZE5 = '5MBを超えるファイルはアップロードできません';
 const NTF_UPDATED_PROF_IMG ='プロフィール画像を変更しました';
+const NTF_DELETE_SCHE = 'スケジュールを削除しました';
 
 const CONFIG = {
     apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
