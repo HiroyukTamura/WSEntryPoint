@@ -985,6 +985,8 @@ function setLisnters() {
         inputVal = $(this).val();
         if(inputVal && dialogPositibeBtn.attr('disabled')){
             dialogPositibeBtn.removeAttr('disabled');
+        } else if (!inputVal && !this.hasAttribute('disabled')) {
+            dialogPositibeBtn.attr('disabled', '');
         }
     });
 

@@ -32,3 +32,18 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         console.log(error.code, error.message);
         $('#about').hide();
     });
+
+showDefaultNtf();
+
+function showDefaultNtf() {
+    var setting = {
+        type: 'info',
+        newest_on_top: true,
+        delay: -1
+    };
+
+    $.notify({
+        title: '<strong>本サービスはβ版です</strong></br>',
+        message: '不具合が発生したり、入力したデータが失われる場合があります。あらかじめご了承ください。'
+    }, setting);
+}
