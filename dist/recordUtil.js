@@ -328,35 +328,10 @@ function createOneRangeRow(doc, count, value, masterJson) {
 
         tr.prev().remove();
         tr.next().remove();
-        $(ev).tooltip('hide');
+        $(this).tooltip('hide');
         tr.remove();
 
-        // var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
-        // var index = getRangeIndex(this);
-        // var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
-        // console.log(input.val(), jsonC['rangeList'][dataNum]['end']['name']);
-
-        $(doc).find('.range-pre').each(function (i, elem) {
-            var dataOrderRow = $(elem).attr('data-order');
-            for(var key in jsonC['rangeList']) {
-                if(!jsonC['rangeList'].hasOwnProperty(key) || key == i) {
-                    console.log(key, i);
-                    continue;
-                }
-
-                var startInput = $(elem).find('.input_eve');
-                var endInput = $(doc).find('.range-post[data-order='+ dataOrderRow +']').find('.input_eve');
-
-                if (jsonC['rangeList'][key]['start']['name'] === startInput.val() && jsonC['rangeList'][key]['end']['name'] === endInput.val()) {
-                    showEachErrSpan(startInput, endInput, startInput.parent().find('.mdl-textfield__error'), endInput.parent().find('.mdl-textfield__error'), ERR_MSG_DUPLICATE_VAL);
-                    console.log('こっち');
-                    toggleBtn(false);
-                    return;
-                }
-            }
-        });
-        //todo ここでdatePickerも削除しないとバグるよね
-        //todo 追加時重複をチェックすべき(range event)
+        checkRangeDuplicateItem($(doc), jsonC);
     });
 
     //region 禁則文字まわり
@@ -532,6 +507,36 @@ function createOneRangeRow(doc, count, value, masterJson) {
         initAllTooltips();
         $(blocks[i]).insertBefore($(doc).find('.range-add'));
     }
+}
+
+function checkRangeDuplicateItem(doc, jsonC) {
+    doc.find('.range-pre').each(function (i, elem) {
+        var dataOrderRow = $(elem).attr('data-order');
+        var startInput = $(elem).find('.input_eve');
+        var endInput = $(doc).find('.range-post[data-order='+ dataOrderRow +']').find('.input_eve');
+        var isValid = true;
+
+        for(var key in jsonC['rangeList']) {
+            if(!jsonC['rangeList'].hasOwnProperty(key) || key == i) {
+                console.log(key, i);
+                continue;
+            }
+
+            if (jsonC['rangeList'][key]['start']['name'] === startInput.val() && jsonC['rangeList'][key]['end']['name'] === endInput.val()) {
+                showEachErrSpan(startInput, endInput, startInput.parent().find('.mdl-textfield__error'), endInput.parent().find('.mdl-textfield__error'), ERR_MSG_DUPLICATE_VAL);
+                console.log('invalid value');
+                toggleBtn(false);
+                isValid = false;
+                break;
+            }
+        }
+
+        if (isValid) {
+            startInput.parent().removeClass('is-invalid').removeClass('wrong-val');
+            endInput.parent().removeClass('is-invalid').removeClass('wrong-val');
+            toggleBtn(true);
+        }
+    });
 }
 
 function getRangeIndex(target) {
