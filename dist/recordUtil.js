@@ -181,14 +181,15 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
         $(this).parents('tr').remove();
 
         $(doc).find('table').find('tr').each(function (i, elem) {
-            var ym = $(ev.target).parents(".card-wrapper-i").attr('data-order');
-            console.log(i);
-            if (ym || parseInt(ym) < 10000) {//range-preのdataOrderは10000
+            var ym = $(elem).attr('data-order');
+            console.log(i, ym);
+            if (ym && parseInt(ym) < 10000) {//range-preのdataOrderは10000
 
                 var index = $(elem).index();
-                var input = $(elem).find('.input_eve');
+                var input = $(elem).find('.input_eve');//todo ここでさ、index使ってるじゃん。てことはさ、配列も並び替えしなきゃいけないんだよ、きっと。
                 console.log('index:', index);
                 var jsonC = JSON.parse(masterJson[dataOrder]['data']['0']);
+                var isValid = true;
                 for(var key in jsonC['eventList']) {
                     if(!jsonC['eventList'].hasOwnProperty(key) || key == index)
                         continue;
@@ -198,14 +199,17 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
                         input.parent().addClass('is-invalid').addClass('wrong-val');
                         console.log('こっち');
                         toggleBtn(false);
-                        return;
+                        isValid = false;
+                        break;
                     }
                 }
 
-                input.parent().removeClass('is-invalid').removeClass('wrong-val');
-                toggleBtn(true);
-                jsonC['eventList'][index]['name'] = input.val();
-                masterJson[dataOrder]['data']['0'] = JSON.stringify(jsonC);
+                if (isValid) {
+                    input.parent().removeClass('is-invalid').removeClass('wrong-val');
+                    toggleBtn(true);
+                    jsonC['eventList'][index]['name'] = input.val();//todo ここでさ、index使ってるじゃん。てことはさ、配列も並び替えしなきゃいけないんだよ、きっと。
+                    masterJson[dataOrder]['data']['0'] = JSON.stringify(jsonC);
+                }
             }
         });
 
@@ -378,10 +382,8 @@ function createOneRangeRow(doc, count, value, masterJson) {
             }
         }
 
-        $(e.target).parent().removeClass('is-invalid');
-        $(e.target).parent().removeClass('wrong-val');
-        endInput.parent().removeClass('is-invalid');
-        endInput.parent().removeClass('wrong-val');
+        $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
+        endInput.parent().removeClass('is-invalid').removeClass('wrong-val');
         toggleBtn(true);
         console.log('うむむ');
         jsonC['eventList'][index]['name'] = $(e.target).val();
@@ -426,10 +428,8 @@ function createOneRangeRow(doc, count, value, masterJson) {
             }
         }
 
-        $(e.target).parent().removeClass('is-invalid');
-        $(e.target).parent().removeClass('wrong-val');
-        startInput.parent().removeClass('is-invalid')
-        startInput.parent().removeClass('wrong-val');
+        $(e.target).parent().removeClass('is-invalid').removeClass('wrong-val');
+        startInput.parent().removeClass('is-invalid').removeClass('wrong-val');
         toggleBtn(true);
         console.log('うむふぁｓｆだｆｄ');
     });
