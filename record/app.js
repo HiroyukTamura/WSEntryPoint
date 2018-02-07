@@ -6,6 +6,7 @@ const tab1 = $('#tab1');
 const saveBtn = $('#save');
 const load = $('#page-load-prg');
 const contentFluid = $('#container-fluid');
+const footer =$('.mdl-mini-footer');
 var loginedUser;
 var masterJson;
 var isModalOpen = false;
@@ -738,6 +739,7 @@ function onClickTab(ele) {
 
     if (contentFluid.is(':visible')) {
         contentFluid.hide();
+        footer.hide();
         load.show();
 
         masterJson = null;
@@ -770,6 +772,7 @@ function onClickTab(ele) {
                 if(!isFirstLoad){
                     load.hide();
                     contentFluid.show();
+                    footer.show();
                 }
             }
 
@@ -822,11 +825,11 @@ function connectFbAsync() {
         } else {
             onGetTamplateSnap(snapshot);//todo デバッグ
             if(isFirstLoad){
-                load.hide();
-                contentFluid.show();
-            } else {
                 progress.hide();
                 postLoad.show();
+            } else {
+                load.hide();
+                contentFluid.show();
             }
         }
 
