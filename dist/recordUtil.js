@@ -61,6 +61,7 @@ function createHtmlAs1Eve() {
                     '<div class="mdl-textfield mdl-js-textfield mdl-pre-upgrade mdl-textfield--floating-label">' +
                         '<input class="mdl-textfield__input time_input mdl-pre-upgrade" type="text" id="sample">' +
                         '<label class="mdl-textfield__label mdl-pre-upgrade" for="sample"></label>' +
+                        '<span class="mdl-textfield__error mdl-pre-upgrade"></span>'+
                     '</div>' +
                 '</form>' +
             '</td>' +
@@ -344,7 +345,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
     var errSpanEnd = $(blocks[2]).find('.event_name .mdl-textfield__error');
 
     startInput.keyup(function (e) {
-        //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
+
         var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanStart);
         if(!isValid){
             toggleBtn(false);
@@ -391,7 +392,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
 
 
     endInput.keyup(function (e) {
-        //todo 不正な値であっても、masterJsonに書き込んでいることに注意してください。
+
         var isValid = isValidAboutNullAndDelimiter($(e.target), errSpanEnd);
         if(!isValid){
             toggleBtn(false);
@@ -598,17 +599,25 @@ function setRangeDatePicker(block, masterJson, offset) {
     var input = block.find('input').eq(0);
     setDatePickerLisntener(input)
         .on('change', function (event, date) {
+            var tr = $(event.target).parents('tr');
+            var rowOrder = tr.attr('data-order');
             var index = $(event.target).parents('tr').index() - $(event.target).parents('tbody').find('.eve-add').index()-1;
             var dataOrder = $(event.target).closest(".card-wrapper-i").attr('data-order');
             var dataNum = Math.floor(index/3);
             console.log(dataNum, index%3);
             var startOrEnd;
+            var otherEdge;
+            var otherClass;
             switch (index%3) {
                 case 0:
                     startOrEnd = 'start';
+                    otherEdge = 'end';
+                    otherClass = 'range-post';
                     break;
                 case 2:
                     startOrEnd = 'end';
+                    otherEdge = 'start';
+                    otherClass = 'range-pre';
                     break;
                 default:
                     return;
@@ -616,9 +625,6 @@ function setRangeDatePicker(block, masterJson, offset) {
 
             var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
             var time = moment($(event.target).val(), 'H:mm');
-            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["hourOfDay"] = time.hour();
-            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["minute"] = time.minute();
-
             var n = index%3;
             if(n === 2)
                 n = 1;
@@ -626,6 +632,33 @@ function setRangeDatePicker(block, masterJson, offset) {
             var offset = $('.dtp').eq(jsonC["eventList"].length + dataNum*2 +n)
                 .find('.date-picker-radios input:checked')
                 .parent().index() -1;
+
+            time.add('d', offset);
+
+            var timeOther = moment({
+                hour: jsonC["rangeList"][dataNum][otherEdge]["cal"]["hourOfDay"],
+                minute: jsonC["rangeList"][dataNum][otherEdge]["cal"]["minute"]
+            });
+            timeOther.add('d', jsonC["rangeList"][dataNum][otherEdge]["cal"]["offset"]);
+
+            var max = moment.max(time, timeOther);
+            var timeInput = tr.find('.time').find('.mdl-textfield');
+            var timeOtherInput = tr.parents('table').find('.'+ otherClass + '[data-order='+ rowOrder +'] .time .mdl-textfield');
+            if ((startOrEnd === 'start' && max === time) || (startOrEnd === 'end' && max === timeOther)) {
+                timeInput.addClass('is-invalid').addClass('wrong-val').removeClass('is-focused')//.removeClass('is-focused')しないとフォーカスが永遠に外れない
+                    .tooltip({
+                        title: '開始時刻が終了時刻を超えないようにしてください'
+                    });
+                timeOtherInput.addClass('is-invalid').addClass('wrong-val').removeClass('is-focused')
+                    .tooltip({
+                        title: '開始時刻が終了時刻を超えないようにしてください'
+                    });
+                toggleBtn(false);
+            } else {
+                timeInput.removeClass('is-invalid').removeClass('wrong-val').removeClass('is-focused').tooltip('dispose');
+                timeOtherInput.removeClass('is-invalid').removeClass('wrong-val').removeClass('is-focused').tooltip('dispose');
+                toggleBtn(true);
+            }
 
             var label = $(event.target).parent().find('label');
             switch (offset){
@@ -639,6 +672,9 @@ function setRangeDatePicker(block, masterJson, offset) {
                     label.html('翌日');
                     break;
             }
+
+            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["hourOfDay"] = time.hour();
+            jsonC["rangeList"][dataNum][startOrEnd]["cal"]["minute"] = time.minute();
             jsonC["rangeList"][dataNum][startOrEnd]["cal"]["offset"] = offset;
             masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
             console.log(masterJson);

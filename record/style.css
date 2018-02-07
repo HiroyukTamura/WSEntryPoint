@@ -456,6 +456,10 @@ body {
     /*color: slategray;*/
 }
 
+.time .mdl-textfield__label {
+    width: 50px;
+}
+
 .event_name{
     /*margin-left: 24px;*/
     display: inline-block;
