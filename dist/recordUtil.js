@@ -213,8 +213,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
             }
         });
 
-        console.log(masterJson);
-        //todo アニメーションできたらなあ。/
+        console.log(masterJson);//todo アニメーションできたらなあ。
     });
 
     //イベント名入力イベント

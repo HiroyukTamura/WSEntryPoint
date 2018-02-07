@@ -343,6 +343,8 @@ function operateAs1(doc, childSnap) {
         console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
 
         count++;
+
+        checkRangeDuplicateItem(doc, jsonC);
     });
 
     $(doc).find('tbody').append(addRangeBtn);
