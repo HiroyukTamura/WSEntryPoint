@@ -319,20 +319,45 @@ function createOneRangeRow(doc, count, value, masterJson) {
     //削除ボタンイベント
     $(blocks[1]).find('.remove-btn').on('click', function (ev) {
         var tr = $(this).closest('tr');
-        var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
+        // var index = tr.index() - tr.parents('tbody').find('.eve-add').index()-1;
         var dataOrder = $(this).closest(".card-wrapper-i").attr('data-order');
-        var dataNum = Math.floor(index/3);
+        var dataNum = getRangeIndex($(this));
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
         jsonC["rangeList"].splice(dataNum, 1);
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
         tr.prev().remove();
         tr.next().remove();
+        $(ev).tooltip('hide');
         tr.remove();
-        //todo ここでdatePickerも削除しないとバグるよね
-        //todo 削除時にtoolTipが消えない(rangeEvent) / 重複をチェックすべき(range event) / rangeEventでは、項目のがおかしいときに忠告すべき tippy整備すべき
-    });
 
+        // var currentDataOrder = $(this).parents('.card-wrapper-i').attr('data-order');
+        // var index = getRangeIndex(this);
+        // var jsonC = JSON.parse(masterJson[currentDataOrder]['data']['0']);
+        // console.log(input.val(), jsonC['rangeList'][dataNum]['end']['name']);
+
+        $(doc).find('.range-pre').each(function (i, elem) {
+            var dataOrderRow = $(elem).attr('data-order');
+            for(var key in jsonC['rangeList']) {
+                if(!jsonC['rangeList'].hasOwnProperty(key) || key == i) {
+                    console.log(key, i);
+                    continue;
+                }
+
+                var startInput = $(elem).find('.input_eve');
+                var endInput = $(doc).find('.range-post[data-order='+ dataOrderRow +']').find('.input_eve');
+
+                if (jsonC['rangeList'][key]['start']['name'] === startInput.val() && jsonC['rangeList'][key]['end']['name'] === endInput.val()) {
+                    showEachErrSpan(startInput, endInput, startInput.parent().find('.mdl-textfield__error'), endInput.parent().find('.mdl-textfield__error'), ERR_MSG_DUPLICATE_VAL);
+                    console.log('こっち');
+                    toggleBtn(false);
+                    return;
+                }
+            }
+        });
+        //todo ここでdatePickerも削除しないとバグるよね
+        //todo 追加時重複をチェックすべき(range event)
+    });
 
     //region 禁則文字まわり
     var startInput = $(blocks[0]).find('.input_eve');
