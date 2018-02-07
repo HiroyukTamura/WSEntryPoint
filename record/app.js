@@ -231,7 +231,7 @@ function operateAs1(doc, childSnap) {
     var addRowBtn = createAssEveRow('eve-add', 10000);
 
     addRowBtn.find('button').on('click', function (e) {
-        onClickAddParamsLiBtn(doc);
+        onClickAddRowBtn($(e.target), masterJson, $(doc));
     });
 
     $(doc).find('tbody').append(addRowBtn);
