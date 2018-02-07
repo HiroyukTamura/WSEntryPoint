@@ -177,6 +177,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
         var index = $(this).parents('tr').index();
         jsonC["eventList"].splice(index, 1);
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
+        $(this).tooltip('hide');
         $(this).parents('tr').remove();
 
         $(doc).find('table').find('tr').each(function (i, elem) {
@@ -209,7 +210,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
         });
 
         console.log(masterJson);
-        //todo アニメーションできたらなあ。/ 削除時にtoolTipが消えない / 重複をチェックすべき
+        //todo アニメーションできたらなあ。/ 削除時にtoolTipが消えない(rangeEvent) / 重複をチェックすべき(range event) / rangeEventでは、項目のがおかしいときに忠告すべき
     });
 
     //イベント名入力イベント
