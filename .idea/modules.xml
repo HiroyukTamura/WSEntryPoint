@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ChalengedKit.iml" filepath="$PROJECT_DIR$/.idea/ChalengedKit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ChallengedKit.iml" filepath="$PROJECT_DIR$/.idea/ChallengedKit.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/WSEntryPoint.iml" filepath="$PROJECT_DIR$/.idea/WSEntryPoint.iml" />
     </modules>
   </component>

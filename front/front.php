@@ -20,7 +20,7 @@
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/2.4.1/firebase-ui-auth.css" />
     <link rel="stylesheet" href="style.css"/>
     <script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
-    <title>ChalengedKit(β)</title>
+    <title>ChallengedKit(β)</title>
 </head>
 
 
