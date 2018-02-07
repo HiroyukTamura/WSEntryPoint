@@ -171,14 +171,45 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
 
     //項目削除イベント
     block.find('.remove-btn').on('click', function (ev) {
+        console.log('項目削除');
         var dataOrder = $(this).parents(".card-wrapper-i").attr('data-order');
         var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
         var index = $(this).parents('tr').index();
         jsonC["eventList"].splice(index, 1);
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
-        console.log(masterJson);
+        $(this).parents('tr').remove();
 
-        $(this).parents('tr').remove();//todo アニメーションできたらなあ。
+        $(doc).find('table').find('tr').each(function (i, elem) {
+            var ym = $(ev.target).parents(".card-wrapper-i").attr('data-order');
+            console.log(i);
+            if (ym || parseInt(ym) < 10000) {//range-preのdataOrderは10000
+
+                var index = $(elem).index();
+                var input = $(elem).find('.input_eve');
+                console.log('index:', index);
+                var jsonC = JSON.parse(masterJson[dataOrder]['data']['0']);
+                for(var key in jsonC['eventList']) {
+                    if(!jsonC['eventList'].hasOwnProperty(key) || key == index)
+                        continue;
+
+                    if (jsonC['eventList'][key]['name'] === input.val()) {
+                        errSpan.html(ERR_MSG_DUPLICATE_VAL);
+                        input.parent().addClass('is-invalid').addClass('wrong-val');
+                        console.log('こっち');
+                        toggleBtn(false);
+                        return;
+                    }
+                }
+
+                input.parent().removeClass('is-invalid').removeClass('wrong-val');
+                toggleBtn(true);
+                jsonC['eventList'][index]['name'] = input.val();
+                masterJson[dataOrder]['data']['0'] = JSON.stringify(jsonC);
+            }
+        });
+
+        console.log(masterJson);
+        //todo アニメーションできたらなあ。/ 削除時にtoolTipが消えない / 重複をチェックすべき
     });
 
     //イベント名入力イベント
@@ -215,6 +246,8 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
     });
 
     block.insertBefore($(doc).find('.eve-add'));
+
+    return block;
 }
 
 function onHoverForPopover(e) {
@@ -871,7 +904,7 @@ function toggleBtn(isShow) {
 function onClickAddRowBtn(ele, masterJson, doc) {
     console.log('addRowBtn click');
     var value = createNewTimeEveData();
-    createOneEveRow(doc, value, masterJson, saveBtn);
+    var newRow = createOneEveRow(doc, value, masterJson, saveBtn);
     var dataOrder = ele.parents(".card-wrapper-i").attr('data-order');
     var jsonC = JSON.parse(masterJson[dataOrder]['data']["0"]);
     jsonC['eventList'].push(value);//todo ん？push??ここは時刻でsortすべきでは？ん?sortするってことは、迂闊にindex()とかできないな・・・ mixitUpでソートした後、いい感じにすることだ。
@@ -882,6 +915,10 @@ function onClickAddRowBtn(ele, masterJson, doc) {
     console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
 
     sortByMixitUp($(doc));
+
+    initAllTooltips();
+
+    $(newRow).find(".mdl-textfield__input").keyup();
 }
 
 function sortByMixitUp(doc) {
