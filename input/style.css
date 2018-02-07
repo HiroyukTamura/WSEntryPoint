@@ -288,6 +288,10 @@ tbody .mdl-textfield__label {
     top: 20px;
 }
 
+.time .mdl-textfield__label {
+    width: 50px;
+}
+
 .card_block .mdl-button--icon, .demo-list-item .mdl-button--icon, .ele_header .mdl-button--icon{
     height: 20px;
     width: 20px;

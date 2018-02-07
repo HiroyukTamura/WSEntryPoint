@@ -884,7 +884,7 @@ function createNewRangeData() {
     value['start']['cal']['year'] = today.year();
     value['start']['cal']['month'] = today.month();
     value['start']['cal']['dayOfMonth'] = today.date();
-    value['start']['cal']['hourOfDay'] = 0;
+    value['start']['cal']['hourOfDay'] = 7;
     value['start']['cal']['minute'] = 0;
     value['start']['cal']['second'] = 0;
 
@@ -897,7 +897,7 @@ function createNewRangeData() {
     value['end']['cal']['year'] = today.year();
     value['end']['cal']['month'] = today.month();
     value['end']['cal']['dayOfMonth'] = today.date();
-    value['end']['cal']['hourOfDay'] = 0;
+    value['end']['cal']['hourOfDay'] = 22;
     value['end']['cal']['minute'] = 0;
     value['end']['cal']['second'] = 0;
 
