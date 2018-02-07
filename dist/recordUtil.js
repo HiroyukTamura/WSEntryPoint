@@ -210,7 +210,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
         });
 
         console.log(masterJson);
-        //todo アニメーションできたらなあ。/ 削除時にtoolTipが消えない(rangeEvent) / 重複をチェックすべき(range event) / rangeEventでは、項目のがおかしいときに忠告すべき
+        //todo アニメーションできたらなあ。/
     });
 
     //イベント名入力イベント
@@ -330,6 +330,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
         tr.next().remove();
         tr.remove();
         //todo ここでdatePickerも削除しないとバグるよね
+        //todo 削除時にtoolTipが消えない(rangeEvent) / 重複をチェックすべき(range event) / rangeEventでは、項目のがおかしいときに忠告すべき tippy整備すべき
     });
 
 
@@ -503,6 +504,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
                 $(window).off('mouseenter mouseleave');
         });
 
+        initAllTooltips();
         $(blocks[i]).insertBefore($(doc).find('.range-add'));
     }
 }
