@@ -273,6 +273,8 @@ function operateAs1(doc, childSnap) {
             count++;
         });
     }
+
+    setElementAsMdl($('body'));
 }
 
 function operateAs2(doc, childSnap) {

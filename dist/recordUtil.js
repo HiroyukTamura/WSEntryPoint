@@ -236,7 +236,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
 
             if (jsonC['eventList'][key]['name'] === $(e.target).val()) {
                 errSpan.html(ERR_MSG_DUPLICATE_VAL);
-                $(e.target).parent().addClass('is-invalid').addClass('wrong-val');
+                $(e.target).parent().addClass('is-invalid').addClass('wrong-val').html(ERR_MSG_DUPLICATE_VAL);
                 console.log('こっち');
                 toggleBtn(false);
                 return;
@@ -654,25 +654,31 @@ function setRangeDatePicker(block, masterJson, offset) {
     row.hide();
 }
 
+var radioCount = 0;
 function createHtmlRadio() {
+    radioCount++;
+    var id0 = radioCount + '-option-1';
+    var id1 = radioCount + '-option-2';
+    var id2 = radioCount + '-option-3';
+
     return $(
         '<form class="date-picker-radios">'+
             '<tr>'+
                 '<td>'+
-                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-1">'+
-                        '<input type="radio" id="option-1" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for='+ id0 +'>'+
+                        '<input type="radio" id='+ id0 +' class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
                         '<span class="mdl-radio__label mdl-pre-upgrade">前日</span>'+
                     '</label>'+
                 '</td>'+
                 '<td>'+
-                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-2">'+
-                        '<input type="radio" id="option-2" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="'+ id1 +'">'+
+                        '<input type="radio" id='+ id1 + ' class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
                         '<span class="mdl-radio__label mdl-pre-upgrade">当日</span>'+
                     '</label>'+
                 '</td>'+
                 '<td>'+
-                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="option-3">'+
-                        '<input type="radio" id="option-3" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="'+ id2 +'">'+
+                        '<input type="radio" id="'+ id2 +'" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
                         '<span class="mdl-radio__label mdl-pre-upgrade">翌日</span>'+
                     '</label>'+
                 '</td>'+

@@ -357,6 +357,8 @@ function operateAs1(doc, childSnap) {
             count++;
         });
     }
+
+    setElementAsMdl($('body'));
 }
 
 //region /////////////////operateAs2系列//////////////
