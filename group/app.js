@@ -16,6 +16,7 @@ const dialogNewDoc = $('#modal-new-doc');
 const dialogShareRec = $('#share-rec');
 const dialogPositibeBtn = $('#add-group-btn');
 const dialogInvite =$('#invite-group');
+const dialogAddDocComment =$('#add-doc-comment');
 var clickedColor = 0;
 var inputVal = null;
 var removeContentsKey;//これモーダルまわりで触る際にcontentKeyをぶち込みます　変数名変えるべきかも
@@ -448,6 +449,7 @@ var calendar;
         return div;
     }
 }();
+//endregion
 
 window.onload = function (ev) {
     defaultApp = firebase.initializeApp(CONFIG);
@@ -584,7 +586,7 @@ function onLoginSuccess() {
             var input = $('#new-group-name');
             if(!input.val()){
                 input.parent().addClass('is-invalid');
-                return;
+                return false;
             }
             var photoUrl = $('#group-config img').attr('src');
             defaultDatabase.ref('group/'+groupKey+"/").update({
@@ -633,7 +635,7 @@ function onLoginSuccess() {
             var isValid = isValidAboutNullAndDelimiter(titleInput, span);
             if (!isValid) {
                 titleInput.removeClass('is-invalid').removeClass('wrong-val');
-                return;
+                return false;
             }
 
             var contInput = $('#new-doc-cont');
@@ -641,7 +643,7 @@ function onLoginSuccess() {
             var isValidCont = isValidAboutNullAndDelimiter(contInput, errSpanCont);
             if (!isValidCont) {
                 contInput.removeClass('is-invalid').removeClass('wrong-val');
-                return;
+                return false;
             }
 
             var key = defaultDatabase.ref('keyPusher').push().key;
@@ -710,7 +712,7 @@ function onLoginSuccess() {
             var checked = $('#invite-group').find('.mdl-checkbox.is-checked');
             if (!checked.length){
                 closeDialog();
-                return;
+                return false;
             }
 
             var commandKey = defaultDatabase.ref('keyPusher').push().key;
@@ -743,6 +745,35 @@ function onLoginSuccess() {
 
             }).catch(function (error) {
                 console.log(error.code, error.message);
+                showOpeErrNotification(defaultDatabase);
+            });
+
+        } else if (isModalOpen === dialogAddDocComment) {
+            var commentInput = dialogAddDocComment.find('.mdl-textfield__input');
+            var errSpanComment = commentInput.parent().find('.mdl-textfield__error');
+            var isValidComment = isValidAboutNullAndDelimiter(commentInput, errSpanComment);
+            if (!isValidComment) {
+                commentInput.removeClass('is-invalid').removeClass('wrong-val');
+                return false;
+            }
+
+            var objC = createFbCommandObj(ADD_DOC_COMMENT, user.uid);
+            objC.groupKey = groupKey;
+            objC.contentsKey = removeContentsKey;
+            objC.newComment = commentInput.val();
+
+            var commandKeyC = defaultDatabase.ref('keyPusher').push().key;
+            defaultDatabase.ref('writeTask/'+ commandKeyC).update(objC).then(function () {
+
+                var cardCont = createHtmlAsDocFollower(user.displayName, moment().format('YYYYMMDD'), objC.newComment, user.photoURL);
+                // setAsMyComment(cardCont, userUid);
+                cardCont.find('comment-follow').addClass('author-right');
+                cardCont.insertBefore($('.card.comments[key='+ removeContentsKey +'] .add-comment-prev'));
+
+                showNotification('更新しました', 'success');
+
+            }).catch(function (error) {
+                console.warn(error.code, error.message);
                 showOpeErrNotification(defaultDatabase);
             });
         }
@@ -1436,7 +1467,7 @@ function addOneContent(key) {
     }
 }
 
-//todo 複数人数が話したときの用意
+//todo 複数人数が話したときの用意 これデバッグしてマジで
 function appendContentAsDoc(contentData, key) {
     // var userName = groupJson["member"][contentData.whose]["name"];//todo 辞めた人間はどうする？？
     var json = JSON.parse(contentData.comment);
@@ -1459,8 +1490,9 @@ function appendContentAsDoc(contentData, key) {
         } else {
             var cardCont = createHtmlAsDocFollower(userName, ymd, comment, userPhotoUrl);
             // setAsMyComment(cardCont, userUid);
-            element.find('comment-follow').addClass('author-right');
-            element.append(cardCont);
+            if (userUid === user.uid)
+                cardCont.find('comment-follow').addClass('author-right');
+            cardCont.insertBefore(element.find('.add-comment-prev'));
         }
     }
 
@@ -1472,6 +1504,8 @@ function appendContentAsDoc(contentData, key) {
 
     element.find('.add-comment .mdl-button').on('click', function (e) {
         console.log('add-comment clicked');
+        removeContentsKey = key;
+        openDialog(dialogAddDocComment);
         return false;
     });
 
@@ -1728,13 +1762,15 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
                         '</li>'+
                     '</ul>'+
                 '<div class="comment-cont">'+ comment +'</div>'+
-                '<div class="add-comment">'+
-                    '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade" title="コメントを追加">'+
-                        '<i class="material-icons">add_circle</i>'+
-                    '</button>'+
-                '</div>'+
             '</div>'+
 
+            '<hr class="seem add-comment-prev">'+
+
+            '<div class="add-comment">'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade" title="コメントを追加">'+
+                    '<i class="material-icons">add_circle</i>'+
+                '</button>'+
+            '</div>'+
             // '<hr class="seem">'+
 
             // '<div class="comment-follow">'+
@@ -1953,6 +1989,11 @@ function openDialog(toShowEle, fileName) {
         dialogConfigGroup.hide();
         dialogNewDoc.hide();
         dialogShareRec.hide();
+
+    } else if (toShowEle === dialogAddDocComment) {
+        $('.mdl-dialog__content').children('*:not(#add-doc-comment)').hide();
+        dialogPositibeBtn.removeAttr('disabled');
+        dialogPositibeBtn.html('OK');
     }
 
     if(toShowEle === dialogNewDoc) {

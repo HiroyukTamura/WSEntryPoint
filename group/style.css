@@ -419,7 +419,7 @@ body {
 }
 
 .comment-follow {
-    padding: 36px 96px;
+    padding: 24px 96px;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
 }
@@ -489,6 +489,7 @@ body {
     display: flex;
     justify-content: center;
     color: #BCBCBC;
+    margin: 8px 0;
 }
 
 /*-----------ファイル-------------*/

@@ -382,7 +382,7 @@
                         </span>
                     </div>
 
-                    <form action="#" class="modal_row">
+                    <form action="#" class="modal_row" onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input card_title_input" type="text" id="modal_input">
                             <label class="mdl-textfield__label" for="modal_input">スケジュール名</label>
@@ -395,10 +395,19 @@
                     <p></p>
                 </div>
                 <div id="edit-comment">
-                    <form action="#" class="modal_row">
+                    <form action="#" class="modal_row" onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input card_title_input" type="text" id="edit-comment-dialog">
                             <label class="mdl-textfield__label" for="edit-comment-dialog">コメントを編集</label>
+                            <span class="mdl-textfield__error"></span>
+                        </div>
+                    </form>
+                </div>
+                <div id="add-doc-comment">
+                    <form action="#" class="modal_row" onsubmit="return false">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <textarea class="mdl-textfield__input" type="text" rows="3" id="add-doc-dialog"></textarea>
+                            <label class="mdl-textfield__label" for="add-doc-dialog">コメントを編集</label>
                             <span class="mdl-textfield__error"></span>
                         </div>
                     </form>
@@ -411,7 +420,7 @@
                         </div>
                         <input type="file" accept="image/png,image/jpeg,image/gif">
                     </div>
-                    <form action="#">
+                    <form action="#" onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield">
                             <input class="mdl-textfield__input" type="text" id="new-group-name">
                             <label class="mdl-textfield__label" for="new-group-name">グループ名</label>
@@ -423,7 +432,7 @@
                     <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect">-->
                         <!--ファイルを選択-->
                     <!--</button>-->
-                    <form class="drop-space">
+                    <form class="drop-space" onsubmit="return false">
                         <div class="drag-cont">
                             <button class="mdl-button mdl-js-button choose-file">
                                 ファイルを選択
@@ -441,7 +450,7 @@
                             <p>アップロードに成功しました</p>
                         </div>
                     </form>
-                    <form action="#">
+                    <form action="#" onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <!--textereaはpattenに非対応-->
                             <textarea class="mdl-textfield__input" type="text" rows="3" id="new-file-comment"></textarea>
@@ -455,14 +464,14 @@
                 </div>
                 <div id="modal-new-doc">
                     <!--<h4>ドキュメントを追加</h4>-->
-                    <form action="#">
+                    <form action="#" onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="text" id="new-doc-title">
                             <label class="mdl-textfield__label" for="new-doc-title">ドキュメントのタイトル</label>
                             <span class="mdl-textfield__error"></span>
                         </div>
                     </form>
-                    <form action="#" class="doc-cont-form">
+                    <form action="#" class="doc-cont-form" onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <!--textereaはpattenに非対応-->
                             <textarea class="mdl-textfield__input" type="text" rows="6" id="new-doc-cont"></textarea>
