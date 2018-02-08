@@ -664,13 +664,13 @@ function initTabLayout() {
 
     $('#tab-next').on('click', function (e) {
         console.log('click');
-        toggleTab();
+        toggleTab(true);
         return false;
     });
 
     $('#tab-prev').on('click', function (e) {
         e.preventDefault();
-        toggleTab();
+        toggleTab(false);
         console.log('click');
         return false;
     });
@@ -718,9 +718,20 @@ function toggleTab(isNext) {
         console.log('fadeOut');
         var dif = isNext ? 7 : -7;
         currentMoment.add(dif, 'd');
+        //翌週へGO→翌週の日曜へ　前週へGO→前週の土曜へ
+        if (isNext) {
+            currentMoment.subtract('d', currentMoment.day());
+        } else {
+            currentMoment.add('d', 6-currentMoment.day());
+        }
+        console.log(727, currentMoment.format('YYYYMMDD'));
+
         setTabDate(shower);
-        shower.find('.layout__tab').eq(0).addClass('is-active');
+        var tab = shower.find('.layout__tab').eq(currentMoment.day());
+        tab.addClass('is-active');
         shower.fadeIn();
+
+        onClickTab(tab);
     });
 }
 
@@ -741,6 +752,7 @@ function onClickTab(ele) {
         footer.hide();
         load.show();
 
+        $('.card_wrapper').children().remove();
         masterJson = null;
 
         var scheme = makeRefScheme(['usersParam', loginedUser.uid, currentMoment.format('YYYYMMDD')]);
@@ -758,6 +770,7 @@ function onClickTab(ele) {
                     if(!isFirstLoad){
                         load.hide();
                         contentFluid.show();
+                        footer.show();
                     }
 
                 }).catch(function (err) {
