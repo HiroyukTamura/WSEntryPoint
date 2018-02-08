@@ -62,10 +62,14 @@ function onLoginSuccess() {
 
     defaultDatabase.ref(makeRefScheme(['userData', loginedUser.uid, 'template'])).once('value').then(function(snapshot) {
 
-        masterJson = [];
-        snapshot.forEach(function (childSnap) {
-            masterJson.push(childSnap.toJSON());
-        });
+        if (!snapshot.exists()) {
+            masterJson = getDefaultTemplate();
+        } else {
+            masterJson = [];
+            snapshot.forEach(function (childSnap) {
+                masterJson.push(childSnap.toJSON());
+            });
+        }
         masterJson.shift();
 
         //タグの連想配列を普通の配列に変換
@@ -79,12 +83,6 @@ function onLoginSuccess() {
             }
         });
         console.log(masterJson);
-
-        if (!snapshot.exists()) {
-            console.log("テンプレ存在せず！うわー！");
-            onErrConnectFb();
-            return;
-        }
 
         for (var i=0; i<masterJson.length; i++){
             var childSnap = masterJson[i];

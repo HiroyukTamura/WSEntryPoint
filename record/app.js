@@ -60,10 +60,14 @@ function onLoginSuccess() {
 function onGetTamplateSnap(snapshot) {
     console.log('onGetTamplateSnap');
 
-    masterJson = [];
-    snapshot.forEach(function (childSnap) {
-        masterJson.push(childSnap.toJSON());
-    });
+    if (!snapshot.exists()) {
+        masterJson = getDefaultTemplate();
+    } else {
+        masterJson = [];
+        snapshot.forEach(function (childSnap) {
+            masterJson.push(childSnap.toJSON());
+        });
+    }
     masterJson.shift();
 
     //タグの連想配列を普通の配列に変換
@@ -77,12 +81,6 @@ function onGetTamplateSnap(snapshot) {
         }
     });
     console.log(masterJson);
-
-    if (!snapshot.exists()) {
-        console.log("テンプレ存在せず！うわー！");
-        onErrConnectFb();
-        return;
-    }
 
     for (var i=0; i<masterJson.length; i++){
         var childSnap = masterJson[i];
@@ -760,11 +758,11 @@ function onClickTab(ele) {
             if(!snapshot.exists()){
                 var scheme = makeRefScheme(['userData', loginedUser.uid, 'template']);
                 defaultDatabase.ref(scheme).once('value').then(function (templateSnap) {
-                    if(!templateSnap.exists()){
-                        console.log('!templateSnap.exists');
-                        showOpeErrNotification(defaultDatabase, -1);
-                        return;
-                    }
+                    // if(!templateSnap.exists()){
+                    //     console.log('!templateSnap.exists');
+                    //     showOpeErrNotification(defaultDatabase, -1);
+                    //     return;
+                    // }
                     onGetTamplateSnap(templateSnap);
 
                     if(!isFirstLoad){
