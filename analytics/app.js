@@ -99,7 +99,7 @@ function getDaysOfMonth() {
 }
 
 function onLoginSuccess() {
-    query = window.location.href.slice(window.location.href.indexOf('?key=') + 1);
+    query = window.location.href.slice(window.location.href.indexOf('?key=') + 5);
     console.log(query);
 
     if (window.location.href.indexOf('?key=') === -1) {
@@ -1243,9 +1243,7 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                     case 4:
                         // todo 本来は"comment"ノードに格納されているので、実装後この点を修正すること
                         var td = tr.find('td').eq(count);
-                        if(data.data.length <= 100) {
-                            td.html(data.data);
-                        } else {
+                        if(data.data.length > 100) {
                             // todo ここら辺の改行とかの動作、もうちょっとうまくやれるはず
                             var value = null;
                             if(data.data.indexOf("\n") === data.data.lastIndexOf("\n")){
@@ -1265,6 +1263,8 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                                 title: data.dataName +" "+ title
                             });
                             td.append($('<br />')).append(dropDownBtn);
+                        } else {
+                            td.html(data.data);
                         }
                         break;
                 }
