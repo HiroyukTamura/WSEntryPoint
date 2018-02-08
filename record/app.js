@@ -256,7 +256,6 @@ function operateAs1(doc, childSnap) {
         masterJson[dataOrder]['data']["0"] = JSON.stringify(jsonC);
 
         createOneRangeRow(doc, count, newRangeData, masterJson);
-        setElementAsMdl($(doc));
         console.log(JSON.parse(masterJson[dataOrder]['data']["0"]));
 
         count++;

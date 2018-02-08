@@ -687,6 +687,7 @@ function setRangeDatePicker(block, masterJson, offset) {
     radios.find('input').eq(offset+1).attr('checked', 'checked');
     var row = datePickers.eq(datePickers.length-1);
     radios.insertBefore(row);
+    setElementAsMdl(radios);
     row.hide();
 }
 
@@ -701,14 +702,14 @@ function createHtmlRadio() {
         '<form class="date-picker-radios">'+
             '<tr>'+
                 '<td>'+
-                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for='+ id0 +'>'+
-                        '<input type="radio" id='+ id0 +' class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                    '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="'+ id0 +'">'+
+                        '<input type="radio" id="'+ id0 +'" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
                         '<span class="mdl-radio__label mdl-pre-upgrade">前日</span>'+
                     '</label>'+
                 '</td>'+
                 '<td>'+
                     '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect mdl-pre-upgrade" for="'+ id1 +'">'+
-                        '<input type="radio" id='+ id1 + ' class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
+                        '<input type="radio" id="'+ id1 +'" class="mdl-radio__button mdl-pre-upgrade" name="options" value="1">'+
                         '<span class="mdl-radio__label mdl-pre-upgrade">当日</span>'+
                     '</label>'+
                 '</td>'+
