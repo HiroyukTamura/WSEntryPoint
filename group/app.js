@@ -1470,6 +1470,11 @@ function appendContentAsDoc(contentData, key) {
         return false;
     });
 
+    element.find('.add-comment .mdl-button').on('click', function (e) {
+        console.log('add-comment clicked');
+        return false;
+    });
+
     timeline.prepend(element);
 }
 
@@ -1701,7 +1706,7 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
                 '<i class="fas fa-comments fa-lg ele-icon"></i>'+
                 '<span class="event_title">'+ title +'</span>'+
                 '<div class="mdl-layout-spacer"></div>'+
-                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade">'+
+                '<button class="mdl-button mdl-js-button mdl-button--icon remove_btn ele_header_button mdl-pre-upgrade" title="コンテンツを削除">'+
                     '<i class="fas fa-times"></i>'+
                 '</button>'+
                 // '<button class="mdl-button mdl-js-button mdl-button--icon arrow_up ele_header_button">'+
@@ -1723,6 +1728,11 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
                         '</li>'+
                     '</ul>'+
                 '<div class="comment-cont">'+ comment +'</div>'+
+                '<div class="add-comment">'+
+                    '<button class="mdl-button mdl-js-button mdl-button--icon mdl-pre-upgrade" title="コメントを追加">'+
+                        '<i class="material-icons">add_circle</i>'+
+                    '</button>'+
+                '</div>'+
             '</div>'+
 
             // '<hr class="seem">'+

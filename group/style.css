@@ -231,7 +231,7 @@ body {
 
 .file .user-icon {
     height: 32px;
-    width: 32px;
+    width: 24px;
     padding-top: 4px;
     padding-bottom: 4px;
 }
@@ -393,7 +393,7 @@ body {
 }
 
 .comment-first {
-    padding-bottom: 36px;
+    padding-bottom: 16px;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
 }
@@ -483,6 +483,12 @@ body {
 .space-horizontal {
     padding-right: 24px;
     padding-left: 24px;
+}
+
+.add-comment {
+    display: flex;
+    justify-content: center;
+    color: #BCBCBC;
 }
 
 /*-----------ファイル-------------*/
