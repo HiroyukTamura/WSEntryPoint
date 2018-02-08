@@ -35,6 +35,11 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
 showDefaultNtf();
 
+$('#firebase-register .mdl-button').on('click', function (e) {
+    $('.firebaseui-idp-button[data-provider-id="password"]').click();
+    return false;
+});
+
 function showDefaultNtf() {
     var setting = {
         type: 'info',

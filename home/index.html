@@ -137,9 +137,31 @@
     <section class="bg-primary" id="about">
       <div class="container">
         <div class="row">
-          <div class="col-lg-8 mx-auto text-center" id="firebaseui-auth-container">
+          <div class="col-lg-8 mx-auto text-center">
             <h2 class="section-heading " id="login_title">Web版にログイン</h2>
             <hr id="login_hr">
+            <div id="firebaseui-wrapper">
+
+              <div id="firebase-register">
+                <div class="firebaseui-card-content">
+                  <div class="firebaseui-idp-list">
+                    <form onsubmit="return false">
+                      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect firebaseui-idp-button firebaseui-id-idp-button">
+                        <span class="firebaseui-idp-icon-wrapper">
+                            <i class="fas fa-address-card fa-lg"></i>
+                        </span>
+                        <span class="firebaseui-idp-text firebaseui-idp-text-long">
+                           メールアドレスで会員登録
+                        </span>
+                        <span class="firebaseui-idp-text firebaseui-idp-text-short">会員登録</span>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div id="firebaseui-auth-container"></div>
+            </div>
             <!--<hr class="light my-4">-->
             <!--<p class="text-faded mb-4">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>-->
             <!--<a class="btn btn-light btn-xl js-scroll-trigger" href="#services">Get Started!</a>-->
