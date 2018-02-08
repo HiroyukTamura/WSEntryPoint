@@ -533,6 +533,7 @@ body {
     width: 400px;
     margin: 0 auto;
     display: block;
+    object-fit: contain;
 }
 
 .file .ele_header {

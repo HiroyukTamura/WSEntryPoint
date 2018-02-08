@@ -618,6 +618,8 @@ function onLoginSuccess() {
             defaultDatabase.ref('group/'+ groupKey +'/contents/'+ uploadingData.contentKey).update(uploadingData).then(function (value) {
 
                 showNotification('更新しました', 'success');
+                if (!groupJson.contents)
+                    groupJson.contents = {};
                 groupJson.contents[uploadingData.contentKey] = uploadingData;
                 addOneContent(uploadingData.contentKey);
 
@@ -1153,7 +1155,7 @@ function onNewFileInputChange(file) {
     // var notification = showProgressNotification();
 
     var key = defaultDatabase.ref('keyPusher').push().key;
-    var suf = mimeType.substring(4);//sufは'/'を含む
+    var suf = mimeType.substring(mimeType.indexOf('/')+1);
     console.log(suf);
 
     uploadingData = {
@@ -1164,7 +1166,7 @@ function onNewFileInputChange(file) {
         lastEditor: user.uid,
         lastEdit: moment().format('YYYYMMDD')
     };
-    uploadTask = firebase.storage().ref().child('sample_share_file/'+ groupKey).child(key+'.'+suf)
+    uploadTask = firebase.storage().ref().child('shareFile/'+ groupKey).child(key+'.'+suf)
         .put(file);
 
     var bar = $('.progress .mdl-progress');
@@ -1528,12 +1530,12 @@ function appendContentAsDoc(contentData, key) {
         var fileUrl = getFileTypeImageUrl(contentData.type);
         // ele.find('.file-icon').attr('src', fileUrl);
         console.log("fileUrl: ", fileUrl);
-        var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment, key, photoUrl, fileUrl);
+        var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment, this.mKey, photoUrl, fileUrl);
 
-        if (contentData.whose === user.uid) {
+        if (this.mContentData === user.uid) {
             ele.find('.edit-comment').on('click', function (ev) {
                 console.log(commentPre);
-                removeContentsKey = key;
+                removeContentsKey = this.mKey;
                 dialogEditComment.find('#edit-comment-dialog').val(commentPre);
                 openDialog(dialogEditComment);
                 return false;
@@ -1543,14 +1545,16 @@ function appendContentAsDoc(contentData, key) {
         }
 
         ele.find('.remove_btn').on('click', function (ev) {
-            removeContentsKey = key;
+            removeContentsKey = this.mKey;
             openDialog(dialogRemoveContents, contentData.contentName);
             return false;
         });
 
         this.mTmeline.prepend(ele);
         var img = ele.find('.show-img img');
-        firebase.storage().ref("shareFile/" + groupKey +"/"+ this.mKey).getDownloadURL().then(function(url) {
+        var suf = contentData.type.substring(contentData.type.indexOf('/')+1);
+        console.log(suf);
+        firebase.storage().ref("shareFile").child(groupKey).child(this.mKey + '.' + suf).getDownloadURL().then(function(url) {
             // Insert url into an <img> tag to "download"
             img.attr("src", url);
             img.on('click', function (ev) {
@@ -1825,52 +1829,56 @@ function openDialog(toShowEle, fileName) {
     if(toShowEle === dialogAddSch){
         dialogPositibeBtn.html('追加');
         dialogPositibeBtn.attr('disabled', '');
-        dialogExclude.hide();
-        dialogRemoveContents.hide();
-        dialogEditComment.hide();
-        dialogConfigGroup.hide();
-        dialogAddFile.hide();
-        dialogNewDoc.hide();
-        dialogShareRec.hide();
-        dialogInvite.hide();
+        // dialogExclude.hide();
+        // dialogRemoveContents.hide();
+        // dialogEditComment.hide();
+        // dialogConfigGroup.hide();
+        // dialogAddFile.hide();
+        // dialogNewDoc.hide();
+        // dialogShareRec.hide();
+        // dialogInvite.hide();
+        $('.mdl-dialog__content').children('*:not(#add-sch-cnt)').hide();
         $('#modal_input').val('');
 
     } else if (toShowEle === dialogExclude){
         dialogPositibeBtn.html('退会させる');
-        dialogAddSch.hide();
-        dialogRemoveContents.hide();
-        dialogEditComment.hide();
-        dialogConfigGroup.hide();
-        dialogAddFile.hide();
-        dialogNewDoc.hide();
-        dialogShareRec.hide();
-        dialogInvite.hide();
         dialogPositibeBtn.removeAttr('disabled');
+        $('.mdl-dialog__content').children('*:not(#dialog-img-w)').hide();
+        // dialogAddSch.hide();
+        // dialogRemoveContents.hide();
+        // dialogEditComment.hide();
+        // dialogConfigGroup.hide();
+        // dialogAddFile.hide();
+        // dialogNewDoc.hide();
+        // dialogShareRec.hide();
+        // dialogInvite.hide();
 
     } else if (toShowEle === dialogRemoveContents){
         dialogPositibeBtn.html('削除する');
         dialogPositibeBtn.removeAttr('disabled');
-        dialogExclude.hide();
-        dialogAddSch.hide();
-        dialogEditComment.hide();
-        dialogConfigGroup.hide();
-        dialogAddFile.hide();
-        dialogNewDoc.hide();
-        dialogShareRec.hide();
-        dialogInvite.hide();
+        // dialogExclude.hide();
+        // dialogAddSch.hide();
+        // dialogEditComment.hide();
+        // dialogConfigGroup.hide();
+        // dialogAddFile.hide();
+        // dialogNewDoc.hide();
+        // dialogShareRec.hide();
+        // dialogInvite.hide();
+        $('.mdl-dialog__content').children('*:not(#remove-contents)').hide();
         dialogRemoveContents.find('p').html("本当に「" + fileName + "」を削除しますか？");
 
     } else if (toShowEle === dialogConfigGroup) {
         dialogPositibeBtn.removeAttr('disabled');
         dialogPositibeBtn.html('OK');
-        dialogExclude.hide();
-        dialogRemoveContents.hide();
-        dialogAddSch.hide();
-        dialogEditComment.hide();
-        dialogAddFile.hide();
-        dialogNewDoc.hide();
-        dialogShareRec.hide();
-        dialogInvite.hide();
+        // dialogExclude.hide();
+        // dialogRemoveContents.hide();
+        // dialogAddSch.hide();
+        // dialogEditComment.hide();
+        // dialogAddFile.hide();
+        // dialogNewDoc.hide();
+        // dialogShareRec.hide();
+        // dialogInvite.hide();
+        $('.mdl-dialog__content').children('*:not(#group-config)').hide();
         $(dialog).removeClass('modal-new-doc-m');
 
         var input = $('#new-group-name').val(fileName);
@@ -1884,26 +1892,29 @@ function openDialog(toShowEle, fileName) {
     } else if (toShowEle === dialogEditComment) {
         dialogPositibeBtn.removeAttr('disabled');
         dialogPositibeBtn.html('OK');
-        dialogExclude.hide();
-        dialogRemoveContents.hide();
-        dialogAddSch.hide();
-        dialogConfigGroup.hide();
-        dialogAddFile.hide();
-        dialogNewDoc.hide();
-        dialogShareRec.hide();
-        dialogInvite.hide();
+        // dialogExclude.hide();
+        // dialogRemoveContents.hide();
+        // dialogAddSch.hide();
+        // dialogConfigGroup.hide();
+        // dialogAddFile.hide();
+        // dialogNewDoc.hide();
+        // dialogShareRec.hide();
+        // dialogInvite.hide();
+        $('.mdl-dialog__content').children('*:not(#edit-comment)').hide();
 
     } else if (toShowEle === dialogAddFile) {
         dialogPositibeBtn.removeAttr('disabled');
         dialogPositibeBtn.html('OK');
-        dialogExclude.hide();
-        dialogRemoveContents.hide();
-        dialogAddSch.hide();
-        dialogEditComment.hide();
-        dialogConfigGroup.hide();
-        dialogNewDoc.hide();
-        dialogShareRec.hide();
-        dialogInvite.hide();
+        // dialogExclude.hide();
+        // dialogRemoveContents.hide();
+        // dialogAddSch.hide();
+        // dialogEditComment.hide();
+        // dialogConfigGroup.hide();
+        // dialogNewDoc.hide();
+        // dialogShareRec.hide();
+        // dialogInvite.hide();
+
+        $('.mdl-dialog__content').children('*:not(#add-file-modal)').hide();
         $('#new-file-comment').val('').parent().removeClass('is-invalid');
         $('.drop-space').removeClass('is-uploading').removeClass('is-uploaded');
 
@@ -1981,14 +1992,15 @@ function openDialog(toShowEle, fileName) {
 
         dialogPositibeBtn.removeAttr('disabled');
         dialogPositibeBtn.html('OK');
-        dialogExclude.hide();
-        dialogRemoveContents.hide();
-        dialogAddSch.hide();
-        dialogEditComment.hide();
-        dialogAddFile.hide();
-        dialogConfigGroup.hide();
-        dialogNewDoc.hide();
-        dialogShareRec.hide();
+        $('.mdl-dialog__content').children('*:not(#invite-group)').hide();
+        // dialogExclude.hide();
+        // dialogRemoveContents.hide();
+        // dialogAddSch.hide();
+        // dialogEditComment.hide();
+        // dialogAddFile.hide();
+        // dialogConfigGroup.hide();
+        // dialogNewDoc.hide();
+        // dialogShareRec.hide();
 
     } else if (toShowEle === dialogAddDocComment) {
         $('.mdl-dialog__content').children('*:not(#add-doc-comment)').hide();
