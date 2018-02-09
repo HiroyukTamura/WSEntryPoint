@@ -229,28 +229,37 @@ function onLoginSuccess() {
 
             var specMoment = moment(snapshot.key, 'YYYYMM');
 
+            var count = 1;
             snapshot.forEach(function (childSnap) {
                 var date = childSnap.key;
                 specMoment.date(date);
                 var htmlE = date +'('+ wodList[specMoment.day()] +')';
                 var tr = $('<tr>');
                 var td = $('<td>', {
-                    rowspan: childSnap.numChildren()
+                    rowspan: childSnap.numChildren(),
+                    class: 'left-column'
                 }).html(htmlE);
                 tr.append(td).appendTo(tbody);
 
                 var isFirstItem = true;
                 childSnap.forEach(function (schSnap) {
+                    // $('<tr><td class="seem" colspan="2"></td></tr>').appendTo(tbody);
                     var title = schSnap.child('title').val();
                     var groupName = schSnap.child('groupName').val();
                     var colorVal = schSnap.child('colorNum').val();
                     var tdItem = createTd(title, groupName);
                     tdItem.find('.mdl-list__item-primary-content').css('border-left-color', colors[parseInt(colorVal)]);
-                    if (isFirstItem)
-                        tr.append(tdItem);
-                    else {
+                    if (isFirstItem) {
                         isFirstItem = false;
-                        $('<tr>').append(tdItem).appendTo(tbody);
+                        tr.append(tdItem);
+                        count++;
+                        if (count%2 === 1)
+                            tr.addClass('colored');
+                    } else {
+                        var trSingle = $('<tr>');
+                        if (count%2 === 1)
+                            trSingle.addClass('colored');
+                        trSingle.append(tdItem).appendTo(tbody);
                     }
                 });
             });

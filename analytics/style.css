@@ -386,6 +386,14 @@ body {
     color: rgba(0, 0 , 0, .87);
 }
 
+#third-card .left-column {
+    text-align: center;
+}
+
+#third-card .colored {
+    background-color: rgba(0, 0 , 50, .01);
+}
+
 .card-out-title {
     font-size: 15px;
     margin: 24px 24px 0 24px;

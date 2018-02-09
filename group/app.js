@@ -562,7 +562,7 @@ function onLoginSuccess() {
             var schemeE = makeRefScheme(['group', groupKey, "contents", removeContentsKey, "comment"]);
             var inputVal = $('#edit-comment-dialog').val();
 
-            defaultDatabase.ref(schemeE).set(inputVal).then(function (value) {
+            defaultDatabase.ref(schemeE).set(inputVal).then(function () {
                 console.log("よろしい");
                 var card = $('.file[key="'+ removeContentsKey +'"]');
                 var subTitle = card.find(".mdl-list__item-sub-title");
@@ -727,18 +727,16 @@ function onLoginSuccess() {
 
             obj['keys'] = keys.join('_');//keyは絶対に'_'が含まれないためこのような実装が可能。
 
-            //todo デバッグ済です
             defaultDatabase.ref('writeTask/'+ commandKey).update(obj).then(function () {
 
                 var friends = Object.keys(friendJson);
                 keys.forEach(function (key) {
                     showNotification('招待しました', 'success');
-                    var invitedUser ={
+                    groupJson['member'][key] = {
                         isChecked: false,
                         photoUrl: friendJson[key]['photoUrl'],
                         name: friendJson[key]['name']
                     };
-                    groupJson['member'][key] = invitedUser;
                     console.log(groupJson);
 
                     var li = createUserLi(key, friends);
