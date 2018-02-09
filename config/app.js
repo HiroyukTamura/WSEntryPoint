@@ -1,3 +1,7 @@
+"use strict";
+
+const postLoad = $('#post_load');
+var progress = $('#progress');
 var defaultApp;
 var defaultDatabase;
 var loginedUser;
@@ -36,8 +40,30 @@ window.onload = function (ev) {
     });
 
     initDrawerDecoration();
+    new UiListeners().initSocialBtns();
 };
 
 function onLoginSuccess() {
-    setDrawerProfile(user);
+    setDrawerProfile(loginedUser);
+
+    $('#login_w').hide();
+    postLoad.show();
 }
+
+(function () {
+    function UiListeners() {}
+
+    UiListeners.prototype.initSocialBtns = function () {
+        $('#btn-github').on('click', function (e) {
+            window.open('facebook.com/freqmodu874');
+            return false;
+        });
+
+        $('#btn-fb').on('click', function (e) {
+            window.open('https://www.facebook.com/profile.php?id=100005318946062');
+            return false;
+        });
+    };
+
+    window.UiListeners = UiListeners;
+}());

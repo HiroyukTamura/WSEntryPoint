@@ -1,0 +1,40 @@
+body {
+    background-color: #F4F3EF;
+}
+
+.mdl-card {
+
+}
+
+.section--center {
+    max-width: 1000px;
+}
+
+.wrapper {
+    padding: 48px 8px;
+    height: calc(100% - 160px);
+}
+
+.wrapper img {
+    margin: 0 auto;
+    display: block;
+    width: 320px;
+    height: 320px;
+}
+
+.wrapper h3 {
+    display: block;
+    color: #E57C3E;
+    width: 100%;
+    text-align: center;
+    padding: 8px;
+    margin: 0;
+}
+
+.mdl-layout__content {
+    height: 100%;
+}
+
+.mdl-mini-footer {
+    margin-top: 0;
+}

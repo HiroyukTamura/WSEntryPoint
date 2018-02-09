@@ -1,0 +1,78 @@
+body {
+    background-color: #F4F3EF;
+}
+
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
+}
+
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
+}
+
+.card {
+    margin: 10px 20px;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    max-width: 1000px;/*イベントのカードの横幅default値*/
+}
+
+.section--center {
+    margin-bottom: 48px;
+    max-width: 1000px;
+}
+
+#cont {
+    padding: 48px 8px 0 8px;
+}
+
+.mdl-card__supporting-text {
+    margin: 40px;
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    padding: 0;
+    color: inherit;
+    width: calc(100% - 80px);
+}
+
+.mdl-card__supporting-text h4 {
+    margin-top: 0;
+}
+
+#contact h4 {
+    margin: 0;
+}
+
+#contact .mdl-list {
+    margin: 0;
+}
+
+.li-two {
+    padding-left: 8px;
+}
+
+#btn-github {
+    background-color: #24292E;
+    color: white;
+    margin: 8px;
+}
+
+#btn-fb {
+    background-color: #3b5998;
+    color: white;
+    margin: 8px;
+}
+
+#unsubscribe .mdl-button {
+    display: block;
+    background-color: #E57C3E;
+    margin-bottom: 4px;
+    color: white;
+}
+
+#unsubscribe .btn-wrapper {
+    padding-left: 16px;
+}
