@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>ChallengedKit</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113450965-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-113450965-1');
+    </script>
+
+
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+          crossorigin="anonymous">
+
+    <!--google material design lite-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+
+    <link href="../dist/common.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="progress" class="mdl-spinner mdl-js-spinner is-active"></div>
+
+<div id="login_w">
+    <div class="mdl-grid" id="login-grid">
+        <div class="mdl-cell mdl-cell--4-col"></div>
+        <div class="mdl-cell mdl-cell--4-col">
+            <img id="login-logo" src="img/icon.png">
+        </div>
+        <div class="mdl-cell mdl-cell--4-col"></div>
+    </div>
+    <h2 id="login_title">ChallengedKit(β)</h2>
+    <div id="firebaseui-auth-container"></div>
+</div>
+
+<div id="post_load">
+
+    <!--header-->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <img id="group-img">
+                <!-- Title -->
+                <span class="mdl-layout-title"></span>
+                <button id="group-drp-btn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                    <i class="material-icons" role="presentation">arrow_drop_down</i>
+                    <span class="visuallyhidden">groups</span>
+                </button>
+                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="group-drp-btn" id="group-dp-ul"></ul>
+
+                <div class="mdl-layout-spacer"></div>
+
+                <nav class="mdl-navigation" id="nav-right">
+                    <button id="setting-drp-btn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                        <i class="fas fa-cogs fa-xs"></i>
+                        <span class="visuallyhidden">setting</span>
+                    </button>
+                </nav>
+                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="setting-drp-btn" id="setting-dp-ul">
+                    <li class="mdl-menu__item">グループ名・アイコン</li>
+                    <li class="mdl-menu__item" id="remove-my-rec">体調記録の共有をやめる</li>
+                </ul>
+            </div>
+        </header>
+
+        <div class="mdl-layout__drawer">
+            <!--<span class="mdl-layout-title">Title</span>-->
+            <header class="demo-drawer-header">
+                <div class="demo-avatar">
+                    <img class="rounded-circle">
+                </div>
+                <div class="demo-avatar-dropdown">
+                    <div>
+                        <span class="user-name">田村 浩幸</span>
+                        <div class="mdl-layout-spacer"></div>
+                        <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons" role="presentation">arrow_drop_down</i>
+                            <span class="visuallyhidden">Accounts</span>
+                        </button>
+                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                            <li class="mdl-menu__item" id="dr-header-logout">ログアウト</li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="../record/index.html"><i class="fas fa-edit fa-lg drawer_icon"></i>入力</a>
+                <a class="mdl-navigation__link" href="../input/index.html"><i class="fas fa-table fa-lg drawer_icon"></i>テンプレート</a>
+                <a class="mdl-navigation__link" href="#" id="analytics-link"><i class="fas fa-chart-bar fa-lg drawer_icon"></i>分析</a>
+                <a class="mdl-navigation__link" href="../social/index.html"><i class="fas fa-share-alt fa-lg drawer_icon"></i>共有</a>
+                <a class="mdl-navigation__link current-page" href="#"><i class="fas fa-cog fa-lg drawer_icon"></i>設定</a>
+            </nav>
+
+        </div>
+
+        <main class="mdl-layout__content">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored overlay-fab" id="overlay" title="ファイルを追加">
+                <i class="material-icons">create_new_folder</i>
+            </button>
+
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored overlay-fab" id="add-doc" title="ドキュメントを追加">
+                <i class="material-icons">description</i>
+            </button>
+
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored overlay-fab" id="add-record" title="体調記録を共有">
+                <i class="material-icons">share</i>
+            </button>
+
+            <div class="page-content">
+                <!--<div id="overlay">-->
+                <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-js-ripple-effect">-->
+                <!--<i class="material-icons">add</i>-->
+                <!--</button>-->
+                <!--</div>-->
+                <!-- Your content goes here -->
+                <div id="wrapper" class="mdl-grid">
+                    <div class="mdl-cell mdl-cell--7-col" id="left-pain">
+
+                        <!--<div class="card comments dummy">-->
+                        <!--<div class="ele_header">-->
+                        <!--<i class="fas fa-comments fa-lg ele-icon"></i>-->
+                        <!--<span class="event_title">通院日調整の件</span>-->
+                        <!--<div class="mdl-layout-spacer"></div>-->
+                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon remove_btn ele_header_button">-->
+                        <!--<i class="fas fa-times"></i>-->
+                        <!--</button>-->
+                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_down ele_header_button">-->
+                        <!--<i class="fas fa-angle-down"></i>-->
+                        <!--</button>-->
+                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_up ele_header_button">-->
+                        <!--<i class="fas fa-angle-up"></i>-->
+                        <!--</button>-->
+                        <!--</div>-->
+
+                        <!--<hr class="seem">-->
+
+                        <!--<div class="card-cont">-->
+                        <!--<div class="comment-first space-horizontal">-->
+                        <!--<ul class="demo-list-three mdl-list">-->
+                        <!--<li class="mdl-list__item mdl-list__item&#45;&#45;two-line">-->
+                        <!--<span class="mdl-list__item-primary-content">-->
+                        <!--<img src="img/icon.png" alt="userA" class="mdl-list__item-icon">-->
+                        <!--&lt;!&ndash;todo imgのaltは動的にユーザ名を挿入すること&ndash;&gt;-->
+                        <!--<span>Bryan Cranston</span>-->
+                        <!--<span class="mdl-list__item-sub-title">2017.01.08</span>-->
+                        <!--</span>-->
+                        <!--</li>-->
+                        <!--</ul>-->
+                        <!--<div class="comment-cont">-->
+                        <!--<p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、-->
+                        <!--これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>-->
+                        <!--<p>　しかもこの「Z」がさらに『右手のあいつ』の歌詞の内容にリンクしているなど、自己言及もやりたい放題に炸裂している。</p>-->
+                        <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<hr class="seem">-->
+
+                        <!--<div class="comment-follow">-->
+                        <!--<header class="flex-box">-->
+                        <!--&lt;!&ndash;todo imgのaltは動的にユーザ名を挿入すること&ndash;&gt;-->
+                        <!--<img src="img/icon.png" alt="userA"-->
+                        <!--class="mdl-list__item-icon author-left">-->
+                        <!--<div>-->
+                        <!--<p class="comment-author">田村ピロシキ</p>-->
+                        <!--<p class="comment-time">2017.11.15</p>-->
+                        <!--</div>-->
+                        <!--</header>-->
+                        <!--<div class="comment-cont">-->
+                        <!--<p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、-->
+                        <!--これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>-->
+                        <!--<p>　しかもこの「Z」がさらに『右手のあいつ』の歌詞の内容にリンクしているなど、自己言及もやりたい放題に炸裂している。</p>-->
+                        <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<hr class="seem">-->
+
+                        <!--<div class="comment-follow author-right">-->
+                        <!--<header class="flex-box">-->
+                        <!--&lt;!&ndash;todo imgのaltは動的にユーザ名を挿入すること&ndash;&gt;-->
+                        <!--<img src="img/icon.png" alt="userA"-->
+                        <!--class="mdl-list__item-icon author-left">-->
+                        <!--<div>-->
+                        <!--<p class="comment-author">田村ピロシキ</p>-->
+                        <!--<p class="comment-time">2017.11.15</p>-->
+                        <!--</div>-->
+                        <!--</header>-->
+                        <!--<div class="comment-cont">-->
+                        <!--<p>　流石としかいいようがない。三行目の「Z」は「G」と表記しているサイトもあったが、-->
+                        <!--これは『まっぴらロック』に入っている『ABCからZまで』を踏まえているので「Z」が正しい。</p>-->
+                        <!--<p>　しかもこの「Z」がさらに『右手のあいつ』の歌詞の内容にリンクしているなど、自己言及もやりたい放題に炸裂している。</p>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</div>-->
+
+                        <!--<div class="expand-footer">-->
+                        <!--<button class="mdl-button mdl-js-button">-->
+                        <!--<i class="fas fa-caret-down"></i>-->
+                        <!--</button>-->
+                        <!--</div>-->
+
+                        <!--</div>-->
+
+                        <!--<div class="card file">-->
+                        <!--<div class="ele_header">-->
+                        <!--<i class="fas fa-comments fa-lg ele-icon"></i>-->
+                        <!--<span class="event_title">通院日調整の件</span>-->
+                        <!--<div class="mdl-layout-spacer"></div>-->
+                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon remove_btn ele_header_button">-->
+                        <!--<i class="fas fa-times"></i>-->
+                        <!--</button>-->
+                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_down ele_header_button">-->
+                        <!--<i class="fas fa-angle-down"></i>-->
+                        <!--</button>-->
+                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_up ele_header_button">-->
+                        <!--<i class="fas fa-angle-up"></i>-->
+                        <!--</button>-->
+                        <!--</div>-->
+                        <!--&lt;!&ndash;todo 動的にaltを作成すること&ndash;&gt;-->
+                        <!--<div class="flex-box file-wrapper">-->
+                        <!--<img class="file-icon" src="img/icon.png" alt="file-icon">-->
+                        <!--<ul class="demo-list-three mdl-list">-->
+                        <!--<li class="mdl-list__item mdl-list__item&#45;&#45;three-line">-->
+                        <!--<span class="mdl-list__item-primary-content">-->
+                        <!--<span>Bryan Cranston</span>-->
+                        <!--<span class="mdl-list__item-text-body">-->
+                        <!--Bryan Cranston played the role of Walter in Breaking Bad. He is also known-->
+                        <!--for playing Hal in Malcom in the Middle.-->
+                        <!--</span>-->
+                        <!--</span>-->
+                        <!--<span class="mdl-list__item-secondary-content">-->
+                        <!--&lt;!&ndash;todo 動的にidを作成すること&ndash;&gt;-->
+                        <!--<button id="hogehogef"-->
+                        <!--class="mdl-button mdl-js-button mdl-button&#45;&#45;icon">-->
+                        <!--<i class="material-icons">more_vert</i>-->
+                        <!--</button>-->
+                        <!--</span>-->
+                        <!--</li>-->
+                        <!--</ul>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                    </div>
+
+
+                    <div class="mdl-cell mdl-cell--5-col" id="column2">
+                        <div class="card user-list">
+                            <div class="ele_header">
+                                <i class="fas fa-users fa-lg ele-icon"></i>
+                                <span class="event_title">メンバー</span>
+                                <!--<div class="mdl-layout-spacer"></div>-->
+                                <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon remove_btn ele_header_button">-->
+                                <!--<i class="fas fa-times"></i>-->
+                                <!--</button>-->
+                                <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;icon arrow_down ele_header_button">-->
+                                <!--<i class="fas fa-angle-down"></i>-->
+                                <!--</button>-->
+                                <div class="mdl-layout-spacer"></div>
+                                <button class="mdl-button mdl-js-button mdl-button--icon ele_header_button" id="member_conf" title="メンバーを新しく招待する">
+                                    <i class="fas fa-user-plus"></i>
+                                </button>
+                            </div>
+
+                            <hr class="seem">
+
+                            <div class="card-cont">
+                                <ul class="mdl-list">
+                                    <li class="mdl-list__item dummy">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <img src="img/icon.png" alt="user-image">
+                                                    <span>陽和病院
+                                                        <button class="mdl-button mdl-js-button mdl-button--icon" id="hogehoge">
+                                                            <i class="fas fa-cog" style="color: #BCBCBC"></i>
+                                                        </button>
+                                                    </span>
+                                                </span>
+                                        <span class="mdl-list__item-secondary-action">
+                                                <!--todo 動的にidを作成すること-->
+                                            <!--<button class="mdl-button mdl-js-button mdl-js-ripple-effect health-rec-btn">-->
+                                            <!--体調記録 <i class="material-icons">open_in_new</i>-->
+                                            <!--</button>-->
+                                                    <span class="mdl-chip health-rec-btn">
+                                                        <span class="mdl-chip__text">体調記録&nbsp;&nbsp;<i class="fas fa-external-link-square-alt fa-lg"></i></span>
+                                                    </span>
+                                                </span>
+                                    </li>
+                                    <li class="mdl-list__item dummy">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <img src="img/icon.png" alt="group-name" class="mdl-list__item-icon">
+                                                        <span>陽和病院</span>
+                                                    <br>
+                                                </span>
+                                    </li>
+                                    <li class="mdl-list__item dummy">
+                                                <span class="mdl-list__item-primary-content">
+                                                    <img src="img/icon.png" alt="group-name">
+                                                    <span>陽和病院</span>
+                                                </span>
+                                        <span class="mdl-list__item-secondary-action"></span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="hogehoge">
+                                <li class="mdl-menu__item">Some Action</li>
+                                <li class="mdl-menu__item">Another Action</li>
+                            </ul>
+
+                            <div id="dp-list"></div>
+                        </div>
+
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+
+                <footer class="mdl-mini-footer">
+                    <div class="mdl-mini-footer__left-section">
+                        <ul class="mdl-mini-footer__link-list">
+                            <li><a href="https://github.com/HiroyukTamura/WSEntryPoint/wiki/%E9%96%8B%E7%99%BA%E8%80%85%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B">お問い合わせ</a></li>
+                            <li><a href="https://github.com/HiroyukTamura/WSEntryPoint/wiki/%E3%83%97%E3%83%A9%E3%82%A4%E3%83%90%E3%82%B7%E3%83%BC%E3%83%9D%E3%83%AA%E3%82%B7%E3%83%BC">プライバシーポリシー</a></li>
+                            <li><a href="https://github.com/HiroyukTamura/WSEntryPoint/wiki/%E5%85%8D%E8%B2%AC%E4%BA%8B%E9%A0%85">免責事項</a></li>
+                        </ul>
+                    </div>
+                    <div class="mdl-mini-footer__right-section">
+                        <ul class="mdl-mini-footer__link-list">
+                            <li>Hiroyuki Tamura All Rights Reserved.</li>
+                        </ul>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+</div>
+
+<dialog class="mdl-dialog" id="add-group-dialog">
+    <div class="mdl-dialog__content">
+        <div id="dialog-img-w">
+            <img alt="group-image">
+            <h4></h4>
+            <p>このユーザを本当に退会させますか？</p>
+        </div>
+        <div id="add-sch-cnt">
+            <div id="modal-row1">
+                        <span class="fa-layers modal-circle-w" id="modal-circle-w1">
+                            <i class="fas fa-circle modal-circle-i" id="circle1"></i>
+                            <i class="fas fa-check modal-circle-check show" data-fa-transform="shrink-8"></i>
+                        </span>
+                <span class="fa-layers modal-circle-w">
+                            <i class="fas fa-circle modal-circle-i" id="circle2"></i>
+                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                        </span>
+                <span class="fa-layers modal-circle-w">
+                            <i class="fas fa-circle modal-circle-i" id="circle3"></i>
+                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                        </span>
+                <span class="fa-layers modal-circle-w">
+                            <i class="fas fa-circle modal-circle-i" id="circle4"></i>
+                            <i class="fas fa-check modal-circle-check" data-fa-transform="shrink-8"></i>
+                        </span>
+            </div>
+
+            <form action="#" class="modal_row" onsubmit="return false">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input card_title_input" type="text" id="modal_input">
+                    <label class="mdl-textfield__label" for="modal_input">スケジュール名</label>
+                    <span class="mdl-textfield__error"></span>
+                </div>
+            </form>
+        </div>
+        <div id="remove-contents">
+            <h4>ファイルを削除</h4>
+            <p></p>
+        </div>
+        <div id="edit-comment">
+            <form action="#" class="modal_row" onsubmit="return false">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input card_title_input" type="text" id="edit-comment-dialog">
+                    <label class="mdl-textfield__label" for="edit-comment-dialog">コメントを編集</label>
+                    <span class="mdl-textfield__error"></span>
+                </div>
+            </form>
+        </div>
+        <div id="add-doc-comment">
+            <form action="#" class="modal_row" onsubmit="return false">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <textarea class="mdl-textfield__input" type="text" rows="3" id="add-doc-dialog"></textarea>
+                    <label class="mdl-textfield__label" for="add-doc-dialog">コメントを編集</label>
+                    <span class="mdl-textfield__error"></span>
+                </div>
+            </form>
+        </div>
+        <div id="group-config">
+            <div class="group-icon" title="アイコンを変更">
+                <img src="img/icon.png" alt="group-image" class="rounded-circle">
+                <div class="rounded-circle">
+                    <i class="fas fa-folder fa-sm"></i>
+                </div>
+                <input type="file" accept="image/png,image/jpeg,image/gif">
+            </div>
+            <form action="#" onsubmit="return false">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="new-group-name">
+                    <label class="mdl-textfield__label" for="new-group-name">グループ名</label>
+                    <span class="mdl-textfield__error">グループ名を入力してください</span>
+                </div>
+            </form>
+        </div>
+        <div id="add-file-modal">
+            <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect">-->
+            <!--ファイルを選択-->
+            <!--</button>-->
+            <form class="drop-space" onsubmit="return false">
+                <div class="drag-cont">
+                    <button class="mdl-button mdl-js-button choose-file">
+                        ファイルを選択
+                    </button>
+                    <i class="material-icons">cloud_upload</i>
+                    <p>またはここにファイルをドロップ</p>
+                </div>
+                <div class="progress">
+                    <p>アップロード中...</p>
+                    <div class="mdl-progress mdl-js-progress"></div>
+                </div>
+                <div class="box__success">
+                    <img src="img/pdf.png">
+                    <p class="file-name">hogehoge.pdf</p>
+                    <p>アップロードに成功しました</p>
+                </div>
+            </form>
+            <form action="#" onsubmit="return false">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <!--textereaはpattenに非対応-->
+                    <textarea class="mdl-textfield__input" type="text" rows="3" id="new-file-comment"></textarea>
+                    <label class="mdl-textfield__label" for="new-file-comment">コメント</label>
+                    <span class="mdl-textfield__error">文字列「9mVSv」は使用できません</span>
+                </div>
+            </form>
+            <div id="dummy-w">
+                <input id="dummy-overlay" type="file" accept="image/jpeg,image/png,image/gif,text/plain,text/txt,text/html,text/css,text/xml,application/pdf">
+            </div>
+        </div>
+        <div id="modal-new-doc">
+            <!--<h4>ドキュメントを追加</h4>-->
+            <form action="#" onsubmit="return false">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="new-doc-title">
+                    <label class="mdl-textfield__label" for="new-doc-title">ドキュメントのタイトル</label>
+                    <span class="mdl-textfield__error"></span>
+                </div>
+            </form>
+            <form action="#" class="doc-cont-form" onsubmit="return false">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <!--textereaはpattenに非対応-->
+                    <textarea class="mdl-textfield__input" type="text" rows="6" id="new-doc-cont"></textarea>
+                    <label class="mdl-textfield__label" for="new-doc-cont">内容を入力</label>
+                    <span class="mdl-textfield__error"></span>
+                </div>
+            </form>
+        </div>
+        <div id="share-rec">
+            <h4>あなたの体調記録をグループでシェアしますか？</h4>
+        </div>
+        <div id="invite-group">
+            <ul class="mdl-list"></ul>
+        </div>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button" id="add-group-btn">退会させる</button>
+        <button type="button" class="mdl-button close">キャンセル</button>
+    </div>
+</dialog>
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+
+<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-storage.js"></script>
+
+<script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<script src="https://unpkg.com/tippy.js@2.0.8/dist/tippy.all.min.js"></script>
+<script src="../dist/bootstrap-notify.min.js"></script>
+
+<script src="../dist/common.js"></script>
+<script src="app.js"></script>
+
+<noscript>
+    <h4>JavaScriptが無効になっています。ブラウザの設定を開いてJavaScriptを有効にしてください。</h4>
+</noscript>
+</body>
+</html>
