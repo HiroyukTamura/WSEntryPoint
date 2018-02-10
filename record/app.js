@@ -62,6 +62,7 @@ function onGetTamplateSnap(snapshot) {
 
     if (!snapshot.exists()) {
         masterJson = getDefaultTemplate();
+        showNotification('記録項目をカスタマイズしてみませんか？左上のメニューからテンプレートを選んで自分好みのメニューにしてみましょう。', 'success', -1);
     } else {
         masterJson = [];
         snapshot.forEach(function (childSnap) {

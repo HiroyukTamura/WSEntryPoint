@@ -169,8 +169,13 @@ function setDrawerProfile(loginedUser) {
 
     $('#analytics-link').on('click', function (e) {
         e.preventDefault();
-        console.log('analytics click');
-        window.location.href = '../analytics/index.html?key=' + loginedUser.uid;
+        if (!$(this).hasClass('.current-page'))
+            window.location.href = '../analytics/index.html?key=' + loginedUser.uid;
+        return false;
+    });
+
+    $('.current-page').on('click', function (e) {
+        e.preventDefault();
         return false;
     });
 }

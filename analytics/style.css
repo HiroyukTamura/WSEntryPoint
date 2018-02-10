@@ -92,6 +92,7 @@ body {
 #table-others-w{
     margin: 72px auto;
     width: fit-content;
+    padding: 0 8px;
 }
 
 .mdl-layout__content{

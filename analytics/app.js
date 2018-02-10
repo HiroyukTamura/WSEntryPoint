@@ -343,14 +343,14 @@ function onLoginSuccess() {
 
         var recordCountPrev = snapPrev.child('recordCount').val();
         var diffCount = snapPrev.child('recordCount').val() - recordCount;
-        var symbol = recordCountPrev < 0 ? '' : '+';
+        var symbol = diffCount < 0 ? '' : '+';
         var html = '先月より' + symbol + diffCount +'日';
         $('#date-cap').html(html);
 
         var ratioPrev = this.calcRatio(recordCount, prevMoment);
         var diffRatio = ratioPrev - ratio;
         var symbol2 = diffRatio < 0 ? '' : '+';
-        var ratioHtml = '先月より' + symbol2 + ratioPrev +'%';
+        var ratioHtml = '先月より' + symbol2 + diffRatio +'%';
         $('#ratio-cap').html(ratioHtml);
 
         this.setPrevCaption();
