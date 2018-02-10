@@ -55,7 +55,7 @@ function onLoginSuccess() {
 
     UiListeners.prototype.initSocialBtns = function () {
         $('#btn-github').on('click', function (e) {
-            window.open('facebook.com/freqmodu874');
+            window.open('https://github.com/HiroyukTamura');
             return false;
         });
 

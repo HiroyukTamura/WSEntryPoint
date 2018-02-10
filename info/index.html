@@ -39,63 +39,16 @@
 
 <body>
 
-<div id="progress" class="mdl-spinner mdl-js-spinner is-active"></div>
-
-<div id="login_w">
-    <div class="mdl-grid" id="login-grid">
-        <div class="mdl-cell mdl-cell--4-col"></div>
-        <div class="mdl-cell mdl-cell--4-col">
-            <img id="login-logo" src="../dist/img/icon.png">
-        </div>
-        <div class="mdl-cell mdl-cell--4-col"></div>
-    </div>
-    <h2 id="login_title">ChallengedKit(β)</h2>
-    <div id="firebaseui-auth-container"></div>
-</div>
-
-<div id="post_load">
-
     <!--header-->
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
-                <img id="group-img">
+                <img id="group-img" src="../dist/img/icon.png">
                 <!-- Title -->
-                <span class="mdl-layout-title">設定</span>
+                <span class="mdl-layout-title">Challenged Kit (β)</span>
             </div>
         </header>
-
-        <div class="mdl-layout__drawer">
-            <!--<span class="mdl-layout-title">Title</span>-->
-            <header class="demo-drawer-header">
-                <div class="demo-avatar">
-                    <img class="rounded-circle">
-                </div>
-                <div class="demo-avatar-dropdown">
-                    <div>
-                        <span class="user-name"></span>
-                        <div class="mdl-layout-spacer"></div>
-                        <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-                            <i class="material-icons" role="presentation">arrow_drop_down</i>
-                            <span class="visuallyhidden">Accounts</span>
-                        </button>
-                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-                            <li class="mdl-menu__item" id="dr-header-logout">ログアウト</li>
-                        </ul>
-                    </div>
-                </div>
-            </header>
-
-            <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="../record/index.html"><i class="fas fa-edit fa-lg drawer_icon"></i>入力</a>
-                <a class="mdl-navigation__link" href="../input/index.html"><i class="fas fa-table fa-lg drawer_icon"></i>テンプレート</a>
-                <a class="mdl-navigation__link" href="#" id="analytics-link"><i class="fas fa-chart-bar fa-lg drawer_icon"></i>分析</a>
-                <a class="mdl-navigation__link" href="../social/index.html"><i class="fas fa-share-alt fa-lg drawer_icon"></i>共有</a>
-                <a class="mdl-navigation__link current-page" href="#"><i class="fas fa-cog fa-lg drawer_icon"></i>設定</a>
-            </nav>
-
-        </div>
 
         <main class="mdl-layout__content">
             <div class="page-content">
@@ -153,22 +106,6 @@
                             </div>
                         </section>
                     </div>
-
-                    <div id="config">
-                        <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="unsubscribe">
-                            <div class="mdl-card mdl-cell mdl-cell--12-col">
-                                <div class="mdl-card__supporting-text">
-                                    <h4>退会</h4>
-                                    <div class="btn-wrapper">
-                                        <p>一度退会すると、これまで入力した全てのデータが削除されます。</p>
-                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-                                            退会する
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
                 </div>
 
                 <footer class="mdl-mini-footer">
@@ -181,7 +118,6 @@
             </div>
         </main>
     </div>
-</div>
 
 <!-- Bootstrap core JavaScript -->
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
