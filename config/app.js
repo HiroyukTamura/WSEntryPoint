@@ -63,6 +63,12 @@ function onLoginSuccess() {
             window.open('https://www.facebook.com/profile.php?id=100005318946062');
             return false;
         });
+
+        $('#unsubscribe-btn').on('click', function (e) {
+            //todo 整備すること
+            window.location.href = '../postUnsubscribe/';
+            return false;
+        });
     };
 
     window.UiListeners = UiListeners;
