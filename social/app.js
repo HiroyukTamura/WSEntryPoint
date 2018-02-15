@@ -261,15 +261,14 @@ function onGetGroupNodeData(snapshot) {
         }
     });
 
-    var userName = avoidNullValue(snapshot.child('displayName').val(), UNSET_USER_NAME);
-
     //プロフィール欄を表示
+    var userName = avoidNullValue(user.displayName, UNSET_USER_NAME);
     nameInput.attr('value', userName);
 
-    var userEmail = avoidNullValue(snapshot.child('email').val(), UNSET_EMAIL);
+    var userEmail = avoidNullValue(user.email, UNSET_EMAIL);
     mailInput.attr('value', userEmail);
 
-    var photoUrl = avoidNullValue(snapshot.child("photoUrl").val(), "img/icon.png");
+    var photoUrl = avoidNullValue(user.photoURL, "../dist/img/icon.png");
     $('#profile').find('img').attr("src", photoUrl);
 
     var pwBtn = $('#user-pw-old .mdl-button');
@@ -523,7 +522,7 @@ function onGetFriendSnap(snapshot) {
                     '<div class="mdl-card mdl-shadow--2dp user-image mdl-pre-upgrade">'+
                         '<img src="'+ photoUrl +'" class="user-image-i">'+
                     '</div>'+
-                    '<p class="user-name">'+ userName +'</p>'+
+                    '<p class="user-name-p">'+ userName +'</p>'+
                 '</div>'
             );
 
