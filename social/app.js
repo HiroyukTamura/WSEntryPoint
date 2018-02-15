@@ -18,6 +18,8 @@ const imgDot = $('#my-img-dot');
 const myImg = $('#my-img img');
 const nameInput = $('#my-name');
 const mailInput = $('#user-email');
+const friendUl = ($('#friend-list'));
+const addUserBtn = $('#add-btn-user-w');
 
 //APIまわりのresultコード
 const NO_RESULT = 'NO_RESULT';
@@ -508,40 +510,45 @@ function onGetFriendSnap(snapshot) {
 
         friendJson = snapshot.toJSON();
         // var pool = $("#other-users");
-        var addUserBtn = $('#add-btn-user-w');
 
         snapshot.forEach(function (childSnap) {
             if(childSnap.key === DEFAULT)
                 return;
 
             var userName = avoidNullValue(childSnap.child("name").val(), UNSET_USER_NAME);
-            var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), "img/icon.png");
-            console.log(photoUrl);
-            var ele = $(
-                '<div class="user-img-w">'+
-                    '<div class="mdl-card mdl-shadow--2dp user-image mdl-pre-upgrade">'+
-                        '<img src="'+ photoUrl +'" class="user-image-i">'+
-                    '</div>'+
-                    '<p class="user-name-p">'+ userName +'</p>'+
-                '</div>'
-            );
+            var photoUrl = avoidNullValue(childSnap.child("photoUrl").val(), "../dist/img/icon.png");
 
-            ele.insertBefore(addUserBtn);
-
-            var li = $(
-                '<li class="mdl-list__item mdl-pre-upgrade">'+
-                    '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                        '<img src="'+photoUrl+'" class="rounded-circle"><span>'+userName+'</span>'+
-                    '</span>'+
-                    '<span class="mdl-list__item-secondary-action mdl-pre-upgrade">'+
-                        '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="'+childSnap.key+'">'+
-                            '<input type="checkbox" id="'+ childSnap.key +'" class="mdl-checkbox__input mdl-pre-upgrade" />'+
-                        '</label>'+
-                    '</span>'+
-                '</li>'
-            );
-            ($('#friend-list')).append(li);
+            addUser2Ui(userName, photoUrl, childSnap.key);
         });
+}
+
+function addUser2Ui(userName, photoUrl, uid) {
+    console.log(photoUrl);
+    var ele = $(
+        '<div class="user-img-w">'+
+            '<div class="mdl-card mdl-shadow--2dp user-image mdl-pre-upgrade">'+
+                '<img src="'+ photoUrl +'" class="user-image-i">'+
+            '</div>'+
+            '<p class="user-name-p">'+ userName +'</p>'+
+        '</div>'
+    );
+
+    ele.insertBefore(addUserBtn);
+
+    var li = $(
+        '<li class="mdl-list__item mdl-pre-upgrade">'+
+            '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
+                '<img src="'+photoUrl+'" class="rounded-circle"><span>'+userName+'</span>'+
+            '</span>'+
+            '<span class="mdl-list__item-secondary-action mdl-pre-upgrade">'+
+                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="'+ uid +'">'+
+                    '<input type="checkbox" id="'+ uid +'" class="mdl-checkbox__input mdl-pre-upgrade" />'+
+                '</label>'+
+            '</span>'+
+        '</li>'
+    );
+
+    friendUl.append(li);
 }
 
 function setOnClickListeners() {
@@ -776,7 +783,6 @@ function setOnClickListeners() {
                     dialog.close(pwNew.val());
                 }
                 return;
-
             // case 're-auth':
             //     if(!inputReAuth.val() || inputReAuth.val().length < 6) {
             //         if(!reauthC.find('.is-invalid').length)
@@ -876,11 +882,12 @@ function setOnClickListeners() {
                     }
                 }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
-                    errMsg.html(ERR_MSG_OPE_FAILED);
-                    content.removeClass('on-loading').addClass('on-error');
+                    content.removeClass('on-loading');
+                    showOpeErrNotification(defaultDatabase);
                 });
             }).catch(function(error) {
                 console.log(error);
+                content.removeClass('on-loading');
                 showOpeErrNotification(defaultDatabase);
             });
         } else {
@@ -1061,12 +1068,13 @@ function onGetSearchUsers(resultArr) {
         // }
 
         var photoUrl = avoidNullValue(person.photoUrl, '../dist/img/icon.png');
+        var personName = avoidNullValue(person.displayName, UNSET_USER_NAME);
         var html =
             $(
                 '<li class="mdl-list__item" key="'+ person.uid +'">'+
                     '<span class="mdl-list__item-primary-content">'+
                         '<img src="'+ photoUrl +'" alt="user-image" class="user-icon-search rounded-circle">'+
-                        '<span>'+ person.displayName +'</span>'+
+                        '<span>'+ personName +'</span>'+
                     '</span>'+
                     '<span class="mdl-list__item-secondary-action">'+
                         '<span class="mdl-button mdl-js-button mdl-button--icon">'+
@@ -1108,6 +1116,9 @@ function onGetSearchUsers(resultArr) {
                         tippyForDialog('.mdl-button', 'left', 5);
                         $(this).fadeIn();
                     });
+
+                    //todo 追加動作
+                    addUser2Ui(personName, photoUrl, person.uid);
 
                 }).catch(function (error) {
                     console.log(error.code, error.message);
