@@ -1351,10 +1351,10 @@ function createUserLi(key, friends) {
 
     //体調記録シェア取りやめ項目のセッティング
     var isSharedRecord = false;
-    for(var data in groupJson['contents']) {
-        if (!groupJson['contents'].hasOwnProperty(data)) continue;
+    for(var dataKey in groupJson['contents']) {
+        if (!groupJson['contents'].hasOwnProperty(dataKey)) continue;
 
-        if(data.type === 'data' && data.whose === key) {
+        if(groupJson['contents'][dataKey]['type'] === 'data' && groupJson['contents'][dataKey]['whose'] === key) {
             isSharedRecord = true;
             break;
         }
