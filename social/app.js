@@ -103,6 +103,8 @@ function onLoginSuccess() {
 
     setDrawerProfile(user);
 
+    myImg.attr('src', avoidNullValue(user.photoURL, '../dist/img/icon.png'));
+
     console.log("onLoginSuccess:", user);
 
     defaultDatabase.ref("userData/" + user.uid).once("value").then(function (snapshot) {

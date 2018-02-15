@@ -237,7 +237,7 @@ function createOneEveRow(doc, value, masterJson, saveBtn) {
 
             if (jsonC['eventList'][key]['name'] === $(e.target).val()) {
                 errSpan.html(ERR_MSG_DUPLICATE_VAL);
-                $(e.target).parent().addClass('is-invalid').addClass('wrong-val').html(ERR_MSG_DUPLICATE_VAL);
+                $(e.target).parent().addClass('is-invalid').addClass('wrong-val');
                 console.log('こっち');
                 toggleBtn(false);
                 return;
@@ -1070,13 +1070,7 @@ function initAddLiBtn() {
 
 function getDefaultTemplate() {
     return [{
-        "data" : [ "勤務日9mVSv2" ],
-        "dataType" : 0,
-        "day" : 0,
-        "mon" : 0,
-        "year" : 0
-    }, {
-        "data" : [ "{\"eventList\":[{\"cal\":{\"year\":2017,\"month\":10,\"dayOfMonth\":26,\"hourOfDay\":8,\"minute\":0,\"second\":20},\"colorNum\":2,\"name\":\"出勤\",\"offset\":0},{\"colorNum\":0,\"offset\":0,\"name\":\"新しいイベント\",\"cal\":{\"year\":2018,\"month\":1,\"dayOfMonth\":7,\"hourOfDay\":14,\"minute\":53,\"second\":0}},{\"colorNum\":0,\"offset\":0,\"name\":\"新しいイベント\",\"cal\":{\"year\":2018,\"month\":1,\"dayOfMonth\":7,\"hourOfDay\":14,\"minute\":53,\"second\":0}},{\"cal\":{\"year\":2017,\"month\":10,\"dayOfMonth\":26,\"hourOfDay\":14,\"minute\":55,\"second\":20},\"colorNum\":0,\"name\":\"帰宅\",\"offset\":0}],\"rangeList\":[{\"colorNum\":0,\"end\":{\"cal\":{\"year\":2017,\"month\":10,\"dayOfMonth\":26,\"hourOfDay\":7,\"minute\":30,\"second\":20},\"colorNum\":0,\"name\":\"起床\",\"offset\":0},\"start\":{\"cal\":{\"year\":2017,\"month\":10,\"dayOfMonth\":26,\"hourOfDay\":22,\"minute\":0,\"second\":20},\"colorNum\":0,\"name\":\"就寝\",\"offset\":-1}}]}" ],
+        "data" : [ "{\"eventList\":[{\"cal\":{\"year\":2017,\"month\":10,\"dayOfMonth\":26,\"hourOfDay\":8,\"minute\":0,\"second\":20},\"colorNum\":2,\"name\":\"出勤\",\"offset\":0},{\"cal\":{\"year\":2017,\"month\":10,\"dayOfMonth\":26,\"hourOfDay\":14,\"minute\":55,\"second\":20},\"colorNum\":0,\"name\":\"帰宅\",\"offset\":0}],\"rangeList\":[{\"colorNum\":0,\"end\":{\"cal\":{\"year\":2017,\"month\":10,\"dayOfMonth\":26,\"hourOfDay\":7,\"minute\":30,\"second\":20},\"colorNum\":0,\"name\":\"起床\",\"offset\":0},\"start\":{\"cal\":{\"year\":2017,\"month\":10,\"dayOfMonth\":26,\"hourOfDay\":22,\"minute\":0,\"second\":20},\"colorNum\":0,\"name\":\"就寝\",\"offset\":-1}}]}" ],
         "dataType" : 1,
         "day" : 0,
         "mon" : 0,

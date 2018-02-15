@@ -1089,25 +1089,23 @@ function setOnClickFabBtns() {
         return false;
     });
 
+    var isMine = false;
     if (groupJson.contents) {
         var contents = Object.values(groupJson.contents);
-        var isMine = false;
         for(var i=0; i<contents.length; i++) {
             if(contents[i]['type'] === 'data' && contents[i]['whose'] === user.uid){
                 isMine = true;
                 break;
             }
         }
+    }
 
-        if (isMine)
-            recordBtn.hide();
-        else {
-            console.log('こっち');
-            $('#setting-dp-ul .mdl-menu__item').eq(1).hide();
-        }
-
-    } else
+    if (isMine)
         recordBtn.hide();
+    else {
+        console.log('こっち');
+        $('#setting-dp-ul .mdl-menu__item').eq(1).hide();
+    }
 }
 
 /**
@@ -1294,12 +1292,13 @@ function initUserList() {
 
 function createUserLi(key, friends) {
     var member = groupJson["member"][key];
+    var memberName = avoidNullValue(member.name, '名称未設定');
     var photoUrl = avoidNullValue(member.photoUrl, 'img/icon.png');
     var li = $(
         '<li class="mdl-list__item mdl-pre-upgrade" key="'+key+'">'+
             '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
                 '<img src="'+ photoUrl +'" alt="user-image">'+
-                '<span>'+ member.name +'&nbsp;&nbsp;' +
+                '<span>'+ memberName +'&nbsp;&nbsp;' +
                 // '<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>' +
                     '<div class="btn-group">'+
                         '<button type="button" class="btn btn-secondary dropdown-toggle rounded-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
@@ -1360,8 +1359,11 @@ function createUserLi(key, friends) {
             break;
         }
     }
-    if (!isSharedRecord)
+    if (!isSharedRecord) {
         li.find('.stop-share').hide();
+        li.find('.mdl-list__item-secondary-action').hide();
+    }
+
     li.find('.stop-share').on('click', function (e) {
         console.log('stop-share clicked');
         //todo 未デバッグ バックエンドは不要
@@ -1421,12 +1423,11 @@ function createUserLi(key, friends) {
         // li.find('div').addClass("mdl-badge").addClass('mdl-pre-upgrade').attr('data-badge', " ");
         // li.attr("title", "招待中");
     } else {
-
         li.find(".health-rec-btn").on('click', function (e) {
             e.preventDefault();
             var key = $(this).parents('.mdl-list__item').attr('key');
             console.log('clicked uid:' + key);
-            open('../analytics/index.html?key=' + key, '_blank');
+            window.open('../analytics/index.html?key=' + key);
 
             return false;
         });
@@ -1876,7 +1877,7 @@ function openDialog(toShowEle, fileName) {
         // dialogNewDoc.hide();
         // dialogShareRec.hide();
         // dialogInvite.hide();
-        $('.mdl-dialog__content').children('*:not(#group-config)').hide();
+        $('.mdl-dialog__content').children('*:not(##share-rec)').hide();
         $(dialog).removeClass('modal-new-doc-m');
 
         var input = $('#new-group-name').val(fileName);
@@ -1919,14 +1920,15 @@ function openDialog(toShowEle, fileName) {
     } else if (toShowEle === dialogNewDoc) {
         dialogPositibeBtn.removeAttr('disabled');
         dialogPositibeBtn.html('OK');
-        dialogExclude.hide();
-        dialogRemoveContents.hide();
-        dialogAddSch.hide();
-        dialogEditComment.hide();
-        dialogAddFile.hide();
-        dialogConfigGroup.hide();
-        dialogShareRec.hide();
-        dialogInvite.hide();
+        // dialogExclude.hide();
+        // dialogRemoveContents.hide();
+        // dialogAddSch.hide();
+        // dialogEditComment.hide();
+        // dialogAddFile.hide();
+        // dialogConfigGroup.hide();
+        // dialogShareRec.hide();
+        // dialogInvite.hide();
+        $('.mdl-dialog__content').children('*:not(#modal-new-doc)').hide();
 
         $('#new-doc-title').val('').parent().removeClass('is-invalid').removeClass('wrong-val');
         $('#new-doc-cont').val('').parent().removeClass('is-invalid').removeClass('wrong-val');
@@ -1934,14 +1936,15 @@ function openDialog(toShowEle, fileName) {
     } else if (toShowEle === dialogShareRec) {
         dialogPositibeBtn.removeAttr('disabled');
         dialogPositibeBtn.html('OK');
-        dialogExclude.hide();
-        dialogRemoveContents.hide();
-        dialogAddSch.hide();
-        dialogEditComment.hide();
-        dialogAddFile.hide();
-        dialogConfigGroup.hide();
-        dialogNewDoc.hide();
-        dialogInvite.hide();
+        $('.mdl-dialog__content').children('*:not(#share-rec)').hide();
+        // dialogExclude.hide();
+        // dialogRemoveContents.hide();
+        // dialogAddSch.hide();
+        // dialogEditComment.hide();
+        // dialogAddFile.hide();
+        // dialogConfigGroup.hide();
+        // dialogNewDoc.hide();
+        // dialogInvite.hide();
 
     } else if (toShowEle === dialogInvite) {
 

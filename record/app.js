@@ -68,8 +68,8 @@ function onGetTamplateSnap(snapshot) {
         snapshot.forEach(function (childSnap) {
             masterJson.push(childSnap.toJSON());
         });
+        masterJson.shift();
     }
-    masterJson.shift();
 
     //タグの連想配列を普通の配列に変換
     masterJson.forEach(function (arr) {
@@ -808,11 +808,11 @@ function connectFbAsync() {
         if(!snapshot.exists()){
             var scheme = makeRefScheme(['userData', loginedUser.uid, 'template']);
             defaultDatabase.ref(scheme).once('value').then(function (templateSnap) {
-                if(!templateSnap.exists()){
-                    console.log('!templateSnap.exists');
-                    showOpeErrNotification(defaultDatabase, -1);
-                    return;
-                }
+                // if(!templateSnap.exists()){
+                //     console.log('!templateSnap.exists');
+                //     showOpeErrNotification(defaultDatabase, -1);
+                //     return;
+                // }
                 onGetTamplateSnap(templateSnap);
 
                 if(isFirstLoad){

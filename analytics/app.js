@@ -110,8 +110,10 @@ function onLoginSuccess() {
     if (query === loginedUser.uid) {
         console.log('ご本人でーす');
         setDrawerProfile(loginedUser);
+        new ScheduleParser().getScheduleAsync();
     } else {
         $('.mdl-layout__drawer-button').css('visibility', 'hidden');
+        $('.third-card').hide();
         console.log('他人でーす');
     }
 
@@ -202,8 +204,6 @@ function onLoginSuccess() {
     setDisplayMode(MODE_MONTH);
 
     showData(query);
-
-    new ScheduleParser().getScheduleAsync();
 
     new SummeryParser().getSummeryDataAsync();
 }

@@ -150,7 +150,7 @@ function initDrawerDecoration() {
 }
 
 function setDrawerProfile(loginedUser) {
-    var photoUrl = avoidNullValue(loginedUser.photoURL, 'img/icon.png');
+    var photoUrl = avoidNullValue(loginedUser.photoURL, '../dist/img/icon.png');
     $('.demo-avatar img').attr('src', photoUrl);
     var displayName = avoidNullValue(loginedUser.displayName, "ユーザ名未設定");
     $('.user-name').html(displayName);
