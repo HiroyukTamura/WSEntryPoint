@@ -10,24 +10,24 @@ let loginedUser;
 let menuMon = $('#dpdn-month');
 let menuWeek = $('#dpdn-week');
 let currentMoment = moment();
-var bgParam = $('#bg-param');
-var smParam = $('#sm-param');
-var tbody = $(".chart-ave").eq(0).find('tbody');
-var chartWrapper = $('#chart_w');
-var errNonData = $('.err-non-data');
+const bgParam = $('#bg-param');
+const smParam = $('#sm-param');
+const tbody = $(".chart-ave").eq(0).find('tbody');
+const chartWrapper = $('#chart_w');
+const errNonData = $('.err-non-data');
 
 /*---------loading系------*/
-var postLoad = $('#post_load');
-var headerBtnEnable = false;//これがfalseのとき、ヘッダボタンを押しても動作させない。
-var progress = $('#progress');
-var pageContent = $('.page-content');
+const postLoad = $('#post_load');
+let headerBtnEnable = false;//これがfalseのとき、ヘッダボタンを押しても動作させない。
+const progress = $('#progress');
+const pageContent = $('.page-content');
 // var innerProgress =$('.inner-progress');
-var query;
+let query;
 
 
 window.onload = function init() {
 
-    var defaultApp = firebase.initializeApp(CONFIG);
+    const defaultApp = firebase.initializeApp(CONFIG);
     defaultDatabase = defaultApp.database();
 
     firebase.auth().onAuthStateChanged(function(user) {
@@ -38,7 +38,7 @@ window.onload = function init() {
         } else {
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                 .then(function() {
-                    var uiConfig = createFbUiConfig(function (user, credential, redirectUrl) {
+                    const uiConfig = createFbUiConfig(function (user, credential, redirectUrl) {
                         progress.hide();
                         $('#login_w').hide();
                         loginedUser = user;
@@ -48,7 +48,7 @@ window.onload = function init() {
 
                     progress.hide();
                     postLoad.hide();
-                    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                    const ui = new firebaseui.auth.AuthUI(firebase.auth());
                     $('#login_w').show();
                     ui.start('#firebaseui-auth-container', uiConfig);
 
@@ -75,11 +75,11 @@ function setDisplayMode(mode) {
 }
 
 function getDaysOfWeek() {
-    var now = moment(currentMoment);
-    var dayOfWeek = now.day();
+    const now = moment(currentMoment);
+    let dayOfWeek = now.day();
     now.add( -dayOfWeek, 'd');
-    var days = [];
-    for(var i=0; i<7; i++){
+    const days = [];
+    for(let i=0; i<7; i++){
         days.push(now.format('YYYYMMDD'));
         now.add(1, 'd');
     }
@@ -87,11 +87,11 @@ function getDaysOfWeek() {
 }
 
 function getDaysOfMonth() {
-    var now = moment(currentMoment);
-    var start = moment(now).startOf('month');
-    var end = now.endOf('month').date();
-    var days = [];
-    for(var i=0; i<end; i++){
+    const now = moment(currentMoment);
+    const start = moment(now).startOf('month');
+    const end = now.endOf('month').date();
+    const days = [];
+    for(let i=0; i<end; i++){
         days.push(start.format('YYYYMMDD'));
         start.add(1, 'd');
     }
@@ -211,7 +211,8 @@ function onLoginSuccess() {
 //todo モード別
 (function () {
 
-    var tbody =$('#third-card tbody');
+    const tbody = $('#third-card tbody');
+
     // var userDataSnap, scheduleSnap;
 
     function ScheduleParser() {
@@ -219,7 +220,7 @@ function onLoginSuccess() {
     }
 
     ScheduleParser.prototype.getScheduleAsync = function () {
-        var scheme = makeRefScheme(['combinedCalendar', query, currentMoment.format('YYYYMM')]);
+        const scheme = makeRefScheme(['combinedCalendar', query, currentMoment.format('YYYYMM')]);
 
         defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
             if (!snapshot.exists()) {
@@ -227,27 +228,27 @@ function onLoginSuccess() {
                 return;
             }
 
-            var specMoment = moment(snapshot.key, 'YYYYMM');
+            const specMoment = moment(snapshot.key, 'YYYYMM');
 
-            var count = 1;
+            let count = 1;
             snapshot.forEach(function (childSnap) {
-                var date = childSnap.key;
+                const date = childSnap.key;
                 specMoment.date(date);
-                var htmlE = date +'('+ wodList[specMoment.day()] +')';
-                var tr = $('<tr>');
-                var td = $('<td>', {
+                const htmlE = date + '(' + wodList[specMoment.day()] + ')';
+                const tr = $('<tr>');
+                const td = $('<td>', {
                     rowspan: childSnap.numChildren(),
                     class: 'left-column'
                 }).html(htmlE);
                 tr.append(td).appendTo(tbody);
 
-                var isFirstItem = true;
+                let isFirstItem = true;
                 childSnap.forEach(function (schSnap) {
                     // $('<tr><td class="seem" colspan="2"></td></tr>').appendTo(tbody);
-                    var title = schSnap.child('title').val();
-                    var groupName = schSnap.child('groupName').val();
-                    var colorVal = schSnap.child('colorNum').val();
-                    var tdItem = createTd(title, groupName);
+                    const title = schSnap.child('title').val();
+                    const groupName = schSnap.child('groupName').val();
+                    const colorVal = schSnap.child('colorNum').val();
+                    const tdItem = createTd(title, groupName);
                     tdItem.find('.mdl-list__item-primary-content').css('border-left-color', colors[parseInt(colorVal)]);
                     if (isFirstItem) {
                         isFirstItem = false;
@@ -256,7 +257,7 @@ function onLoginSuccess() {
                         if (count%2 === 1)
                             tr.addClass('colored');
                     } else {
-                        var trSingle = $('<tr>');
+                        const trSingle = $('<tr>');
                         if (count%2 === 1)
                             trSingle.addClass('colored');
                         trSingle.append(tdItem).appendTo(tbody);
@@ -283,16 +284,16 @@ function onLoginSuccess() {
 //todo モード別
 (function () {
 
-    var scheme, schemePrev;
-    var snap, snapPrev;
-    var recordCount;
-    var ratio;
-    var clonedMoment;
-    var prevMoment;
-    var regExp = new RegExp(DELIMITER, "g");
-    var spaceRow = generateTableBorder("table-space");
-    var rangeDatas = {};
-    var eveDatas = {};
+    let scheme, schemePrev;
+    let snap, snapPrev;
+    let recordCount;
+    let ratio;
+    let clonedMoment;
+    let prevMoment;
+    const regExp = new RegExp(DELIMITER, "g");
+    const spaceRow = generateTableBorder("table-space");
+    const rangeDatas = {};
+    const eveDatas = {};
 
     function SummeryParser() {
         console.log('SummeryParser()');
@@ -302,7 +303,7 @@ function onLoginSuccess() {
     }
 
     SummeryParser.prototype.getSummeryDataAsync = function () {
-        var self = this;
+        const self = this;
         defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
             if (!snapshot.exists()) {
                 //todo データがありません(右上のテーブルにも)
@@ -341,16 +342,16 @@ function onLoginSuccess() {
             return;
         }
 
-        var recordCountPrev = snapPrev.child('recordCount').val();
-        var diffCount = snapPrev.child('recordCount').val() - recordCount;
-        var symbol = diffCount < 0 ? '' : '+';
-        var html = '先月より' + symbol + diffCount +'日';
+        const recordCountPrev = snapPrev.child('recordCount').val();
+        const diffCount = snapPrev.child('recordCount').val() - recordCount;
+        const symbol = diffCount < 0 ? '' : '+';
+        const html = '先月より' + symbol + diffCount + '日';
         $('#date-cap').html(html);
 
-        var ratioPrev = this.calcRatio(recordCount, prevMoment);
-        var diffRatio = ratioPrev - ratio;
-        var symbol2 = diffRatio < 0 ? '' : '+';
-        var ratioHtml = '先月より' + symbol2 + diffRatio +'%';
+        const ratioPrev = this.calcRatio(recordCount, prevMoment);
+        const diffRatio = ratioPrev - ratio;
+        const symbol2 = diffRatio < 0 ? '' : '+';
+        const ratioHtml = '先月より' + symbol2 + diffRatio + '%';
         $('#ratio-cap').html(ratioHtml);
 
         this.setPrevCaption();
@@ -362,53 +363,53 @@ function onLoginSuccess() {
 
     SummeryParser.prototype.setAverageTable = function () {
 
-        var rowCount = 0;
+        let rowCount = 0;
         snap.child('rangeEve').forEach(function (snapshot) {
 
-            var rangeTitle = snapshot.key.replace(regExp, '  <i class="fas fa-angle-double-right color-orange"></i>  ');
-            var startMinTotal = snapshot.child('startMin').val();
-            var endMinTotal = snapshot.child('endMin').val();
-            var count = snapshot.child('count').val();
+            const rangeTitle = snapshot.key.replace(regExp, '  <i class="fas fa-angle-double-right color-orange"></i>  ');
+            const startMinTotal = snapshot.child('startMin').val();
+            const endMinTotal = snapshot.child('endMin').val();
+            const count = snapshot.child('count').val();
 
-            var startMin = Math.floor(startMinTotal / count);
-            var startTime = min2TimeVal(startMin);
-            var endMin = Math.floor(endMinTotal / count);
-            var endTime = min2TimeVal(endMin);
-            var timeLen = roundWithDigit(Math.abs(startMin - endMin)/60, 10);
+            const startMin = Math.floor(startMinTotal / count);
+            const startTime = min2TimeVal(startMin);
+            const endMin = Math.floor(endMinTotal / count);
+            const endTime = min2TimeVal(endMin);
+            const timeLen = roundWithDigit(Math.abs(startMin - endMin) / 60, 10);
             rangeDatas[snapshot.key] = {};
             rangeDatas[snapshot.key]['startMin'] = startMin;
             rangeDatas[snapshot.key]['endMin'] = endMin;
             rangeDatas[snapshot.key]['hourLen'] = timeLen;
             rangeDatas[snapshot.key]['count'] = count;
-            var lenTime = timeLen + "h";
+            const lenTime = timeLen + "h";
 
-            var dom =
+            const dom =
                 '<tr class="ave-digit">' +
-                    '<td></td>'+
-                    '<td class="range-title" rowspan="2">'+ rangeTitle +'</td>' +
-                        '<td class="range-title">'+ count + '回' +'</td>'+
-                        '<td class="ave-digit-td no-wrap">'+ startTime +'</td>' +
-                        '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' +
-                            '<i class="fas fa-angle-double-right fa-lg color-orange"></i>' +
-                        '</td>' +
-                        '<td class="ave-digit-td no-wrap">'+ endTime +'</td>' +
-                    '<td class="ave-digit-td no-wrap">'+ lenTime +'</td>' +
-                    '<td></td>'+
+                '<td></td>' +
+                '<td class="range-title" rowspan="2">' + rangeTitle + '</td>' +
+                '<td class="range-title">' + count + '回' + '</td>' +
+                '<td class="ave-digit-td no-wrap">' + startTime + '</td>' +
+                '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' +
+                '<i class="fas fa-angle-double-right fa-lg color-orange"></i>' +
+                '</td>' +
+                '<td class="ave-digit-td no-wrap">' + endTime + '</td>' +
+                '<td class="ave-digit-td no-wrap">' + lenTime + '</td>' +
+                '<td></td>' +
                 '</tr>';
 
-            var row1 = $(dom);
+            const row1 = $(dom);
             // row1.find('.fa-angle-double-right').css('color', colors[0]);
-            var caption =
+            const caption =
                 '<tr class="caption">' +
-                    '<td></td>'+
-                    '<td class="no-wrap cap-count" data-title="'+ snapshot.key +'"></td>' +
-                    '<td class="no-wrap cap-start" data-title="'+ snapshot.key +'"></td>' +
-                    '<td class="no-wrap cap-end" data-title="'+ snapshot.key +'"></td>' +
-                    '<td class="no-wrap cap-length" data-title="'+ snapshot.key +'"></td>' +
-                    '<td></td>'+
+                '<td></td>' +
+                '<td class="no-wrap cap-count" data-title="' + snapshot.key + '"></td>' +
+                '<td class="no-wrap cap-start" data-title="' + snapshot.key + '"></td>' +
+                '<td class="no-wrap cap-end" data-title="' + snapshot.key + '"></td>' +
+                '<td class="no-wrap cap-length" data-title="' + snapshot.key + '"></td>' +
+                '<td></td>' +
                 '</tr>';
-            var row2 = $(caption);
-            var space = spaceRow.clone(true);
+            const row2 = $(caption);
+            const space = spaceRow.clone(true);
 
             if(rowCount %2 === 1){
                 space.addClass("back-orange");
@@ -425,34 +426,34 @@ function onLoginSuccess() {
         });
 
         snap.child('timeEve').forEach(function (snapshot) {
-            var rangeTitle = snapshot.key.replace(regExp, '  <i class="fas fa-angle-double-right color-orange"></i>  ');
-            var min = snapshot.child('min').val();
-            var count = snapshot.child('count').val();
-            var hour = Math.floor(min / count);
-            var timeVal = min2TimeVal(hour);
+            const rangeTitle = snapshot.key.replace(regExp, '  <i class="fas fa-angle-double-right color-orange"></i>  ');
+            const min = snapshot.child('min').val();
+            const count = snapshot.child('count').val();
+            const hour = Math.floor(min / count);
+            const timeVal = min2TimeVal(hour);
             eveDatas[snapshot.key] = {};
             eveDatas[snapshot.key]['min'] = min;
             eveDatas[snapshot.key]['count'] = count;
 
             // var average = min2HHMM(getAverage(eveList[eveKey]));
-           var row = $(
-               '<tr class="ave-digit">'+
-                    '<td></td>'+
-                   '<td class="range-title" rowspan="2">'+ rangeTitle +'</td>'+
-                    '<td class="range-title">'+ count + '回' +'</td>'+
-                   '<td class="ave-digit-td no-wrap centering" colspan="4">'+ timeVal +'</td>'+
-                    '<td></td>'+
-               '</tr>'+
-               '<tr class="caption">'+
-                    '<td></td>'+
-                    '<td class="no-wrap cap-count" data-title="'+ snapshot.key +'"></td>' +
-                    '<td class="no-wrap centering cap-time-eve" colspan="4" data-title="'+ snapshot.key +'"></td>'+
-                    '<td></td>'+
-               '</tr>');
+            const row = $(
+                '<tr class="ave-digit">' +
+                '<td></td>' +
+                '<td class="range-title" rowspan="2">' + rangeTitle + '</td>' +
+                '<td class="range-title">' + count + '回' + '</td>' +
+                '<td class="ave-digit-td no-wrap centering" colspan="4">' + timeVal + '</td>' +
+                '<td></td>' +
+                '</tr>' +
+                '<tr class="caption">' +
+                '<td></td>' +
+                '<td class="no-wrap cap-count" data-title="' + snapshot.key + '"></td>' +
+                '<td class="no-wrap centering cap-time-eve" colspan="4" data-title="' + snapshot.key + '"></td>' +
+                '<td></td>' +
+                '</tr>');
 
-           var space0 = spaceRow.clone(true);
-           var space1 = spaceRow.clone(true);
-           if(rowCount %2 === 1){
+            const space0 = spaceRow.clone(true);
+            const space1 = spaceRow.clone(true);
+            if(rowCount %2 === 1){
                space0.addClass("back-orange");
                space1.addClass("back-orange");
                row.addClass("back-orange");
@@ -469,47 +470,47 @@ function onLoginSuccess() {
     SummeryParser.prototype.setPrevCaption = function () {
         snapPrev.child('rangeEve').forEach(function (snapshot) {
 
-            var startMinTotal = snapshot.child('startMin').val();
-            var endMinTotal = snapshot.child('endMin').val();
-            var count = snapshot.child('count').val();
+            const startMinTotal = snapshot.child('startMin').val();
+            const endMinTotal = snapshot.child('endMin').val();
+            const count = snapshot.child('count').val();
 
-            var startMin = Math.floor(startMinTotal / count);
-            var endMin = Math.floor(endMinTotal / count);
-            var specStartMin = rangeDatas[snapshot.key]['startMin'];
-            var specEndMin = rangeDatas[snapshot.key]['endMin'];
-            var diffLenTime = roundWithDigit(roundWithDigit(Math.abs(specStartMin - specEndMin)/60, 10) - roundWithDigit(Math.abs(startMin - endMin)/60, 10), 10);//ここ、なぜか四捨五入した数値を足し引きすると値がおかしくなる
-            var symbol = diffLenTime < 0 ? '' : '+';
-            var val = '先月より'+ symbol + diffLenTime + 'h';
+            const startMin = Math.floor(startMinTotal / count);
+            const endMin = Math.floor(endMinTotal / count);
+            const specStartMin = rangeDatas[snapshot.key]['startMin'];
+            const specEndMin = rangeDatas[snapshot.key]['endMin'];
+            const diffLenTime = roundWithDigit(roundWithDigit(Math.abs(specStartMin - specEndMin) / 60, 10) - roundWithDigit(Math.abs(startMin - endMin) / 60, 10), 10);//ここ、なぜか四捨五入した数値を足し引きすると値がおかしくなる
+            const symbol = diffLenTime < 0 ? '' : '+';
+            const val = '先月より' + symbol + diffLenTime + 'h';
             $('.cap-length[data-title='+ snapshot.key +']').html(val);
 
-            var diffHourStart = roundWithDigit((specStartMin - startMin)/60, 10);
-            var symbolStart = diffHourStart < 0 ? '' : '+';
-            var valStart = '先月より'+ symbolStart + diffHourStart + 'h';
+            const diffHourStart = roundWithDigit((specStartMin - startMin) / 60, 10);
+            const symbolStart = diffHourStart < 0 ? '' : '+';
+            const valStart = '先月より' + symbolStart + diffHourStart + 'h';
             $('.cap-start[data-title='+ snapshot.key +']').html(valStart);
 
-            var diffHourEnd = roundWithDigit((specEndMin - endMin)/60, 10);
-            var symbolEnd = diffHourEnd < 0 ? '' : '+';
-            var valEnd = '先月より'+ symbolEnd + diffHourEnd + 'h';
+            const diffHourEnd = roundWithDigit((specEndMin - endMin) / 60, 10);
+            const symbolEnd = diffHourEnd < 0 ? '' : '+';
+            const valEnd = '先月より' + symbolEnd + diffHourEnd + 'h';
             $('.cap-end[data-title='+ snapshot.key +']').html(valEnd);
 
-            var diffCount = rangeDatas[snapshot.key]['count'] - count;
-            var symbolCount = diffCount < 0 ? '' : '+';
-            var valCount = '先月より'+ symbolCount + diffCount + '回';
+            const diffCount = rangeDatas[snapshot.key]['count'] - count;
+            const symbolCount = diffCount < 0 ? '' : '+';
+            const valCount = '先月より' + symbolCount + diffCount + '回';
             $('.cap-count[data-title='+ snapshot.key +']').html(valCount);
         });
 
         snapPrev.child('timeEve').forEach(function (snapshot) {
-            var min = snapshot.child('min').val();
-            var count = snapshot.child('count').val();
-            var hour = roundWithDigit(Math.floor(min / count), 10);
-            var diffHour = roundWithDigit(eveDatas[snapshot.key]['min'], 10) - hour;
-            var symbol = diffHour<0 ? '': '+';
-            var val = '先月より'+ symbol + diffHour + 'h';
+            const min = snapshot.child('min').val();
+            const count = snapshot.child('count').val();
+            const hour = roundWithDigit(Math.floor(min / count), 10);
+            const diffHour = roundWithDigit(eveDatas[snapshot.key]['min'], 10) - hour;
+            const symbol = diffHour < 0 ? '' : '+';
+            const val = '先月より' + symbol + diffHour + 'h';
             $('.cap-time-eve[data-title='+ snapshot.key +']').html(val);
 
-            var diffCount = eveDatas[snapshot.key]['count'] - count;
-            var symbolCount = diffCount < 0 ? '' : '+';
-            var valCount = '先月より'+ symbolCount + diffCount + '回';
+            const diffCount = eveDatas[snapshot.key]['count'] - count;
+            const symbolCount = diffCount < 0 ? '' : '+';
+            const valCount = '先月より' + symbolCount + diffCount + '回';
             $('.cap-count[data-title='+ snapshot.key +']').html(valCount);
         });
     };
@@ -541,7 +542,7 @@ function onLoginSuccess() {
 })();
 
 function showData(uid) {
-    var dates;
+    let dates;
     switch (displayMode){
         case MODE_WEEK:
             dates = getDaysOfWeek(currentMoment);
@@ -551,20 +552,20 @@ function showData(uid) {
             break;
     }
 
-    var getCount = 0;
+    let getCount = 0;
     console.log(dates);
 
     dates.forEach(function (day) {
-        var node = "usersParam/" + uid + "/" + day;
+        const node = "usersParam/" + uid + "/" + day;
         defaultDatabase.ref(node).once('value').then(function(snapshot) {
             if(!snapshot.exists()){
                 masterJson[day] = null;
             } else {
-                var masterData = [];
+                const masterData = [];
                 snapshot.forEach(function (arr) {
                     arr = arr.toJSON();
                     if(arr["dataType"] === 2 || arr["dataType"] === 3){
-                        var newArr = [];
+                        const newArr = [];
                         Object.values(arr["data"]).forEach(function (value) {
                             newArr.push(value);
                         });
@@ -602,27 +603,27 @@ function restUi() {
 
 function displayTest() {
     //dataType === 1のものを集計する。
-    var keys = Object.keys(masterJson);
-    var timeData = {};
+    const keys = Object.keys(masterJson);
+    const timeData = {};
     setTitle(displayMode, keys[0]);
     chart(displayMode, keys[0]);
 
-    var date = 0;
+    let date = 0;
     keys.forEach(function (key) {
         if(masterJson[key]){
             masterJson[key].forEach(function (data) {
                 if(data["dataType"] === 1){
-                    var json = JSON.parse(data["data"]["0"]);
+                    const json = JSON.parse(data["data"]["0"]);
                     console.log(json);
                     timeData[key] = json;
                     // var date = moment(key, "YYYYMMDD").date();
                     json.rangeList.forEach(function (entry) {
 
-                        var start = getTime(entry.start);
-                        var end = getTime(entry.end);
-                        var timeVal = getTimeVal(entry.start) + " → " + getTimeVal(entry.end);
+                        const start = getTime(entry.start);
+                        const end = getTime(entry.end);
+                        const timeVal = getTimeVal(entry.start) + " → " + getTimeVal(entry.end);
                         console.log(entry.start);
-                        var label = entry.start.name + " → " + entry.end.name;
+                        const label = entry.start.name + " → " + entry.end.name;
 
                         if (entry.start.offset === entry.end.offset){
 
@@ -641,8 +642,8 @@ function displayTest() {
                             pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal, true, false);
 
                             date += 1;
-                            var arrH = [];
-                            for(var i=0; i<=24; i++){
+                            const arrH = [];
+                            for(let i=0; i<=24; i++){
                                 arrH.push(date);
                             }
 
@@ -654,8 +655,8 @@ function displayTest() {
                     });
 
                     json.eventList.forEach(function (entry) {
-                        var time = getTime(entry);
-                        var timeVal = getTimeVal(entry);
+                        const time = getTime(entry);
+                        const timeVal = getTimeVal(entry);
                         pushData(getRangeArr(date, time, time, 0), date, entry.colorNum, entry.name, timeVal);
                     });
                 }
@@ -685,14 +686,14 @@ function displayTest() {
 
 function setTitle(mode, firstDate) {
     console.log(firstDate);
-    var titleMonth = $('#chart_title_w_month');
-    var titleWeek = $('#chart_title_w');
-    var momentO = moment(firstDate.toString(), "YYYYMMDD");
+    const titleMonth = $('#chart_title_w_month');
+    const titleWeek = $('#chart_title_w');
+    const momentO = moment(firstDate.toString(), "YYYYMMDD");
     switch (mode){
         case MODE_WEEK:
-            var start = momentO.format('MM.DD') + "("+ wodList[0] +")";
+            const start = momentO.format('MM.DD') + "(" + wodList[0] + ")";
             momentO.add(mode-1, 'd');
-            var end = momentO.format('MM.DD') + "("+ wodList[MODE_WEEK-1] +")";
+            const end = momentO.format('MM.DD') + "(" + wodList[MODE_WEEK - 1] + ")";
             console.log(end);
             $('#chart_title_start').html(start);
             $('#chart_title_end').html(end);
@@ -708,11 +709,11 @@ function setTitle(mode, firstDate) {
 }
 
 function chart(mode, firstKey) {
-    var maximum = getMaximumFromMode(mode);
-    var startCal = getStartCal(mode, firstKey);
+    const maximum = getMaximumFromMode(mode);
+    const startCal = getStartCal(mode, firstKey);
 
     // var dates = getDateYmds(mode, startCal, maximum);
-    var yAxis = getYaxis(mode, startCal, maximum);
+    const yAxis = getYaxis(mode, startCal, maximum);
     // var fontColors = [];
     // yAxis.forEach(function (value) {
     //    if(value.indexOf('日')){
@@ -722,7 +723,7 @@ function chart(mode, firstKey) {
     //    }
     // });
 
-    var ctx = $('#chart_div');
+    const ctx = $('#chart_div');
     switch (mode){
         case MODE_MONTH:
             chartWrapper.css('height', 1000);//todo これはこれでいいのか？
@@ -783,7 +784,7 @@ function chart(mode, firstKey) {
                         return yAxis[toolTips[0]["yLabel"]];
                     },
                     label: function (tooltipItem, data) {
-                        var arr = data["datasets"][tooltipItem.datasetIndex];
+                        const arr = data["datasets"][tooltipItem.datasetIndex];
                         return arr.label +" "+ arr.timeVal;
                     }
                 }
@@ -793,7 +794,7 @@ function chart(mode, firstKey) {
 }
 
 function getStartCal(mode, firstKey) {
-    var cal = moment(firstKey, 'YYYYMMDD');
+    let cal = moment(firstKey, 'YYYYMMDD');
     if(mode === MODE_MONTH){
         cal = cal.startOf('month');
         console.log("getStartCal", "こっち");
@@ -802,11 +803,11 @@ function getStartCal(mode, firstKey) {
 }
 
 function getYaxis(mode, firstCal, maximum) {
-    var cal = moment(firstCal);
-    var yAxis = [];
-    var month = null;
-    for(var i=0; i<maximum; i++){
-        var value;
+    const cal = moment(firstCal);
+    const yAxis = [];
+    let month = null;
+    for(let i=0; i<maximum; i++){
+        let value;
         if(mode === MODE_WEEK && (i === 0 || cal.month() !== month)){
             month = cal.month();
             value = cal.format('MM/DD');
@@ -831,9 +832,9 @@ function getMaximumFromMode(mode) {
 
 /*---------------描画まわり-------------*/
 function makeXaxis() {
-    var arr = [];
-    var limit = 24*4;
-    for (var i=0; i<=limit; i++){
+    const arr = [];
+    const limit = 24 * 4;
+    for (let i=0; i<=limit; i++){
         if(i === 0) {
             arr.push(i);
         } else if(i%8 === 0) {
@@ -846,23 +847,23 @@ function makeXaxis() {
 }
 
 function getTime(entryC) {
-    var hour = entryC.cal.hourOfDay;
-    var min = entryC.cal.minute;
+    const hour = entryC.cal.hourOfDay;
+    const min = entryC.cal.minute;
     return hour + min/60
 }
 
 function getTimeVal(entryC) {
-    var hour = entryC.cal.hourOfDay;
-    var min = entryC.cal.minute;
-    var time = moment();
+    const hour = entryC.cal.hourOfDay;
+    const min = entryC.cal.minute;
+    const time = moment();
     time.hour(hour);
     time.minute(min);
     return time.format('HH:mm');
 }
 
 function pushData(arr, date, colorNum, label, timeVal, showStartRadius, showEndRadius) {
-    var color = colors[colorNum];
-    var radiuses = setRadius(arr, date, showStartRadius, showEndRadius);
+    const color = colors[colorNum];
+    const radiuses = setRadius(arr, date, showStartRadius, showEndRadius);
     myChart.data.datasets.push({
         data: arr,
         label: label,
@@ -877,11 +878,11 @@ function pushData(arr, date, colorNum, label, timeVal, showStartRadius, showEndR
 }
 
 function setRadius(dataArr, date, showStartRadius, showEndRadius) {
-    var start = dataArr.indexOf(date);
-    var end = dataArr.lastIndexOf(date);
+    const start = dataArr.indexOf(date);
+    const end = dataArr.lastIndexOf(date);
     console.log(start +", "+ end);
-    var radiusArr = [];
-    for (var i=0; i<dataArr.length; i++){
+    const radiusArr = [];
+    for (let i=0; i<dataArr.length; i++){
         if ((showStartRadius && i === start) || (showEndRadius && i === end)) {
             radiusArr.push(5);
         } else {
@@ -892,10 +893,10 @@ function setRadius(dataArr, date, showStartRadius, showEndRadius) {
 }
 
 function getRangeArr(date, start, end, offset) {
-    var arrC = [];
+    const arrC = [];
     date = date + offset;
-    var limit = 24*4;
-    for(var n=0; n<=limit; n++){
+    const limit = 24 * 4;
+    for(let n=0; n<=limit; n++){
         if (start*4<=n && n<end*4+1){
             arrC.push(date);
         } else {
@@ -906,8 +907,8 @@ function getRangeArr(date, start, end, offset) {
 }
 
 function getRangeStart(date, start) {
-    var arrD = [];
-    for (var n=0; n<=24*4; n++){
+    const arrD = [];
+    for (let n=0; n<=24*4; n++){
         if (start*4 < n){
             arrD.push(date);
         } else {
@@ -918,8 +919,8 @@ function getRangeStart(date, start) {
 }
 
 function getRangeEnd(date, end) {
-    var arrE = [];
-    for (var n=0; n<=24*4; n++){
+    const arrE = [];
+    for (let n=0; n<=24*4; n++){
         if (n <= end*4){
             arrE.push(date);
         } else {
@@ -1079,7 +1080,7 @@ function roundWithDigit(num, digit) {
 // }
 
 function generateTableBorder(className) {
-    var td = ($('<td>', {
+    const td = ($('<td>', {
         class: className,
         colspan: 8
     }));
@@ -1088,11 +1089,11 @@ function generateTableBorder(className) {
 
 /*-----------------------tabLayout2--------------------------*/
 function initTabLayout2() {
-    var bgColumns = [];
-    var smColumns = {};
+    const bgColumns = [];
+    const smColumns = {};
     $('<td>', {rowspan: 2}).html('日にち')
         .appendTo(bgParam);
-    for(var key in masterJson){
+    for(let key in masterJson){
         if(masterJson.hasOwnProperty(key) && masterJson[key]){
             masterJson[key].forEach(function (data) {
                 switch (data.dataType){
@@ -1139,7 +1140,7 @@ function addBgColumn(bgColumns, bgParam, data) {
 
 function addSmColumn(smColumns, smParam, data, valuePos) {
     data.data.forEach(function (value) {
-        var html = value.split(DELIMITER)[valuePos];
+        const html = value.split(DELIMITER)[valuePos];
         if(!smColumns[data.dataName]){
             smColumns[data.dataName] = [];
         }
@@ -1153,7 +1154,7 @@ function addSmColumn(smColumns, smParam, data, valuePos) {
 }
 
 function fixBgColumnSpan(bgParam, smColumns) {
-    for(var key in smColumns){
+    for(let key in smColumns){
         if(smColumns.hasOwnProperty(key)){
             bgParam.find("td:contains("+ key +")").attr('colspan', smColumns[key].length);
         }
@@ -1163,35 +1164,35 @@ function fixBgColumnSpan(bgParam, smColumns) {
 /*----------------------tbody系-----------------------*/
 function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
 
-    var smVals = Object.values(smColumns);
-    var tbody = $('#table-others').find('tbody');
-    var totalLen = 0;
-    var smColumnVals = Object.values(smColumns);
-    var smColumnKeys = Object.keys(smColumns);
+    const smVals = Object.values(smColumns);
+    const tbody = $('#table-others').find('tbody');
+    let totalLen = 0;
+    const smColumnVals = Object.values(smColumns);
+    const smColumnKeys = Object.keys(smColumns);
     smColumnVals.forEach(function (arr) {
         totalLen += arr.length;
     });
-    var len = bgColumns.length + totalLen - smColumnVals.length +1;//+1は日付の分
+    const len = bgColumns.length + totalLen - smColumnVals.length + 1;//+1は日付の分
 
-    var masterKeys = Object.keys(masterJson);
-    for(var k=0; k<masterKeys.length; k++){
+    const masterKeys = Object.keys(masterJson);
+    for(let k=0; k<masterKeys.length; k++){
 
-        var tr = $('<tr>');
+        const tr = $('<tr>');
         if(k%2){
             tr.css('background-color', "#f9f9f7");
         }
 
-        for (var i = 0; i<len; i++) {
+        for (let i = 0; i<len; i++) {
             var td = $('<td>');
             tr.append(td);
             if(i === 0){
                 td.addClass('row-head');
             }
         }
-        var cal = moment(masterKeys[k], "YYYYMMDD");
-        var date = cal.date();
-        var title = date +"日("+ wodList[cal.day()] +")";
-        var rowHead = tr.find('td').eq(0);
+        const cal = moment(masterKeys[k], "YYYYMMDD");
+        const date = cal.date();
+        const title = date + "日(" + wodList[cal.day()] + ")";
+        const rowHead = tr.find('td').eq(0);
         rowHead.html(title);
         //日曜日であれば赤色に
         if(cal.day() === 0){
@@ -1199,8 +1200,8 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
         }
 
         //休日であれば赤色にしてtippy表示
-        var holidayKey = cal.format("YYYY-MM-DD");
-        var holidayPos = Object.keys(HOLIDAYS).indexOf(holidayKey);
+        const holidayKey = cal.format("YYYY-MM-DD");
+        const holidayPos = Object.keys(HOLIDAYS).indexOf(holidayKey);
         if(holidayPos !== -1){
             rowHead.attr('title',   HOLIDAYS[holidayKey]);
             rowHead.addClass('holiday');
@@ -1212,10 +1213,10 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                 if(!data.data || data.dataType === 0 || data.dataType === 1)
                     return;
 
-                var count = bgColumns.indexOf(data.dataName);
-                var keyLen = smColumnKeys.indexOf(data.dataName);
+                let count = bgColumns.indexOf(data.dataName);
+                const keyLen = smColumnKeys.indexOf(data.dataName);
                 count -= keyLen;
-                for(var n=0; n<keyLen; n++){
+                for(let n=0; n<keyLen; n++){
                     count += smColumnVals[n].length;
                 }
                 // count++;//日付カラムの分
@@ -1223,19 +1224,19 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
 
                 switch (data.dataType) {
                     case 2:
-                        var td0 = tr.find('td').eq(count);
-                        var titleVal = data.dataName +" "+ title;
+                        const td0 = tr.find('td').eq(count);
+                        const titleVal = data.dataName + " " + title;
                         setTagInCell(td0, data, titleVal);
                         break;
                     case 3:
-                        for(var m=0; m<data.data.length; m++){
-                            var pos = count+m+1;
-                            var vals = data.data[m].split(DELIMITER);
-                            var tdE = tr.find('td').eq(pos);
-                            var titleValE = data.dataName + " : "+ vals[1] +" "+ title;
+                        for(let m=0; m<data.data.length; m++){
+                            const pos = count + m + 1;
+                            const vals = data.data[m].split(DELIMITER);
+                            const tdE = tr.find('td').eq(pos);
+                            const titleValE = data.dataName + " : " + vals[1] + " " + title;
                             if(vals[0] === "0"){
-                                var span = $('<span>', {
-                                    title:  titleValE
+                                const span = $('<span>', {
+                                    title: titleValE
                                 });
                                 if(vals[2] === "true"){
                                     span.html('<i class="fas fa-check color-orange"></i>').appendTo(tdE);
@@ -1251,25 +1252,25 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
                         break;
                     case 4:
                         // todo 本来は"comment"ノードに格納されているので、実装後この点を修正すること
-                        var td = tr.find('td').eq(count);
+                        const td = tr.find('td').eq(count);
                         if(data.data.length > 100) {
                             // todo ここら辺の改行とかの動作、もうちょっとうまくやれるはず
-                            var value = null;
+                            let value = null;
                             if(data.data.indexOf("\n") === data.data.lastIndexOf("\n")){
                                 //改行が2箇所以上ある場合
                                 value = data.data.substring(0, 80) + "...";
                             } else {
-                                var first = data.data.indexOf("\n");
-                                var second = data.data.substring(first).indexOf("\n");
+                                const first = data.data.indexOf("\n");
+                                const second = data.data.substring(first).indexOf("\n");
                                 value = data.data.substring(0, second);
                             }
                             value = value.replace(/(?:\r\n|\r|\n)/g, '<br />');
                             td.attr("full-txt", data.data);
                             td.html(value);
-                            var dropDownBtn = $('<i>', {
+                            const dropDownBtn = $('<i>', {
                                 class: "fas fa-caret-down fa-lg color-orange",
                                 onclick: "expandText(this)",
-                                title: data.dataName +" "+ title
+                                title: data.dataName + " " + title
                             });
                             td.append($('<br />')).append(dropDownBtn);
                         } else {
@@ -1298,15 +1299,15 @@ function addRowsToTable(smParam, bgParam, bgColumns, smColumns) {
 }
 
 function setTagInCell(td, data, title) {
-    for(var m=0; m<data.data.length; m++){
-        var vals = data.data[m].split(DELIMITER);
+    for(let m=0; m<data.data.length; m++){
+        const vals = data.data[m].split(DELIMITER);
         if(vals[2] === "true")
             continue;
 
-        var color = highlightColors[parseInt(vals[1])];
-        var chipsHtml = $(
-            '<span class="mdl-chip mdl-pre-upgrade" style="background-color: '+ color +'" title="'+ title +'">'+
-                '<span class="mdl-chip__text">'+vals[0]+'</span>'+
+        const color = highlightColors[parseInt(vals[1])];
+        const chipsHtml = $(
+            '<span class="mdl-chip mdl-pre-upgrade" style="background-color: ' + color + '" title="' + title + '">' +
+            '<span class="mdl-chip__text">' + vals[0] + '</span>' +
             '</span>');
         td.append(chipsHtml);
     }
@@ -1315,15 +1316,15 @@ function setTagInCell(td, data, title) {
 //todo アニメーションつけられると尚良し
 function expandText(ele) {
     console.log("expandText called");
-    var td = $(ele).closest('td');
-    var txt = td.attr("full-txt");
+    const td = $(ele).closest('td');
+    let txt = td.attr("full-txt");
     txt = txt.replace(/(?:\r\n|\r|\n)/g, '<br />');
     td.html(txt);
 }
 
 function setElementAsMdl(clone) {
-    var ele = clone.find(".mdl-pre-upgrade");
-    for (var i=0; i<ele.length; i++){
+    const ele = clone.find(".mdl-pre-upgrade");
+    for (let i=0; i<ele.length; i++){
         componentHandler.upgradeElement(ele.eq(i)[0]);
     }
 }

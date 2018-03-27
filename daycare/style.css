@@ -1,0 +1,511 @@
+/*---------------ローディング画面系-------------*/
+#progress {
+    position: fixed;
+    height: 4em;
+    width: 4em;
+    top: 50%;
+    left: 50%;
+    margin-top: -2em;
+    margin-left: -2em;
+}
+
+#post_load {
+    display: none;
+}
+
+.page-content{
+    display: none;
+}
+
+body {
+    overflow-x: auto;
+    background-color: #F4F3EF;
+}
+
+/*************nav bar***************/
+
+.mdl-layout__tab{
+    background-color: white;
+}
+
+.mdl-layout__header-row{
+    padding-right: 20px;
+}
+
+#group-drp-btn {
+    display: none;
+}
+
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
+}
+
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
+}
+
+/*----------------login---------------*/
+#login-grid{
+    text-align: center;
+}
+
+#login-logo{
+    width: 100%;
+    max-width: 200px;
+}
+
+#login_w{
+    width: 100%;
+    display: none;
+}
+
+#login_title{
+    color: #E57C3E;
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 100px;
+}
+
+body {
+    overflow-x: auto;
+    background-color: #F4F3EF;
+}
+
+#chart_w{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 48px 0 48px;
+    position: relative;
+}
+
+.card{
+    margin: 40px auto;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
+    padding: 30px;
+    max-width: 1200px;/*todo これは端末の画面サイズなどによって変える？？*/
+    min-width: fit-content;
+}
+
+#table-others-w{
+    margin: 72px auto;
+    width: fit-content;
+    padding: 0 8px;
+}
+
+.mdl-layout__content{
+    overflow-x: auto;
+}
+
+/*------------chartHeader系---------------*/
+/*todo header高さずれちゃう問題どうにかすること*/
+#chart_header{
+    width: 100%;
+    vertical-align: middle;
+}
+
+#chart_title{
+    height: 100%;
+    vertical-align: middle;
+}
+
+#chart_title_h{
+    height: 100%;
+    text-align: center;
+}
+
+#chart_title_w{
+    color: #66615b;
+    display: none;
+}
+
+#chart_title_w_month{
+    color: white;
+}
+
+#chart_title_start{
+    color: #66615b;
+    font-size: 20px;
+}
+
+#chart_title_end{
+    color: #66615b;
+    font-size: 20px;
+}
+
+#next_btn{
+    color: #f4cab1;
+    float: right;
+}
+
+#prev_btn{
+    color: #f4cab1;
+}
+
+.fa-chevron-circle-down{
+    color: #f4cab1;
+}
+
+#angle{
+    color: #E57C3E;
+    margin: 0 20px;
+}
+
+.color-orange{
+    color: #E57C3E;
+}
+
+#header-dpdn{
+    margin: 0 10px;
+    font-size: 16px;
+    display: none;//todo これな！
+}
+
+#chart_title_k{
+    font-size: 2em;
+}
+
+/*********************分析時間*********************/
+/*.sub_chart{*/
+    /*margin: 0 32px 0 32px;*/
+/*}*/
+
+#chart-ave-eve{
+    margin-top: 48px;
+}
+
+.average{
+    color: #66615b;
+    font-size: 20px;
+}
+
+.ave-digit-td{
+    /*padding-left: 6px;*/
+    /*border-left: 3px solid #66615b;*/
+    font-size: 18px;
+    width:1%;
+}
+
+.range-title{
+    font-size: 18px;
+    height: 30px;
+}
+
+.range-title .fa-angle-double-right{
+
+}
+
+.chart-ave {
+    /*overflow: auto;*/
+    width: 100%;
+}
+
+.ave-angle{
+    margin: 0 10px;
+    text-align: center;
+}
+
+.caption{
+    font-size: 14px;
+}
+
+.no-wrap{
+    white-space:nowrap;
+}
+
+.chart-ave td{
+    padding: 0 24px;
+}
+
+.chart-ave thead {
+    padding-bottom: 12px;
+}
+
+.chart-ave thead td {
+    padding: 12px;
+}
+
+.chart-ave .table-space{
+    height: 12px;
+}
+
+.chart-ave .table-seem{
+    height: 1px;
+}
+
+.chart-ave .back-orange{
+    background-color: #FFFCF5;
+}
+
+.err-non-data {
+    color: #CCC5B9;
+    margin: 48px auto 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+.err-non-data h3{
+    margin: 0;
+}
+
+/********************タブ2ページ目系***********************/
+#bg-param{
+    text-align: center;
+}
+
+#table-others thead{
+    background-color: #524b4b;
+    color: #F4F3EF;
+    border-bottom: 1px solid #E57C3E;
+}
+
+#table-others thead td{
+    height: 36px;
+    font-size: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    white-space:nowrap;
+}
+
+#table-others tbody tr{
+    height: 36px;
+    /*border-bottom: 1px solid #CCC5B9;*/
+    font-size: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    vertical-align: middle;
+}
+
+#table-others tbody .holiday{
+    color: #dd3734;
+}
+
+#table-others tbody td{
+    vertical-align: middle;
+    text-align: center;
+    padding-bottom: 4px;
+    padding-top: 4px;
+}
+
+#table-others .mdl-chip{
+    margin: 2px;
+}
+
+#table-others .row-head{
+    white-space: nowrap;
+    border-right: 1px solid #dbdad7;
+}
+
+#table-others .text{
+    text-align: start;
+}
+
+#table-others .fa-caret-down{
+    cursor: pointer;
+}
+
+.color-disable {
+    color: #CCC5B9;
+}
+
+    /*-------------ここからエディット--------------*/
+#column-right-i {
+    padding-right: 48px;
+    padding-top: 48px;
+}
+
+#column-right-i .card-title {
+    color: rgba(0, 0 , 0, .87);
+    font-size: 20px;
+}
+
+#second-card {
+    font-size: 18px;
+    margin: 28px 0 72px 0;
+}
+
+#second-card tbody td {
+    padding: 0 24px;
+}
+
+#second-card .table-space {
+    height: 24px;
+}
+
+#third-card .mdl-card ,#second-card .mdl-card {
+    width: 100%;
+    padding-bottom: 24px;
+}
+
+#third-card table, #second-card table {
+    width: 100%;
+}
+
+#third-card .header td, #second-card .header td {
+    padding: 8px 24px;
+    font-size: 16px;
+    background-color: #524b4b;
+    color: #F4F3EF;
+    border-bottom: 1px solid #E57C3E;
+    line-height: 2rem;
+}
+
+#third-card .spacer td, #second-card .spacer td {
+    height: 24px;
+}
+
+#third-card td {
+    padding: 0 24px;
+    font-size: 16px;
+    line-height: 2rem;
+}
+
+#third-card .right-column {
+    padding-left: 0;
+}
+
+/*#third-card .fa-circle {*/
+    /*color: #C0504D;*/
+    /*margin-right: 1rem;*/
+    /*height: 16px;*/
+    /*width: 16px;*/
+/*}*/
+
+#third-card .mdl-list__item-primary-content {
+    border-left-width: 3px;
+    border-left-style: solid;
+    padding-left: 12px;
+}
+
+#third-card .table-space {
+    height: 24px;
+}
+
+#third-card {
+    color: rgba(0, 0 , 0, .87);
+}
+
+#third-card .left-column {
+    text-align: center;
+}
+
+#third-card .colored {
+    background-color: rgba(0, 0 , 50, .01);
+}
+
+.card-out-title {
+    font-size: 15px;
+    margin: 24px 24px 0 24px;
+    color: #E57C3E;
+}
+
+#column-right .card {
+    margin-top: 0;
+}
+
+.fa-calendar, .fa-list-ul {
+    margin-right: 1rem;
+}
+
+/*サード*/
+/*.sche-title {*/
+    /*margin: 0;*/
+    /*font-size: 16px;*/
+/*}*/
+
+/*.sche-subtitle {*/
+    /*margin: 0;*/
+/*}*/
+#bottom-card {
+    margin-top: 72px;
+    padding-bottom: 24px;
+    width: 100%;
+}
+
+#bottom-card .card{
+    margin: 0 72px;
+}
+
+#bottom-card .fa-clock {
+    margin-right: 1rem;
+}
+
+#bottom-card .card-out-title {
+    padding: 0 120px;
+    font-size: 20px;
+    margin: 48px 0 24px 0;
+}
+
+#bottom-card .centering {
+    text-align: center;
+}
+
+#bottom-card .card {
+    padding: 0;
+}
+
+#bottom-card thead {
+    font-size: 16px;
+    background-color: #524b4b;
+    color: #F4F3EF;
+    border-bottom: 1px solid #E57C3E;
+}
+
+#bottom-card .mdl-card{
+    width: calc(100% - 144px);
+    margin: 0 72px;
+}
+
+.mdl-layout__tab-bar {
+    height: 48px;
+    background-color: transparent;
+}
+
+.mdl-layout--fixed-tabs .mdl-layout__tab-bar {
+    width: fit-content;
+    margin: 0 auto 0 48px;
+}
+
+.mdl-layout__tab {
+    width: 10rem;
+    text-align: center;
+    background-color: transparent;
+    color: #f4cab1;
+}
+
+.mdl-layout.is-upgraded .mdl-layout__tab.is-active::after {
+    background-color: #E57C3E;
+}
+
+.mdl-layout.is-upgraded .mdl-layout__tab.is-active {
+    color: white;
+}
+
+#tab2-sec-card {
+    display: none;/*todo これ本来はnoneではない*/
+    justify-content: center;
+    max-width: 1200px;
+}
+
+/*.mdl-layout__tab-bar-container {*/
+    /*display: none;*/
+/*}*/
+/*tippy jsのthemeの変え方がわからない・・・*/
+/*.tippy-tooltip.translucent-theme {*/
+    /*!* Your styling here. Example: *!*/
+    /*background-color: rgba(0, 0, 0, 0.01);*/
+    /*border: 0;*/
+    /*color: gray;*/
+/*}*/
+
+/*.tippy-tooltip.honeybee-theme .tippy-content {*/
+    /*!* Your styling here. Example: *!*/
+    /*color: rgba(0, 0, 0, 0.01);*/
+/*}*/
+
+/*.tippy-popper[x-placement^=top] .tippy-tooltip.honeybee-theme .tippy-arrow {*/
+    /*!* Your arrow styling here. *!*/
+
+/*}*/
