@@ -30,14 +30,15 @@ body {
 
 .mdl-layout__header-row{
     padding-right: 20px;
+    padding-left: 20px;
 }
 
 #group-drp-btn {
     display: none;
 }
 
-.mdl-layout__drawer-button i{
-    color: #f4cab1;
+.mdl-layout__drawer-button {
+    display: none;
 }
 
 .mdl-layout__header {
