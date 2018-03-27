@@ -1,6 +1,6 @@
 "use strict";
 
-var defaultDatabase;
+let defaultDatabase;
 var masterJson = {};
 var myChart;
 const MODE_WEEK = 7;
