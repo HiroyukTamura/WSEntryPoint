@@ -469,6 +469,9 @@ function onLoginSuccess() {
 
     SummeryParser.prototype.setPrevCaption = function () {
         snapPrev.child('rangeEve').forEach(function (snapshot) {
+            if (!rangeDatas[snapshot.key])
+                //todo 前月データなしの時の表示
+                return;
 
             const startMinTotal = snapshot.child('startMin').val();
             const endMinTotal = snapshot.child('endMin').val();
@@ -500,6 +503,10 @@ function onLoginSuccess() {
         });
 
         snapPrev.child('timeEve').forEach(function (snapshot) {
+            if (!eveDatas[snapshot.key])
+                //todo 前月データなしの時の表示
+                return;
+
             const min = snapshot.child('min').val();
             const count = snapshot.child('count').val();
             const hour = roundWithDigit(Math.floor(min / count), 10);
@@ -608,7 +615,7 @@ function displayTest() {
     setTitle(displayMode, keys[0]);
     chart(displayMode, keys[0]);
 
-    let date = 0;
+
     keys.forEach(function (key) {
         if(masterJson[key]){
             masterJson[key].forEach(function (data) {
@@ -616,8 +623,8 @@ function displayTest() {
                     const json = JSON.parse(data["data"]["0"]);
                     console.log(json);
                     timeData[key] = json;
-                    // var date = moment(key, "YYYYMMDD").date();
                     json.rangeList.forEach(function (entry) {
+                        let date = moment(key, "YYYYMMDD").date();
 
                         const start = getTime(entry.start);
                         const end = getTime(entry.end);
@@ -631,7 +638,7 @@ function displayTest() {
 
                         } else if (entry.end.offset - entry.start.offset === 1){
 
-                            date -= entry.start.offset;
+                            date += entry.start.offset;
                             pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal, true, false);
                             date += 1;
                             pushData(getRangeEnd(date, end), date, entry.colorNum, label, timeVal, false, true);
@@ -655,6 +662,8 @@ function displayTest() {
                     });
 
                     json.eventList.forEach(function (entry) {
+                        let date = moment(key, "YYYYMMDD").date();
+
                         const time = getTime(entry);
                         const timeVal = getTimeVal(entry);
                         pushData(getRangeArr(date, time, time, 0), date, entry.colorNum, entry.name, timeVal);
@@ -662,8 +671,6 @@ function displayTest() {
                 }
             });
         }
-
-        date++;
     });
 
     // showAverage(timeData);
@@ -863,7 +870,7 @@ function getTimeVal(entryC) {
 
 function pushData(arr, date, colorNum, label, timeVal, showStartRadius, showEndRadius) {
     const color = colors[colorNum];
-    const radiuses = setRadius(arr, date, showStartRadius, showEndRadius);
+    const radiuses = setRadius(arr, date-1, showStartRadius, showEndRadius);//ここで-1をするのは、日付は1始まりだから
     myChart.data.datasets.push({
         data: arr,
         label: label,
@@ -894,7 +901,7 @@ function setRadius(dataArr, date, showStartRadius, showEndRadius) {
 
 function getRangeArr(date, start, end, offset) {
     const arrC = [];
-    date = date + offset;
+    date = date + offset-1;//ここで-1をするのは、日付は1始まりだから
     const limit = 24 * 4;
     for(let n=0; n<=limit; n++){
         if (start*4<=n && n<end*4+1){
@@ -907,10 +914,11 @@ function getRangeArr(date, start, end, offset) {
 }
 
 function getRangeStart(date, start) {
+    const dateC = date-1;//ここで-1をするのは、日付は1始まりだから
     const arrD = [];
     for (let n=0; n<=24*4; n++){
         if (start*4 < n){
-            arrD.push(date);
+            arrD.push(dateC);
         } else {
             arrD.push(null);
         }
@@ -919,10 +927,11 @@ function getRangeStart(date, start) {
 }
 
 function getRangeEnd(date, end) {
+    const dateC = date-1;//ここで-1をするのは、日付は1始まりだから
     const arrE = [];
     for (let n=0; n<=24*4; n++){
         if (n <= end*4){
-            arrE.push(date);
+            arrE.push(dateC);
         } else {
             arrE.push(null);
         }

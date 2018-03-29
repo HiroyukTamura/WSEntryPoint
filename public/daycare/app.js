@@ -6,6 +6,7 @@ var myChart = void 0;
 var MODE_WEEK = 7;
 var MODE_MONTH = 0;
 var displayMode = void 0;
+var loginedUser = void 0;
 var menuMon = $('#dpdn-month');
 var menuWeek = $('#dpdn-week');
 var currentMoment = moment();
@@ -21,15 +22,40 @@ var headerBtnEnable = false; //これがfalseのとき、ヘッダボタンを�
 var progress = $('#progress');
 var pageContent = $('.page-content');
 // var innerProgress =$('.inner-progress');
-var query = "1JLRZXEkNuPSzC1iIWrJFmPd9ry2";
+var query = void 0;
 
 window.onload = function init() {
 
     var defaultApp = firebase.initializeApp(CONFIG);
     defaultDatabase = defaultApp.database();
-    progress.hide();
-    $('#login_w').hide();
-    onLoginSuccess();
+
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            console.log("ユーザログインしてます");
+            loginedUser = user;
+            onLoginSuccess();
+        } else {
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function () {
+                var uiConfig = createFbUiConfig(function (user, credential, redirectUrl) {
+                    progress.hide();
+                    $('#login_w').hide();
+                    loginedUser = user;
+                    onLoginSuccess();
+                    return false;
+                });
+
+                progress.hide();
+                postLoad.hide();
+                var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                $('#login_w').show();
+                ui.start('#firebaseui-auth-container', uiConfig);
+            }).catch(function (error) {
+                console.log(error.code, error.message);
+                showOpeErrNotification(defaultDatabase);
+            });
+        }
+    });
+
     initDrawerDecoration();
 };
 
@@ -70,8 +96,23 @@ function getDaysOfMonth() {
 }
 
 function onLoginSuccess() {
-    $('.mdl-layout__drawer-button').css('visibility', 'hidden');
-    $('.third-card').hide();
+    query = window.location.href.slice(window.location.href.indexOf('?key=') + 5);
+    console.log(query);
+
+    if (window.location.href.indexOf('?key=') === -1) {
+        showNotification(ERR_MSG_OPE_FAILED, 'danger', -1);
+        return;
+    }
+
+    if (query === loginedUser.uid) {
+        console.log('ご本人でーす');
+        setDrawerProfile(loginedUser);
+        new ScheduleParser().getScheduleAsync();
+    } else {
+        $('.mdl-layout__drawer-button').css('visibility', 'hidden');
+        $('.third-card').hide();
+        console.log('他人でーす');
+    }
 
     if (!displayMode) {
         menuWeek.on('click', function (e) {
@@ -175,7 +216,6 @@ function onLoginSuccess() {
 
     ScheduleParser.prototype.getScheduleAsync = function () {
         var scheme = makeRefScheme(['combinedCalendar', query, currentMoment.format('YYYYMM')]);
-        tbody.empty();
 
         defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
             if (!snapshot.exists()) {
@@ -381,6 +421,9 @@ function onLoginSuccess() {
 
     SummeryParser.prototype.setPrevCaption = function () {
         snapPrev.child('rangeEve').forEach(function (snapshot) {
+            if (!rangeDatas[snapshot.key])
+                //todo 前月データなしの時の表示
+                return;
 
             var startMinTotal = snapshot.child('startMin').val();
             var endMinTotal = snapshot.child('endMin').val();
@@ -412,6 +455,10 @@ function onLoginSuccess() {
         });
 
         snapPrev.child('timeEve').forEach(function (snapshot) {
+            if (!eveDatas[snapshot.key])
+                //todo 前月データなしの時の表示
+                return;
+
             var min = snapshot.child('min').val();
             var count = snapshot.child('count').val();
             var hour = roundWithDigit(Math.floor(min / count), 10);
@@ -520,7 +567,6 @@ function displayTest() {
     setTitle(displayMode, keys[0]);
     chart(displayMode, keys[0]);
 
-    var date = 0;
     keys.forEach(function (key) {
         if (masterJson[key]) {
             masterJson[key].forEach(function (data) {
@@ -528,8 +574,8 @@ function displayTest() {
                     var json = JSON.parse(data["data"]["0"]);
                     console.log(json);
                     timeData[key] = json;
-                    // var date = moment(key, "YYYYMMDD").date();
                     json.rangeList.forEach(function (entry) {
+                        var date = moment(key, "YYYYMMDD").date();
 
                         var start = getTime(entry.start);
                         var end = getTime(entry.end);
@@ -542,7 +588,7 @@ function displayTest() {
                             pushData(getRangeArr(date, start, end, entry.start.offset), date, entry.colorNum, label, timeVal, true, true);
                         } else if (entry.end.offset - entry.start.offset === 1) {
 
-                            date -= entry.start.offset;
+                            date += entry.start.offset;
                             pushData(getRangeStart(date, start), date, entry.colorNum, label, timeVal, true, false);
                             date += 1;
                             pushData(getRangeEnd(date, end), date, entry.colorNum, label, timeVal, false, true);
@@ -565,6 +611,8 @@ function displayTest() {
                     });
 
                     json.eventList.forEach(function (entry) {
+                        var date = moment(key, "YYYYMMDD").date();
+
                         var time = getTime(entry);
                         var timeVal = getTimeVal(entry);
                         pushData(getRangeArr(date, time, time, 0), date, entry.colorNum, entry.name, timeVal);
@@ -572,8 +620,6 @@ function displayTest() {
                 }
             });
         }
-
-        date++;
     });
 
     // showAverage(timeData);
@@ -771,7 +817,7 @@ function getTimeVal(entryC) {
 
 function pushData(arr, date, colorNum, label, timeVal, showStartRadius, showEndRadius) {
     var color = colors[colorNum];
-    var radiuses = setRadius(arr, date, showStartRadius, showEndRadius);
+    var radiuses = setRadius(arr, date - 1, showStartRadius, showEndRadius); //ここで-1をするのは、日付は1始まりだから
     myChart.data.datasets.push({
         data: arr,
         label: label,
@@ -802,7 +848,7 @@ function setRadius(dataArr, date, showStartRadius, showEndRadius) {
 
 function getRangeArr(date, start, end, offset) {
     var arrC = [];
-    date = date + offset;
+    date = date + offset - 1; //ここで-1をするのは、日付は1始まりだから
     var limit = 24 * 4;
     for (var n = 0; n <= limit; n++) {
         if (start * 4 <= n && n < end * 4 + 1) {
@@ -815,10 +861,11 @@ function getRangeArr(date, start, end, offset) {
 }
 
 function getRangeStart(date, start) {
+    var dateC = date - 1; //ここで-1をするのは、日付は1始まりだから
     var arrD = [];
     for (var n = 0; n <= 24 * 4; n++) {
         if (start * 4 < n) {
-            arrD.push(date);
+            arrD.push(dateC);
         } else {
             arrD.push(null);
         }
@@ -827,10 +874,11 @@ function getRangeStart(date, start) {
 }
 
 function getRangeEnd(date, end) {
+    var dateC = date - 1; //ここで-1をするのは、日付は1始まりだから
     var arrE = [];
     for (var n = 0; n <= 24 * 4; n++) {
         if (n <= end * 4) {
-            arrE.push(date);
+            arrE.push(dateC);
         } else {
             arrE.push(null);
         }
