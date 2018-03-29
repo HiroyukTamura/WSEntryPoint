@@ -9,7 +9,6 @@
     <orderEntry type="library" name="tether" level="application" />
     <orderEntry type="library" name="bootstrap" level="application" />
     <orderEntry type="library" name="all" level="application" />
-    <orderEntry type="library" name="firebase" level="application" />
     <orderEntry type="library" name="firebase-auth" level="application" />
     <orderEntry type="library" name="firebase-database" level="application" />
     <orderEntry type="library" name="firebase-ui-auth__ja" level="application" />
