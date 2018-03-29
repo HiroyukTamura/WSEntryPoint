@@ -2057,7 +2057,7 @@ function onGetSnapOfGroupNode(snapshot) {
 
             li.on('click', function (ev) {
                 var index = $(this).index();
-                window.location.href = 'http://wppsc.php.xdomain.jp/ChallengedKit/group/index.html?key=' + liGroupKeys[index];//todo これから
+                window.location.href = 'http://wppsc.php.xdomain.jp/public/group/index.html?key=' + liGroupKeys[index];//todo これから
                 return false;
             });
 

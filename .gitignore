@@ -9,3 +9,6 @@
 /dist/jquery-ui/
 /dist/mixitup.js
 /dist/mixitup.min.js
+/node_modules/
+/package-lock.json
+/public/dist/
