@@ -20,5 +20,6 @@
     <orderEntry type="library" name="firebase-app" level="application" />
     <orderEntry type="library" name="jquery-3.2.1" level="application" />
     <orderEntry type="library" name="popper" level="application" />
+    <orderEntry type="library" name="firebaseui" level="application" />
   </component>
 </module>

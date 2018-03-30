@@ -293,7 +293,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
     setDataOrderToRangeList($(blocks[0]), count);
     $(blocks[0]).find('.remove-btn').hide();
     $(blocks[0]).addClass('range-pre');
-    blocks[1] = craeteHtmlAs1Row();
+    blocks[1] = createHtmlAs1Row();
     setDataOrderToRangeList($(blocks[1]), count);
     blocks[2] = createHtmlAs1Eve();
 
@@ -570,7 +570,7 @@ function showEachErrSpan(startInput, endInput, errSpanStart, errSpanEnd, errMsg)
     endInput.parent().addClass('is-invalid').addClass('wrong-val');
 }
 
-function craeteHtmlAs1Row() {
+function createHtmlAs1Row() {
     return $(
         '<tr class="angle-down">' +
             '<td colspan="3">' +

@@ -35,7 +35,7 @@ body {
 }
 
 .card_wrapper{
-    padding: 0 20px;
+    padding-left: 20px;
     width: fit-content;
     /*margin: 0 auto;*/
     /*display: -webkit-flex;*/
@@ -186,7 +186,7 @@ body {
 /*text-align: center;*/
 /*}*/
 #fab-w-w {
-    width: 200px;
+    width: 40px;
     height: 120px;
     margin-top: 220px;
     margin-left: 16px;
@@ -952,4 +952,37 @@ td {
 
 .popover-header {
     display: none;
+}
+
+/**-----------------右端の目次------------------**/
+#right-column {
+    width: 256px;
+}
+
+#right-spacer {
+    width: 256px;
+    height: 84px;
+}
+
+#right-ul {
+    margin-bottom: 15px;
+    padding-left: 0;
+}
+
+#right-ul li {
+    list-style-type: none;
+    line-height: 1.4;
+    margin: 3px 0;
+}
+
+#right-ul a {
+    display: block;
+    padding: 3px 10px;
+    line-height: 1.4;
+    color: #999;
+}
+
+#right-ul a:hover {
+    color: #66615b;
+    background-color: rgb(235 ,234, 230);
 }
