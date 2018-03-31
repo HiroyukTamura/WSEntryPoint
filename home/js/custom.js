@@ -1,4 +1,4 @@
-var config = {
+let config = {
     apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
     authDomain: "wordsupport3.firebaseapp.com",
     databaseURL: "https://wordsupport3.firebaseio.com",
@@ -7,9 +7,121 @@ var config = {
     messagingSenderId: "60633268871"
 };
 
+const CLIENT_ID = "60633268871-kf9j3roee7lk81521rs9r0vq77mrjagd.apps.googleusercontent.com";
+
 firebase.initializeApp(config);
 
-var uiConfig = {
+window.onGoogleYoloLoad = (googleyolo) => {
+    // The 'googleyolo' object is ready for use.
+    const retrievePromise = googleyolo.retrieve({
+        supportedAuthMethods: [
+            "https://accounts.google.com",
+            "googleyolo://id-and-password"
+        ],
+        supportedIdTokenProviders: [
+            {
+                uri: "https://accounts.google.com",
+                clientId: "60633268871-kf9j3roee7lk81521rs9r0vq77mrjagd.apps.googleusercontent.com"
+            }
+        ]
+    });
+
+    retrievePromise.then((credential) => {
+        if (credential.password) {
+            // An ID (usually email address) and password credential was retrieved.
+            // Sign in to your backend using the password.
+            firebase.auth().signInWithEmailAndPassword(credential.id, credential.password).then(() => {
+                console.log("signInWithEmailAndPassword succeed", credential.id, credential.password);
+
+            }).catch(function(error) {
+                //todo Handle Errors here.
+                let errorCode = error.code;
+                let errorMessage = error.message;
+
+            });
+            console.log("login succeed", credential.id, credential.password);
+        } else {
+            // A Google Account is retrieved. Since Google supports ID token responses,
+            // you can use the token to sign in instead of initiating the Google sign-in
+            // flow.
+            firebase.auth().useGoogleIdTokenForAuth(credential.idToken).then(() => {
+                console.log("signInWithEmailAndPassword succeed", credential.id, credential.password);
+
+            }).catch(function(error) {
+                //todo Handle Errors here.
+                let errorCode = error.code;
+                let errorMessage = error.message;
+            });
+            console.log("login succeed", credential.idToken);
+        }
+    }, (error) => {
+        //todo debug
+        // Credentials could not be retrieved. In general, if the user does not
+        // need to be signed in to use the page, you can just fail silently; or,
+        // you can also examine the error object to handle specific error cases.
+
+        // If retrieval failed because there were no credentials available, and
+        // signing in might be useful or is required to proceed from this page,
+        // you can call `hint()` to prompt the user to select an account to sign
+        // in or sign up with.
+        if (error.type === 'noCredentialsAvailable') {
+            googleyolo.hint({
+                supportedAuthMethods: [
+                    "https://accounts.google.com"
+                ],
+                supportedIdTokenProviders: [
+                    {
+                        uri: "https://accounts.google.com",
+                        clientId: "60633268871-kf9j3roee7lk81521rs9r0vq77mrjagd.apps.googleusercontent.com"
+                    }
+                ]
+            }).then((credential) => {
+                if (credential.idToken) {
+                    // Send the token to your auth backend.
+                    useGoogleIdTokenForAuth(credential.idToken);
+                }
+            }, (error) => {
+                switch (error.type) {
+                    case "userCanceled":
+                        // The user closed the hint selector. Depending on the desired UX,
+                        // request manual sign up or do nothing.
+                        break;
+                    case "noCredentialsAvailable":
+                        // No hint available for the session. Depending on the desired UX,
+                        // request manual sign up or do nothing.
+                        break;
+                    case "requestFailed":
+                        // The request failed, most likely because of a timeout.
+                        // You can retry another time if necessary.
+                        break;
+                    case "operationCanceled":
+                        // The operation was programmatically canceled, do nothing.
+                        break;
+                    case "illegalConcurrentRequest":
+                        // Another operation is pending, this one was aborted.
+                        break;
+                    case "initializationError":
+                        // Failed to initialize. Refer to error.message for debugging.
+                        break;
+                    case "configurationError":
+                        // Configuration error. Refer to error.message for debugging.
+                        break;
+                    default:
+                    // Unknown error, do nothing.
+                }
+            });
+        }
+    });
+};
+
+firebase.auth().onAuthStateChanged(user => {
+    if(user) {
+        console.log("onAuthStateChanged", "user login");
+        // todo redirect
+    }
+});
+
+let uiConfig = {
     // signInSuccessUrl: '../front/front.php',
     signInOptions: [
         // Leave the lines as is for the providers you want to offer your users.
@@ -25,7 +137,7 @@ var uiConfig = {
 
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(function() {
-        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        let ui = new firebaseui.auth.AuthUI(firebase.auth());
         ui.start('#firebaseui-auth-container', uiConfig);
 
     }).catch(function(error) {
@@ -42,7 +154,7 @@ $('#firebase-register .mdl-button').on('click', function (e) {
 });
 
 function showDefaultNtf() {
-    var setting = {
+    let setting = {
         type: 'info',
         newest_on_top: true,
         delay: -1

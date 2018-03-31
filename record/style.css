@@ -46,7 +46,7 @@ body {
 }
 
 #page-content-wrapper {
-    /*width: 80%;*/
+    margin: 0 auto;
 }
 
 #container-fluid {
@@ -983,6 +983,6 @@ td {
 }
 
 #right-ul a:hover {
-    color: #66615b;
+    color: #E57C3E;
     background-color: rgb(235 ,234, 230);
 }
