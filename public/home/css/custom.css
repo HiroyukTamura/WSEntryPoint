@@ -1,0 +1,60 @@
+#google_play_btn {
+    width: 230px;
+    margin-top: 20px;
+}
+
+#login_title{
+    margin-bottom: 30px;
+    /*color: #f05f40;*/
+}
+
+#login_hr{
+    margin-bottom: 60px;
+}
+
+#portfolio {
+    background-color: #f48f79;
+}
+
+#mainNav .navbar-brand {
+    text-transform: none;
+}
+
+hr {
+    display: block;
+    height: unset;
+    border-width: 3px;
+    border-color: #f05f40;
+    margin: 0 auto;
+    padding: unset;
+}
+
+.mdl-mini-footer {
+    background: none;
+}
+
+#firebaseui-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#firebase-register .mdl-button{
+    background: #db4437;
+    color: white;
+    padding: 16px 24px;
+    font-size: 18px;
+}
+
+#firebase-register .firebaseui-idp-text {
+    font-size: 18px;
+}
+
+#firebase-register {
+    display: flex;
+    align-items: center;
+}
+
+.firebaseui-card-content {
+    padding: 36px;
+}
