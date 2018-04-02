@@ -42,19 +42,98 @@ hr {
 #firebase-register .mdl-button{
     background: #db4437;
     color: white;
-    padding: 16px 24px;
-    font-size: 18px;
+    padding: 12px 20px;
+    /*font-size: 18px;*/
 }
 
 #firebase-register .firebaseui-idp-text {
-    font-size: 18px;
+    /*font-size: 18px;*/
 }
 
 #firebase-register {
     display: flex;
     align-items: center;
+    padding: 0 36px 0 0;
+    width: min-content;
+}
+
+#firebase-register ul {
+    padding-left: 0;
+    list-style-type: none;
 }
 
 .firebaseui-card-content {
-    padding: 36px;
+    padding: 0;
+}
+
+#auth-cont-w {
+    width: 312px;
+}
+
+#about {
+    background-color: #F4F3EF;;
+}
+
+.firebaseui-idp-button {
+    max-width: 240px;
+}
+
+/************ SignUp動作 ************/
+
+#btn_wrapper {
+    width: fit-content;
+    margin: 0 auto;
+}
+
+#sign_up {
+    padding-left: 28px;
+}
+
+.sign_up_txt {
+    padding: 0;
+}
+
+.mdl-textfield {
+    padding: 20px 0 15px 0;
+    width: 240px;
+}
+
+.mdl-textfield__label:after{
+    bottom: 15px;
+}
+
+.mdl-textfield__input {
+    padding: 4px 0 0 0;
+}
+
+#vert_seem {
+    text-align: center;
+    position: relative;
+    width: 132px;
+    margin: 0 -24px;
+}
+
+#vert_seem p {
+    position: absolute;
+    top: 50%;
+    width: inherit;
+    text-align: center;
+    -ms-transform: translateY(-50%);
+    -webkit-transform : translateY(-50%);
+    transform : translateY(-50%);
+    font-size: 1.6rem;
+    padding: 36px 0;
+    color: #db4437;
+}
+
+#auth-cont-w p {
+    padding: 8px 32px 0 32px;
+}
+
+.sign-up-title {
+    font-size: 1.4rem;
+}
+
+#firebaseui-auth-container{
+    padding-top: 20px;
 }

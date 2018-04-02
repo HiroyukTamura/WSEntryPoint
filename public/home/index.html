@@ -135,30 +135,86 @@
     <section class="bg-primary" id="about">
       <div class="container">
         <div class="row">
-          <div class="col-lg-8 mx-auto text-center">
+          <div class="col-lg-12 mx-auto text-center">
             <h2 class="section-heading " id="login_title">Web版にログイン</h2>
             <hr id="login_hr">
             <div id="firebaseui-wrapper">
-
-              <div id="firebase-register">
-                <div class="firebaseui-card-content">
-                  <div class="firebaseui-idp-list">
-                    <form onsubmit="return false">
-                      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect firebaseui-idp-button firebaseui-id-idp-button">
-                        <span class="firebaseui-idp-icon-wrapper">
-                            <i class="fas fa-address-card fa-lg"></i>
-                        </span>
-                        <span class="firebaseui-idp-text firebaseui-idp-text-long">
-                           メールアドレスで会員登録
-                        </span>
-                        <span class="firebaseui-idp-text firebaseui-idp-text-short">会員登録</span>
-                      </button>
-                    </form>
-                  </div>
-                </div>
+              <div id="auth-cont-w" class="sign_in_col">
+                <h6 class="sign-up-title">SNSアカウントでログイン</h6>
+                <div id="firebaseui-auth-container"></div>
+                <p>※SNS連携によって連携先への投稿が許可されることはありません。</p>
               </div>
 
-              <div id="firebaseui-auth-container"></div>
+              <div id="vert_seem">
+                <p>OR</p>
+              </div>
+
+              <div id="firebase-register" class="sign_in_col">
+                <!--<div class="firebaseui-card-content">-->
+                  <!--<div class="firebaseui-idp-list">-->
+                    <!--<form onsubmit="return false">-->
+                      <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect firebaseui-idp-button firebaseui-id-idp-button">-->
+                        <!--<span class="firebaseui-idp-icon-wrapper">-->
+                            <!--<i class="fas fa-address-card fa-lg"></i>-->
+                        <!--</span>-->
+                        <!--<span class="firebaseui-idp-text firebaseui-idp-text-long">-->
+                           <!--メールアドレスで会員登録-->
+                        <!--</span>-->
+                        <!--<span class="firebaseui-idp-text firebaseui-idp-text-short">会員登録</span>-->
+                      <!--</button>-->
+                    <!--</form>-->
+                  <!--</div>-->
+                <!--</div>-->
+                <div id="sign_up">
+                  <h6 class="sign-up-title">メールアドレスで登録</h6>
+                  <ul>
+                    <li>
+                      <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                          <input class="mdl-textfield__input" type="text" id="form_username">
+                          <label class="mdl-textfield__label" for="form_username">ユーザ名</label>
+                        </div>
+                      </form>
+                    </li>
+                    <li>
+                      <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                          <input class="mdl-textfield__input" type="email" id="form_email">
+                          <label class="mdl-textfield__label" for="form_email">メールアドレス</label>
+                          <span class="mdl-textfield__error">メールアドレスの形式が正しくありません</span>
+                        </div>
+                      </form>
+                    </li>
+                    <li>
+                      <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                          <input class="mdl-textfield__input" type="password" id="form_pw">
+                          <label class="mdl-textfield__label" for="form_pw">パスワード</label>
+                          <span class="mdl-textfield__error">40文字以上だタコ！</span>
+                        </div>
+                      </form>
+                    </li>
+                    <li>
+                      <p>ご登録の前に<a href="../info/index.html#disclaimer">免責事項</a>と<a href="../info/index.html#pp">プライバシーポリシー</a>を必ずお読みください。</p>
+                    </li>
+                    <li>
+                      <form onsubmit="return false">
+                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect firebaseui-idp-button firebaseui-id-idp-button">
+                          <!--<span class="firebaseui-idp-icon-wrapper">-->
+                            <!--<i class="fas fa-address-card fa-lg"></i>-->
+                          <!--</span>-->
+                          <div id="btn_wrapper">
+                            <span class="firebaseui-idp-text firebaseui-idp-text-long sign_up_txt">
+                              無料で会員登録
+                            </span>
+                            <span class="firebaseui-idp-text firebaseui-idp-text-short sign_up_txt">会員登録</span>
+                          </div>
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
             <!--<hr class="light my-4">-->
             <!--<p class="text-faded mb-4">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>-->
