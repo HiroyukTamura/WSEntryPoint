@@ -1,7 +1,7 @@
 firebase.initializeApp(CONFIG);
 
 const CLIENT_ID = "60633268871-8nm9rv1hlobl0s2bptb4917b88j8vmar.apps.googleusercontent.com";
-
+const NODE_CODE_CREATE_ACCOUNT = 'CREATE_ACCOUNT_FROM_WEB';
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 const uiConfig = {
@@ -54,24 +54,37 @@ firebase.auth().onAuthStateChanged(user => {
         ui.disableAutoSignIn();
 });
 
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(function() {
-        ui.start('#firebaseui-auth-container', uiConfig);
+(function () {
+    const formName = $('#form_username');
+    const formEmail = $('#form_email');
+    const formPw = $('#form_pw');
 
-    }).catch(function(error) {
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(function() {
+            ui.start('#firebaseui-auth-container', uiConfig);
+        }).catch(function(error) {
         console.log(error.code, error.message);
         $('#about').hide();
     });
 
-showDefaultNtf();
+    showDefaultNtf();
 
-$('#firebase-register .mdl-button').on('click', function (e) {
-    $('#form_username').val();
-    $('#form_email').val();
-    $('#form_pw').val();
-    //todo 登録動作
-    return false;
-});
+    $('#firebase-register .mdl-button').on('click', function (e) {
+        let name = formName.val();
+        let email = formEmail.val();
+        let pw = formPw.val();
+        //todo 例外処理
+        let key = firebase.database().ref('keyPusher').push().key;
+        firebase.database().ref(makeRefScheme(['writeTask', key])).set({
+            email: email,
+            password: pw,
+            displayName: name,
+            code: NODE_CODE_CREATE_ACCOUNT,
+            time: moment().format('YYYYMMDD')
+        });
+        return false;
+    });
+}());
 
 function showDefaultNtf() {
     const isMobi = isMobile();
@@ -85,7 +98,7 @@ function showDefaultNtf() {
     };
     if (!isMobi){
         setting.delay = -1;
-        setting.from = 'bottom';
+        setting.placement.from = 'bottom';
     }
 
     $.notify({

@@ -171,7 +171,7 @@
                   <h6 class="sign-up-title">メールアドレスで登録</h6>
                   <ul>
                     <li>
-                      <form action="#">
+                      <form onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                           <input class="mdl-textfield__input" type="text" id="form_username">
                           <label class="mdl-textfield__label" for="form_username">ユーザ名</label>
@@ -179,7 +179,7 @@
                       </form>
                     </li>
                     <li>
-                      <form action="#">
+                      <form onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                           <input class="mdl-textfield__input" type="email" id="form_email">
                           <label class="mdl-textfield__label" for="form_email">メールアドレス</label>
@@ -188,7 +188,7 @@
                       </form>
                     </li>
                     <li>
-                      <form action="#">
+                      <form onsubmit="return false">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                           <input class="mdl-textfield__input" type="password" id="form_pw">
                           <label class="mdl-textfield__label" for="form_pw">パスワード</label>
@@ -298,11 +298,13 @@
 
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/2.7.0/firebase-ui-auth__ja.js"></script>
     <script src="https://smartlock.google.com/client"></script>
 
     <script src="../dist/bootstrap-notify.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
 
     <!-- Custom scripts for this template -->
     <script src="js/creative.min.js"></script>
