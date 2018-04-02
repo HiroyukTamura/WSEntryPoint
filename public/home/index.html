@@ -141,7 +141,9 @@
             <div id="firebaseui-wrapper">
               <div id="auth-cont-w" class="sign_in_col">
                 <h6 class="sign-up-title">SNSアカウントでログイン</h6>
-                <div id="firebaseui-auth-container"></div>
+                <div id="firebaseui-auth-container">
+                  <div class="mdl-spinner mdl-js-spinner is-active" id="spinner-fb"></div>
+                </div>
                 <p>※SNS連携によって連携先への投稿が許可されることはありません。</p>
               </div>
 
@@ -304,6 +306,7 @@
 
     <!-- Custom scripts for this template -->
     <script src="js/creative.min.js"></script>
+    <script src="../dist/common.js"></script>
     <script src="js/custom.js"></script>
 
   </body>

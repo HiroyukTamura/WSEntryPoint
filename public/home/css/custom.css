@@ -110,6 +110,7 @@ hr {
     text-align: center;
     position: relative;
     width: 132px;
+    min-height: 72px;
     margin: 0 -24px;
 }
 
@@ -136,4 +137,6 @@ hr {
 
 #firebaseui-auth-container{
     padding-top: 20px;
+    width: 312px;/*これ固定で大丈夫 firebase ui準拠*/
+    height: 254px;/*これ固定で大丈夫firebase ui準拠*/
 }

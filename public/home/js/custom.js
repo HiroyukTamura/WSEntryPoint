@@ -1,26 +1,8 @@
-let config = {
-    apiKey: "AIzaSyBQnxP9d4R40iogM5CP0_HVbULRxoD2_JM",
-    authDomain: "wordsupport3.firebaseapp.com",
-    databaseURL: "https://wordsupport3.firebaseio.com",
-    projectId: "wordsupport3",
-    storageBucket: "wordsupport3.appspot.com",
-    messagingSenderId: "60633268871"
-};
+firebase.initializeApp(CONFIG);
 
 const CLIENT_ID = "60633268871-8nm9rv1hlobl0s2bptb4917b88j8vmar.apps.googleusercontent.com";
 
-firebase.initializeApp(config);
-
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
-
-firebase.auth().onAuthStateChanged(user => {
-    if(user) {
-        console.log("onAuthStateChanged", "user login");
-        // window.location.href = "../record/index.html";
-    } else {
-        ui.disableAutoSignIn();
-    }
-});
 
 const uiConfig = {
     signInOptions: [
@@ -49,22 +31,28 @@ const uiConfig = {
             // will reset, clearing any UI. This commonly occurs for error code
             // 'firebaseui/anonymous-upgrade-merge-conflict' when merge conflict
             // occurs. Check below for more details on this.
-            // todo エラー処理
-            console.log(error.message);
-            // return handleUIError(error);
+            return handleUIError(error);
         },
         uiShown: function () {
-            $('.firebaseui-list-item').eq(1).find('.firebaseui-idp-text-long').html('メールアドレスでログイン・会員登録');
             console.log("uiShown");
+            $('#spinner-fb').hide();
         }
     },
     credentialHelper: CLIENT_ID && CLIENT_ID != 'YOUR_OAUTH_CLIENT_ID' ?
         firebaseui.auth.CredentialHelper.GOOGLE_YOLO :
         firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
     // Terms of service url.
-    tosUrl: 'https://github.com/HiroyukTamura/WSEntryPoint/wiki/%E3%83%97%E3%83%A9%E3%82%A4%E3%83%90%E3%82%B7%E3%83%BC%E3%83%9D%E3%83%AA%E3%82%B7%E3%83%BC',//todo tos変更すること
+    tosUrl: '../info/index.html#disclaimer',
     signInSuccessUrl: '../record/index.html'
 };
+
+firebase.auth().onAuthStateChanged(user => {
+    if(user) {
+        console.log("onAuthStateChanged", "user login");
+        // window.location.href = "../record/index.html";
+    } else
+        ui.disableAutoSignIn();
+});
 
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     .then(function() {
@@ -78,25 +66,31 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 showDefaultNtf();
 
 $('#firebase-register .mdl-button').on('click', function (e) {
-    $(this).css('visibility', 'hidden');
-    $('.firebaseui-idp-button[data-provider-id="password"]').click();
+    $('#form_username').val();
+    $('#form_email').val();
+    $('#form_pw').val();
+    //todo 登録動作
     return false;
 });
 
 function showDefaultNtf() {
+    const isMobi = isMobile();
+    const align = isMobi ? 'center' : 'right';
     let setting = {
         type: 'info',
         newest_on_top: true,
-        delay: -1,
         placement: {
-            from: "bottom",
-            align: "right"
+            align: align
         }
     };
+    if (!isMobi){
+        setting.delay = -1;
+        setting.from = 'bottom';
+    }
 
     $.notify({
         title: '<strong>本サービスはβ版です</strong></br>',
-        message: '不具合が発生したり、入力したデータが失われる場合があります。あらかじめご了承ください。',
+        message: '不具合が発生したり、データが失われる場合があります。あらかじめご了承ください。',
     }, setting);
 }
 
@@ -105,4 +99,9 @@ function getRecaptchaMode() {
     // we might want to actually parse the fragment as a query string.
     return location.hash.indexOf('recaptcha=invisible') !== -1 ?
         'invisible' : 'normal';
+}
+
+function handleUIError(error) {
+    showNotification(ERR_MSG_OPE_FAILED, 'danger');
+    console.log(error.code, error.message);
 }
