@@ -42,14 +42,14 @@ const uiConfig = {
         firebaseui.auth.CredentialHelper.GOOGLE_YOLO :
         firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
     // Terms of service url.
-    tosUrl: '../info/index.html#disclaimer',
-    signInSuccessUrl: '../record/index.html'
+    tosUrl: 'info/index.html#disclaimer',
+    signInSuccessUrl: 'record/index.html'
 };
 
 firebase.auth().onAuthStateChanged(user => {
     if(user) {
         console.log("onAuthStateChanged", "user login");
-        // window.location.href = "../record/index.html";
+        // window.location.href = "/record/index.html"; todo これアクティベートすべし
     } else
         ui.disableAutoSignIn();
 });
@@ -74,14 +74,23 @@ firebase.auth().onAuthStateChanged(user => {
         let email = formEmail.val();
         let pw = formPw.val();
         //todo 例外処理
-        let key = firebase.database().ref('keyPusher').push().key;
+        let db = firebase.database();
+        let key = db.ref('keyPusher').push().key;
         firebase.database().ref(makeRefScheme(['writeTask', key])).set({
             email: email,
             password: pw,
             displayName: name,
             code: NODE_CODE_CREATE_ACCOUNT,
             time: moment().format('YYYYMMDD')
+        }).then(() => {
+            window.location.href = "../record/";
+            $(this).prop("disabled", false);
+        }).catch((error) => {
+            showOpeErrNotification(db, -1);
+            console.log(error.code, error.message);
+            $(this).prop("disabled", false);
         });
+        $(this).prop("disabled", true);
         return false;
     });
 }());
