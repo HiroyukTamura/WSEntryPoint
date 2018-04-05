@@ -58,6 +58,7 @@ firebase.auth().onAuthStateChanged(user => {
     const formName = $('#form_username');
     const formEmail = $('#form_email');
     const formPw = $('#form_pw');
+    const fbWrapper = $('#firebaseui-wrapper');
 
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(function() {
