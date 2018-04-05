@@ -1,8 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
-/input/vender/
+/public/input/vender/
 /home/js/creative.min.js
 /home/css/creative.css
-/input/draglula/
+/public/input/draglula/
 /dist/bootstrap-notify.min.js
 /dist/material.css
 /dist/bmd/
@@ -11,4 +11,8 @@
 /dist/mixitup.min.js
 /node_modules/
 /package-lock.json
+/.idea/
 /public/dist/
+!/public/dist/recordUtil.js
+!/public/dist/common.js
+!/public/dist/common.css
