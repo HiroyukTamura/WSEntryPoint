@@ -1,0 +1,12 @@
+body {
+    background-color: #F4F3EF;
+}
+
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
+}
+
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
+}
