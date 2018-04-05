@@ -63,6 +63,10 @@ hr {
     margin: 0 auto;
 }
 
+#firebaseui-wrapper[min-width~="690px"] #firebase-register {
+    margin: 0;
+}
+
 #firebase-register ul {
     padding-left: 0;
     list-style-type: none;
@@ -75,6 +79,10 @@ hr {
 #auth-cont-w {
     width: 312px;
     margin: 0 auto;
+}
+
+#firebaseui-wrapper[min-width~="690px"] #auth-cont-w {
+    margin: 0;
 }
 
 #about {
@@ -139,6 +147,10 @@ hr {
     font-size: 1.6rem;
     padding: 36px 0;
     color: #db4437;
+}
+
+#vert_seem[min-width~="690px"] {
+    position: relative;
 }
 
 #auth-cont-w p {
