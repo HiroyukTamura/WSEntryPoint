@@ -10,3 +10,151 @@ body {
     background: #524b4b;
     color: white;
 }
+
+#center-col {
+    padding: 48px;
+    margin: 0 auto;
+}
+
+.page-content {
+    display: flex;
+    justify-items: center;
+}
+
+.mdl-layout__content {
+    width: 100%;
+    margin-top: 72px;
+}
+
+.card-item {
+    width: 600px;
+    min-height: unset;
+    margin: 16px 0;
+}
+
+.card-item .mdl-card__title {
+    padding: 0 16px;
+}
+
+.card-item .mdl-list {
+    padding: 8px 0 0 0;
+    margin: 0;
+}
+
+.card-item .mdl-card__supporting-text {
+    padding: 0 16px 16px;
+    margin: 0 0 0 72px;
+    width: unset;
+}
+
+.item-li {
+    padding: 0 16px;
+}
+
+.card-item .mdl-list__item-primary-content {
+    min-width: 16rem;
+}
+
+.time-div, .times {
+    font-size: 20px;
+}
+
+.times-unit {
+    font-size: 16px;
+    padding-left: 0.2rem;
+}
+
+.card-table {
+    display: flex;
+}
+
+.cell {
+    flex-grow: 1;
+    border-left: orange solid 2px;
+    padding-left: 8px;
+}
+
+.cell-title {
+    padding-bottom: 4px;
+}
+
+.card-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.card-item .mdl-card__actions.mdl-card--border {
+    text-align: right;
+    padding: 8px 16px;
+}
+
+.card-let {
+    color: darkgray;
+    padding-left: 0.5rem;
+    font-size: 16px;
+}
+
+.time {
+    font-size: 30px;
+    line-height: 30px;
+    padding-bottom: 24px;
+    color: rgba(0,0,0,.87);
+}
+
+.time > span{
+    vertical-align: middle;
+}
+
+.arrow {
+    font-size: 22px;
+    color: orange;
+}
+
+.clock {
+    font-size: 22px;
+    color: gray;
+    margin-right: 8px;
+}
+
+.vert {
+    margin-right: 48px;
+    width: 24px;
+    position: relative;
+}
+
+.vert-line {
+    width: 2px;
+    height: 100%;
+    background-color: gray;
+    margin: 0 11px;
+    position: absolute;
+}
+
+.vert .rounded-circle {
+    height: 16px;
+    width: 16px;
+    border: gray solid 2px;
+    background: #F4F3EF;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.tile {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+/*.card-item .header{*/
+    /*margin: 0;*/
+    /*background-color: orange;*/
+    /*color: white;*/
+/*}*/
+
+/*.card-middle {*/
+    /*border: #0b2e13 solid 1px;*/
+    /*border-radius: 10px;*/
+    /*padding: 16px;*/
+    /*margin: 0 16px 16px 16px;*/
+/*}*/

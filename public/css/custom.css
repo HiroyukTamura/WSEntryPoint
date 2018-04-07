@@ -129,7 +129,7 @@ hr {
     margin: 0 auto;
 }
 
-#vert_seem[min-width~="690px"] {
+#firebaseui-wrapper[min-width~="690px"] #vert_seem {
     flex-wrap: nowrap;
     display: flex;
     margin: 0 -24px;

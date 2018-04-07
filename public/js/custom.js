@@ -49,7 +49,7 @@ const uiConfig = {
 firebase.auth().onAuthStateChanged(user => {
     if(user) {
         console.log("onAuthStateChanged", "user login");
-        // window.location.href = "/record/index.html"; todo これアクティベートすべし
+        window.location.href = "home/";
     } else
         ui.disableAutoSignIn();
 });
@@ -84,7 +84,7 @@ firebase.auth().onAuthStateChanged(user => {
             code: NODE_CODE_CREATE_ACCOUNT,
             time: moment().format('YYYYMMDD')
         }).then(() => {
-            window.location.href = "../record/";
+            window.location.href = "../home/";
             $(this).prop("disabled", false);
         }).catch((error) => {
             showOpeErrNotification(db, -1);

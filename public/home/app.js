@@ -44,9 +44,6 @@ window.onload = function init() {
 };
 
 function onLoginSuccess() {
-    const vertSeem = $('#vert_seem');
-    const fbWrapper =$('#firebaseui-wrapper');
-
     console.log("onLoginSuccess");
     progress.hide();
     loginUi.hide();

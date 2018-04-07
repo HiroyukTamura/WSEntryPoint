@@ -28,6 +28,9 @@
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
+
     <link href="../dist/common.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 </head>
@@ -94,8 +97,161 @@
 
         <main class="mdl-layout__content">
             <div class="page-content">
-                <div id="cont">
-
+                <div id="center-col">
+                    <div class="tile">
+                        <div class="vert">
+                            <div class="vert-line"></div>
+                            <div class="rounded-circle"></div>
+                        </div>
+                        <div>
+                            <div class="card-item mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title">
+                                    <ul class="demo-list-two mdl-list">
+                                        <li class="mdl-list__item mdl-list__item--two-line item-li ">
+                                    <span class="mdl-list__item-primary-content">
+                                        <i class="material-icons mdl-list__item-avatar">person</i>
+                                        <span>田村 浩幸</span><span class="card-let">さんが出勤しました</span>
+                                        <span class="mdl-list__item-sub-title">48分前</span>
+                                    </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                        コメント
+                                    </a>
+                                    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                        <i class="material-icons">thumb_up</i>
+                                    </button>
+                                </div>
+                                <div class="mdl-card__menu">
+                                    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                        <i class="material-icons">share</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <div class="vert">
+                            <div class="vert-line"></div>
+                            <div class="rounded-circle"></div>
+                        </div>
+                        <div>
+                            <div class="card-item mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title">
+                                    <ul class="demo-list-two mdl-list">
+                                        <li class="mdl-list__item mdl-list__item--two-line item-li ">
+                                    <span class="mdl-list__item-primary-content">
+                                        <i class="material-icons mdl-list__item-avatar">person</i>
+                                        <span>田村 浩幸</span><span class="card-let">さんが今日の勤務を終えました</span>
+                                        <span class="mdl-list__item-sub-title">48分前</span>
+                                    </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="mdl-card__supporting-text">
+                                    <div class="time">
+                                        <span class="clock"><i class="fas fa-clock"></i></span>
+                                        <span class="start">9:00</span>
+                                        <span class="arrow"><i class="fas fa-angle-double-right"></i></span>
+                                        <span class="end">16:00</span>
+                                    </div>
+                                    <div class="card-table">
+                                        <div class="cell">
+                                            <div class="cell-title">
+                                                <span>今月</span>
+                                            </div>
+                                            <div class="time-div">
+                                                <span class="times">4</span><span class="times-unit">回</span>
+                                            </div>
+                                        </div>
+                                        <div class="cell">
+                                            <div class="cell-title">
+                                                <span>積算</span>
+                                            </div>
+                                            <div class="time-div">
+                                                <span class="times">24</span><span class="times-unit">回</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                        コメント
+                                    </a>
+                                    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                        <i class="material-icons">thumb_up</i>
+                                    </button>
+                                </div>
+                                <div class="mdl-card__menu">
+                                    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                        <i class="material-icons">share</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <div class="vert">
+                            <div class="vert-line"></div>
+                            <div class="rounded-circle"></div>
+                        </div>
+                        <div>
+                            <div class="card-item mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title">
+                                    <ul class="demo-list-two mdl-list">
+                                        <li class="mdl-list__item mdl-list__item--two-line item-li ">
+                                    <span class="mdl-list__item-primary-content">
+                                        <i class="material-icons mdl-list__item-avatar">person</i>
+                                        <span>田村 浩幸</span><span class="card-let">さんが今日の勤務を終えました</span>
+                                        <span class="mdl-list__item-sub-title">48分前</span>
+                                    </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="mdl-card__supporting-text">
+                                    <div class="time">
+                                        <span class="clock"><i class="fas fa-clock"></i></span>
+                                        <span class="start">9:00</span>
+                                        <span class="arrow"><i class="fas fa-angle-double-right"></i></span>
+                                        <span class="end">16:00</span>
+                                    </div>
+                                    <div class="card-table">
+                                        <div class="cell">
+                                            <div class="cell-title">
+                                                <span>今月</span>
+                                            </div>
+                                            <div class="time-div">
+                                                <span class="times">4</span><span class="times-unit">回</span>
+                                            </div>
+                                        </div>
+                                        <div class="cell">
+                                            <div class="cell-title">
+                                                <span>積算</span>
+                                            </div>
+                                            <div class="time-div">
+                                                <span class="times">24</span><span class="times-unit">回</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mdl-card__actions mdl-card--border">
+                                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                        コメント
+                                    </a>
+                                    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                        <i class="material-icons">thumb_up</i>
+                                    </button>
+                                </div>
+                                <div class="mdl-card__menu">
+                                    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                        <i class="material-icons">share</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -116,6 +272,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 
 <script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
+<script src="../dist/bootstrap-notify.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-auth.js"></script>
