@@ -97,8 +97,8 @@ body {
 .time {
     font-size: 30px;
     line-height: 30px;
-    padding-bottom: 24px;
-    color: rgba(0,0,0,.87);
+    /*padding-bottom: 24px;*/
+    color: rgba(0,0,0,.7);
 }
 
 .time > span{
@@ -144,6 +144,29 @@ body {
 .tile {
     display: flex;
     flex-wrap: nowrap;
+}
+
+.sec-title {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.fa-edit {
+    margin-right: 0.5em;
+    color: orange;
+}
+
+.rec-times {
+    margin-right: 1em;
+}
+
+.time-title {
+    font-size: 16px;
+    color: rgba(0, 0, 0, .7);
+}
+
+.time-compo {
+    padding-bottom: 16px;
 }
 
 /*.card-item .header{*/
