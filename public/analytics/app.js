@@ -16,6 +16,7 @@ const tbody = $(".chart-ave").eq(0).find('tbody');
 const chartWrapper = $('#chart_w');
 const errNonData = $('.err-non-data');
 
+
 /*---------loading系------*/
 const postLoad = $('#post_load');
 let headerBtnEnable = false;//これがfalseのとき、ヘッダボタンを押しても動作させない。
