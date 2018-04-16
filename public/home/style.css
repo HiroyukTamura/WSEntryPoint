@@ -170,18 +170,22 @@ body {
 }
 
 #google-play-badge{
+    margin: 0;
+}
+
+#google-play-badge img {
     width: 153px;
     height: auto;
     -ms-interpolation-mode: bicubic;
     margin: 0 0 0 auto;
 }
 
-#social-btns button {
-    margin-left: 10px;
+#about-us {
+    margin-bottom: 0;
 }
 
-#social-btns {
-    /*font-size: 1.5rem;*/
+#footer-col-right {
+    margin-bottom: 0;
 }
 
 #about-us li{
@@ -190,11 +194,6 @@ body {
 
 .footer-column {
     margin: 0 16px;
-}
-
-#footer-logo__out img {
-    height: 72px;
-    width: 72px;
 }
 
 #footer-in {
@@ -206,6 +205,14 @@ body {
     left: 50%;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
+}
+
+#footer-logo__out > button {
+    margin: 0 24px;
+}
+
+#footer-logo__out :hover {
+    color: #E57C3E;
 }
 
 .mdl-mega-footer__right-section {
@@ -221,6 +228,10 @@ body {
 
 #footer-col-right-li-badge {
     text-align: right;
+}
+
+#add-dev-btn {
+    padding-top: 8px;
 }
 /*.card-item .header{*/
     /*margin: 0;*/
