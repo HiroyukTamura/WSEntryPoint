@@ -169,6 +169,59 @@ body {
     padding-bottom: 16px;
 }
 
+#google-play-badge{
+    width: 153px;
+    height: auto;
+    -ms-interpolation-mode: bicubic;
+    margin: 0 0 0 auto;
+}
+
+#social-btns button {
+    margin-left: 10px;
+}
+
+#social-btns {
+    /*font-size: 1.5rem;*/
+}
+
+#about-us li{
+    margin: 8px;
+}
+
+.footer-column {
+    margin: 0 16px;
+}
+
+#footer-logo__out img {
+    height: 72px;
+    width: 72px;
+}
+
+#footer-in {
+    position: relative;
+}
+
+#footer-logo__out {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.mdl-mega-footer__right-section {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+}
+
+#footer-col-right{
+    list-style: none;
+}
+
+#footer-col-right-li-badge {
+    text-align: right;
+}
 /*.card-item .header{*/
     /*margin: 0;*/
     /*background-color: orange;*/
