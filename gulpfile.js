@@ -3,6 +3,12 @@ let autoprefixer = require("gulp-autoprefixer");
 let imagemin = require("gulp-imagemin");
 let uglyfy = require("gulp-uglify");
 
+let babel = require("babel-core");
+import { transform } from 'babel-core';
+import * as babel from 'babel-core';
+
+babel.transform(code, options); // => { code, map, ast }
+
 gulp.task('prefix', function () {
     return gulp.src(['public/*.css'])
         .pipe(autoprefixer({
