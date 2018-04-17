@@ -16,3 +16,5 @@
 !/public/dist/recordUtil.js
 !/public/dist/common.js
 !/public/dist/common.css
+/public/vendor/
+/firebase-debug.log
