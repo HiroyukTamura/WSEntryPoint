@@ -2,12 +2,15 @@ let gulp = require("gulp");
 let autoprefixer = require("gulp-autoprefixer");
 let imagemin = require("gulp-imagemin");
 let uglyfy = require("gulp-uglify");
+let rename = require("gulp-rename");
+let ejs = require("gulp-ejs");
+let Stream = require('stream');
 
-let babel = require("babel-core");
-import { transform } from 'babel-core';
-import * as babel from 'babel-core';
-
-babel.transform(code, options); // => { code, map, ast }
+// let babel = require("babel-core");
+// import { transform } from 'babel-core';
+// import * as babel from 'babel-core';
+//
+// babel.transform(code, options); // => { code, map, ast }
 
 gulp.task('prefix', function () {
     return gulp.src(['public/*.css'])
@@ -34,4 +37,33 @@ gulp.task('img', function () {
        .pipe(gulp.dist('fuga'));
 });
 
-gulp.task('default', ['babel', 'prefix']);
+gulp.task("ejs", function() {
+    gulp.src(
+        ["gulp/ejs/fragment/*.ejs"] //参照するディレクトリ、出力を除外するファイル
+    )
+        .pipe(ejs())
+        .pipe(getFileName(filePath))
+        .pipe(rename(function(path) {
+            console.log(filePath);
+            let pathArr = filePath.substr(0, filePath.length-4).split('\\');
+            let lastDir = pathArr[pathArr.length-1];
+            console.log(lastDir);
+            path.dirname = lastDir;
+            path.extname = '.html';
+            path.basename = 'index2';
+        }))
+        .pipe(gulp.dest("public/"))
+});
+
+
+let filePath = '';
+function getFileName() {
+    let stream = new Stream.Transform({ objectMode: true });
+    stream._transform = function(file, unused, callback) {
+        filePath = file.path;
+        callback(null, file);
+    };
+    return stream;
+}
+
+gulp.task('default', ['ejs']);
