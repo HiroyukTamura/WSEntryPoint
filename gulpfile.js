@@ -8,8 +8,12 @@ const Stream = require('stream');
 const sass = require('gulp-sass');
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
+const tap = require('gulp-tap');
+const using = require('gulp-using');
 
 let filePath = '';
+
+gulp.task('default', ['prefix']);
 
 // let babel = require("babel-core");
 // import { transform } from 'babel-core';
@@ -19,7 +23,9 @@ let filePath = '';
 
 gulp.task('prefix', function () {
     return gulp.src(['gulp/scss/*.scss'])
-        .pipe(getFileName())
+        .pipe(tap(function(file, t) {
+            filePath = file.path;
+        }))
         .pipe(plumber({
             errorHandler: notify.onError("Error: <%= error.message %>")
         }))
@@ -28,7 +34,8 @@ gulp.task('prefix', function () {
             browsers: ['last 4 version', 'iOS >= 8.1', 'Android >= 4.4'],
             cascade: false
         }))
-        .pipe(gulp.dest("public/"+ getLastDir() +"/style2.css"));
+        .pipe(using())
+        .pipe(gulp.dest("public/"+ getScssDir() +"/style2.css"));
 });
 
 gulp.task('babel', function() {
@@ -80,7 +87,7 @@ function getFileName() {
 
 function getScssDir() {
     let pathArr = filePath.substr(0, filePath.length-5).split('\\');
+    console.log(pathArr[pathArr.length-1]);
     return pathArr[pathArr.length-1];
 }
 
-gulp.task('default', ['ejs']);
