@@ -458,13 +458,13 @@ function showEditToggleMode(isShow) {
             // oldInput.attr('value', '');
             imgDot.css('display', 'flex');
             // $(e.target).html('<i class="material-icons mdl-pre-upgrade">save</i>')
-            //     .sass('color', '#E57C3E')
-            //     .sass('height', '24px')
+            //     .scss('color', '#E57C3E')
+            //     .scss('height', '24px')
             //     .attr('title', 'プロフィールを保存');
             dummyPw.hide();
             pwBtn.show();
             saveEmailBtn.show();
-            // $(this).parent().sass('height', '32px');
+            // $(this).parent().scss('height', '32px');
             $(this).fadeIn();
             // saveBtn.fadeIn();
 
@@ -488,7 +488,7 @@ function showEditToggleMode(isShow) {
             pwBtn.hide();
             editProfBtn.show();
             saveEmailBtn.hide();
-            // $(this).parent().sass('height', '32px');
+            // $(this).parent().scss('height', '32px');
             $(this).fadeIn();
 
             myImg.css('cursor', 'default');

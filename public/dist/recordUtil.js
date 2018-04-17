@@ -454,7 +454,7 @@ function createOneRangeRow(doc, count, value, masterJson) {
 
                 var popoverId = $(e.target).attr('aria-describedby');
                 var popover = $('#'+popoverId);
-                // var rgb = $(this).parents('tr').find('.circle').sass('color').substring(4);
+                // var rgb = $(this).parents('tr').find('.circle').scss('color').substring(4);
                 // rgb = rgb.substring(0, rgb.length-1);
                 // var colorNum = colors.indexOf(rgbToHex(rgb[0], rgb[1], rgb[2]));
                 // console.log(rgbToHex(rgb[0], rgb[1], rgb[2]));

@@ -84,7 +84,7 @@ function onLoginSuccess() {
                 setDisplayMode(MODE_WEEK);
 
                 pageContent.hide();
-                // innerProgress.sass('display', "inline");
+                // innerProgress.scss('display', "inline");
                 resetUi();
                 showData(query);
                 new ScheduleParser().getScheduleAsync();
@@ -102,7 +102,7 @@ function onLoginSuccess() {
                 setDisplayMode(MODE_MONTH);
 
                 pageContent.hide();
-                // innerProgress.sass('display', "inline");
+                // innerProgress.scss('display', "inline");
                 resetUi();
                 showData(query);
                 new ScheduleParser().getScheduleAsync();
@@ -124,7 +124,7 @@ function onLoginSuccess() {
                 }
 
                 pageContent.hide();
-                // innerProgress.sass('display', "inline");
+                // innerProgress.scss('display', "inline");
                 resetUi();
                 showData(query);
                 new ScheduleParser().getScheduleAsync();
@@ -146,7 +146,7 @@ function onLoginSuccess() {
                 }
 
                 pageContent.css('display', 'none');
-                // innerProgress.sass('display', "inline");
+                // innerProgress.scss('display', "inline");
                 resetUi();
                 showData(query);
                 new ScheduleParser().getScheduleAsync();
@@ -341,7 +341,7 @@ function onLoginSuccess() {
             var dom = '<tr class="ave-digit">' + '<td></td>' + '<td class="range-title" rowspan="2">' + rangeTitle + '</td>' + '<td class="range-title">' + count + '回' + '</td>' + '<td class="ave-digit-td no-wrap">' + startTime + '</td>' + '<td class="ave-digit-td ave-angle no-wrap" rowspan="2">' + '<i class="fas fa-angle-double-right fa-lg color-orange"></i>' + '</td>' + '<td class="ave-digit-td no-wrap">' + endTime + '</td>' + '<td class="ave-digit-td no-wrap">' + lenTime + '</td>' + '<td></td>' + '</tr>';
 
             var row1 = $(dom);
-            // row1.find('.fa-angle-double-right').sass('color', colors[0]);
+            // row1.find('.fa-angle-double-right').scss('color', colors[0]);
             var caption = '<tr class="caption">' + '<td></td>' + '<td class="no-wrap cap-count" data-title="' + snapshot.key + '"></td>' + '<td class="no-wrap cap-start" data-title="' + snapshot.key + '"></td>' + '<td class="no-wrap cap-end" data-title="' + snapshot.key + '"></td>' + '<td class="no-wrap cap-length" data-title="' + snapshot.key + '"></td>' + '<td></td>' + '</tr>';
             var row2 = $(caption);
             var space = spaceRow.clone(true);
@@ -591,11 +591,11 @@ function displayTest() {
 
     initTabLayout2();
     // var table = $('#table-others');
-    // var tableWidth = table.sass({ position: "absolute", visibility: "hidden", display: "block" });
-    // table.sass({ position: "", visibility: "", display: "" });
-    // $('.mdl-mini-footer').sass('min-width', tableWidth+1);
+    // var tableWidth = table.scss({ position: "absolute", visibility: "hidden", display: "block" });
+    // table.scss({ position: "", visibility: "", display: "" });
+    // $('.mdl-mini-footer').scss('min-width', tableWidth+1);
 
-    // innerProgress.sass('display', "none");
+    // innerProgress.scss('display', "none");
     progress.hide();
     pageContent.css('display', 'block');
     postLoad.css('display', 'block');
@@ -874,7 +874,7 @@ function getRangeEnd(date, end) {
 //                    '<td class="ave-digit-td no-wrap">'+ aveLen +'</td>' +
 //                '</tr>';
 //            var row1 = $(dom);
-//            row1.find('.fa-angle-double-right').sass('color', colors[ranges[key]['colorNum']]);
+//            row1.find('.fa-angle-double-right').scss('color', colors[ranges[key]['colorNum']]);
 //            var caption =
 //                '<tr class="caption">' +
 //                    '<td class="no-wrap">先週より+2h15min</td>' +
@@ -933,11 +933,11 @@ function getRangeEnd(date, end) {
 //    //データが皆無であればその旨を表示
 //     var tableOhters = $('#table-others');
 //     if(count === 0){
-//         errNonData.sass('display', "block");
-//         tableOhters.sass('display', "none");
+//         errNonData.scss('display', "block");
+//         tableOhters.scss('display', "none");
 //     } else {
-//         errNonData.sass('display', "none");
-//         tableOhters.sass('display', "block");
+//         errNonData.scss('display', "none");
+//         tableOhters.scss('display', "block");
 //     }
 //
 // }
