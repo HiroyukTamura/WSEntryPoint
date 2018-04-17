@@ -170,7 +170,7 @@ function onGetGroupNodeData(snapshot) {
                         '<ul class="demo-list-two mdl-list mdl-pre-upgrade">'+
                             '<li class="mdl-list__item mdl-list__item--three-line mdl-pre-upgrade">'+
                                 '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                                    '<img class="invite-group-icon rounded-circle mdl-list__item-avatar mdl-shadow--2dp mdl-pre-upgrade" src="'+ groupPhotoUrl +'">'+
+                                    '<img class="invite-group-icon rounded-circle mdl-list__item-avatar mdl-shadow--2dp mdl-pre-upgrade" common="'+ groupPhotoUrl +'">'+
                                     '<span>'+ groupName +'</span>'+
                                     '<span class="mdl-list__item-text-body mdl-pre-upgrade">'+
                                         '<span class="sub-title">グループに招待されています</span>'+
@@ -210,7 +210,7 @@ function onGetGroupNodeData(snapshot) {
 
                     var chipsHtml =
                         '<span class="mdl-chip mdl-chip--contact mdl-pre-upgrade">' +
-                            '<img class="mdl-chip__contact mdl-pre-upgrade" src="'+ memberPhotoUrl +'">' +
+                            '<img class="mdl-chip__contact mdl-pre-upgrade" common="'+ memberPhotoUrl +'">' +
                             '<span class="mdl-chip__text mdl-pre-upgrade">'+ memberName +'</span>' +
                         '</span>';
                     tooltips.append(chipsHtml);
@@ -527,7 +527,7 @@ function addUser2Ui(userName, photoUrl, uid) {
     var ele = $(
         '<div class="user-img-w">'+
             '<div class="mdl-card mdl-shadow--2dp user-image mdl-pre-upgrade">'+
-                '<img src="'+ photoUrl +'" class="user-image-i">'+
+                '<img common="'+ photoUrl +'" class="user-image-i">'+
             '</div>'+
             '<p class="user-name-p">'+ userName +'</p>'+
         '</div>'
@@ -538,7 +538,7 @@ function addUser2Ui(userName, photoUrl, uid) {
     var li = $(
         '<li class="mdl-list__item mdl-pre-upgrade">'+
             '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                '<img src="'+photoUrl+'" class="rounded-circle"><span>'+userName+'</span>'+
+                '<img common="'+photoUrl+'" class="rounded-circle"><span>'+userName+'</span>'+
             '</span>'+
             '<span class="mdl-list__item-secondary-action mdl-pre-upgrade">'+
                 '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="'+ uid +'">'+
@@ -665,7 +665,7 @@ function setOnClickListeners() {
         //         if(!nameInput.val() || !mailInput.val())
         //             return;
         //
-        //         var photoUrl = myImg.attr('src');
+        //         var photoUrl = myImg.attr('common');
         //         var objToUpdate = {};
         //         // if(nameInput.val() !== currentUserE.displayName)
         //         objToUpdate['displayName'] = nameInput.val();
@@ -1073,7 +1073,7 @@ function onGetSearchUsers(resultArr) {
             $(
                 '<li class="mdl-list__item" key="'+ person.uid +'">'+
                     '<span class="mdl-list__item-primary-content">'+
-                        '<img src="'+ photoUrl +'" alt="user-image" class="user-icon-search rounded-circle">'+
+                        '<img common="'+ photoUrl +'" alt="user-image" class="user-icon-search rounded-circle">'+
                         '<span>'+ personName +'</span>'+
                     '</span>'+
                     '<span class="mdl-list__item-secondary-action">'+

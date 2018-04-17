@@ -1297,7 +1297,7 @@ function createUserLi(key, friends) {
     var li = $(
         '<li class="mdl-list__item mdl-pre-upgrade" key="'+key+'">'+
             '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                '<img src="'+ photoUrl +'" alt="user-image">'+
+                '<img common="'+ photoUrl +'" alt="user-image">'+
                 '<span>'+ memberName +'&nbsp;&nbsp;' +
                 // '<span class="config"><i class="fas fa-cog" id='+ key +'></i></span>' +
                     '<div class="btn-group">'+
@@ -1527,7 +1527,7 @@ function appendContentAsDoc(contentData, key) {
         var photoUrl = avoidNullValue(groupJson["member"][this.mContentData.whose]["photoUrl"], 'img/icon.png');
 
         var fileUrl = getFileTypeImageUrl(contentData.type);
-        // ele.find('.file-icon').attr('src', fileUrl);
+        // ele.find('.file-icon').attr('common', fileUrl);
         console.log("fileUrl: ", fileUrl);
         var ele = createHtmlAsData(userName + " at " + ymd, this.mContentData.contentName, comment, this.mKey, photoUrl, fileUrl);
 
@@ -1690,7 +1690,7 @@ function createHtmlAsData(header, title, comment, key, photoUrl, fileUrl) {
     var ele =  $(
         '<div class="card file" key="'+ key +'">'+
             '<div class="ele_header">'+
-                '<img class="user-icon" src="'+ photoUrl +'" alt="user-icon">'+
+                '<img class="user-icon" common="'+ photoUrl +'" alt="user-icon">'+
                 '<span class="event_title">'+ header +'</span>'+
                 '<div class="mdl-layout-spacer mdl-pre-upgrade"></div>'+
                 '<button class="mdl-button mdl-js-button mdl-button--icon edit-comment ele_header_button mdl-pre-upgrade" title="コメントを編集">'+
@@ -1708,7 +1708,7 @@ function createHtmlAsData(header, title, comment, key, photoUrl, fileUrl) {
             '</div>'+
 
             '<div class="flex-box file-wrapper">'+
-                '<img class="file-icon" src="'+ fileUrl +'" alt="file-icon">'+
+                '<img class="file-icon" common="'+ fileUrl +'" alt="file-icon">'+
                 '<ul class="mdl-list mdl-pre-upgrade">'+
                     '<li class="mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
                         '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
@@ -1758,7 +1758,7 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
                     '<ul class="demo-list-three mdl-list">'+
                         '<li class="mdl-list__item mdl-list__item--two-line mdl-pre-upgrade">'+
                             '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                                '<img src="'+ photoUrl +'" alt="userA" class="mdl-list__item-icon mdl-pre-upgrade">'+
+                                '<img common="'+ photoUrl +'" alt="userA" class="mdl-list__item-icon mdl-pre-upgrade">'+
                                 '<span>'+ whose +'</span>'+
                                 '<span class="mdl-list__item-sub-title mdl-pre-upgrade">'+ ymd +'</span>'+
                             '</span>'+
@@ -1778,7 +1778,7 @@ function createHtmlAsDoc(title, ymd, whose, comment, photoUrl) {
 
             // '<div class="comment-follow">'+
             //     '<header class="flex-box">'+
-            //         '<img src="img/icon.png" alt="userA" class="mdl-list__item-icon author-left">'+
+            //         '<img common="img/icon.png" alt="userA" class="mdl-list__item-icon author-left">'+
             //         '<div>'+
             //             '<p class="comment-author">田村ピロシキ</p>'+
             //             '<p class="comment-time">2017.11.15</p>'+
@@ -1796,7 +1796,7 @@ function createHtmlAsDocFollower(userName, ymd, comment, userPhotoUrl) {
             '<hr class="seem">'+
             '<div class="comment-follow">'+
             '<header class="flex-box">'+
-                '<img src="'+ userPhotoUrl +'" alt="userA" class="mdl-list__item-icon author-left">'+
+                '<img common="'+ userPhotoUrl +'" alt="userA" class="mdl-list__item-icon author-left">'+
                 '<div>'+
                     '<p class="comment-author">'+ userName +'</p>'+
                     '<p class="comment-time">'+ ymd +'</p>'+
@@ -1971,7 +1971,7 @@ function openDialog(toShowEle, fileName) {
             $(
                 '<li class="mdl-list__item mdl-pre-upgrade" key="'+ friendKey +'">'+
                     '<span class="mdl-list__item-primary-content mdl-pre-upgrade">'+
-                        '<img src="'+ photoUrl +'" class="mdl-list__item-avatar mdl-pre-upgrade">'+
+                        '<img common="'+ photoUrl +'" class="mdl-list__item-avatar mdl-pre-upgrade">'+
                         '<span>'+ friendName +'</span>'+
                     '</span>'+
                     '<div class="mdl-layout-spacer"></div>'+
