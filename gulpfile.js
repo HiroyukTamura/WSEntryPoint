@@ -1,10 +1,15 @@
-let gulp = require("gulp");
-let autoprefixer = require("gulp-autoprefixer");
-let imagemin = require("gulp-imagemin");
-let uglyfy = require("gulp-uglify");
-let rename = require("gulp-rename");
-let ejs = require("gulp-ejs");
-let Stream = require('stream');
+const gulp = require("gulp");
+const autoprefixer = require("gulp-autoprefixer");
+const imagemin = require("gulp-imagemin");
+const uglyfy = require("gulp-uglify");
+const rename = require("gulp-rename");
+const ejs = require("gulp-ejs");
+const Stream = require('stream');
+const sass = require('gulp-sass');
+const plumber = require('gulp-plumber');
+const notify = require('gulp-notify');
+
+let filePath = '';
 
 // let babel = require("babel-core");
 // import { transform } from 'babel-core';
@@ -13,12 +18,17 @@ let Stream = require('stream');
 // babel.transform(code, options); // => { code, map, ast }
 
 gulp.task('prefix', function () {
-    return gulp.src(['public/*.css'])
+    return gulp.src(['gulp/sass/*.sass'])
+        .pipe(getFileName())
+        .pipe(plumber({
+            errorHandler: notify.onError("Error: <%= error.message %>")
+        }))
+        .pipe(sass())
         .pipe(autoprefixer({
             browsers: ['last 4 version', 'iOS >= 8.1', 'Android >= 4.4'],
             cascade: false
         }))
-        .pipe(gulp.dest('gulp/css'));
+        .pipe(gulp.dest("public/"+ getLastDir() +"/style2.css"));
 });
 
 gulp.task('babel', function() {
@@ -55,8 +65,6 @@ gulp.task("ejs", function() {
         .pipe(gulp.dest("public/"))
 });
 
-
-let filePath = '';
 function getFileName() {
     let stream = new Stream.Transform({ objectMode: true });
     stream._transform = function(file, unused, callback) {
@@ -64,6 +72,11 @@ function getFileName() {
         callback(null, file);
     };
     return stream;
+}
+
+function getLastDir() {
+    let pathArr = filePath.substr(0, filePath.length-4).split('\\');
+    return pathArr[pathArr.length-1];
 }
 
 gulp.task('default', ['ejs']);

@@ -1,0 +1,44 @@
+body {
+    background-color: #F4F3EF;
+}
+
+.mdl-layout__drawer-button i{
+    color: #f4cab1;
+}
+
+.mdl-layout__header {
+    background: #524b4b;
+    color: white;
+}
+
+.mdl-layout__content {
+    width: 100%;
+    margin-top: 72px;
+}
+
+#content-in {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+#main-col {
+    width: 600px;
+}
+
+#left-cal, #right-col {
+    width: 300px;
+}
+
+.column {
+    padding: 12px;
+}
+
+.card-item {
+    width: unset;
+    margin: 16px 0;
+}
+
+#record-card .title-w {
+    margin: 16px;
+}

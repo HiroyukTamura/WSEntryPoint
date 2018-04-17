@@ -1120,7 +1120,7 @@ function onNewFileInputChange(file) {
 
     var mimeType = file.type.toLowerCase();
     if(mimeType !== 'image/jpeg' && mimeType !== 'image/png' && mimeType !== 'image/gif' && mimeType !== "text/plain" &&
-        mimeType !== "text/txt" && mimeType !== "text/html" && mimeType !== "text/css" && mimeType !== "text/xml" && mimeType !== "application/pdf") {
+        mimeType !== "text/txt" && mimeType !== "text/html" && mimeType !== "text/sass" && mimeType !== "text/xml" && mimeType !== "application/pdf") {
         console.log(mimeType);
         showNotification('そのファイル形式はアップロードできません', 'warning');
         return;
@@ -1460,7 +1460,7 @@ function addOneContent(key) {
         case "text/plain":
         case "text/txt":
         case "text/html":
-        case "text/css":
+        case "text/sass":
         case "text/xml":
         case "application/pdf":
             new ContentAppenderAsOtherFile(contentData, key, timeline);

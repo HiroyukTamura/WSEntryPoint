@@ -128,7 +128,7 @@ function onLoginSuccess() {
                 setDisplayMode(MODE_WEEK);
 
                 pageContent.hide();
-                // innerProgress.css('display', "inline");
+                // innerProgress.sass('display', "inline");
                 restUi();
                 showData(query);
                 new ScheduleParser().getScheduleAsync();
@@ -146,7 +146,7 @@ function onLoginSuccess() {
                 setDisplayMode(MODE_MONTH);
 
                 pageContent.hide();
-                // innerProgress.css('display', "inline");
+                // innerProgress.sass('display', "inline");
                 restUi();
                 showData(query);
                 new ScheduleParser().getScheduleAsync();
@@ -169,7 +169,7 @@ function onLoginSuccess() {
             }
 
             pageContent.hide();
-            // innerProgress.css('display', "inline");
+            // innerProgress.sass('display', "inline");
             restUi();
             showData(query);
             new ScheduleParser().getScheduleAsync();
@@ -192,7 +192,7 @@ function onLoginSuccess() {
             }
 
             pageContent.css('display', 'none');
-            // innerProgress.css('display', "inline");
+            // innerProgress.sass('display', "inline");
             restUi();
             showData(query);
             new ScheduleParser().getScheduleAsync();
@@ -399,7 +399,7 @@ function onLoginSuccess() {
                 '</tr>';
 
             const row1 = $(dom);
-            // row1.find('.fa-angle-double-right').css('color', colors[0]);
+            // row1.find('.fa-angle-double-right').sass('color', colors[0]);
             const caption =
                 '<tr class="caption">' +
                 '<td></td>' +
@@ -678,11 +678,11 @@ function displayTest() {
 
     initTabLayout2();
     // var table = $('#table-others');
-    // var tableWidth = table.css({ position: "absolute", visibility: "hidden", display: "block" });
-    // table.css({ position: "", visibility: "", display: "" });
-    // $('.mdl-mini-footer').css('min-width', tableWidth+1);
+    // var tableWidth = table.sass({ position: "absolute", visibility: "hidden", display: "block" });
+    // table.sass({ position: "", visibility: "", display: "" });
+    // $('.mdl-mini-footer').sass('min-width', tableWidth+1);
 
-    // innerProgress.css('display', "none");
+    // innerProgress.sass('display', "none");
     progress.hide();
     pageContent.css('display', 'block');
     postLoad.css('display', 'block');
@@ -963,7 +963,7 @@ function getRangeEnd(date, end) {
 //                    '<td class="ave-digit-td no-wrap">'+ aveLen +'</td>' +
 //                '</tr>';
 //            var row1 = $(dom);
-//            row1.find('.fa-angle-double-right').css('color', colors[ranges[key]['colorNum']]);
+//            row1.find('.fa-angle-double-right').sass('color', colors[ranges[key]['colorNum']]);
 //            var caption =
 //                '<tr class="caption">' +
 //                    '<td class="no-wrap">先週より+2h15min</td>' +
@@ -1022,11 +1022,11 @@ function getRangeEnd(date, end) {
 //    //データが皆無であればその旨を表示
 //     var tableOhters = $('#table-others');
 //     if(count === 0){
-//         errNonData.css('display', "block");
-//         tableOhters.css('display', "none");
+//         errNonData.sass('display', "block");
+//         tableOhters.sass('display', "none");
 //     } else {
-//         errNonData.css('display', "none");
-//         tableOhters.css('display', "block");
+//         errNonData.sass('display', "none");
+//         tableOhters.sass('display', "block");
 //     }
 //
 // }
