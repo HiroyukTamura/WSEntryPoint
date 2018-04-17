@@ -15,27 +15,32 @@ let filePath = '';
 
 gulp.task('default', ['prefix']);
 
-// let babel = require("babel-core");
-// import { transform } from 'babel-core';
-// import * as babel from 'babel-core';
-//
-// babel.transform(code, options); // => { code, map, ast }
+gulp.task('watch', function(){
+    gulp.watch(['gulp/scss/*.scss'], ['prefix']);
+});
 
 gulp.task('prefix', function () {
     return gulp.src(['gulp/scss/*.scss'])
-        .pipe(tap(function(file, t) {
-            filePath = file.path;
-        }))
+        .pipe(using())
         .pipe(plumber({
             errorHandler: notify.onError("Error: <%= error.message %>")
         }))
+        .pipe(getFileName(filePath))
         .pipe(sass())
         .pipe(autoprefixer({
             browsers: ['last 4 version', 'iOS >= 8.1', 'Android >= 4.4'],
             cascade: false
         }))
-        .pipe(using())
-        .pipe(gulp.dest("public/"+ getScssDir() +"/style2.css"));
+        .pipe(rename(function(path) {
+            console.log(filePath);
+            let pathArr = filePath.substr(0, filePath.length-5).split('\\');
+            let lastDir = pathArr[pathArr.length-1];
+            console.log(lastDir);
+            path.dirname = lastDir;
+            path.extname = '.css';
+            path.basename = 'style2';
+        }))
+        .pipe(gulp.dest("public/"));
 });
 
 gulp.task('babel', function() {
@@ -85,9 +90,9 @@ function getFileName() {
     return stream;
 }
 
-function getScssDir() {
-    let pathArr = filePath.substr(0, filePath.length-5).split('\\');
-    console.log(pathArr[pathArr.length-1]);
+function getBottomDir(path) {
+    let pathArr = path.substr(0, filePath.length-4).split('\\');
+    console.log('ふにふに', pathArr[pathArr.length-1]);
     return pathArr[pathArr.length-1];
 }
 
