@@ -15,10 +15,6 @@ let filePath = '';
 
 gulp.task('default', ['prefix']);
 
-gulp.task('watch', function(){
-    gulp.watch(['gulp/scss/*.scss'], ['prefix']);
-});
-
 gulp.task('prefix', function () {
     return gulp.src(['gulp/scss/*.scss'])
         .pipe(using())
@@ -60,7 +56,10 @@ gulp.task('img', function () {
 });
 
 gulp.task('watch', function () {
-   gulp.task('gulp/scss/*scss', ['prefix']);
+   gulp.task('./gulp/scss/*scss', ['prefix'])
+       .on('change', function(event) {
+           console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
+   });
 });
 
 gulp.task("ejs", function() {
