@@ -105,7 +105,7 @@ body {
 #user-list {
   .list-card__header {
     position: relative;
-    padding: 16px;
+    padding: 16px 16px 0 16px;
     font-size: 18px;
     color: $textDefColor;
     .list-card__title {
@@ -121,9 +121,25 @@ body {
       position: absolute;
       font-size: inherit;
       color: $primaryColor;
-      top: 13px;
-      right: 13px;
+      top: 11px;
+      right: 11px;
     }
+  }
+  #user-list-ul {
+    margin: 0;
+    padding: 0 8px;
+    .config {
+      font-size: 18px;
+      color: $textExtraColor;
+    }
+  }
+  .list-drop-btn {
+    margin: 0 auto;
+    color: $textExtraColor;
+    font-size: inherit;
+    height: 28px;
+    width: 28px;
+    min-width: 28px;
   }
 }
 

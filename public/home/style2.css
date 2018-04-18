@@ -79,7 +79,7 @@ body {
 
 #user-list .list-card__header {
   position: relative;
-  padding: 16px;
+  padding: 16px 16px 0 16px;
   font-size: 18px;
   color: rgba(0, 0, 0, 0.87); }
   #user-list .list-card__header .list-card__title {
@@ -93,5 +93,20 @@ body {
     position: absolute;
     font-size: inherit;
     color: #E57C3E;
-    top: 13px;
-    right: 13px; }
+    top: 11px;
+    right: 11px; }
+
+#user-list #user-list-ul {
+  margin: 0;
+  padding: 0 8px; }
+  #user-list #user-list-ul .config {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.54); }
+
+#user-list .list-drop-btn {
+  margin: 0 auto;
+  color: rgba(0, 0, 0, 0.54);
+  font-size: inherit;
+  height: 28px;
+  width: 28px;
+  min-width: 28px; }
