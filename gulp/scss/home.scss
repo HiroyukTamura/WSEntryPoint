@@ -1,7 +1,7 @@
 $primaryColor: #E57C3E;
 $textDefColor: rgba(0, 0, 0, .87);//MDL準拠
 $textExtraColor: rgba(0,0,0,.54);//MDL準拠
-$columnPadding: 12px;
+$columnPadding: 24px;
 
 body {
   background-color: #F4F3EF;
@@ -102,7 +102,7 @@ body {
   }
 }
 
-#user-list {
+.right-card {
   .list-card__header {
     position: relative;
     padding: 16px 16px 0 16px;
@@ -117,15 +117,15 @@ body {
         margin-right: 16px;
       }
     }
-    #member_conf{
+    .list-card__conf {
       position: absolute;
       font-size: inherit;
-      color: $primaryColor;
+      color: $textExtraColor;
       top: 11px;
       right: 11px;
     }
   }
-  #user-list-ul {
+  .list-card__ul {
     margin: 0;
     padding: 0 8px;
     .config {
@@ -140,6 +140,10 @@ body {
     height: 28px;
     width: 28px;
     min-width: 28px;
+  }
+
+  &#group-list{
+    margin-top: 16px;
   }
 }
 

@@ -27,13 +27,13 @@ body {
   justify-content: center; }
 
 #main-col {
-  width: 624px; }
+  width: 636px; }
 
 #left-cal, #right-col {
   width: 300px; }
 
 .column {
-  padding: 12px; }
+  padding: 24px; }
 
 .card-item {
   width: unset;
@@ -77,36 +77,39 @@ body {
         border-left: #E57C3E solid 2px;
         padding: 0 6px; }
 
-#user-list .list-card__header {
+.right-card .list-card__header {
   position: relative;
   padding: 16px 16px 0 16px;
   font-size: 18px;
   color: rgba(0, 0, 0, 0.87); }
-  #user-list .list-card__header .list-card__title {
+  .right-card .list-card__header .list-card__title {
     display: inline-block;
     height: 32px;
     vertical-align: middle; }
-    #user-list .list-card__header .list-card__title .list-card__icon {
+    .right-card .list-card__header .list-card__title .list-card__icon {
       color: #E57C3E;
       margin-right: 16px; }
-  #user-list .list-card__header #member_conf {
+  .right-card .list-card__header .list-card__conf {
     position: absolute;
     font-size: inherit;
-    color: #E57C3E;
+    color: rgba(0, 0, 0, 0.54);
     top: 11px;
     right: 11px; }
 
-#user-list #user-list-ul {
+.right-card .list-card__ul {
   margin: 0;
   padding: 0 8px; }
-  #user-list #user-list-ul .config {
+  .right-card .list-card__ul .config {
     font-size: 18px;
     color: rgba(0, 0, 0, 0.54); }
 
-#user-list .list-drop-btn {
+.right-card .list-drop-btn {
   margin: 0 auto;
   color: rgba(0, 0, 0, 0.54);
   font-size: inherit;
   height: 28px;
   width: 28px;
   min-width: 28px; }
+
+.right-card#group-list {
+  margin-top: 16px; }
