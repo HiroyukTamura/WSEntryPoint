@@ -13,6 +13,7 @@ body {
   margin-top: 72px; }
 
 #content-in {
+  padding-top: 48px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -26,7 +27,7 @@ body {
   justify-content: center; }
 
 #main-col {
-  width: 600px; }
+  width: 624px; }
 
 #left-cal, #right-col {
   width: 300px; }
@@ -36,9 +37,61 @@ body {
 
 .card-item {
   width: unset;
-  margin: 16px 0; }
+  margin-top: 16px; }
 
-#record-card .title-w {
-  margin: 16px; }
-  #record-card .title-w h6 {
-    margin: 16px; }
+#record-card {
+  margin: 0; }
+  #record-card #record-img {
+    height: 300px;
+    position: relative;
+    background: rgba(0, 0, 0, 0.1); }
+    #record-card #record-img .title-w {
+      margin: 16px; }
+      #record-card #record-img .title-w h5 {
+        margin: 0; }
+    #record-card #record-img .mdl-card__supporting-text {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      text-align: right;
+      width: 100%; }
+      #record-card #record-img .mdl-card__supporting-text #action_val :hover {
+        color: #E57C3E;
+        cursor: pointer; }
+      #record-card #record-img .mdl-card__supporting-text #action_val a {
+        color: rgba(0, 0, 0, 0.54);
+        text-decoration: none; }
+      #record-card #record-img .mdl-card__supporting-text #action_val a:first-child span {
+        padding-right: 6px; }
+  #record-card #bottom-table-w {
+    padding: 16px 32px; }
+    #record-card #bottom-table-w table {
+      width: 100%;
+      table-layout: fixed;
+      text-align: left; }
+      #record-card #bottom-table-w table > thead {
+        font-size: 13px; }
+      #record-card #bottom-table-w table > tbody {
+        font-size: 20px; }
+      #record-card #bottom-table-w table td {
+        border-left: #E57C3E solid 2px;
+        padding: 0 6px; }
+
+#user-list .list-card__header {
+  position: relative;
+  padding: 16px;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.87); }
+  #user-list .list-card__header .list-card__title {
+    display: inline-block;
+    height: 32px;
+    vertical-align: middle; }
+    #user-list .list-card__header .list-card__title .list-card__icon {
+      color: #E57C3E;
+      margin-right: 16px; }
+  #user-list .list-card__header #member_conf {
+    position: absolute;
+    font-size: inherit;
+    color: #E57C3E;
+    top: 13px;
+    right: 13px; }

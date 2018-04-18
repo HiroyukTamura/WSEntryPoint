@@ -8,13 +8,13 @@ const Stream = require('stream');
 const sass = require('gulp-sass');
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
-const tap = require('gulp-tap');
 const using = require('gulp-using');
 
 let filePath = '';
 
 gulp.task('default', ['prefix']);
 
+//file watcherで予約中
 gulp.task('prefix', function () {
     return gulp.src(['gulp/scss/*.scss'])
         .pipe(using())
@@ -39,29 +39,7 @@ gulp.task('prefix', function () {
         .pipe(gulp.dest("public/"));
 });
 
-gulp.task('babel', function() {
-    gulp.src('public/*.es6')
-        .pipe(babel())
-        .pipe(gulp.dest('gulp/babel'));
-});
-
-gulp.task('test', function () {
-    console.log('test');
-});
-
-gulp.task('img', function () {
-   gulp.src('hogehoge')
-       .pipe(imagemin())
-       .pipe(gulp.dist('fuga'));
-});
-
-gulp.task('watch', function () {
-   gulp.task('./gulp/scss/*scss', ['prefix'])
-       .on('change', function(event) {
-           console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
-   });
-});
-
+//file watcherで予約中
 gulp.task("ejs", function() {
     gulp.src(
         ["gulp/ejs/fragment/*.ejs"] //参照するディレクトリ、出力を除外するファイル
@@ -78,6 +56,18 @@ gulp.task("ejs", function() {
             path.basename = 'index2';
         }))
         .pipe(gulp.dest("public/"))
+});
+
+gulp.task('babel', function() {
+    gulp.src('public/*.es6')
+        .pipe(babel())
+        .pipe(gulp.dest('gulp/babel'));
+});
+
+gulp.task('img', function () {
+   gulp.src('hogehoge')
+       .pipe(imagemin())
+       .pipe(gulp.dist('fuga'));
 });
 
 function getFileName() {

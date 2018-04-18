@@ -32,7 +32,7 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
 
     <link href="../dist/common.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="style2.css" rel="stylesheet">
 </head>
 <body>
 
@@ -102,16 +102,61 @@
                     </div>
                     <div id="main-col" class="column">
                         <div class="card-item mdl-card mdl-shadow--2dp" id="record-card">
-                            <div class="mdl-card--expand title-w">
-                                <h6>生活記録</h6>
+                            <div id="record-img">
+                                <div class="mdl-card--expand title-w">
+                                    <h5>生活記録</h5>
+                                </div>
+                                <div class="mdl-card__supporting-text">
+                                    <span id="action_val">
+                                        <!--記録を振り返るやら体調を記録するをspanで囲わないとhoverした時にうまく動作しない-->
+                                        <a href="#"><i class="fas fa-edit"></i><span>記録を振り返る</span></a>
+                                        <a href="#"><i class="fas fa-chart-bar"></i><span>体調を記録する</span></a>
+                                    </span>
+                                </div>
                             </div>
-                            <div class="mdl-card__actions">
-                                <span class="demo-card-image__filename">Image.jpg</span>
+                            <div class="mdl-card__actions" id="bottom-table-w">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>
+                                                今月
+                                            </td>
+                                            <td>
+                                                累計
+                                            </td>
+                                            <td>
+                                                連続日数
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                4日
+                                            </td>
+                                            <td>
+                                                24日
+                                            </td>
+                                            <td>
+                                                1日
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                     <div id="right-col" class="column">
-                        
+                        <div id="user-list">
+                            <div class="mdl-card mdl-shadow--2dp">
+                                <div class="list-card__header">
+                                    <span class="list-card__title"><i class="fas fa-users list-card__icon"></i>メンバー</span>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon ele_header_button" id="member_conf" title="メンバーを新しく招待する">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

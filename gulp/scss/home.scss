@@ -1,3 +1,8 @@
+$primaryColor: #E57C3E;
+$textDefColor: rgba(0, 0, 0, .87);//MDL準拠
+$textExtraColor: rgba(0,0,0,.54);//MDL準拠
+$columnPadding: 12px;
+
 body {
   background-color: #F4F3EF;
 }
@@ -17,13 +22,14 @@ body {
 }
 
 #content-in {
+  padding-top: 48px;
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
 }
 
 #main-col {
-  width: 600px;
+  width: 612px + $columnPadding;
 }
 
 #left-cal, #right-col {
@@ -31,20 +37,93 @@ body {
 }
 
 .column {
-  padding: 12px;
+  padding: $columnPadding;
 }
 
 .card-item {
   width: unset;
-  margin: 16px 0;
+  margin-top: 16px;
 }
 
-#record-card .title-w {
-  margin: 16px;
-  h6 {
-    margin: 16px;
+#record-card {
+  margin: 0;
+  #record-img {
+    height: 300px;
+    position: relative;
+    background: rgba(0,0,0,.1);
 
+    .title-w {
+      margin: 16px;
+      h5 {
+        margin: 0;
+      }
+    }
+    .mdl-card__supporting-text {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      text-align: right;
+      width: 100%;//mdl default 90%
+      #action_val {
+        & :hover{
+          color: $primaryColor;
+          cursor: pointer;
+        }
+        a {
+          color: $textExtraColor;
+          text-decoration: none;
+        }
+        a:first-child {
+          span {
+            padding-right: 6px;
+          }
+        }
+      }
+    }
+  }
 
+  #bottom-table-w {
+    table {
+      width: 100%;
+      table-layout: fixed;
+      text-align: left;
+      > thead {
+        font-size: 13px;
+      }
+      > tbody {
+        font-size: 20px;
+      }
+      td {
+        border-left: $primaryColor solid 2px;
+        padding: 0 6px;
+      }
+    }
+    padding: 16px 32px;
+  }
+}
+
+#user-list {
+  .list-card__header {
+    position: relative;
+    padding: 16px;
+    font-size: 18px;
+    color: $textDefColor;
+    .list-card__title {
+      display: inline-block;
+      height: 32px;
+      vertical-align: middle;
+      .list-card__icon {
+        color: $primaryColor;
+        margin-right: 16px;
+      }
+    }
+    #member_conf{
+      position: absolute;
+      font-size: inherit;
+      color: $primaryColor;
+      top: 13px;
+      right: 13px;
+    }
   }
 }
 
