@@ -61,6 +61,8 @@ class Main {
         this.postLoad.show();
 
         setDrawerProfile(this.loginedUser);
+
+        const calendar = new Calendar('#calendar', null);
     }
 }
 

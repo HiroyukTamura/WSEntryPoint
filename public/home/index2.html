@@ -32,6 +32,7 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
 
     <link href="../dist/common.css" rel="stylesheet">
+    <link href="../dist/calendar.css" rel="stylesheet">
     <link href="style2.css" rel="stylesheet">
 </head>
 <body>
@@ -97,11 +98,11 @@
         <main class="mdl-layout__content">
             <div id="content-w">
                 <div id="content-in">
-                    <div id="left-cal" class="column">
-                        <div class="mdl-card mdl-shadow--2dp" id="card-profile">
+                    <!--<div id="left-cal" class="column">-->
+                        <!--<div class="mdl-card mdl-shadow&#45;&#45;2dp" id="card-profile">-->
 
-                        </div>
-                    </div>
+                        <!--</div>-->
+                    <!--</div>-->
                     <div id="main-col" class="column">
                         <div class="card-item mdl-card mdl-shadow--2dp" id="record-card">
                             <div id="record-img">
@@ -138,6 +139,13 @@
                     </div>
 
                     <div id="right-col" class="column">
+
+                        <div class="right-card" id="card-calendar">
+                            <div class="mdl-card mdl-shadow--2dp">
+                                <div id="calendar"></div>
+                            </div>
+                        </div>
+
                         <div class="right-card" id="user-list" >
                             <div class="mdl-card mdl-shadow--2dp">
                                 <div class="list-card__header">
@@ -188,8 +196,10 @@
                         <div class="right-card" id="group-list">
                             <div class="mdl-card mdl-shadow--2dp">
                                 <div class="list-card__header">
-                                    <span class="list-card__title"><i class="fas fa-users list-card__icon"></i>ユーザ</span>
-                                    <button class="mdl-button mdl-js-button mdl-button--icon ele_header_button list-card__conf" title="ユーザを新しく登録する">
+                                    <span class="list-card__title">
+                                        <i class="fas fa-users list-card__icon"></i>グループ
+                                    </span>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon ele_header_button list-card__conf" title="グループを作る">
                                         <i class="fas fa-user-plus"></i>
                                     </button>
                                 </div>
@@ -281,6 +291,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
 <script src="../dist/bootstrap-notify.min.js"></script>
 
@@ -289,6 +300,7 @@
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script>
 
 <script src="../dist/common.js"></script>
+<script src="../dist/calendar.js"></script>f
 <script src="app2.js"></script>
 
 <noscript>

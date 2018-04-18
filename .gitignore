@@ -18,3 +18,5 @@
 !/public/dist/common.css
 /public/vendor/
 /firebase-debug.log
+!/public/dist/calendar.js
+!/public/dist/calendar.css

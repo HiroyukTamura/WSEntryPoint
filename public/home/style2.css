@@ -77,39 +77,39 @@ body {
         border-left: #E57C3E solid 2px;
         padding: 0 6px; }
 
-.right-card .list-card__header {
-  position: relative;
-  padding: 16px 16px 0 16px;
-  font-size: 18px;
-  color: rgba(0, 0, 0, 0.87); }
-  .right-card .list-card__header .list-card__title {
-    display: inline-block;
-    height: 32px;
-    vertical-align: middle; }
-    .right-card .list-card__header .list-card__title .list-card__icon {
-      color: #E57C3E;
-      margin-right: 16px; }
-  .right-card .list-card__header .list-card__conf {
-    position: absolute;
-    font-size: inherit;
-    color: rgba(0, 0, 0, 0.54);
-    top: 11px;
-    right: 11px; }
+#right-col #card-calendar {
+  margin-top: 72px; }
 
-.right-card .list-card__ul {
-  margin: 0;
-  padding: 0 8px; }
-  .right-card .list-card__ul .config {
+#right-col .right-card {
+  margin: 16px 0; }
+  #right-col .right-card .list-card__header {
+    position: relative;
+    padding: 16px 16px 0 16px;
     font-size: 18px;
-    color: rgba(0, 0, 0, 0.54); }
-
-.right-card .list-drop-btn {
-  margin: 0 auto;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: inherit;
-  height: 28px;
-  width: 28px;
-  min-width: 28px; }
-
-.right-card#group-list {
-  margin-top: 16px; }
+    color: rgba(0, 0, 0, 0.87); }
+    #right-col .right-card .list-card__header .list-card__title {
+      display: inline-block;
+      height: 32px;
+      vertical-align: middle; }
+      #right-col .right-card .list-card__header .list-card__title .list-card__icon {
+        color: #E57C3E;
+        margin-right: 16px; }
+    #right-col .right-card .list-card__header .list-card__conf {
+      position: absolute;
+      font-size: inherit;
+      color: rgba(0, 0, 0, 0.54);
+      top: 11px;
+      right: 11px; }
+  #right-col .right-card .list-card__ul {
+    margin: 0;
+    padding: 0 8px; }
+    #right-col .right-card .list-card__ul .config {
+      font-size: 18px;
+      color: rgba(0, 0, 0, 0.54); }
+  #right-col .right-card .list-drop-btn {
+    margin: 0 auto;
+    color: rgba(0, 0, 0, 0.54);
+    font-size: inherit;
+    height: 28px;
+    width: 28px;
+    min-width: 28px; }
