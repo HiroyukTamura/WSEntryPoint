@@ -98,11 +98,6 @@
         <main class="mdl-layout__content">
             <div id="content-w">
                 <div id="content-in">
-                    <!--<div id="left-cal" class="column">-->
-                        <!--<div class="mdl-card mdl-shadow&#45;&#45;2dp" id="card-profile">-->
-
-                        <!--</div>-->
-                    <!--</div>-->
                     <div id="main-col" class="column">
                         <div class="card-item mdl-card mdl-shadow--2dp" id="record-card">
                             <div id="record-img">
@@ -136,6 +131,51 @@
                                 </table>
                             </div>
                         </div>
+
+                        <div id="group-act-list">
+                            <div class="card-item mdl-card mdl-shadow--2dp">
+                                <div class="group-act__header">
+                                    <ul class="mdl-list">
+                                        <li class="mdl-list__item">
+                                            <span class="mdl-list__item-primary-content">
+                                                <img class="invite-group-icon rounded-circle mdl-list__item-avatar mdl-shadow--2dp" src="https://randomuser.me/api/portraits/med/men/77.jpg">
+                                                <span class="group-act__name">グループ名1</span>
+                                                <!--<span class="mdl-list__item-text-body">-->
+                                                    <!--<span class="member-chips">-->
+                                                        <!--<span class="mdl-chip mdl-chip&#45;&#45;contact">-->
+                                                            <!--<img class="mdl-chip__contact" src="https://randomuser.me/api/portraits/med/men/77.jpg">-->
+                                                            <!--<span class="mdl-chip__text">田村ピロシキ</span>-->
+                                                        <!--</span>-->
+                                                       <!--<span class="mdl-chip mdl-chip&#45;&#45;contact">-->
+                                                          <!--<img class="mdl-chip__contact" src="https://randomuser.me/api/portraits/med/men/77.jpg">-->
+                                                          <!--<span class="mdl-chip__text">Contact Chip</span>-->
+                                                      <!--</span>-->
+                                                       <!--<span class="mdl-chip mdl-chip&#45;&#45;contact">-->
+                                                          <!--<img class="mdl-chip__contact" src="https://randomuser.me/api/portraits/med/men/77.jpg">-->
+                                                          <!--<span class="mdl-chip__text">Contact Chip</span>-->
+                                                      <!--</span>-->
+                                                  <!--</span>-->
+                                                <!--</span>-->
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <div class="member-chips">
+                                        <span class="mdl-chip mdl-chip--contact">
+                                            <img class="mdl-chip__contact" src="https://randomuser.me/api/portraits/med/men/77.jpg">
+                                            <span class="mdl-chip__text">田村ピロシキ</span>
+                                        </span>
+                                        <span class="mdl-chip mdl-chip--contact">
+                                            <img class="mdl-chip__contact" src="https://randomuser.me/api/portraits/med/men/77.jpg">
+                                            <span class="mdl-chip__text">Contact Chip</span>
+                                        </span>
+                                        <span class="mdl-chip mdl-chip--contact">
+                                            <img class="mdl-chip__contact" src="https://randomuser.me/api/portraits/med/men/77.jpg">
+                                            <span class="mdl-chip__text">Contact Chip</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="right-col" class="column">
@@ -146,11 +186,13 @@
                             </div>
                         </div>
 
-                        <div class="right-card" id="user-list" >
+                        <div class="right-card" id="group-list">
                             <div class="mdl-card mdl-shadow--2dp">
                                 <div class="list-card__header">
-                                    <span class="list-card__title"><i class="fas fa-users list-card__icon"></i>ユーザ</span>
-                                    <button class="mdl-button mdl-js-button mdl-button--icon ele_header_button list-card__conf" title="ユーザを新しく登録する">
+                                    <span class="list-card__title">
+                                        <i class="fas fa-users list-card__icon"></i>グループ
+                                    </span>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon ele_header_button list-card__conf" title="グループを作る">
                                         <i class="fas fa-user-plus"></i>
                                     </button>
                                 </div>
@@ -193,13 +235,11 @@
                             </div>
                         </div>
 
-                        <div class="right-card" id="group-list">
+                        <div class="right-card" id="user-list" >
                             <div class="mdl-card mdl-shadow--2dp">
                                 <div class="list-card__header">
-                                    <span class="list-card__title">
-                                        <i class="fas fa-users list-card__icon"></i>グループ
-                                    </span>
-                                    <button class="mdl-button mdl-js-button mdl-button--icon ele_header_button list-card__conf" title="グループを作る">
+                                    <span class="list-card__title"><i class="fas fa-users list-card__icon"></i>ユーザ</span>
+                                    <button class="mdl-button mdl-js-button mdl-button--icon ele_header_button list-card__conf" title="ユーザを新しく登録する">
                                         <i class="fas fa-user-plus"></i>
                                     </button>
                                 </div>

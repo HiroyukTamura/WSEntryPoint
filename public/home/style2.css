@@ -78,7 +78,7 @@ body {
         padding: 0 6px; }
 
 #right-col #card-calendar {
-  margin-top: 72px; }
+  margin-top: 0; }
 
 #right-col .right-card {
   margin: 16px 0; }
@@ -113,3 +113,15 @@ body {
     height: 28px;
     width: 28px;
     min-width: 28px; }
+
+#group-act-list {
+  margin-top: 72px; }
+  #group-act-list .mdl-list {
+    margin: 0;
+    padding: 0; }
+    #group-act-list .mdl-list .mdl-list__item {
+      padding: 32px 24px 0 32px; }
+  #group-act-list .member-chips {
+    margin-left: 72px; }
+  #group-act-list .mdl-chip {
+    margin: 2px 6px; }

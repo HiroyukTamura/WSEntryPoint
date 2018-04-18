@@ -149,6 +149,23 @@ body {
   }
 }
 
+#group-act-list {
+  margin-top: 72px;
+  .mdl-list {
+    margin: 0;
+    padding: 0;
+    .mdl-list__item {
+      padding: 24px 32px 0 32px;
+    }
+  }
+  .member-chips {
+    margin-left: 88px;
+  }
+  .mdl-chip {
+    margin: 2px 6px;
+  }
+}
+
 //#left-cal {
 //  #card-profile {
 //    width: 248px;
