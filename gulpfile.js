@@ -11,13 +11,14 @@ const notify = require('gulp-notify');
 const using = require('gulp-using');
 const fs = require('fs');
 
+const prefixDir = 'record';
 let filePath = '';
 
 gulp.task('default', ['prefix']);
 
 //file watcherで予約中
 gulp.task('prefix', function () {
-    return gulp.src(['gulp/scss/*.scss'])
+    return gulp.src(['gulp/scss/fragment/'+ prefixDir +'.scss'])
         .pipe(using())
         .pipe(plumber({
             errorHandler: notify.onError("Error: <%= error.message %>")

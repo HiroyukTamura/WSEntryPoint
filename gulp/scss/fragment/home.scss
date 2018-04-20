@@ -1,9 +1,8 @@
-$primaryColor: #E57C3E;
-$textDefColor: rgba(0, 0, 0, .87);//MDL準拠
-$textExtraColor: rgba(0,0,0,.54);//MDL準拠
+@charset "utf-8";
+
+@import "../common/variable";
+
 $columnPadding: 24px;
-$bodyColor: #F4F3EF;
-$lineColor: #f4cab1;
 
 body {
   background-color: $bodyColor;

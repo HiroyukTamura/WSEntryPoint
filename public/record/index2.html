@@ -32,7 +32,6 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
 
     <link href="../dist/common.css" rel="stylesheet">
-    <link href="../dist/calendar.css" rel="stylesheet">
     <link href="style2.css" rel="stylesheet">
 </head>
 <body>
@@ -59,7 +58,41 @@
 
             <header class="mdl-layout__header">
                 <div class="mdl-layout__header-row">
-                    <span class="mdl-layout-title">ChallengedKit(β)</span>
+                    <!-- Title -->
+                    <span class="mdl-layout-title">体調を記録</span>
+                </div>
+                <!-- Tabs -->
+                <div id="tab-row">
+                    <div id="tab-prev" class="tab-btn-w">
+                        <button class="mdl-button mdl-js-button mdl-button--icon">
+                            <i class="material-icons">keyboard_arrow_left</i>
+                        </button>
+                    </div>
+                    <div id="tab-center">
+                        <div id="tab0">
+                            <div class="layout__tab holiday"><span>15日(日)</span></div>
+                            <div class="layout__tab"><span>16日(月)</span></div>
+                            <div class="layout__tab"><span>17日(火)</span></div>
+                            <div class="layout__tab "><span>18日(水)</span></div>
+                            <div class="layout__tab is-active"><span>19日(木)</span></div>
+                            <div class="layout__tab"><span>20日(金)</span></div>
+                            <div class="layout__tab"><span>21日(土)</span></div>
+                        </div>
+                        <div id="tab1">
+                            <div class="layout__tab"><span>15日(日)</span></div>
+                            <div class="layout__tab"><span>16日(月)</span></div>
+                            <div class="layout__tab"><span>17日(火)</span></div>
+                            <div class="layout__tab"><span>18日(水)</span></div>
+                            <div class="layout__tab"><span>19日(木)</span></div>
+                            <div class="layout__tab"><span>20日(金)</span></div>
+                            <div class="layout__tab"><span>21日(土)</span></div>
+                        </div>
+                    </div>
+                    <div id="tab-next" class="tab-btn-w">
+                        <button class="mdl-button mdl-js-button mdl-button--icon">
+                            <i class="material-icons">keyboard_arrow_right</i>
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -163,7 +196,6 @@
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script>
 
 <script src="../dist/common.js"></script>
-<script src="../dist/calendar.js"></script>
 <script src="app2.js"></script>
 
 <noscript>

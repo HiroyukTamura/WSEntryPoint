@@ -1,0 +1,87 @@
+@charset "utf-8";
+
+@import "../common/variable";
+
+body {
+  background-color: $bodyColor;
+}
+
+.mdl-layout__drawer-button i{
+  color: #f4cab1;
+}
+
+.mdl-layout__header {
+  background: #524b4b;
+  color: white;
+}
+
+.mdl-layout__content {
+  width: 100%;
+  margin-top: 72px;
+}
+
+#tab-row {
+  background-color: #fcfcfb;
+  width: 100%;
+  height: 48px;
+
+  .tab-btn-w {
+    display: inline-block;
+    i {
+      color: $textDefColor
+    }
+  }
+  #tab-prev {
+    position: absolute;
+    padding: 8px 24px;
+    left: 0;
+  }
+  #tab-next {
+    position: absolute;
+    padding: 8px 24px;
+    right: 0;
+  }
+
+  #tab-center {
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    height: 48px;
+
+    > div{
+      display: inline-flex;
+      flex-wrap: nowrap;
+      position: absolute;
+      width: 100%;
+      max-width: 1200px;
+      height: 48px;
+
+      .layout__tab {
+        color: $textExtraColor;
+        -webkit-flex-grow: 2; /* Safari */
+        flex-grow:         2;
+        vertical-align: middle;
+        height: 48px;
+        position: relative;
+        cursor: pointer;
+
+        &.is-active {
+          color: $textDefColor;
+          border-bottom: $primaryColor solid 2px;
+        }
+
+        &.holiday {
+          color: $holidayColor;
+        }
+
+        span {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translateX(-50%) translateY(-50%);
+          text-align: center;
+        }
+      }
+    }
+  }
+}
