@@ -2,9 +2,11 @@ $primaryColor: #E57C3E;
 $textDefColor: rgba(0, 0, 0, .87);//MDL準拠
 $textExtraColor: rgba(0,0,0,.54);//MDL準拠
 $columnPadding: 24px;
+$bodyColor: #F4F3EF;
+$lineColor: #f4cab1;
 
 body {
-  background-color: #F4F3EF;
+  background-color: $bodyColor;
 }
 
 .mdl-layout__drawer-button i{
@@ -29,7 +31,7 @@ body {
 }
 
 #main-col {
-  width: 612px + $columnPadding;
+  width: 712px + $columnPadding;
 }
 
 #left-cal, #right-col {
@@ -151,24 +153,109 @@ body {
 
 #group-act-list {
   margin-top: 72px;
-  .mdl-list {
-    margin: 0;
-    padding: 0;
-    .mdl-list__item {
-      padding: 24px 32px 0 32px;
+  .card-item-group {
+    width: unset;
+    margin-top: 36px;
+
+    .group-act__header {
+      .mdl-list {
+        margin: 0;
+        padding: 0;
+        .mdl-list__item {
+          padding: 40px 40px 16px 40px;
+          .mdl-list__item-primary-content {
+            .group-act__icon {
+              width: 48px;
+              height: 48px;
+            }
+          }
+        }
+      }
+    }
+
+    .group-log {
+      padding: 32px;//todo これ他とまとめられる
+      table{
+        width: 100%;
+        tbody {
+          tr {
+            border: none;
+            border-collapse: collapse;
+            td.group-log__time {
+              color: $textDefColor;
+              text-align: right;
+              font-size: 15px;
+              line-height: 15px;
+              width: 80px;
+            }
+            td.group_log__vert {
+              padding: 0;
+              width: 48px;
+              height: 72px;
+              div {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                .vert-line {
+                  width: 2px;
+                  height: 100%;
+                  background-color: gray;//変更する？
+                  margin: 0 23px;
+                  position: absolute;
+                }
+                .rounded-circle {
+                  height: 16px;
+                  width: 16px;
+                  border: gray solid 2px;
+                  position: absolute;
+                  background: white;
+                  top: 50%;
+                  left: 50%;
+                  transform: translateX(-50%) translateY(-50%);
+                }
+              }
+            }
+            td.group-log__txt {
+              padding: 8px 0;
+              .mdl-list {
+                width: 100%;
+                border-radius: 8px;
+                border: $lineColor solid 1px;
+                padding: 0 16px;
+                min-height: 48px;
+                .mdl-list__item{
+                  padding: 0;
+                }
+                .mdl-list__item.posted-user {
+                  min-height: unset;
+                  padding: 4px 20px;
+                }
+                .mdl-list__item-secondary-content {
+                  img {
+                    background: gray;
+                    width: 40px;
+                    height: 40px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .member-chips {
+      margin-left: 88px;
     }
   }
-  .member-chips {
-    margin-left: 88px;
-  }
-  .mdl-chip {
-    margin: 2px 6px;
-  }
-}
+  //.mdl-list {
+  //  margin: 0;
+  //  padding: 0;
+  //  .mdl-list__item {
+  //    padding: 40px 40px 0 40px;
+  //  }
+  //}
 
-//#left-cal {
-//  #card-profile {
-//    width: 248px;
-//    min-width: unset;
-//  }
-//}
+  //.mdl-chip {
+  //  margin: 2px 6px;
+  //}
+}

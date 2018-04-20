@@ -27,7 +27,7 @@ body {
   justify-content: center; }
 
 #main-col {
-  width: 636px; }
+  width: 736px; }
 
 #left-cal, #right-col {
   width: 300px; }
@@ -116,12 +116,71 @@ body {
 
 #group-act-list {
   margin-top: 72px; }
-  #group-act-list .mdl-list {
-    margin: 0;
-    padding: 0; }
-    #group-act-list .mdl-list .mdl-list__item {
-      padding: 32px 24px 0 32px; }
-  #group-act-list .member-chips {
-    margin-left: 72px; }
-  #group-act-list .mdl-chip {
-    margin: 2px 6px; }
+  #group-act-list .card-item-group {
+    width: unset;
+    margin-top: 36px; }
+    #group-act-list .card-item-group .group-act__header .mdl-list {
+      margin: 0;
+      padding: 0; }
+      #group-act-list .card-item-group .group-act__header .mdl-list .mdl-list__item {
+        padding: 40px 40px 0 40px; }
+        #group-act-list .card-item-group .group-act__header .mdl-list .mdl-list__item .mdl-list__item-primary-content .group-act__icon {
+          width: 48px;
+          height: 48px; }
+    #group-act-list .card-item-group .group-log {
+      padding: 32px; }
+      #group-act-list .card-item-group .group-log table {
+        width: 100%; }
+        #group-act-list .card-item-group .group-log table tbody tr {
+          border: none;
+          border-collapse: collapse; }
+          #group-act-list .card-item-group .group-log table tbody tr td.group-log__time {
+            color: rgba(0, 0, 0, 0.87);
+            text-align: right;
+            font-size: 15px;
+            line-height: 15px;
+            width: 80px; }
+          #group-act-list .card-item-group .group-log table tbody tr td.group_log__vert {
+            padding: 0;
+            width: 48px;
+            height: 72px; }
+            #group-act-list .card-item-group .group-log table tbody tr td.group_log__vert div {
+              width: 100%;
+              height: 100%;
+              position: relative; }
+              #group-act-list .card-item-group .group-log table tbody tr td.group_log__vert div .vert-line {
+                width: 2px;
+                height: 100%;
+                background-color: gray;
+                margin: 0 23px;
+                position: absolute; }
+              #group-act-list .card-item-group .group-log table tbody tr td.group_log__vert div .rounded-circle {
+                height: 16px;
+                width: 16px;
+                border: gray solid 2px;
+                position: absolute;
+                background: white;
+                top: 50%;
+                left: 50%;
+                -webkit-transform: translateX(-50%) translateY(-50%);
+                -ms-transform: translateX(-50%) translateY(-50%);
+                transform: translateX(-50%) translateY(-50%); }
+          #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt {
+            padding: 8px 0; }
+            #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list {
+              width: 100%;
+              border-radius: 8px;
+              border: #f4cab1 solid 1px;
+              padding: 0 16px;
+              min-height: 48px; }
+              #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item {
+                padding: 0; }
+              #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item.posted-user {
+                min-height: unset;
+                padding: 4px 20px; }
+              #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item-secondary-content img {
+                background: gray;
+                width: 40px;
+                height: 40px; }
+    #group-act-list .card-item-group .member-chips {
+      margin-left: 88px; }
