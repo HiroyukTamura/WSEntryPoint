@@ -9,6 +9,7 @@ const sass = require('gulp-sass');
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
 const using = require('gulp-using');
+const fs = require('fs');
 
 let filePath = '';
 
@@ -41,10 +42,11 @@ gulp.task('prefix', function () {
 
 //file watcherで予約中
 gulp.task("ejs", function() {
+    const json = JSON.parse(fs.readFileSync('gulp/ejs/config.json'));
     gulp.src(
         ["gulp/ejs/fragment/*.ejs"] //参照するディレクトリ、出力を除外するファイル
     )
-        .pipe(ejs())
+        .pipe(ejs(json))
         .pipe(getFileName(filePath))
         .pipe(rename(function(path) {
             console.log(filePath);
