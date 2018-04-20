@@ -20,66 +20,79 @@ body {
   margin-top: 72px;
 }
 
+$btnPadding:24px;
+$btnWidth: 32px;//mdl準拠
+
 #tab-row {
   background-color: #fcfcfb;
   width: 100%;
   height: 48px;
 
-  .tab-btn-w {
-    display: inline-block;
-    i {
-      color: $textDefColor
+  > div {
+    height: 100%;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: nowrap;
+
+    .tab-btn-w {
+      display: inline-block;
+      width: $btnWidth + $btnPadding *2;
+      padding: 8px $btnPadding;
+      i {
+        color: $textDefColor
+      }
+
+      //&#tab-prev {
+      //  left: 0;
+      //}
+      //&#tab-next {
+      //  right: 0;
+      //}
     }
-  }
-  #tab-prev {
-    position: absolute;
-    padding: 8px 24px;
-    left: 0;
-  }
-  #tab-next {
-    position: absolute;
-    padding: 8px 24px;
-    right: 0;
-  }
 
-  #tab-center {
-    position: absolute;
-    left: 80px;
-    right: 80px;
-    height: 48px;
-
-    > div{
-      display: inline-flex;
-      flex-wrap: nowrap;
-      position: absolute;
-      width: 100%;
-      max-width: 1200px;
+    #tab-center {
+      //left: 80px;
+      //right: 80px;
       height: 48px;
+      flex-grow: 100;
 
-      .layout__tab {
-        color: $textExtraColor;
-        -webkit-flex-grow: 2; /* Safari */
-        flex-grow:         2;
-        vertical-align: middle;
-        height: 48px;
-        position: relative;
-        cursor: pointer;
+      > div {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        width: 100%;
+        height: 100%;
 
-        &.is-active {
-          color: $textDefColor;
-          border-bottom: $primaryColor solid 2px;
+        &#tab1 {
+          display: none;
         }
 
-        &.holiday {
-          color: $holidayColor;
-        }
+        .layout__tab {
+          color: $textExtraColor;
+          -webkit-flex-grow: 2; /* Safari */
+          flex-grow:         2;
+          vertical-align: middle;
+          height: 48px;
+          position: relative;
+          cursor: pointer;
 
-        span {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translateX(-50%) translateY(-50%);
-          text-align: center;
+          &.is-active {
+            color: $textDefColor;
+            border-bottom: $primaryColor solid 2px;
+          }
+
+          &.holiday {
+            color: $holidayColor;
+          }
+
+          span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            text-align: center;
+          }
         }
       }
     }
