@@ -96,23 +96,65 @@
                     <a class="mdl-navigation__link" href="../config"><i class="fas fa-cog fa-lg drawer_icon"></i>設定</a>
                 </nav>
             </div>
-        </div>
 
-        <main class="mdl-layout__content">
-            <div id="content-w">
-                <div id="content-in">
-                    <div id="main-col" class="column">
+            <div class="page-content">
+                <!-- Your content goes here -->
+                <div id="wrapper">
 
-                    </div>
+                    <!-- Page Content -->
+                    <div id="page-content-wrapper">
+                        <div id="container-fluid">
+                            <div id="fab-w-w">
+                                <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-shadow--4dp " id="save" data-toggle="tooltip" data-placement="top" title="テンプレートを保存">
+                                    <i class="material-icons">save</i>
+                                </button>
+                            </div>
 
-                    <div id="right-col" class="column">
+                            <div class="card_wrapper">
 
+                                <div class="card-wrapper-i" data-order="1">
+                                    <div class="card mix mdl-shadow--2dp">
+                                        <h4 class="ele_header">
+                                            <i class="fas fa-tags"></i>症状・セルフケア
+                                        </h4>
+                                        <div class="tag_pool">
+                                             <span class="mdl-chip mdl-chip--deletable">
+                                                <span class="mdl-chip__text">神経質</span>
+                                                <button type="button" class="mdl-chip__action"><i class="material-icons">cancel</i></button>
+                                            </span>
+                                            <button class="mdl-button mdl-js-button mdl-button--icon tag-add-btn" data-tag-order="1000" data-toggle="tooltip" data-placement="top" title="" data-original-title="項目を追加" data-upgraded=",MaterialButton">
+                                                <i class="material-icons">add_circle</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="right-column">
+                                <div id="right-spacer"></div>
+                                <div>
+                                    <ul id="right-ul">
+                                        <li>
+                                            <a href="#hogehoge">最初のコンテンツ</a>
+                                        </li>
+                                        <li>
+                                            <a href="#hogehoge">次のコンテンツ</a>
+                                        </li>
+                                        <li>
+                                            <a href="#hogehoge">症状・セルフケア</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="page-load-prg" class="mdl-spinner mdl-js-spinner is-active"></div>
                     </div>
                 </div>
             </div>
-        </main>
 
-        <% include ../common/_footer.ejs %>
+            <% include ../common/_footer.ejs %>
+        </div>
     </div>
 </div>
 

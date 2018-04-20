@@ -98,3 +98,129 @@ $btnWidth: 32px;//mdl準拠
     }
   }
 }
+
+#page-content-wrapper {
+  margin: 0 auto;
+
+  #page-load-prg {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+
+  #container-fluid {
+    margin: 44px auto;
+    width: fit-content;
+    display: flex;
+    display: -moz-flex;
+
+    #fab-w-w {
+      width: 40px;
+      height: 120px;
+      margin-top: 220px;
+      margin-left: 16px;
+      display: inline-block;
+      position: relative;
+
+      #save {
+        //display: none;
+        position: absolute;
+        color: rgba(255,255,255,1);
+        background-color: #E57C3E;
+      }
+    }
+
+    #right-column {
+      width: 256px;
+      #right-spacer {
+        width: 256px;
+        height: 84px;
+      }
+
+      #right-ul {
+        margin-bottom: 15px;
+        padding-left: 0;
+
+        li {
+          list-style-type: none;
+          line-height: 1.4;
+          margin: 3px 0;
+
+          a {
+            display: block;
+            padding: 3px 10px;
+            line-height: 1.4;
+            color: #999;
+
+            &:hover {
+              color: #E57C3E;
+              background-color: rgb(235 ,234, 230);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .card_wrapper{
+    padding-left: 20px;
+    width: fit-content;
+
+    .card-wrapper-i {
+      vertical-align: top;
+      display: flex;
+      padding: 20px 20px;
+      margin: 0 auto;
+      width: min-content;
+
+      .card {
+        margin-left: 20px;
+        width: 600px;/*イベントのカードの横幅default値*/
+        display: inline-block;
+
+        .ele_header {
+          font-size: 18px;
+          padding: 24px 36px;
+          margin: 0;
+          //background-color: #FFFCF5;
+          //border-top-left-radius: 10px;
+          //border-top-right-radius: 10px;
+
+          .svg-inline--fa {
+            color: #E57C3E;
+            margin-right: 20px;
+            font-size: 20px;
+          }
+        }
+
+        .tag_pool {
+          padding: 0 24px 24px 60px;
+
+          .tag-add-btn {
+            color: #BCBCBC;
+            font-size: 24px;
+            height: 32px;
+            width: 32px;
+            margin-top: 8px;
+            margin-right: 4px;
+            margin-left: 4px;
+          }
+
+          .mdl-chip {
+            height: 36px;
+            line-height: 37px;
+            border-radius: 18px;
+            .mdl-chip__text {
+              cursor: pointer;
+              font-size: 16px;
+            }
+            .mdl-chip__action {
+              width: 28px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

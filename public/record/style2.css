@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body {
   background-color: #F4F3EF; }
 
@@ -76,3 +77,100 @@ body {
             -ms-transform: translateX(-50%) translateY(-50%);
             transform: translateX(-50%) translateY(-50%);
             text-align: center; }
+
+#page-content-wrapper {
+  margin: 0 auto; }
+  #page-content-wrapper #page-load-prg {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%; }
+  #page-content-wrapper #container-fluid {
+    margin: 40px auto;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    display: -moz-flex; }
+    #page-content-wrapper #container-fluid #fab-w-w {
+      width: 40px;
+      height: 120px;
+      margin-top: 220px;
+      margin-left: 16px;
+      display: inline-block;
+      position: relative; }
+      #page-content-wrapper #container-fluid #fab-w-w #save {
+        position: absolute;
+        color: white;
+        background-color: #E57C3E; }
+    #page-content-wrapper #container-fluid #right-column {
+      width: 256px; }
+      #page-content-wrapper #container-fluid #right-column #right-spacer {
+        width: 256px;
+        height: 84px; }
+      #page-content-wrapper #container-fluid #right-column #right-ul {
+        margin-bottom: 15px;
+        padding-left: 0; }
+        #page-content-wrapper #container-fluid #right-column #right-ul li {
+          list-style-type: none;
+          line-height: 1.4;
+          margin: 3px 0; }
+          #page-content-wrapper #container-fluid #right-column #right-ul li a {
+            display: block;
+            padding: 3px 10px;
+            line-height: 1.4;
+            color: #999; }
+            #page-content-wrapper #container-fluid #right-column #right-ul li a:hover {
+              color: #E57C3E;
+              background-color: #ebeae6; }
+  #page-content-wrapper .card_wrapper {
+    padding-left: 20px;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content; }
+    #page-content-wrapper .card_wrapper .card-wrapper-i {
+      vertical-align: top;
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      padding: 20px 20px;
+      margin: 0 auto;
+      width: -webkit-min-content;
+      width: -moz-min-content;
+      width: min-content; }
+      #page-content-wrapper .card_wrapper .card-wrapper-i .card {
+        margin-left: 20px;
+        width: 600px;
+        /*イベントのカードの横幅default値*/
+        display: inline-block; }
+        #page-content-wrapper .card_wrapper .card-wrapper-i .card .ele_header {
+          font-size: 18px;
+          padding: 24px 36px;
+          margin: 0; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i .card .ele_header .svg-inline--fa {
+            color: #E57C3E;
+            margin-right: 20px;
+            font-size: 20px; }
+        #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool {
+          padding: 0 24px 24px 60px; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool .tag-add-btn {
+            color: #BCBCBC;
+            font-size: 24px;
+            height: 32px;
+            width: 32px;
+            margin-top: 8px;
+            margin-right: 4px;
+            margin-left: 4px; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool .mdl-chip {
+            height: 36px;
+            line-height: 37px;
+            border-radius: 18px; }
+            #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool .mdl-chip .mdl-chip__text {
+              cursor: pointer;
+              font-size: 16px; }
+            #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool .mdl-chip .mdl-chip__action {
+              width: 28px; }
