@@ -240,9 +240,10 @@ $btnWidth: 32px;//mdl準拠
 
       &[card-type='1'] {
         .card {
-          table {
-            margin: 24px 60px;
-            tr {
+          .mdl-list {
+            padding: 24px 60px;
+            margin: 0;
+            .mdl-list__item {
               padding: 0;
               .mdl-textfield {
                 padding: 0;
@@ -262,6 +263,22 @@ $btnWidth: 32px;//mdl準拠
                 margin-left: 16px;
                 width: 290px;
               }
+              //.time {
+              //  font-size: 24px;
+              //  line-height: 24px;
+              //  color: $textDefColor;
+              //  > span{
+              //    vertical-align: middle;
+              //  }
+              //}
+              //.arrow {
+              //  font-size: 22px;
+              //  color: orange;
+              //}
+              //.time-offset {
+              //  font-size: 16px;
+              //  color: $textDefColor;
+              //}
             }
           }
         }
