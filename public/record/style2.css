@@ -64,6 +64,13 @@ body {
           height: 48px;
           position: relative;
           cursor: pointer; }
+          #tab-row > div #tab-center > div .layout__tab > .dot {
+            position: absolute;
+            background: #E57C3E;
+            bottom: 6px;
+            right: 6px;
+            height: 12px;
+            width: 12px; }
           #tab-row > div #tab-center > div .layout__tab.is-active {
             color: rgba(0, 0, 0, 0.87);
             border-bottom: #E57C3E solid 2px; }
@@ -190,13 +197,17 @@ body {
           width: 100%; }
         #page-content-wrapper .card_wrapper .card-wrapper-i .card .comment_form {
           padding: 8px 40px 0 40px; }
-      #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table {
-        margin: 24px 60px; }
-        #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr {
+      #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list {
+        padding: 24px 60px;
+        margin: 0; }
+        #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item {
           padding: 0; }
-          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .mdl-textfield {
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item .mdl-textfield {
             padding: 0; }
-          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .time-single {
+            #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item .mdl-textfield .mdl-textfield__input {
+              padding: 0;
+              font-size: 18px; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item .time-single {
             width: 123px;
             display: -webkit-box;
             display: -webkit-flex;
@@ -206,13 +217,21 @@ body {
             -webkit-justify-content: center;
             -ms-flex-pack: center;
             justify-content: center; }
-          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .time {
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item .time {
             width: 50px; }
-            #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .time .mdl-textfield__input {
+            #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item .time .mdl-textfield__input {
               text-align: center; }
-          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .params_title_w {
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item .params_title_w {
             margin-left: 16px;
             width: 290px; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item .time-multi .arrow {
+            color: #E57C3E; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card .mdl-list .mdl-list__item .mdl-list__item-secondary-content button {
+            height: 20px;
+            width: 20px;
+            min-width: 15px;
+            font-size: 15px;
+            color: #BCBCBC; }
       #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list {
         padding: 16px 60px 0 24px; }
         #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item {

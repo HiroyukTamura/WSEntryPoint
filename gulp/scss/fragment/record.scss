@@ -77,6 +77,15 @@ $btnWidth: 32px;//mdl準拠
           position: relative;
           cursor: pointer;
 
+          > .dot {
+            position: absolute;
+            background: $primaryColor;
+            bottom: 6px;
+            right: 6px;//todo 動的にセットするべき
+            height: 12px;
+            width: 12px;
+          }
+
           &.is-active {
             color: $textDefColor;
             border-bottom: $primaryColor solid 2px;
@@ -247,7 +256,12 @@ $btnWidth: 32px;//mdl準拠
               padding: 0;
               .mdl-textfield {
                 padding: 0;
+                .mdl-textfield__input {
+                  padding: 0;
+                  font-size: 18px;
+                }
               }
+
               .time-single {
                 width: 123px;
                 display: flex;
@@ -263,22 +277,21 @@ $btnWidth: 32px;//mdl準拠
                 margin-left: 16px;
                 width: 290px;
               }
-              //.time {
-              //  font-size: 24px;
-              //  line-height: 24px;
-              //  color: $textDefColor;
-              //  > span{
-              //    vertical-align: middle;
-              //  }
-              //}
-              //.arrow {
-              //  font-size: 22px;
-              //  color: orange;
-              //}
-              //.time-offset {
-              //  font-size: 16px;
-              //  color: $textDefColor;
-              //}
+              .time-multi {
+                .arrow {
+                  color: $primaryColor;
+                }
+              }
+
+              .mdl-list__item-secondary-content {
+                button {
+                  height: 20px;
+                  width: 20px;
+                  min-width: 15px;
+                  font-size: 15px;
+                  color: #BCBCBC;
+                }
+              }
             }
           }
         }
