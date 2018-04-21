@@ -21,3 +21,288 @@ body {
   width: 100%;
   margin-top: 72px;
 }
+
+#wrapper {
+  margin: 24px 0 128px 0;
+  #page-header {
+    max-width: $pageMaxWidth;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    #header-center {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      button {
+        color: $primaryColor;
+      }
+      h1 {
+        margin: 0 16px;
+        font-size: 32px;
+      }
+    }
+
+    #toggle {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 36px;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      margin-left: 32px;
+      float: left;
+      > span {
+        padding: 0 8px;
+        font-size: 14px;
+        white-space: nowrap;
+        text-align: center;
+        color: $textExtraColor;
+        &.is-active {
+          color: $textDefColor;
+        }
+      }
+      >.mdl-switch {
+        padding-left: 28px;
+        >.mdl-switch__track {
+          width: 28px;
+        }
+        >.mdl-switch__thumb {
+          height: 16px;
+          width: 16px;
+          top: 4px;
+        }
+        >.mdl-js-ripple-effect {
+          width: 40px;
+          height: 40px;
+          top: -8px;
+          left: -13px;
+        }
+        &.is-checked >.mdl-switch__thumb {
+          left: 14px;
+        }
+      }
+    }
+
+    //region toggle on/off switch
+    //@see http://localhost:63342/ChallengedKit/public/dist/bootstrap-button-toggle-on-off-switch/index.html?_ijt=o6qnfqohftcj7p1u67dhrn8gfg
+    //#toggle {
+    //  .btn-toggle {
+    //    top: 50%;
+    //    transform: translateY(-50%);
+    //    margin: 0 4rem;
+    //    padding: 0;
+    //    position: relative;
+    //    border: none;
+    //    height: 1.5rem;
+    //    width: 3rem;
+    //    border-radius: 1.5rem;
+    //    color: #6b7381;
+    //    background: $primaryColor;
+    //
+    //    &:focus, &.focus, &:focus.active, &.focus.active {
+    //      outline: none;
+    //    }
+    //    &:before, &:after {
+    //      line-height: 1.5rem;
+    //      width: 4rem;
+    //      text-align: center;
+    //      font-weight: 600;
+    //      font-size: 0.75rem;
+    //      text-transform: uppercase;
+    //      letter-spacing: 2px;
+    //      position: absolute;
+    //      bottom: 0;
+    //      transition: opacity .25s;
+    //    }
+    //    &:before {
+    //      content: 'Off';
+    //      left: -4rem;
+    //    }
+    //    &:after {
+    //      content: 'On';
+    //      right: -4rem;
+    //      opacity: .5;
+    //    }
+    //    > .handle {
+    //      position: absolute;
+    //      top: 0.1875rem;
+    //      left: 0.1875rem;
+    //      width: 1.125rem;
+    //      height: 1.125rem;
+    //      border-radius: 1.125rem;
+    //      background: #fff;
+    //      transition: left .25s;
+    //    }
+    //    &.active {
+    //      transition: background-color 0.25s;
+    //    }
+    //    &.active > .handle {
+    //      left: 1.6875rem;
+    //      transition: left .25s;
+    //    }
+    //    &.active:before {
+    //      opacity: .5;
+    //    }
+    //    &.active:after {
+    //      opacity: 1;
+    //    }
+    //  }
+    //}
+    //endregion
+  }
+
+  #tab-w {
+    .mdl-tabs {
+      #tabs-bar-w {
+        .mdl-tabs__tab-bar {
+          justify-content: start;
+          padding-left: 64px;
+        }
+      }
+      .mdl-tabs__panel {
+        max-width: $pageMaxWidth;
+        margin: 0 auto;
+        ul {
+          list-style: none;
+          padding: 0;
+          margin: 0 72px;
+          li {
+            &#row-card {
+              margin: 36px 0 72px 0;
+              .mdl-card {
+                width: unset;
+                min-height: unset;
+                padding: 0 16px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                vertical-align: middle;
+                #user-img {
+                  width: 40px;
+                  height: 40px;
+                  margin-left: 36px - 16px;
+                  margin-right: 36px;
+                }
+                #status {
+                  width: fit-content;
+                  display: inline-block;
+                  >.caption {
+                    font-size: 14px;
+                    line-height: 16px;
+                    color: $textExtraColor;
+                  }
+                  >.value {
+                    color: $textDefColor;
+                  }
+                }
+                #comment {
+                  flex-grow: 4;
+                  margin: 0 36px;
+                  .mdl-textfield {
+                    width: 100%;
+                    .mdl-textfield__input {
+                      padding: 4px 0 0 0;
+                    }
+                  }
+                }
+                #icons {
+                  color: $textExtraColor;
+                }
+              }
+            }
+            &.item {
+              margin: 0 18px;
+              h1 {
+                margin: 36px 18px;
+                font-size: 24px;
+                .svg-inline--fa {
+                  color: $primaryColor;
+                  margin-right: .5em;
+                }
+              }
+              &[data-type="1"], &[data-type="3"] {
+                >.item-in {
+                  display: flex;
+                  flex-direction: row;
+                  margin-bottom: 48px;
+                  .time-compo:not(:first-child) {
+                    margin-right: 96px;
+                  }
+                  .time-compo {
+                    width: fit-content;
+                    padding-left: 16px;
+                    border-left: $primaryColor solid 2px;
+                    .time-title {
+                      display: block;
+                      font-size: 18px;
+                      margin-bottom: 8px;
+                    }
+                    .time {
+                      font-size: 30px;
+                      line-height: 20px;
+                      margin: 4px 0;
+                      vertical-align: middle;
+                      color: $textDefColor;
+                      .arrow {
+                        font-size: 22px;
+                        color: $primaryColor;
+                        vertical-align: middle;
+                      }
+                    }
+                    .time-total {
+                      display: block;
+                      font-size: 20px;
+                      white-space: nowrap;
+                    }
+                    .rec-times{
+                      color: $textExtraColor;
+                      vertical-align: middle;
+                      margin-right: 1rem;
+                      white-space: nowrap;
+                    }
+                    .rec-comp {
+                      color: $textExtraColor;
+                      vertical-align: middle;
+                      white-space: nowrap;
+                    }
+                    .times-unit {
+                      font-size: 24px;
+                    }
+                  }
+                }
+              }
+
+              &[data-type="2"] {
+                >.item-in {
+                  display: flex;
+                  flex-direction: row;
+                  flex-wrap: nowrap;
+                  > div {
+                    flex-grow: 5;
+                    padding-left: 16px;
+                    border-left: $primaryColor solid 2px;
+                    h5 {
+                      margin: 0 0 8px 0;
+                      font-size: 18px;
+                    }
+                    .mdl-chip {
+                      margin-right: 8px;
+                    }
+                  }
+                }
+              }
+            }
+            >.seem {
+              margin: 48px 0;
+              background: #e0e0e0;;
+              height: 1px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
