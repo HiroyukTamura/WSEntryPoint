@@ -147,6 +147,18 @@ body {
         width: 600px;
         /*イベントのカードの横幅default値*/
         display: inline-block; }
+        #page-content-wrapper .card_wrapper .card-wrapper-i .card .add-button-w {
+          width: 100%;
+          display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-pack: center;
+          -webkit-justify-content: center;
+          -ms-flex-pack: center;
+          justify-content: center;
+          color: #BCBCBC;
+          padding-bottom: 8px; }
         #page-content-wrapper .card_wrapper .card-wrapper-i .card .ele_header {
           font-size: 18px;
           padding: 24px 36px 0 36px;
@@ -156,7 +168,7 @@ body {
             margin-right: 20px;
             font-size: 20px; }
         #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool {
-          padding: 24px 24px 24px 60px; }
+          padding: 24px 60px; }
           #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool .tag-add-btn {
             color: #BCBCBC;
             font-size: 24px;
@@ -178,16 +190,44 @@ body {
           width: 100%; }
         #page-content-wrapper .card_wrapper .card-wrapper-i .card .comment_form {
           padding: 8px 40px 0 40px; }
+      #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table {
+        margin: 24px 60px; }
+        #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr {
+          padding: 0; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .mdl-textfield {
+            padding: 0; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .time-single {
+            width: 123px;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .time {
+            width: 50px; }
+            #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .time .mdl-textfield__input {
+              text-align: center; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='1'] .card table tr .params_title_w {
+            margin-left: 16px;
+            width: 290px; }
       #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list {
-        padding: 16px 60px 0 60px; }
+        padding: 16px 60px 0 24px; }
         #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item {
-          padding: 0 16px; }
+          padding: 0; }
           #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item .mdl-list__item-primary-content {
-            -webkit-box-flex: 0;
-            -webkit-flex-grow: 0;
-            -ms-flex-positive: 0;
-            flex-grow: 0; }
+            -webkit-box-flex: 2;
+            -webkit-flex-grow: 2;
+            -ms-flex-positive: 2;
+            flex-grow: 2; }
+            #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item .mdl-list__item-primary-content .mdl-textfield {
+              padding: 20px 8px; }
           #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item .params_check {
-            margin-left: 72px; }
+            margin-right: 42px;
+            margin-left: 54px; }
           #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item .mdl-slider__container {
             display: none; }
+            #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item .mdl-slider__container .mdl-slider {
+              width: 80px; }

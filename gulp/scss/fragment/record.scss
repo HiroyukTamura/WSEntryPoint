@@ -179,6 +179,14 @@ $btnWidth: 32px;//mdl準拠
         width: 600px;/*イベントのカードの横幅default値*/
         display: inline-block;
 
+        .add-button-w {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          color: #BCBCBC;
+          padding-bottom: 8px;
+        }
+
         .ele_header {
           font-size: 18px;
           padding: 24px 36px 0 36px;
@@ -195,7 +203,7 @@ $btnWidth: 32px;//mdl準拠
         }
 
         .tag_pool {
-          padding: 24px 24px 24px 60px;
+          padding: 24px 60px;
 
           .tag-add-btn {
             color: #BCBCBC;
@@ -230,20 +238,56 @@ $btnWidth: 32px;//mdl準拠
         }
       }
 
+      &[card-type='1'] {
+        .card {
+          table {
+            margin: 24px 60px;
+            tr {
+              padding: 0;
+              .mdl-textfield {
+                padding: 0;
+              }
+              .time-single {
+                width: 123px;
+                display: flex;
+                justify-content: center;
+              }
+              .time {
+                width: 50px;
+                .mdl-textfield__input {
+                  text-align: center;
+                }
+              }
+              .params_title_w {
+                margin-left: 16px;
+                width: 290px;
+              }
+            }
+          }
+        }
+      }
+
       &[card-type='4'] {
         .card {
           .mdl-list {
-            padding: 16px 60px 0 60px;
+            padding: 16px 60px 0 24px;
             .mdl-list__item {
-              padding: 0 16px;
+              padding: 0;
               .mdl-list__item-primary-content {
-                flex-grow: 0;
+                flex-grow: 2;
+                .mdl-textfield {
+                  padding: 20px 8px;
+                }
               }
               .params_check {
-                margin-left: 72px;
+                margin-right: 42px;
+                margin-left: 54px;
               }
               .mdl-slider__container {
                 display: none;
+                .mdl-slider {
+                  width: 80px;
+                }
               }
             }
           }
