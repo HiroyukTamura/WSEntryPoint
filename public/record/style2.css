@@ -86,7 +86,7 @@ body {
     top: 50%;
     left: 50%; }
   #page-content-wrapper #container-fluid {
-    margin: 40px auto;
+    margin: 44px auto;
     width: -webkit-fit-content;
     width: -moz-fit-content;
     width: fit-content;
@@ -149,14 +149,14 @@ body {
         display: inline-block; }
         #page-content-wrapper .card_wrapper .card-wrapper-i .card .ele_header {
           font-size: 18px;
-          padding: 24px 36px;
+          padding: 24px 36px 0 36px;
           margin: 0; }
           #page-content-wrapper .card_wrapper .card-wrapper-i .card .ele_header .svg-inline--fa {
             color: #E57C3E;
             margin-right: 20px;
             font-size: 20px; }
         #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool {
-          padding: 0 24px 24px 60px; }
+          padding: 24px 24px 24px 60px; }
           #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool .tag-add-btn {
             color: #BCBCBC;
             font-size: 24px;
@@ -174,3 +174,20 @@ body {
               font-size: 16px; }
             #page-content-wrapper .card_wrapper .card-wrapper-i .card .tag_pool .mdl-chip .mdl-chip__action {
               width: 28px; }
+        #page-content-wrapper .card_wrapper .card-wrapper-i .card .comment {
+          width: 100%; }
+        #page-content-wrapper .card_wrapper .card-wrapper-i .card .comment_form {
+          padding: 8px 40px 0 40px; }
+      #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list {
+        padding: 16px 60px 0 60px; }
+        #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item {
+          padding: 0 16px; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item .mdl-list__item-primary-content {
+            -webkit-box-flex: 0;
+            -webkit-flex-grow: 0;
+            -ms-flex-positive: 0;
+            flex-grow: 0; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item .params_check {
+            margin-left: 72px; }
+          #page-content-wrapper .card_wrapper .card-wrapper-i[card-type='4'] .card .mdl-list .mdl-list__item .mdl-slider__container {
+            display: none; }

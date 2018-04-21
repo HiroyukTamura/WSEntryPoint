@@ -181,7 +181,7 @@ $btnWidth: 32px;//mdl準拠
 
         .ele_header {
           font-size: 18px;
-          padding: 24px 36px;
+          padding: 24px 36px 0 36px;
           margin: 0;
           //background-color: #FFFCF5;
           //border-top-left-radius: 10px;
@@ -195,7 +195,7 @@ $btnWidth: 32px;//mdl準拠
         }
 
         .tag_pool {
-          padding: 0 24px 24px 60px;
+          padding: 24px 24px 24px 60px;
 
           .tag-add-btn {
             color: #BCBCBC;
@@ -217,6 +217,34 @@ $btnWidth: 32px;//mdl準拠
             }
             .mdl-chip__action {
               width: 28px;
+            }
+          }
+        }
+
+        .comment {
+          width: 100%;
+        }
+
+        .comment_form {
+          padding: 8px 40px 0 40px;
+        }
+      }
+
+      &[card-type='4'] {
+        .card {
+          .mdl-list {
+            padding: 16px 60px 0 60px;
+            .mdl-list__item {
+              padding: 0 16px;
+              .mdl-list__item-primary-content {
+                flex-grow: 0;
+              }
+              .params_check {
+                margin-left: 72px;
+              }
+              .mdl-slider__container {
+                display: none;
+              }
             }
           }
         }
