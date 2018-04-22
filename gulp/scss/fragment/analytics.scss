@@ -228,11 +228,9 @@ body {
                   display: flex;
                   flex-direction: row;
                   margin-bottom: 48px;
-                  .time-compo:not(:first-child) {
-                    margin-right: 96px;
-                  }
                   .time-compo {
                     width: fit-content;
+                    margin-right: 96px;
                     padding-left: 16px;
                     border-left: $primaryColor solid 2px;
                     .time-title {
