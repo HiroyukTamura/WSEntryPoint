@@ -1,7 +1,27 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <% include ../common/_head_template.ejs %>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>ChallengedKit</title>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-113450965-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-113450965-1');
+</script>
+
+<link rel="icon" href="../../favicon.ico" type="image/x-icon">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+      integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+      crossorigin="anonymous">
 
     <!--google material design lite-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -16,7 +36,19 @@
 </head>
 <body>
 
-<% include ../common/_login_ui.ejs %>
+<div id="progress" class="mdl-spinner mdl-js-spinner is-active"></div>
+
+<div id="login_w">
+    <div class="mdl-grid" id="login-grid">
+        <div class="mdl-cell mdl-cell--4-col"></div>
+        <div class="mdl-cell mdl-cell--4-col">
+            <img id="login-logo" src="../dist/img/icon.png">
+        </div>
+        <div class="mdl-cell mdl-cell--4-col"></div>
+    </div>
+    <h2 id="login_title">ChallengedKit(β)</h2>
+    <div id="firebaseui-auth-container"></div>
+</div>
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
     <div id="post_load">
@@ -66,7 +98,7 @@
                             <button class="mdl-button mdl-js-button mdl-button--icon">
                                 <i class="fas fa-chevron-circle-left fa-sm"></i>
                             </button>
-                            <h1>4/20 - 4/28</h1>
+                            <h1>6月</h1>
                             <button class="mdl-button mdl-js-button mdl-button--icon">
                                 <i class="fas fa-chevron-circle-right fa-sm"></i>
                             </button>
@@ -84,25 +116,48 @@
                     </div>
 
                     <div id="cont">
-                        <div id="canvas-w">
-                            <canvas>
 
-                            </canvas>
-                        </div>
-                        <div id="table-w">
-                            <table>
-                                <thead>
-                                <tr>
-
-                                </tr>
-                                </thead>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <% include ../common/_footer.ejs %>
+            <footer class="mdl-mega-footer">
+    <div class="mdl-mega-footer__middle-section" id="footer-in">
+        <div class="mdl-mega-footer--left-section footer-column">
+            <ul class="mdl-mega-footer__link-list" id="about-us">
+                <li><a href="#">お問い合わせ</a></li>
+                <li><a href="#">免責事項</a></li>
+                <li><a href="#">プライバシーポリシー</a></li>
+                <li class="mdl-mega-footer__heading" id="add-dev-btn"><a href="#">開発に参加する</a></li>
+            </ul>
+        </div>
+        <div class="footer-column" id="footer-logo__out">
+            <!--<img common="../dist/img/icon.png" alt="logo" href="#">-->
+            <button class="mdl-button mdl-js-button mdl-button--icon" href="#">
+                <i class="fab fa-twitter fa-sm"></i>
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--icon" href="#">
+                <i class="fab fa-facebook-f fa-sm"></i>
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--icon" href="#">
+                <i class="fas fa-comment fa-sm" id="line-btn"></i>
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--icon" href="#">
+                <i class="fab fa-github"></i>
+            </button>
+        </div>
+        <div class="mdl-mega-footer__right-section">
+            <ul id="footer-col-right">
+                <li id="footer-col-right-li-badge">
+                    <a href="https://play.google.com/apps/publish/?hl=JA&account=6607082431985270443#AppDashboardPlace:p=com.cks.hiroyuki2.worksupport3&appid=4973068599479948784" target="_blank" id="google-play-badge">
+                        <img src="../dist/img/google-play-badge.png" alt="google-play-badge">
+                    </a>
+                </li>
+                <li>ChallengedKit(β) All Rights Reserved.</li>
+            </ul>
+        </div>
+    </div>
+</footer>
         </div>
     </div>
 </div>
@@ -123,7 +178,9 @@
 <script src="../dist/common.js"></script>
 <script src="app2.js"></script>
 
-<% include ../common/_no_script.ejs %>
+<noscript>
+    <h4>JavaScriptが無効になっています。ブラウザの設定を開いてJavaScriptを有効にしてください。</h4>
+</noscript>
 
 </body>
 </html>

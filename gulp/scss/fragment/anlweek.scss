@@ -21,3 +21,147 @@ body {
   width: 100%;
   margin-top: 72px;
 }
+
+#wrapper {
+  margin: 24px 0 128px 0;
+  #page-header {
+    max-width: $pageMaxWidth;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+    #header-center {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      button {
+        color: $primaryColor;
+      }
+      h1 {
+        margin: 0 16px;
+        font-size: 32px;
+      }
+    }
+
+    #toggle {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 36px;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      margin-left: 32px;
+      float: left;
+      > span {
+        padding: 0 8px;
+        font-size: 14px;
+        white-space: nowrap;
+        text-align: center;
+        color: $textExtraColor;
+        &.is-active {
+          color: $textDefColor;
+        }
+      }
+      >.mdl-switch {
+        padding-left: 28px;
+        >.mdl-switch__track {
+          width: 28px;
+        }
+        >.mdl-switch__thumb {
+          height: 16px;
+          width: 16px;
+          top: 4px;
+        }
+        >.mdl-js-ripple-effect {
+          width: 40px;
+          height: 40px;
+          top: -8px;
+          left: -13px;
+        }
+        &.is-checked >.mdl-switch__thumb {
+          left: 14px;
+        }
+      }
+    }
+
+    //region toggle on/off switch
+    //@see http://localhost:63342/ChallengedKit/public/dist/bootstrap-button-toggle-on-off-switch/index.html?_ijt=o6qnfqohftcj7p1u67dhrn8gfg
+    //#toggle {
+    //  .btn-toggle {
+    //    top: 50%;
+    //    transform: translateY(-50%);
+    //    margin: 0 4rem;
+    //    padding: 0;
+    //    position: relative;
+    //    border: none;
+    //    height: 1.5rem;
+    //    width: 3rem;
+    //    border-radius: 1.5rem;
+    //    color: #6b7381;
+    //    background: $primaryColor;
+    //
+    //    &:focus, &.focus, &:focus.active, &.focus.active {
+    //      outline: none;
+    //    }
+    //    &:before, &:after {
+    //      line-height: 1.5rem;
+    //      width: 4rem;
+    //      text-align: center;
+    //      font-weight: 600;
+    //      font-size: 0.75rem;
+    //      text-transform: uppercase;
+    //      letter-spacing: 2px;
+    //      position: absolute;
+    //      bottom: 0;
+    //      transition: opacity .25s;
+    //    }
+    //    &:before {
+    //      content: 'Off';
+    //      left: -4rem;
+    //    }
+    //    &:after {
+    //      content: 'On';
+    //      right: -4rem;
+    //      opacity: .5;
+    //    }
+    //    > .handle {
+    //      position: absolute;
+    //      top: 0.1875rem;
+    //      left: 0.1875rem;
+    //      width: 1.125rem;
+    //      height: 1.125rem;
+    //      border-radius: 1.125rem;
+    //      background: #fff;
+    //      transition: left .25s;
+    //    }
+    //    &.active {
+    //      transition: background-color 0.25s;
+    //    }
+    //    &.active > .handle {
+    //      left: 1.6875rem;
+    //      transition: left .25s;
+    //    }
+    //    &.active:before {
+    //      opacity: .5;
+    //    }
+    //    &.active:after {
+    //      opacity: 1;
+    //    }
+    //  }
+    //}
+    //endregion
+  }
+
+  #cont {
+    padding: 0 72px 72px 72px;
+    #canvas-w {
+      width: 100%;
+      height: 300px;//todo これ暫定 のち修正のこと
+    }
+    #table-w {
+      width: 100%;
+    }
+  }
+}
