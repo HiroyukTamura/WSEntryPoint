@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <% include ../common/_head_template.ejs %>
+
+    <!--google material design lite-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
+
+    <link href="../dist/common.css" rel="stylesheet">
+    <link href="style2.css" rel="stylesheet">
+</head>
+<body>
+
+<% include ../common/_login_ui.ejs %>
+
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+    <div id="post_load">
+
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <span class="mdl-layout-title">体調を記録</span>
+                </div>
+            </header>
+
+            <div class="mdl-layout__drawer">
+                <!--<span class="mdl-layout-title">Title</span>-->
+                <header class="demo-drawer-header">
+                    <div class="demo-avatar">
+                        <img class="rounded-circle">
+                    </div>
+                    <div class="demo-avatar-dropdown">
+                        <div>
+                            <span class="user-name"></span>
+                            <div class="mdl-layout-spacer"></div>
+                            <!--<div class="mdl-layout-spacer"></div>-->
+                            <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                                <i class="material-icons" role="presentation">arrow_drop_down</i>
+                                <span class="visuallyhidden">Accounts</span>
+                            </button>
+                            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                                <li class="mdl-menu__item" id="dr-header-logout">ログアウト</li>
+                            </ul>
+                        </div>
+                    </div>
+                </header>
+
+                <nav class="mdl-navigation">
+                    <a class="mdl-navigation__link" href="../record"><i class="fas fa-edit fa-lg drawer_icon"></i>入力</a>
+                    <a class="mdl-navigation__link current-page" href="#"><i class="fas fa-table fa-lg drawer_icon"></i>テンプレート</a>
+                    <a class="mdl-navigation__link" href="#" id="analytics-link"><i class="fas fa-chart-bar fa-lg drawer_icon"></i>分析</a>
+                    <a class="mdl-navigation__link" href="../social"><i class="fas fa-share-alt fa-lg drawer_icon"></i>共有</a>
+                    <a class="mdl-navigation__link" href="../config"><i class="fas fa-cog fa-lg drawer_icon"></i>設定</a>
+                </nav>
+            </div>
+
+            <div class="page-content">
+                <div id="wrapper">
+                    <div id="page-header">
+                        <div id="header-center">
+                            <button class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="fas fa-chevron-circle-left fa-sm"></i>
+                            </button>
+                            <h1>6月</h1>
+                            <button class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="fas fa-chevron-circle-right fa-sm"></i>
+                            </button>
+                        </div>
+
+                        <div id="toggle">
+                            <span class="is-active">週表示</span>
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="show-switch">
+                                <input type="checkbox" id="show-switch" class="mdl-switch__input" checked>
+                                <span class="mdl-switch__label"></span>
+                            </label>
+                            <span>月表示</span>
+                        </div>
+
+                    </div>
+
+                    <div id="cont">
+
+                    </div>
+                </div>
+            </div>
+
+            <% include ../common/_footer.ejs %>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
+<script src="../dist/bootstrap-notify.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script>
+
+<script src="../dist/common.js"></script>
+<script src="app2.js"></script>
+
+<% include ../common/_no_script.ejs %>
+
+</body>
+</html>
