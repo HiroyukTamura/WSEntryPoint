@@ -86,3 +86,59 @@ body {
           left: -13px; }
         #wrapper #page-header #toggle > .mdl-switch.is-checked > .mdl-switch__thumb {
           left: 14px; }
+  #wrapper #cont #canvas-w {
+    width: 100%;
+    height: 300px; }
+  #wrapper #cont #table-w {
+    padding: 72px;
+    width: 100%; }
+    #wrapper #cont #table-w > div {
+      width: 100%; }
+      #wrapper #cont #table-w > div table {
+        font-size: 16px; }
+        #wrapper #cont #table-w > div table thead {
+          background: #524b4b;
+          border-bottom: 8px solid #524b4b;
+          color: white; }
+          #wrapper #cont #table-w > div table thead tr {
+            border-top: 8px solid #524b4b; }
+            #wrapper #cont #table-w > div table thead tr td {
+              text-align: center;
+              padding: 0 2em;
+              vertical-align: middle;
+              white-space: nowrap; }
+              #wrapper #cont #table-w > div table thead tr td#left-top {
+                line-height: 0; }
+        #wrapper #cont #table-w > div table tbody tr:nth-child(2n) {
+          background: #fafaf8; }
+        #wrapper #cont #table-w > div table tbody tr:nth-child(2n+1) {
+          background: white; }
+        #wrapper #cont #table-w > div table tbody td, #wrapper #cont #table-w > div table tfoot td {
+          vertical-align: middle;
+          padding: 8px 2em; }
+          #wrapper #cont #table-w > div table tbody td.type-check .fa-check-circle, #wrapper #cont #table-w > div table tfoot td.type-check .fa-check-circle {
+            color: #E57C3E; }
+          #wrapper #cont #table-w > div table tbody td.type-check .fa-minus, #wrapper #cont #table-w > div table tfoot td.type-check .fa-minus {
+            color: rgba(0, 0, 0, 0.54); }
+          #wrapper #cont #table-w > div table tbody td.params, #wrapper #cont #table-w > div table tfoot td.params {
+            text-align: center; }
+          #wrapper #cont #table-w > div table tbody td.tags, #wrapper #cont #table-w > div table tfoot td.tags {
+            white-space: nowrap; }
+            #wrapper #cont #table-w > div table tbody td.tags .mdl-chip__text, #wrapper #cont #table-w > div table tfoot td.tags .mdl-chip__text {
+              font-size: 14px;
+              margin-right: 4px; }
+        #wrapper #cont #table-w > div table tfoot tr#spacer-tr {
+          visibility: hidden; }
+        #wrapper #cont #table-w > div table tfoot tr#extra-tr {
+          background: white; }
+          #wrapper #cont #table-w > div table tfoot tr#extra-tr .params {
+            color: rgba(0, 0, 0, 0.87);
+            text-align: right; }
+            #wrapper #cont #table-w > div table tfoot tr#extra-tr .params .caption {
+              font-size: 13px;
+              white-space: nowrap;
+              line-height: 1; }
+            #wrapper #cont #table-w > div table tfoot tr#extra-tr .params .value {
+              font-size: 16px;
+              line-height: 18px;
+              white-space: nowrap; }

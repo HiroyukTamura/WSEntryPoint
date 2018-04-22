@@ -24,7 +24,7 @@
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
             <header class="mdl-layout__header">
                 <div class="mdl-layout__header-row">
-                    <span class="mdl-layout-title">体調を記録</span>
+                    <span class="mdl-layout-title">分析</span>
                 </div>
             </header>
 
@@ -90,13 +90,281 @@
                             </canvas>
                         </div>
                         <div id="table-w">
-                            <table>
-                                <thead>
-                                <tr>
+                            <div>
+                                <table>
+                                    <thead class="mdl-shadow--4dp">
+                                        <tr>
+                                            <td id="left-top" rowspan="2">
+                                                4/12(金)
+                                            </td>
+                                            <td rowspan="2">
+                                                症状
+                                            </td>
+                                            <td rowspan="2">
+                                                備考
+                                            </td>
+                                            <td rowspan="1" colspan="3" class="parent">
+                                                生活
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>朝薬</td>
+                                            <td>夕薬</td>
+                                            <td>頓服</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="mdl-shadow--4dp">
+                                        <tr class="horizontal-shadow">
+                                            <td>
+                                                4/12(水)
+                                            </td>
+                                            <td class="tags">
+                                            <span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">神経質</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">震え</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">殺し</span>
+                                                </span>
+                                            </span>
+                                            </td>
+                                            <td>漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう</td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-check-circle"></i>
+                                            </td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-minus"></i>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
+                                        <tr class="horizontal-shadow">
+                                            <td>
+                                                4/12(水)
+                                            </td>
+                                            <td class="tags">
+                                            <span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">神経質</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">震え</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">殺し</span>
+                                                </span>
+                                            </span>
+                                            </td>
+                                            <td>漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう</td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-check-circle"></i>
+                                            </td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-minus"></i>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
+                                        <tr class="horizontal-shadow">
+                                            <td>
+                                                4/12(水)
+                                            </td>
+                                            <td class="tags">
+                                            <span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">神経質</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">震え</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">殺し</span>
+                                                </span>
+                                            </span>
+                                            </td>
+                                            <td>漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう</td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-check-circle"></i>
+                                            </td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-minus"></i>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
+                                        <tr class="horizontal-shadow">
+                                            <td>
+                                                4/12(水)
+                                            </td>
+                                            <td class="tags">
+                                            <span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">神経質</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">震え</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">殺し</span>
+                                                </span>
+                                            </span>
+                                            </td>
+                                            <td>漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう</td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-check-circle"></i>
+                                            </td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-minus"></i>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
+                                        <tr class="horizontal-shadow">
+                                            <td>
+                                                4/12(水)
+                                            </td>
+                                            <td class="tags">
+                                            <span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">神経質</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">震え</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">殺し</span>
+                                                </span>
+                                            </span>
+                                            </td>
+                                            <td>漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう</td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-check-circle"></i>
+                                            </td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-minus"></i>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
+                                        <tr class="horizontal-shadow">
+                                            <td>
+                                                4/12(水)
+                                            </td>
+                                            <td class="tags">
+                                            <span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">神経質</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">震え</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">殺し</span>
+                                                </span>
+                                            </span>
+                                            </td>
+                                            <td>漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう</td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-check-circle"></i>
+                                            </td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-minus"></i>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
+                                        <tr class="horizontal-shadow">
+                                            <td>
+                                                4/12(水)
+                                            </td>
+                                            <td class="tags">
+                                            <span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">神経質</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">震え</span>
+                                                </span>
+                                                <span class="mdl-chip">
+                                                    <span class="mdl-chip__text">殺し</span>
+                                                </span>
+                                            </span>
+                                            </td>
+                                            <td>漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう漢字ABCあいう</td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-check-circle"></i>
+                                            </td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-minus"></i>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr id="spacer-tr">
+                                            <td>
+                                                <br>
+                                                <br>
+                                                <br>
+                                            </td>
+                                            <td class="tags">
+                                            </td>
+                                            <td></td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-check-circle"></i>
+                                            </td>
+                                            <td class="type-check params">
+                                                <i class="fas fa-minus"></i>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
 
-                                </tr>
-                                </thead>
-                            </table>
+                                        <tr id="extra-tr" class="mdl-shadow--4dp">
+                                            <td>
+                                                平均
+                                            </td>
+                                            <td class="tags">
+                                                <span>
+                                                    <span class="mdl-chip">
+                                                        <span class="mdl-chip__text">神経質</span>
+                                                    </span>
+                                                    <span class="mdl-chip">
+                                                        <span class="mdl-chip__text">震え</span>
+                                                    </span>
+                                                    <span class="mdl-chip">
+                                                        <span class="mdl-chip__text">殺し</span>
+                                                    </span>
+                                                </span>
+                                            </td>
+                                            <td></td>
+                                            <td class="type-check params">
+                                                <span class="caption">チェック率</span>
+                                                <span class="value">48%</span>
+                                            </td>
+                                            <td class="type-check params">
+                                                <span class="caption">チェック率</span>
+                                                <span class="value">48%</span>
+                                            </td>
+                                            <td class="numeric params">
+                                                4.2
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

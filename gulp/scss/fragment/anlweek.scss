@@ -155,13 +155,90 @@ body {
   }
 
   #cont {
-    padding: 0 72px 72px 72px;
     #canvas-w {
       width: 100%;
       height: 300px;//todo これ暫定 のち修正のこと
     }
     #table-w {
+      padding: 72px;
       width: 100%;
+      >div {
+        width: 100%;
+        table {
+          font-size: 16px;
+          thead {
+            background: $headerColor;
+            border-bottom: 8px solid $headerColor;
+            color: white;
+            tr {
+              border-top: 8px solid $headerColor;
+              td {
+                text-align: center;
+                padding: 0 2em;
+                vertical-align: middle;
+                white-space: nowrap;
+                &#left-top {
+                  line-height: 0;
+                }
+              }
+            }
+          }
+          tbody {
+            tr {
+              &:nth-child(2n) {
+                background: $tableRowColor;
+              }
+              &:nth-child(2n+1) {
+                background: white;
+              }
+            }
+          }
+          tbody td, tfoot td {
+            vertical-align: middle;
+            padding: 8px 2em;
+            &.type-check {
+              .fa-check-circle {
+                color: $primaryColor;
+              }
+              .fa-minus {
+                color: $textExtraColor;
+              }
+            }
+            &.params {
+              text-align: center;
+            }
+            &.tags {
+              white-space: nowrap;
+              .mdl-chip__text {
+                font-size: 14px;
+                margin-right: 4px;
+              }
+            }
+          }
+          tfoot {
+            tr#spacer-tr {
+              visibility: hidden;
+            }
+            tr#extra-tr {
+              background: white;
+              .params {
+                color: $textDefColor;
+                text-align: right;
+                .caption {
+                  font-size: 13px;
+                  white-space: nowrap;
+                  line-height: 1;
+                }
+                .value {
+                  font-size: 16px;
+                  line-height: 18px;
+                  white-space: nowrap;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
