@@ -161,6 +161,27 @@ body {
         .mdl-tabs__tab-bar {
           justify-content: start;
           padding-left: 64px;
+          position: relative;
+        }
+        #status {
+          position: absolute;
+          right: 16px;
+          bottom: 0;
+          width: fit-content;
+          >.caption {
+            font-size: 14px;
+            line-height: 16px;
+            color: $textExtraColor;
+          }
+          >.value {
+            color: $textDefColor;
+            #days {
+              font-size: 18px;
+            }
+            #ratio {
+              font-size: 16px;
+            }
+          }
         }
           //#icons {
           //  color: $textExtraColor;
@@ -170,21 +191,6 @@ body {
         max-width: $pageMaxWidth;
         margin: 0 auto;
         &#summery {
-          position: relative;
-          #status {
-            position: absolute;
-            right: 72px;
-            width: fit-content;
-            >.caption {
-              font-size: 14px;
-              line-height: 16px;
-              color: $textExtraColor;
-            }
-            >.value {
-              color: $textDefColor;
-              font-size: 18px;
-            }
-          }
           ul {
             list-style: none;
             padding: 0;
