@@ -30,7 +30,7 @@ body {
 }
 
 #main-col {
-  width: 712px + $columnPadding;
+  width: 512px + $columnPadding;
 }
 
 //#left-cal, #right-col {
@@ -152,6 +152,91 @@ body {
 
 #group-act-list {
   margin-top: 72px;
+
+  #sample {
+    width: unset;
+    margin-top: 36px;
+
+    .group-act__header {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: start;
+      padding: 24px 40px;
+      .group-act__icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 16px;
+      }
+      >div {
+        flex-grow: 10;
+        >h5 {
+          margin: 8px 0;
+        }
+        .member-chips .mdl-chip__contact {
+          width: 28px;
+          height: 28px;
+        }
+      }
+    }
+
+    .group-log {
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        > li {
+          border-top: $bodyColor solid 1px;
+          > .log-time {
+            height: 24px;
+            padding-right: 12px;
+            color: $textExtraColor;
+            font-size: 14px;
+            text-align: right;
+            vertical-align: middle;
+          }
+          > .log-cont-w {
+            padding: 0 40px 24px 40px;
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: flex-start;
+            .log-icon {
+              position: relative;
+              width: 32px;
+              height: 32px;
+              background: $primaryColor;
+              > .fa-reply, > .fa-file-alt {
+                position: absolute;
+                display: block;
+                top: 50%;
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%);
+                color: white;
+              }
+            }
+            .log-cont {
+              padding-left: 40px;
+              flex-grow: 10;
+              color: $textExtraColor;
+              font-size: 16px;
+              line-height: 28px;
+              .sbj-icon {
+                width: 28px;
+                height: 28px;
+                margin-right: 8px;
+                &:not(:first-child) {
+                  margin-left: 8px;
+                }
+              }
+              .sbj-name, .obj-name {
+                color: $textDefColor;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   .card-item-group {
     width: unset;
     margin-top: 36px;

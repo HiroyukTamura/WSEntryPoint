@@ -27,10 +27,7 @@ body {
   justify-content: center; }
 
 #main-col {
-  width: 736px; }
-
-#left-cal, #right-col {
-  width: 300px; }
+  width: 536px; }
 
 .column {
   padding: 24px; }
@@ -116,6 +113,93 @@ body {
 
 #group-act-list {
   margin-top: 72px; }
+  #group-act-list #sample {
+    width: unset;
+    margin-top: 36px; }
+    #group-act-list #sample .group-act__header {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-wrap: nowrap;
+      -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+      -webkit-box-align: start;
+      -webkit-align-items: start;
+      -ms-flex-align: start;
+      align-items: start;
+      padding: 24px 40px; }
+      #group-act-list #sample .group-act__header .group-act__icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 16px; }
+      #group-act-list #sample .group-act__header > div {
+        -webkit-box-flex: 10;
+        -webkit-flex-grow: 10;
+        -ms-flex-positive: 10;
+        flex-grow: 10; }
+        #group-act-list #sample .group-act__header > div > h5 {
+          margin: 8px 0; }
+        #group-act-list #sample .group-act__header > div .member-chips .mdl-chip__contact {
+          width: 28px;
+          height: 28px; }
+    #group-act-list #sample .group-log ul {
+      list-style: none;
+      padding: 0;
+      margin: 0; }
+      #group-act-list #sample .group-log ul > li {
+        border-top: #F4F3EF solid 1px; }
+        #group-act-list #sample .group-log ul > li > .log-time {
+          height: 24px;
+          padding-right: 12px;
+          color: rgba(0, 0, 0, 0.54);
+          font-size: 14px;
+          text-align: right;
+          vertical-align: middle; }
+        #group-act-list #sample .group-log ul > li > .log-cont-w {
+          padding: 0 40px 24px 40px;
+          display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-flex-wrap: nowrap;
+          -ms-flex-wrap: nowrap;
+          flex-wrap: nowrap;
+          -webkit-box-align: start;
+          -webkit-align-items: flex-start;
+          -ms-flex-align: start;
+          align-items: flex-start; }
+          #group-act-list #sample .group-log ul > li > .log-cont-w .log-icon {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            background: #E57C3E; }
+            #group-act-list #sample .group-log ul > li > .log-cont-w .log-icon > .fa-reply, #group-act-list #sample .group-log ul > li > .log-cont-w .log-icon > .fa-file-alt {
+              position: absolute;
+              display: block;
+              top: 50%;
+              left: 50%;
+              -webkit-transform: translateX(-50%) translateY(-50%);
+              -ms-transform: translateX(-50%) translateY(-50%);
+              transform: translateX(-50%) translateY(-50%);
+              color: white; }
+          #group-act-list #sample .group-log ul > li > .log-cont-w .log-cont {
+            padding-left: 40px;
+            -webkit-box-flex: 10;
+            -webkit-flex-grow: 10;
+            -ms-flex-positive: 10;
+            flex-grow: 10;
+            color: rgba(0, 0, 0, 0.54);
+            font-size: 16px;
+            line-height: 28px; }
+            #group-act-list #sample .group-log ul > li > .log-cont-w .log-cont .sbj-icon {
+              width: 28px;
+              height: 28px;
+              margin-right: 8px; }
+              #group-act-list #sample .group-log ul > li > .log-cont-w .log-cont .sbj-icon:not(:first-child) {
+                margin-left: 8px; }
+            #group-act-list #sample .group-log ul > li > .log-cont-w .log-cont .sbj-name, #group-act-list #sample .group-log ul > li > .log-cont-w .log-cont .obj-name {
+              color: rgba(0, 0, 0, 0.87); }
   #group-act-list .card-item-group {
     width: unset;
     margin-top: 36px; }
@@ -123,7 +207,7 @@ body {
       margin: 0;
       padding: 0; }
       #group-act-list .card-item-group .group-act__header .mdl-list .mdl-list__item {
-        padding: 40px 40px 0 40px; }
+        padding: 40px 40px 16px 40px; }
         #group-act-list .card-item-group .group-act__header .mdl-list .mdl-list__item .mdl-list__item-primary-content .group-act__icon {
           width: 48px;
           height: 48px; }

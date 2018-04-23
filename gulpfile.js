@@ -11,7 +11,7 @@ const notify = require('gulp-notify');
 const using = require('gulp-using');
 const fs = require('fs');
 
-const prefixDir = 'anlweek';
+const prefixDir = 'home';
 let filePath = '';
 
 gulp.task('default', ['prefix']);
