@@ -27,7 +27,7 @@ body {
   justify-content: center; }
 
 #main-col {
-  width: 536px; }
+  width: 736px; }
 
 .column {
   padding: 24px; }
@@ -207,10 +207,14 @@ body {
       margin: 0;
       padding: 0; }
       #group-act-list .card-item-group .group-act__header .mdl-list .mdl-list__item {
-        padding: 40px 40px 16px 40px; }
+        padding: 28px 40px 0 40px; }
         #group-act-list .card-item-group .group-act__header .mdl-list .mdl-list__item .mdl-list__item-primary-content .group-act__icon {
           width: 48px;
-          height: 48px; }
+          height: 48px;
+          margin-right: 24px; }
+        #group-act-list .card-item-group .group-act__header .mdl-list .mdl-list__item .mdl-chip__contact {
+          margin-left: 8px;
+          margin-right: 0; }
     #group-act-list .card-item-group .group-log {
       padding: 32px; }
       #group-act-list .card-item-group .group-log table {
@@ -249,22 +253,28 @@ body {
                 -webkit-transform: translateX(-50%) translateY(-50%);
                 -ms-transform: translateX(-50%) translateY(-50%);
                 transform: translateX(-50%) translateY(-50%); }
-          #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt {
-            padding: 8px 0; }
-            #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list {
-              width: 100%;
-              border-radius: 8px;
-              border: #f4cab1 solid 1px;
-              padding: 0 16px;
-              min-height: 48px; }
-              #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item {
-                padding: 0; }
-              #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item.posted-user {
-                min-height: unset;
-                padding: 4px 20px; }
-              #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item-secondary-content img {
-                background: gray;
-                width: 40px;
-                height: 40px; }
+          #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list {
+            width: 100%;
+            border-radius: 8px;
+            border: #f4cab1 solid 1px;
+            padding: 8px 12px;
+            min-height: 48px;
+            margin: 8px 0; }
+            #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item--two-line {
+              height: unset; }
+            #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item {
+              padding: 0; }
+              #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item .mdl-list__item-primary-content {
+                height: unset; }
+              #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item .mdl-list__item-avatar {
+                width: 28px;
+                height: 28px; }
+            #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item.posted-user {
+              min-height: unset;
+              padding: 4px 20px; }
+            #group-act-list .card-item-group .group-log table tbody tr td.group-log__txt .mdl-list .mdl-list__item-secondary-content img {
+              background: gray;
+              width: 28px;
+              height: 28px; }
     #group-act-list .card-item-group .member-chips {
       margin-left: 88px; }

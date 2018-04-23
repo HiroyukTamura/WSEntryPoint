@@ -30,7 +30,7 @@ body {
 }
 
 #main-col {
-  width: 512px + $columnPadding;
+  width: 712px + $columnPadding;
 }
 
 //#left-cal, #right-col {
@@ -246,12 +246,17 @@ body {
         margin: 0;
         padding: 0;
         .mdl-list__item {
-          padding: 40px 40px 16px 40px;
+          padding: 28px 40px 0 40px;
           .mdl-list__item-primary-content {
             .group-act__icon {
               width: 48px;
               height: 48px;
+              margin-right: 24px;
             }
+          }
+          .mdl-chip__contact {
+            margin-left: 8px;
+            margin-right: 0;//MDL打ち消し
           }
         }
       }
@@ -300,15 +305,25 @@ body {
               }
             }
             td.group-log__txt {
-              padding: 8px 0;
               .mdl-list {
                 width: 100%;
                 border-radius: 8px;
                 border: $lineColor solid 1px;
-                padding: 0 16px;
+                padding: 8px 12px;
                 min-height: 48px;
+                margin: 8px 0;
+                .mdl-list__item--two-line {
+                  height: unset;
+                }
                 .mdl-list__item{
                   padding: 0;
+                  .mdl-list__item-primary-content {
+                    height: unset;
+                  }
+                  .mdl-list__item-avatar {
+                    width: 28px;
+                    height: 28px;
+                  }
                 }
                 .mdl-list__item.posted-user {
                   min-height: unset;
@@ -317,8 +332,8 @@ body {
                 .mdl-list__item-secondary-content {
                   img {
                     background: gray;
-                    width: 40px;
-                    height: 40px;
+                    width: 28px;
+                    height: 28px;
                   }
                 }
               }
