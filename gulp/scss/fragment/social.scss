@@ -1,0 +1,38 @@
+@charset "utf-8";
+
+@import "../common/variable";
+
+$columnPadding: 24px;
+
+body {
+  background-color: $bodyColor;
+}
+
+.mdl-layout__drawer-button i{
+  color: #f4cab1;
+}
+
+.mdl-layout__header {
+  background: #524b4b;
+  color: white;
+}
+
+.mdl-layout__content {
+  width: 100%;
+  margin-top: 72px;
+}
+
+#content-in {
+  padding-top: 48px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+#main-col {
+  width: 712px + $columnPadding;
+}
+
+.column {
+  padding: $columnPadding;
+}
