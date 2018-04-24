@@ -1,12 +1,16 @@
-<!DOCTYPE html><html lang="ja"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>ChallengedKit</title>
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+
+    <title>ChallengedKit(β)</title>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-113450965-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113450965-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
@@ -15,188 +19,301 @@
         gtag('config', 'UA-113450965-1');
     </script>
 
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <!-- Custom fonts for this template -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
 
-    <!--google material design lite-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Plugin CSS -->
+    <link href="vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/creative.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <script defer="" src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
-    <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
 
-    <link href="../../dist/common.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/2.5.1/firebase-ui-auth.css" />
+    <link href="css/custom.css" rel="stylesheet">
 </head>
 
-<body>
+<body id="page-top">
 
-<div id="progress" class="mdl-spinner mdl-js-spinner is-active"></div>
-
-<div id="login_w">
-    <div class="mdl-grid" id="login-grid">
-        <div class="mdl-cell mdl-cell--4-col"></div>
-        <div class="mdl-cell mdl-cell--4-col">
-            <img id="login-logo" src="../../dist/img/icon.png">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">Challenged Kit(β)</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="#services">サービス</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="#about">ログイン</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="#portfolio">おことわり</a>
+                </li>
+                <!--<li class="nav-item">-->
+                <!--<a class="nav-link js-scroll-trigger" href="#contact">Contact</a>-->
+                <!--</li>-->
+            </ul>
         </div>
-        <div class="mdl-cell mdl-cell--4-col"></div>
     </div>
-    <h2 id="login_title">ChallengedKit(β)</h2>
-    <div id="firebaseui-auth-container"></div>
-</div>
+</nav>
 
-<div id="post_load">
-
-    <!--header-->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-
-        <header class="mdl-layout__header">
-            <div class="mdl-layout__header-row">
-                <img id="group-img">
-                <!-- Title -->
-                <span class="mdl-layout-title">設定</span>
+<header class="masthead text-center text-white d-flex">
+    <div class="container my-auto">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <h1>
+                    <strong>CHALLENGED KIT (β)</strong>
+                </h1>
+                <hr>
             </div>
-        </header>
-
-        <div class="mdl-layout__drawer">
-            <!--<span class="mdl-layout-title">Title</span>-->
-            <header class="demo-drawer-header">
-                <div class="demo-avatar">
-                    <img class="rounded-circle">
-                </div>
-                <div class="demo-avatar-dropdown">
-                    <div>
-                        <span class="user-name"></span>
-                        <div class="mdl-layout-spacer"></div>
-                        <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-                            <i class="material-icons" role="presentation">arrow_drop_down</i>
-                            <span class="visuallyhidden">Accounts</span>
-                        </button>
-                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-                            <li class="mdl-menu__item" id="dr-header-logout">ログアウト</li>
-                        </ul>
-                    </div>
-                </div>
-            </header>
-
-            <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" href="../record/index.html"><i class="fas fa-edit fa-lg drawer_icon"></i>入力</a>
-                <a class="mdl-navigation__link" href="../input/index.html"><i class="fas fa-table fa-lg drawer_icon"></i>テンプレート</a>
-                <a class="mdl-navigation__link" href="#" id="analytics-link"><i class="fas fa-chart-bar fa-lg drawer_icon"></i>分析</a>
-                <a class="mdl-navigation__link current-page" href="../social/index.html" link="#"><i class="fas fa-share-alt fa-lg drawer_icon"></i>共有</a>
-                <a class="mdl-navigation__link current-page" href="#"><i class="fas fa-cog fa-lg drawer_icon"></i>設定</a>
-            </nav>
-
+            <div class="col-lg-8 mx-auto">
+                <p class="text-faded mb-5">障がい者社員の体調を見える化して共有。<br/>当事者・職場・支援者をつないで、より働きやすい環境を実現します。</p>
+                <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Web版を使ってみる</a>
+                <br>
+                <a href="https://play.google.com/store/apps/details?id=com.cks.hiroyuki2.worksupport3"><img id="google_play_btn" src="img/google-play-badge_entry_point.png" alt="get it on google play"></a>
+            </div>
         </div>
+    </div>
+</header>
 
-        <main class="mdl-layout__content">
-            <div class="page-content">
-                <div id="cont">
-                    <div>
-                        <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                            <div class="mdl-card mdl-cell mdl-cell--12-col">
-                                <div class="mdl-card__supporting-text">
-                                    <h4>プライバシーポリシー</h4>
-                                    <ul>
-                                        <li>本サイトでは、サイトの分析と改善のためにGoogleアナリティクスを使用しています。Googleアナリティクスの利用規約は<a href="https://www.google.com/analytics/terms/jp.html">こちら</a>です。</li>
-                                        <li>本サイトをご利用中のウェブブラウザは、Googleに特定の情報（たとえば、アクセスしたページのウェブアドレスやIPアドレスなど）を自動的に送信します。</li>
-                                        <li>データ収集のためにGoogle がお使いのブラウザに cookie を設定したり、既存のcookieを読み取ったりする場合があります。</li>
-                                        <li>開発者は、相応の理由がある場合を除いて、ユーザの個人情報で第三者にデータを提供しません。</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </section>
-                        <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                            <div class="mdl-card mdl-cell mdl-cell--12-col">
-                                <div class="mdl-card__supporting-text">
-                                    <h4>免責事項</h4>
-                                    <ul>
-                                        <li>本サービスはベータ版です。バグが残存しており、不具合が起こることがあります。あらかじめご了承ください。</li>
-                                        <li>本サービスを使用したことによる一切の損害について、開発者は責任を負いません。</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </section>
+<section id="services">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">こんなことができます</h2>
+                <hr class="my-4">
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                    <i class="fa-4x fa fa-edit text-primary mb-3"></i>
+                    <h3 class="mb-3">記録</h3>
+                    <p class="text-muted mb-0">睡眠時間や症状の有無など、毎日の体調記録がつけられます。</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                    <i class="fa-4x fas fa-chart-bar text-primary mb-3"></i>
+                    <h3 class="mb-3">分析</h3>
+                    <p class="text-muted mb-0">日々の記録を一覧表示し、分析することができます。</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                    <i class="fa-4x fa fa-comment text-primary mb-3"></i>
+                    <h3 class="mb-3">コミュニケーション</h3>
+                    <p class="texed mb-0">グループを作成すれば、グループメンバーのメッセージのやりとりができます。</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                    <i class="fa-4x fa fa-share-alt text-primary mb-3"></i>
+                    <h3 class="mb-3">共有</h3>
+                    <p class="text-muted mb-0">グループでは体調記録やスケジュールの他、各種ファイルを共有できます。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-                        <section id="contact" class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                            <div class="mdl-card mdl-cell mdl-cell--12-col">
-                                <div class="mdl-card__supporting-text">
-                                    <h4>お問い合わせ</h4>
-                                    <ul class="demo-list-three mdl-list">
-                                        <li class="mdl-list__item mdl-list__item--two-line">
-                                            <span class="mdl-list__item-primary-content">
-                                                <i class="material-icons mdl-list__item-avatar">person</i>
-                                                <span>Hiroyuki Tamura</span>
-                                                <span class="mdl-list__item-sub-title">
-                                                    <a href="mailto:address=hiroyuktamura@gmail.com">hiroyuktamura@gmail.com</a>
-                                                </span>
-                                            </span>
-                                        </li>
-                                        <li class="li-two">
-                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btn-github">
-                                                <i class="fab fa-github fa-lg"></i>&nbsp;&nbsp;github
-                                            </button>
-                                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="btn-fb">
-                                                <i class="fab fa-facebook-square fa-lg"></i>&nbsp;&nbsp;facebook
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </section>
+<section class="bg-primary" id="about">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mx-auto text-center">
+                <h2 class="section-heading " id="login_title">Web版にログイン</h2>
+                <hr id="login_hr">
+                <div id="firebaseui-wrapper">
+                    <div id="auth-cont-w" class="sign_in_col">
+                        <h6 class="sign-up-title">SNSアカウントでログイン</h6>
+                        <div id="firebaseui-auth-container">
+                            <div class="mdl-spinner mdl-js-spinner is-active" id="spinner-fb"></div>
+                        </div>
+                        <p>※SNS連携によって連携先への投稿が許可されることはありません。</p>
                     </div>
 
-                    <div id="config">
-                        <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="unsubscribe">
-                            <div class="mdl-card mdl-cell mdl-cell--12-col">
-                                <div class="mdl-card__supporting-text">
-                                    <h4>退会</h4>
-                                    <div class="btn-wrapper">
-                                        <p>一度退会すると、これまで入力した全てのデータが削除されます。</p>
-                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="unsubscribe-btn">
-                                            退会する
+                    <div id="vert_seem">
+                        <p>OR</p>
+                    </div>
+
+                    <div id="firebase-register" class="sign_in_col">
+                        <!--<div class="firebaseui-card-content">-->
+                        <!--<div class="firebaseui-idp-list">-->
+                        <!--<form onsubmit="return false">-->
+                        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect firebaseui-idp-button firebaseui-id-idp-button">-->
+                        <!--<span class="firebaseui-idp-icon-wrapper">-->
+                        <!--<i class="fas fa-address-card fa-lg"></i>-->
+                        <!--</span>-->
+                        <!--<span class="firebaseui-idp-text firebaseui-idp-text-long">-->
+                        <!--メールアドレスで会員登録-->
+                        <!--</span>-->
+                        <!--<span class="firebaseui-idp-text firebaseui-idp-text-short">会員登録</span>-->
+                        <!--</button>-->
+                        <!--</form>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <div id="sign_up">
+                            <h6 class="sign-up-title">メールアドレスで登録</h6>
+                            <ul>
+                                <li>
+                                    <form onsubmit="return false">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="form_username">
+                                            <label class="mdl-textfield__label" for="form_username">ユーザ名</label>
+                                        </div>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form onsubmit="return false">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="email" id="form_email">
+                                            <label class="mdl-textfield__label" for="form_email">メールアドレス</label>
+                                            <span class="mdl-textfield__error">メールアドレスの形式が正しくありません</span>
+                                        </div>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form onsubmit="return false">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="password" id="form_pw">
+                                            <label class="mdl-textfield__label" for="form_pw">パスワード</label>
+                                            <span class="mdl-textfield__error">40文字以上だタコ！</span>
+                                        </div>
+                                    </form>
+                                </li>
+                                <li>
+                                    <!--todo linkの文字色考えること-->
+                                    <p>ご登録の前に<a target="_blank" href="info/index.html#disclaimer">免責事項</a>と<a target="_blank" href="info/index.html#pp">プライバシーポリシー</a>を必ずお読みください。</p>
+                                </li>
+                                <li>
+                                    <form onsubmit="return false">
+                                        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect firebaseui-idp-button firebaseui-id-idp-button">
+                                            <!--<span class="firebaseui-idp-icon-wrapper">-->
+                                            <!--<i class="fas fa-address-card fa-lg"></i>-->
+                                            <!--</span>-->
+                                            <div id="btn_wrapper">
+                            <span class="firebaseui-idp-text firebaseui-idp-text-long sign_up_txt">
+                              無料で会員登録
+                            </span>
+                                                <span class="firebaseui-idp-text firebaseui-idp-text-short sign_up_txt">会員登録</span>
+                                            </div>
                                         </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-
-                <footer class="mdl-mini-footer">
-                    <div class="mdl-mini-footer__right-section">
-                        <ul class="mdl-mini-footer__link-list">
-                            <li>Hiroyuki Tamura All Rights Reserved.</li>
-                        </ul>
-                    </div>
-                </footer>
+                <!--<hr class="light my-4">-->
+                <!--<p class="text-faded mb-4">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>-->
+                <!--<a class="btn btn-light btn-xl js-scroll-trigger" href="#services">Get Started!</a>-->
             </div>
-        </main>
+        </div>
     </div>
-</div>
+</section>
+
+<section id="portfolio">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="section-heading text-white">利用者のみなさまへ</h2>
+                <hr class="light my-4">
+                <p class="text-faded mb-4">
+                    本サービスはベータ版です。バグが残存しており、不具合が起こることがあります。あらかじめご了承ください。
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--<section class="bg-dark text-white">-->
+<!--<div class="container text-center">-->
+<!--<h2 class="mb-4">Free Download at Start Bootstrap!</h2>-->
+<!--<a class="btn btn-light btn-xl sr-button" href="http://startbootstrap.com/template-overviews/creative/">Download Now!</a>-->
+<!--</div>-->
+<!--</section>-->
+
+<!--<section id="contact">-->
+<!--<div class="container">-->
+<!--<div class="row">-->
+<!--<div class="col-lg-8 mx-auto text-center">-->
+<!--<h2 class="section-heading">Let's Get In Touch!</h2>-->
+<!--<hr class="my-4">-->
+<!--<p class="mb-5">Ready to start your next project with us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!</p>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="col-lg-4 ml-auto text-center">-->
+<!--<i class="fa fa-phone fa-3x mb-3 sr-contact"></i>-->
+<!--<p>123-456-6789</p>-->
+<!--</div>-->
+<!--<div class="col-lg-4 mr-auto text-center">-->
+<!--<i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>-->
+<!--<p>-->
+<!--<a href="mailto:your-email@your-domain.com">feedback@startbootstrap.com</a>-->
+<!--</p>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</section>-->
+
+<footer class="mdl-mini-footer">
+    <div class="mdl-mini-footer__left-section">
+        <ul class="mdl-mini-footer__link-list">
+            <li><a href="info/index.html#contact">お問い合わせ</a></li>
+            <li><a href="info/index.html#pp">プライバシーポリシー</a></li>
+            <li><a href="info/index.html#disclaimer">免責事項</a></li>
+        </ul>
+    </div>
+    <div class="mdl-mini-footer__right-section">
+        <ul class="mdl-mini-footer__link-list">
+            <li>Hiroyuki Tamura All Rights Reserved.</li>
+        </ul>
+    </div>
+</footer>
 
 <!-- Bootstrap core JavaScript -->
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Plugin JavaScript -->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="vendor/scrollreveal/scrollreveal.min.js"></script>
+<script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/ui/2.7.0/firebase-ui-auth__ja.js"></script>
+<script src="https://smartlock.google.com/client"></script>
 
-<script defer="" src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
+<script src="dist/bootstrap-notify.min.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-<script src="../../dist/bootstrap-notify.min.js"></script>
 
-<script src="../../dist/common.js"></script>
-<script src="app.js"></script>
+<script src="dist/ResizeSensor.js"></script>
+<script src="dist/ElementQueries.js"></script>
 
-<noscript>
-    <h4>JavaScriptが無効になっています。ブラウザの設定を開いてJavaScriptを有効にしてください。</h4>
-</noscript>
+<!-- Custom scripts for this template -->
+<script src="js/creative.min.js"></script>
+<script src="dist/common.js"></script>
+<script src="js/custom.js"></script>
 
-</body></html>
+</body>
+
+</html>
