@@ -3,6 +3,8 @@
 @import "../common/variable";
 
 $columnPadding: 24px;
+$profileWidth: 300px;
+$mainColBaseWidth: 712px;
 
 body {
   background-color: $bodyColor;
@@ -38,8 +40,7 @@ body {
   padding: $columnPadding;
 }
 
-#profile {
-  $profileWidth: 300px;
+@mixin userCard($backColor) {
   width: $profileWidth;
   min-height: unset;
 
@@ -49,7 +50,7 @@ body {
     padding: 16px 16px 0 16px;
     display: flex;
     flex-wrap: nowrap;
-    background: $tableRowColor;
+    background: $backColor;
     #my-icon {
       width: 72px;
       height: 72px;
@@ -74,10 +75,12 @@ body {
     display: flex;
     flex-wrap: nowrap;
     align-items: flex-end;
+    padding-left: 16px;
     >div {
       height: 100%;
       flex-grow: 100;
       vertical-align: middle;
+      padding-left: 84px;
       .rounded-circle{
         width: 16px;
         height: 16px;
@@ -91,25 +94,65 @@ body {
   }
 }
 
+#profile {
+  @include userCard($tableRowColor);
+}
+
 #main-col {
-  .mdl-card {
-    width: 100%;
-    padding: 16px 32px;
-    min-height: unset;
-    .group-cont {
-      vertical-align: middle;
-      .group-icon {
-        width: 40px;
-        height: 40px;
+  #groups {
+    list-style: none;
+    padding: 0;
+    .mdl-card {
+      width: 100%;
+      min-height: unset;
+      margin-bottom: 16px;
+      .group-cont {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        padding: 24px 32px;
+        $iconSize: 48px;
+        .group-icon {
+          width: $iconSize;
+          height: $iconSize;
+        }
+        >div {
+          flex-grow: 200;
+          .first-row {
+            height: $iconSize;
+            display: flex;
+            align-items: center;
+            .group-name {
+              margin: 36px;
+              font-size: 20px;
+            }
+          }
+          .member-chips {
+            padding-top: 4px;
+            padding-left: 8px;
+            .mdl-chip__contact {
+              //width: 28px;
+              //height: 28px;
+            }
+          }
+        }
       }
-      .group-name {
-        margin: 0 36px;
-        font-size: 18px;
+      .mdl-button {
+        float: right;
+        color: $textExtraColor;
+        margin-left: 16px;
       }
-      .member-icon {
-        width: 32px;
-        height: 32px;
-      }
+    }
+  }
+
+  #users {
+    margin: 72px 0;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    .user-prof {
+      @include userCard(unset);
+      margin: 16px 22px;//絶妙な22px
     }
   }
 }
