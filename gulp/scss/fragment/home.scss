@@ -25,7 +25,6 @@ body {
 #content-in {
   padding-top: 48px;
   display: flex;
-  flex-wrap: nowrap;
   justify-content: center;
 }
 
@@ -159,7 +158,6 @@ body {
 
     .group-act__header {
       display: flex;
-      flex-wrap: nowrap;
       align-items: start;
       padding: 24px 40px;
       .group-act__icon {
@@ -197,7 +195,6 @@ body {
           > .log-cont-w {
             padding: 0 40px 24px 40px;
             display: flex;
-            flex-wrap: nowrap;
             align-items: flex-start;
             .log-icon {
               position: relative;

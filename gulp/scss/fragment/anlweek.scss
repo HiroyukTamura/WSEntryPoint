@@ -34,7 +34,6 @@ body {
     #header-center {
       display: flex;
       align-items: center;
-      flex-wrap: nowrap;
       button {
         color: $primaryColor;
       }
@@ -50,7 +49,6 @@ body {
       transform: translateY(-50%);
       right: 36px;
       display: flex;
-      flex-wrap: nowrap;
       align-items: center;
       margin-left: 32px;
       float: left;
