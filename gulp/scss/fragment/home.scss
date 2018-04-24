@@ -72,7 +72,9 @@ body {
         a {
           color: $textExtraColor;
           text-decoration: none;
-          padding-left: 3px;
+          span {
+            padding-left: 3px;
+          }
         }
         a:first-child {
           span {

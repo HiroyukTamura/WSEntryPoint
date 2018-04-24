@@ -14,7 +14,7 @@ const dom = require('gulp-dom');
 const NAV_MENU = ['record', 'analytics', 'social', 'config'];
 const MANiPULATED_HTML = ['record', 'analytics', 'social', 'config'];
 
-const prefixDir = 'social';
+const prefixDir = 'home';
 let filePath = '';
 
 gulp.task('default', ['prefix']);
