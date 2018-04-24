@@ -70,12 +70,12 @@ gulp.task("nav-link", function () {
     for (let i = 0; i < MANiPULATED_HTML.length; i++) {
         urlList.push(baseUrl.replace('PATH', MANiPULATED_HTML[i]));
     }
-
+    let lastDir;
     gulp.src(urlList)
         .pipe(getFileName(filePath))
         .pipe(dom(function(){
             const dirList = filePath.split('\\');
-            const lastDir = dirList[dirList.length-2];
+            lastDir = dirList[dirList.length-2];
             const nth = NAV_MENU.indexOf(lastDir);
             if (nth === -1)
                 console.warn('nth: ', nth, lastDir);
@@ -86,7 +86,10 @@ gulp.task("nav-link", function () {
             link.setAttribute('link', '#');
             return this;
         }))
-        .pipe(gulp.dest("public/"+ dirList));
+        .pipe(rename(function (path) {
+            path.dirname = lastDir;
+        }))
+        .pipe(gulp.dest("public/"));
 });
 
 gulp.task('babel', function() {
