@@ -5,6 +5,8 @@
     const defaultDatabase = defaultApp.database();
     let loginedUser;
     const current = moment();
+    let groupCreator;
+    let socialOperator;
 
     window.onload = function init() {
         new Main().init();
@@ -65,11 +67,12 @@
 
             // const calendar = new Calendar('#calendar', null);
             Main.setDomStatus();
-            const socialOperator = new SocialDataOperator();
+            socialOperator = new SocialDataOperator();
             socialOperator.retrieveGroupList();
             // fgRetriever.retrieveFriendList();
 
             new CalendarOperator().init();
+            groupCreator = new GroupCreator();
         }
 
         static setDomStatus(){
@@ -136,8 +139,8 @@
             this.$liFrame = $(
                 '<li class="mdl-list__item mdl-button mdl-js-button mdl-pre-upgrade">\n' +
                     '<span class="mdl-list__item-primary-content mdl-pre-upgrade">\n' +
-                        '<img src="../dist/img/icon.png" alt="user-image" class="mdl-list__item-avatar mdl-pre-upgrade">\n' +
-                        '<span class="name">'+ UNSET_USER_NAME +'</span>\n' +
+                        '<img alt="user-image" class="mdl-list__item-avatar mdl-pre-upgrade">\n' +
+                        '<span class="name"></span>\n' +
                     '</span>\n' +
                     // '<button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--icon config">\n' +
                     //     '<i class="fas fa-cog fa-sm"></i>\n' +
@@ -192,6 +195,9 @@
 
                     });
                 });
+                $('#group-list .list-card__header .mdl-button').on('click', function () {
+                    groupCreator.onClickGroupCreateBtn();
+                });
                 setElementAsMdl(self.$groupCard);
                 self.$groupCard.removeClass('pre-load');
             }).catch(error => {
@@ -201,10 +207,10 @@
 
         static setDomDetails(key, json, $li, errName, errIcon){
             $li.prop('key', key);
-            const name = (json.hasOwnProperty('name') || json.name !== 'null') ?
+            const name = (!!json['name'] && json.name !== 'null') ?
                 json.name : errName;
             $li.find('.name').html(name);
-            const photoUrl = json.hasOwnProperty('photoUrl') && json.photoUrl !== 'null' ?
+            const photoUrl = (!!json['photoUrl'] && json.photoUrl !== 'null') ?
                 json.photoUrl : errIcon;
             $li.find('img').attr('src', photoUrl);
         }
@@ -232,24 +238,88 @@
         }
     }
 
-    // class SocialDataOperator {
-    //     constructor(){
-    //
-    //     }
-    //
-    //     init() {
-    //         const self = this;
-    //         const scheme = makeRefScheme(['group', loginedUser.uid, current.format('YYYYMM')]);
-    //         defaultDatabase.ref(scheme).once('value').then(snapshot => {
-    //             console.log(snapshot);
-    //             if (snapshot.exists()) {
-    //                 self.json = snapshot.toJSON();
-    //             }
-    //             this.calendar = new Calendar('#calendar', self.json);
-    //         }).catch(error => {
-    //             console.log(error);
-    //             //todo エラー処理 Ntfを出す
-    //         });
-    //     }
-    // }
+    class GroupCreator {
+        constructor(){
+            this.dialog = $('.mdl-dialog');
+            this.friendUl = $('#friend-list');
+            this.isReady = false;
+            this.userDefIconPath = '../dist/img/icon.png';//todo 変更する？？
+            this.$liFrame = $(
+                '<li class="mdl-list__item mdl-button mdl-js-button mdl-pre-upgrade">\n' +
+                    '<span class="mdl-list__item-primary-content mdl-pre-upgrade">\n' +
+                        '<img src="../dist/img/icon.png" alt="user-image" class="mdl-list__item-avatar mdl-pre-upgrade">\n' +
+                        '<span class="name">'+ UNSET_USER_NAME +'</span>\n' +
+                    '</span>\n' +
+                    '<span class="mdl-list__item-secondary-action">\n' +
+                        '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">\n' +
+                            '<input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" checked />\n' +
+                        '</label>\n' +
+                    '</span>\n' +
+                '</li>'
+            );
+
+            this.dlFriendList();
+            this.initListeners();
+        }
+        
+        initListeners(){
+            this.dialog.on('cancel', function (e) {
+                e.preventDefault();
+            }).on('close', function (e) {
+                if (this.returnValue === 'yes') {
+                    console.log('positive');
+                } else  {
+                    console.log('negative');
+                }
+            });
+        }
+
+        dlFriendList(){
+            const self = this;
+            const scheme = makeRefScheme(['friend', loginedUser.uid]);
+            defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
+                console.log('dlFriendList', snapshot);
+                if (snapshot.exists()) {
+                    console.log('友達いる');
+                    self.setDomAsFriendList(snapshot);
+                    // let friendJson = snapshot.toJSON();
+                    // friendJson.forEach(function (childSnap) {
+                    //     if (childSnap.key === DEFAULT)
+                    //         return;
+                    //     let $li = self.$liFrame.clone();
+                    //     SocialDataOperator.setDomDetails(childSnap.key, childSnap, $li, UNSET_USER_NAME, self.userDefIconPath);
+                    //     friendUl.append($li);
+                    // });
+                    // setElementAsMdl(friendUl);
+                    self.isReady = true;
+                    console.log(self.isReady);
+                } else {
+                    console.log('友達いない');
+                    //todo 友達いない
+                }
+            }).catch(err => {
+                console.log(err);
+                //todo エラー処理
+            });
+        }
+
+        onClickGroupCreateBtn(){
+            if (this.isReady && !this.dialog.attr('opened')){
+                this.dialog[0].showModal();
+            }
+        }
+
+        setDomAsFriendList(snapshot){
+            const self = this;
+            snapshot.forEach(function (childSnap) {
+                if (childSnap.key === DEFAULT)
+                    return;
+                let $li = self.$liFrame.clone();
+                let json = childSnap.toJSON();
+                SocialDataOperator.setDomDetails(childSnap.key, json, $li, UNSET_USER_NAME, self.userDefIconPath);
+                self.friendUl.append($li);
+            });
+            setElementAsMdl(this.friendUl);
+        }
+    }
 }();
