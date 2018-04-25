@@ -114,43 +114,47 @@ body {
     &.pre-load {
       display: none;
     }
-    .list-card__header {
-      position: relative;
-      padding: 16px 16px 0 16px;
-      font-size: 18px;
-      color: $textDefColor;
-      .list-card__title {
-        display: inline-block;
-        height: 32px;
-        vertical-align: middle;
-        .list-card__icon {
-          color: $primaryColor;
-          margin-right: 16px;
+    .mdl-card {
+      padding: 16px 0;
+      .list-card__header {
+        position: relative;
+        padding: 0 16px;
+        font-size: 18px;
+        color: $textDefColor;
+        .list-card__title {
+          display: inline-block;
+          height: 32px;
+          vertical-align: middle;
+          .list-card__icon {
+            color: $primaryColor;
+            margin-right: 16px;
+          }
+        }
+        .list-card__conf {
+          position: absolute;
+          font-size: inherit;
+          color: $textExtraColor;
+          top: -6px;
+          right: 16px;
         }
       }
-      .list-card__conf {
-        position: absolute;
+      .list-card__ul {
+        margin: 0;
+        padding: 0 8px;
+        .config {
+          font-size: 18px;
+          color: $textExtraColor;
+        }
+      }
+      .list-drop-btn {
+        margin: 0 auto;
+        color: $textExtraColor;
         font-size: inherit;
-        color: $textExtraColor;
-        top: 11px;
-        right: 11px;
+        height: 28px;
+        width: 28px;
+        min-width: 28px;
+        display: none;//todo ドロップダウンどうするか・友達リストどうするか
       }
-    }
-    .list-card__ul {
-      margin: 0;
-      padding: 0 8px;
-      .config {
-        font-size: 18px;
-        color: $textExtraColor;
-      }
-    }
-    .list-drop-btn {
-      margin: 0 auto;
-      color: $textExtraColor;
-      font-size: inherit;
-      height: 28px;
-      width: 28px;
-      min-width: 28px;
     }
   }
 }

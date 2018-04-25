@@ -50,6 +50,8 @@
             });
 
             initDrawerDecoration();
+
+            tippy('[title]');
         }
 
         onLoginSuccess() {
@@ -63,8 +65,8 @@
             // const calendar = new Calendar('#calendar', null);
             Main.setDomStatus();
             const fgRetriever = new FriendAndGroupListRetriever();
-            fgRetriever.retrieveFriendList();
             fgRetriever.retrieveGroupList();
+            // fgRetriever.retrieveFriendList();
         }
 
         static setDomStatus(){
@@ -129,9 +131,9 @@
             this.$friendCard = $('#user-list');
 
             this.$liFrame = $(
-                '<li class="mdl-list__item">\n' +
-                    '<span class="mdl-list__item-primary-content">\n' +
-                        '<img src="../dist/img/icon.png" alt="user-image" class="mdl-list__item-avatar">\n' +
+                '<li class="mdl-list__item mdl-pre-upgrade">\n' +
+                    '<span class="mdl-list__item-primary-content mdl-pre-upgrade">\n' +
+                        '<img src="../dist/img/icon.png" alt="user-image" class="mdl-list__item-avatar mdl-pre-upgrade">\n' +
                         '<span class="name">'+ UNSET_USER_NAME +'</span>\n' +
                     '</span>\n' +
                     '<button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--icon config">\n' +
@@ -154,6 +156,7 @@
 
                     self.$friendLi.append($li);
                 });
+                setElementAsMdl(self.$friendCard);
                 self.$friendCard.removeClass('pre-load');
             }).catch(error => {
                 //todo エラー処理 Ntfを出す
@@ -173,6 +176,7 @@
 
                     self.$groupList.append($li);
                 });
+                setElementAsMdl(self.$groupCard);
                 self.$groupCard.removeClass('pre-load');
             }).catch(error => {
                 //todo エラー処理 Ntfを出す
