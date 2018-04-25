@@ -4,6 +4,7 @@
     const defaultApp = firebase.initializeApp(CONFIG);
     const defaultDatabase = defaultApp.database();
     let loginedUser;
+    const current = moment();
 
     window.onload = function init() {
         new Main().init();
@@ -64,9 +65,11 @@
 
             // const calendar = new Calendar('#calendar', null);
             Main.setDomStatus();
-            const fgRetriever = new FriendAndGroupListRetriever();
-            fgRetriever.retrieveGroupList();
+            const socialOperator = new SocialDataOperator();
+            socialOperator.retrieveGroupList();
             // fgRetriever.retrieveFriendList();
+
+            new CalendarOperator().init();
         }
 
         static setDomStatus(){
@@ -74,7 +77,7 @@
                 .retrieveData();
             new MetaRecordRetriever('#meta-continue', 'analytics', loginedUser.uid, 'continuousCount')
                 .retrieveData();
-            new MonthTotalRetriever('#meta-month', 'analytics', loginedUser.uid, moment().format('YYYYMM'), 'recordedDate')
+            new MonthTotalRetriever('#meta-month', 'analytics', loginedUser.uid, current.format('YYYYMM'), 'recordedDate')
                 .retrieveData();
         }
     }
@@ -118,14 +121,14 @@
         }
     }
 
-    class FriendAndGroupListRetriever{
+    class SocialDataOperator {
         constructor(){
             this.groupDefIconPath = '../dist/img/icon.png';//todo 変更する？？
             this.userDefIconPath = '../dist/img/icon.png';//todo 変更する？？
             this.UNSET_GROUP_NAME = '新しいグループ';//todo 変更する？？
             this.schemeFriend = makeRefScheme(['friend', loginedUser.uid]);
-            this.schemeGroup = makeRefScheme(['userData', loginedUser.uid, 'group']);
-            this.$friendLi =$('#user-list > div > ul');
+            this.schemeGroupNode = makeRefScheme(['userData', loginedUser.uid, 'group']);
+            this.$friendLi = $('#user-list > div > ul');
             this.$groupList = $('#group-list > div > ul');
             this.$groupCard = $('#group-list');
             this.$friendCard = $('#user-list');
@@ -152,7 +155,7 @@
                     let json = childSnap.toJSON();
                     let $li = self.$liFrame.clone();
 
-                    FriendAndGroupListRetriever.setDomDetails(childSnap.key, json, $li, UNSET_USER_NAME, self.userDefIconPath);//todo 変更する？？
+                    SocialDataOperator.setDomDetails(childSnap.key, json, $li, UNSET_USER_NAME, self.userDefIconPath);//todo 変更する？？
 
                     self.$friendLi.append($li);
                 });
@@ -165,21 +168,34 @@
 
         retrieveGroupList(){
             const self = this;
-            defaultDatabase.ref(this.schemeGroup).once('value').then(snapshot =>{
+            const $groupActLi = $('#group-act-list');
+            defaultDatabase.ref(this.schemeGroupNode).once('value').then(snapshot =>{
                 snapshot.forEach(function (childSnap) {
                     if (childSnap.key === DEFAULT)
                         return;
                     let json = childSnap.toJSON();
                     let $li = self.$liFrame.clone();
 
-                    FriendAndGroupListRetriever.setDomDetails(childSnap.key, json, $li, self.UNSET_GROUP_NAME, self.groupDefIconPath);//todo 変更する？？
+                    SocialDataOperator.setDomDetails(childSnap.key, json, $li, self.UNSET_GROUP_NAME, self.groupDefIconPath);//todo 変更する？？
 
                     self.$groupList.append($li);
+
+                    let groupScheme = makeRefScheme(['group', snapshot.key]);
+                    defaultDatabase.ref(groupScheme).once('value').then(snapshot =>{
+                        if (!snapshot.exists()) {
+                            //todo エラーロギング
+                            return;
+                        }
+                        let groupJson = snapshot.toJSON();
+                        //todo 次はここから
+                    }).catch(err => {
+
+                    });
                 });
                 setElementAsMdl(self.$groupCard);
                 self.$groupCard.removeClass('pre-load');
             }).catch(error => {
-                //todo エラー処理 Ntfを出す
+                //todo エラー処理 グループログも
             });
         }
 
@@ -193,4 +209,47 @@
             $li.find('img').attr('src', photoUrl);
         }
     }
+
+    class CalendarOperator {
+        constructor(){
+            console.log('CalendarOperator');
+            this.json = JSON.stringify([]);
+        }
+
+        init(){
+            const self = this;
+            const scheme = makeRefScheme(['combinedCalendar', loginedUser.uid]);
+            defaultDatabase.ref(scheme).once('value').then(snapshot =>{
+                console.log(snapshot);
+                if (snapshot.exists()) {
+                    self.json = snapshot.toJSON();
+                }
+                this.calendar = new Calendar('#calendar', self.json);
+            }).catch(error => {
+                console.log(error);
+                //todo エラー処理 Ntfを出す
+            });
+        }
+    }
+
+    // class SocialDataOperator {
+    //     constructor(){
+    //
+    //     }
+    //
+    //     init() {
+    //         const self = this;
+    //         const scheme = makeRefScheme(['group', loginedUser.uid, current.format('YYYYMM')]);
+    //         defaultDatabase.ref(scheme).once('value').then(snapshot => {
+    //             console.log(snapshot);
+    //             if (snapshot.exists()) {
+    //                 self.json = snapshot.toJSON();
+    //             }
+    //             this.calendar = new Calendar('#calendar', self.json);
+    //         }).catch(error => {
+    //             console.log(error);
+    //             //todo エラー処理 Ntfを出す
+    //         });
+    //     }
+    // }
 }();

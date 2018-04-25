@@ -20,3 +20,5 @@
 /firebase-debug.log
 !/public/dist/calendar.js
 !/public/dist/calendar.css
+!/public/dist/custom_calendar.js
+!/public/dist/custom_calendar.css

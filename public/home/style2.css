@@ -75,38 +75,40 @@ body {
 
 #right-col #card-calendar {
   margin-top: 0; }
+  #right-col #card-calendar .mdl-card {
+    padding: 0 0 8px 0; }
 
-#right-col .right-card {
+#right-col .right-card:not(#card-calendar) {
   margin: 16px 0; }
-  #right-col .right-card.pre-load {
+  #right-col .right-card:not(#card-calendar).pre-load {
     display: none; }
-  #right-col .right-card .mdl-card {
+  #right-col .right-card:not(#card-calendar) .mdl-card {
     padding: 16px 0 8px 0; }
-    #right-col .right-card .mdl-card .list-card__header {
+    #right-col .right-card:not(#card-calendar) .mdl-card .list-card__header {
       position: relative;
       padding: 0 16px;
       font-size: 18px;
       color: rgba(0, 0, 0, 0.87); }
-      #right-col .right-card .mdl-card .list-card__header .list-card__title {
+      #right-col .right-card:not(#card-calendar) .mdl-card .list-card__header .list-card__title {
         display: inline-block;
         height: 32px;
         vertical-align: middle; }
-        #right-col .right-card .mdl-card .list-card__header .list-card__title .list-card__icon {
+        #right-col .right-card:not(#card-calendar) .mdl-card .list-card__header .list-card__title .list-card__icon {
           color: #E57C3E;
           margin-right: 16px; }
-      #right-col .right-card .mdl-card .list-card__header .list-card__conf {
+      #right-col .right-card:not(#card-calendar) .mdl-card .list-card__header .list-card__conf {
         position: absolute;
         font-size: inherit;
         color: rgba(0, 0, 0, 0.54);
         top: -6px;
         right: 16px; }
-        #right-col .right-card .mdl-card .list-card__header .list-card__conf:hover {
+        #right-col .right-card:not(#card-calendar) .mdl-card .list-card__header .list-card__conf:hover {
           color: #E57C3E; }
-    #right-col .right-card .mdl-card .list-card__ul {
+    #right-col .right-card:not(#card-calendar) .mdl-card .list-card__ul {
       margin: 0;
       padding: 0;
       border-top: 1px solid rgba(0, 0, 0, 0.1); }
-      #right-col .right-card .mdl-card .list-card__ul > .mdl-list__item {
+      #right-col .right-card:not(#card-calendar) .mdl-card .list-card__ul > .mdl-list__item {
         padding: 20px 32px;
         font-size: 16px;
         font-weight: 400;
@@ -122,10 +124,10 @@ body {
         display: flex;
         border-radius: unset;
         height: unset; }
-      #right-col .right-card .mdl-card .list-card__ul .config {
+      #right-col .right-card:not(#card-calendar) .mdl-card .list-card__ul .config {
         font-size: 18px;
         color: rgba(0, 0, 0, 0.54); }
-    #right-col .right-card .mdl-card .list-drop-btn {
+    #right-col .right-card:not(#card-calendar) .mdl-card .list-drop-btn {
       margin: 0 auto;
       color: rgba(0, 0, 0, 0.54);
       font-size: inherit;
@@ -135,7 +137,9 @@ body {
       display: none; }
 
 #group-act-list {
-  margin-top: 72px; }
+  margin-top: 72px;
+  list-style: none;
+  padding: 0; }
   #group-act-list #sample {
     width: unset;
     margin-top: 36px; }

@@ -12,7 +12,7 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
 
     <link href="../dist/common.css" rel="stylesheet">
-    <link href="../dist/calendar.css" rel="stylesheet">
+    <link href="../dist/custom_calendar.css" rel="stylesheet">
     <link href="style2.css" rel="stylesheet">
 </head>
 <body>
@@ -60,22 +60,22 @@
                                         <tr>
                                             <td>今月</td>
                                             <td>累計</td>
-                                            <td>連続日数</td>
+                                            <td>連続記録</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td id="meta-month">4日</td>
-                                            <td id="meta-total">24日</td>
-                                            <td id="meta-continue">1日</td>
+                                            <td id="meta-month"></td>
+                                            <td id="meta-total"></td>
+                                            <td id="meta-continue"></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <div id="group-act-list">
-                            <div class="card-item-group mdl-card mdl-shadow--2dp">
+                        <ul id="group-act-list">
+                            <li class="card-item-group mdl-card mdl-shadow--2dp">
                                 <div class="group-act__header">
                                     <ul class="mdl-list">
                                         <li class="mdl-list__item">
@@ -187,9 +187,9 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </li>
 
-                            <div class="card-item-group mdl-card mdl-shadow--2dp">
+                            <li class="card-item-group mdl-card mdl-shadow--2dp">
                                 <div class="group-act__header">
                                     <ul class="mdl-list">
                                         <li class="mdl-list__item">
@@ -301,9 +301,9 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </li>
 
-                            <div class="mdl-card mdl-shadow--2dp" id="sample">
+                            <li class="mdl-card mdl-shadow--2dp" id="sample">
                                 <div class="group-act__header">
                                     <img class="group-act__icon rounded-circle mdl-list__item-avatar mdl-shadow--2dp" src="https://randomuser.me/api/portraits/med/men/77.jpg">
                                     <div>
@@ -355,8 +355,8 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
-                        </div>
+                            </li>
+                        </ul>
                     </div>
 
                     <div id="right-col" class="column">
@@ -471,7 +471,7 @@
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase-database.js"></script>
 
 <script src="../dist/common.js"></script>
-<!--<script src="../dist/calendar.js"></script>-->
+<script src="../dist/custom_calendar.js"></script>
 <script src="app2.js"></script>
 
 <% include ../common/_no_script.ejs %>

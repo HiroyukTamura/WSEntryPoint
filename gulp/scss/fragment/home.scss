@@ -108,8 +108,11 @@ body {
 #right-col {
   #card-calendar {
     margin-top: 0;
+    .mdl-card {
+      padding: 0 0 8px 0;
+    }
   }
-  .right-card {
+  .right-card:not(#card-calendar) {
     margin: 16px 0;
     &.pre-load {
       display: none;
@@ -179,6 +182,8 @@ body {
 
 #group-act-list {
   margin-top: 72px;
+  list-style: none;
+  padding: 0;
 
   #sample {
     width: unset;
