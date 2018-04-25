@@ -115,7 +115,7 @@ body {
       display: none;
     }
     .mdl-card {
-      padding: 16px 0;
+      padding: 16px 0 8px 0;
       .list-card__header {
         position: relative;
         padding: 0 16px;
@@ -136,11 +136,29 @@ body {
           color: $textExtraColor;
           top: -6px;
           right: 16px;
+          &:hover {
+            color: $primaryColor;
+          }
         }
       }
       .list-card__ul {
         margin: 0;
-        padding: 0 8px;
+        padding: 0;
+        @include seem-top;
+        >.mdl-list__item {
+          padding: 20px 32px;
+          font-size: 16px;
+          font-weight: 400;
+          width: unset;
+          min-width: unset;
+          color: inherit;
+          text-transform: inherit;
+          text-align: unset;
+          line-height: unset;
+          display: flex;
+          border-radius: unset;
+          height: unset;
+        }
         .config {
           font-size: 18px;
           color: $textExtraColor;

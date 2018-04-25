@@ -11,3 +11,7 @@ $pageMaxWidth: 1200px;
 
 $headerColor: #524b4b;
 $tableRowColor: #fafaf8;
+
+@mixin seem-top{
+  border-top: 1px solid rgba(0,0,0,.1);
+}

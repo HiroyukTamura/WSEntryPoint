@@ -131,14 +131,14 @@
             this.$friendCard = $('#user-list');
 
             this.$liFrame = $(
-                '<li class="mdl-list__item mdl-pre-upgrade">\n' +
+                '<li class="mdl-list__item mdl-button mdl-js-button mdl-pre-upgrade">\n' +
                     '<span class="mdl-list__item-primary-content mdl-pre-upgrade">\n' +
                         '<img src="../dist/img/icon.png" alt="user-image" class="mdl-list__item-avatar mdl-pre-upgrade">\n' +
                         '<span class="name">'+ UNSET_USER_NAME +'</span>\n' +
                     '</span>\n' +
-                    '<button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--icon config">\n' +
-                        '<i class="fas fa-cog fa-sm"></i>\n' +
-                    '</button>\n' +
+                    // '<button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--icon config">\n' +
+                    //     '<i class="fas fa-cog fa-sm"></i>\n' +
+                    // '</button>\n' +//todo これどうするのか後で決めること
                 '</li>'
             );
         }

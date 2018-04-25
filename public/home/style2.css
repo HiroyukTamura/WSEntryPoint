@@ -81,7 +81,7 @@ body {
   #right-col .right-card.pre-load {
     display: none; }
   #right-col .right-card .mdl-card {
-    padding: 16px 0; }
+    padding: 16px 0 8px 0; }
     #right-col .right-card .mdl-card .list-card__header {
       position: relative;
       padding: 0 16px;
@@ -98,11 +98,30 @@ body {
         position: absolute;
         font-size: inherit;
         color: rgba(0, 0, 0, 0.54);
-        top: -4px;
-        right: -4px; }
+        top: -6px;
+        right: 16px; }
+        #right-col .right-card .mdl-card .list-card__header .list-card__conf:hover {
+          color: #E57C3E; }
     #right-col .right-card .mdl-card .list-card__ul {
       margin: 0;
-      padding: 0 8px; }
+      padding: 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1); }
+      #right-col .right-card .mdl-card .list-card__ul > .mdl-list__item {
+        padding: 20px 32px;
+        font-size: 16px;
+        font-weight: 400;
+        width: unset;
+        min-width: unset;
+        color: inherit;
+        text-transform: inherit;
+        text-align: unset;
+        line-height: unset;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        border-radius: unset;
+        height: unset; }
       #right-col .right-card .mdl-card .list-card__ul .config {
         font-size: 18px;
         color: rgba(0, 0, 0, 0.54); }
