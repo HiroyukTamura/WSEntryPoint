@@ -62,6 +62,9 @@
 
             // const calendar = new Calendar('#calendar', null);
             Main.setDomStatus();
+            const fgRetriever = new FriendAndGroupListRetriever();
+            fgRetriever.retrieveFriendList();
+            fgRetriever.retrieveGroupList();
         }
 
         static setDomStatus(){
@@ -110,6 +113,80 @@
     class MonthTotalRetriever extends MetaRecordRetriever {
         setVal(snapshot){
             this.val = snapshot.val().split(',').length;
+        }
+    }
+
+    class FriendAndGroupListRetriever{
+        constructor(){
+            this.groupDefIconPath = '../dist/img/icon.png';//todo 変更する？？
+            this.userDefIconPath = '../dist/img/icon.png';//todo 変更する？？
+            this.UNSET_GROUP_NAME = '新しいグループ';//todo 変更する？？
+            this.schemeFriend = makeRefScheme(['friend', loginedUser.uid]);
+            this.schemeGroup = makeRefScheme(['userData', loginedUser.uid, 'group']);
+            this.$friendLi =$('#user-list > div > ul');
+            this.$groupList = $('#group-list > div > ul');
+            this.$groupCard = $('#group-list');
+            this.$friendCard = $('#user-list');
+
+            this.$liFrame = $(
+                '<li class="mdl-list__item">\n' +
+                    '<span class="mdl-list__item-primary-content">\n' +
+                        '<img src="../dist/img/icon.png" alt="user-image" class="mdl-list__item-avatar">\n' +
+                        '<span class="name">'+ UNSET_USER_NAME +'</span>\n' +
+                    '</span>\n' +
+                    '<button class="mdl-list__item-secondary-action mdl-button mdl-js-button mdl-button--icon config">\n' +
+                        '<i class="fas fa-cog fa-sm"></i>\n' +
+                    '</button>\n' +
+                '</li>'
+            );
+        }
+
+        retrieveFriendList(){
+            const self = this;
+            defaultDatabase.ref(this.schemeFriend).once('value').then(snapshot =>{
+                snapshot.forEach(function (childSnap) {
+                    if (childSnap.key === DEFAULT)
+                        return;
+                    let json = childSnap.toJSON();
+                    let $li = self.$liFrame.clone();
+
+                    FriendAndGroupListRetriever.setDomDetails(childSnap.key, json, $li, UNSET_USER_NAME, self.userDefIconPath);//todo 変更する？？
+
+                    self.$friendLi.append($li);
+                });
+                self.$friendCard.removeClass('pre-load');
+            }).catch(error => {
+                //todo エラー処理 Ntfを出す
+            });
+        }
+
+        retrieveGroupList(){
+            const self = this;
+            defaultDatabase.ref(this.schemeGroup).once('value').then(snapshot =>{
+                snapshot.forEach(function (childSnap) {
+                    if (childSnap.key === DEFAULT)
+                        return;
+                    let json = childSnap.toJSON();
+                    let $li = self.$liFrame.clone();
+
+                    FriendAndGroupListRetriever.setDomDetails(childSnap.key, json, $li, self.UNSET_GROUP_NAME, self.groupDefIconPath);//todo 変更する？？
+
+                    self.$groupList.append($li);
+                });
+                self.$groupCard.removeClass('pre-load');
+            }).catch(error => {
+                //todo エラー処理 Ntfを出す
+            });
+        }
+
+        static setDomDetails(key, json, $li, errName, errIcon){
+            $li.prop('key', key);
+            const name = (json.hasOwnProperty('name') || json.name !== 'null') ?
+                json.name : errName;
+            $li.find('.name').html(name);
+            const photoUrl = json.hasOwnProperty('photoUrl') && json.photoUrl !== 'null' ?
+                json.photoUrl : errIcon;
+            $li.find('img').attr('src', photoUrl);
         }
     }
 }();

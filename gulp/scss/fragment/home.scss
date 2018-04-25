@@ -111,6 +111,9 @@ body {
   }
   .right-card {
     margin: 16px 0;
+    &.pre-load {
+      display: none;
+    }
     .list-card__header {
       position: relative;
       padding: 16px 16px 0 16px;
