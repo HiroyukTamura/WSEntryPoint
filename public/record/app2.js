@@ -61,49 +61,6 @@
             this.postLoad.show();
 
             setDrawerProfile(loginedUser);
-
-            new MetaRecord();
-        }
-    }
-
-
-    class MetaRecord {
-
-        constructor(){
-            this.$dayCont = $('#meta-continue');
-
-            this.setDomAsTotalOfMon();
-        }
-
-        setDomAsTotalOfMon(){
-            const scheme = makeRefScheme(['analytics', loginedUser.uid, currentMoment.format('YYYYMM'), 'recordedDate']);
-            const $totalOfMon = $('#meta-month');
-            defaultDatabase.ref(scheme).once('value').then(snapshot=> {
-                let days = 0;
-                if (snapshot.exists())
-                    days = snapshot.val().split[','].length;
-                $totalOfMon.html(days+'日');
-            }).catch(err => {
-
-            });
-        }
-
-        setDomAsTotal(){
-            const scheme = makeRefScheme(['analytics', loginedUser.uid, 'totalCount']);
-            const $total = $('#meta-total');
-            defaultDatabase.ref(scheme).once('value').then(snapshot=> {
-                if (!snapshot.exists()) {
-                    //todo エラー処理
-                } else {
-                    $total.html(snapshot.val() + '日');
-                }
-            }).catch(err => {
-
-            });
-        }
-
-        setDomAsCont() {
-
         }
     }
 }();
