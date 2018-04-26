@@ -377,3 +377,60 @@ body {
     }
   }
 }
+
+.mdl-dialog {
+   width: fit-content;
+   max-width: 60%;
+   max-height: 80%;
+   overflow-y: auto;
+
+  .mdl-dialog__content {
+    #dialog-img-w {
+      width: 100%;
+      text-align: center;
+      object-fit: contain;
+      #create-group {
+        .group-icon {
+          width: 60px;
+          height: 60px;
+          position: relative;
+          margin: 0 auto;
+          cursor: pointer;
+          img{
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+          }
+          > div {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: #E57C3E;
+            bottom: 0;
+            right: 0;
+            vertical-align: center;
+            text-align: center;
+            .fa-folder {
+              color: white;
+            }
+          }
+        }
+        .mdl-list {
+          .mdl-list__item-primary-content {
+            margin-right: 48px;
+            span {
+              text-align: left;
+              color: rgba(0,0,0,.87);
+            }
+            img {
+              margin-right: 24px;
+              width: 40px;
+              height: 40px;
+              object-fit: cover;
+            }
+          }
+        }
+      }
+    }
+  }
+}

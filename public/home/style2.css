@@ -299,3 +299,49 @@ body {
               height: 28px; }
     #group-act-list .card-item-group .member-chips {
       margin-left: 88px; }
+
+.mdl-dialog {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: 60%;
+  max-height: 80%;
+  overflow-y: auto; }
+  .mdl-dialog .mdl-dialog__content #dialog-img-w {
+    width: 100%;
+    text-align: center;
+    -o-object-fit: contain;
+    object-fit: contain; }
+    .mdl-dialog .mdl-dialog__content #dialog-img-w #create-group .group-icon {
+      width: 60px;
+      height: 60px;
+      position: relative;
+      margin: 0 auto;
+      cursor: pointer; }
+      .mdl-dialog .mdl-dialog__content #dialog-img-w #create-group .group-icon img {
+        width: 60px;
+        height: 60px;
+        -o-object-fit: cover;
+        object-fit: cover; }
+      .mdl-dialog .mdl-dialog__content #dialog-img-w #create-group .group-icon > div {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        background: #E57C3E;
+        bottom: 0;
+        right: 0;
+        vertical-align: center;
+        text-align: center; }
+        .mdl-dialog .mdl-dialog__content #dialog-img-w #create-group .group-icon > div .fa-folder {
+          color: white; }
+    .mdl-dialog .mdl-dialog__content #dialog-img-w #create-group .mdl-list .mdl-list__item-primary-content {
+      margin-right: 48px; }
+      .mdl-dialog .mdl-dialog__content #dialog-img-w #create-group .mdl-list .mdl-list__item-primary-content span {
+        text-align: left;
+        color: rgba(0, 0, 0, 0.87); }
+      .mdl-dialog .mdl-dialog__content #dialog-img-w #create-group .mdl-list .mdl-list__item-primary-content img {
+        margin-right: 24px;
+        width: 40px;
+        height: 40px;
+        -o-object-fit: cover;
+        object-fit: cover; }

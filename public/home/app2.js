@@ -54,6 +54,7 @@
 
             initDrawerDecoration();
 
+            GroupCreator.tippyForDialog('.group-icon', 'top', 5);
             tippy('[title]');
         }
 
@@ -239,42 +240,58 @@
     }
 
     class GroupCreator {
-        constructor(){
-            this.dialog = $('.mdl-dialog');
-            this.friendUl = $('#friend-list');
+        constructor() {
+            this.$dialog = $('.mdl-dialog');
+            this.$friendUl = $('#friend-list');
+            this.$fileInput = $('#file-input');
+            this.$groupIcon = this.$dialog.find('.group-icon');
+
             this.isReady = false;
+            this.task = null;
+
             this.userDefIconPath = '../dist/img/icon.png';//todo 変更する？？
             this.$liFrame = $(
-                '<li class="mdl-list__item mdl-button mdl-js-button mdl-pre-upgrade">\n' +
-                    '<span class="mdl-list__item-primary-content mdl-pre-upgrade">\n' +
-                        '<img src="../dist/img/icon.png" alt="user-image" class="mdl-list__item-avatar mdl-pre-upgrade">\n' +
-                        '<span class="name">'+ UNSET_USER_NAME +'</span>\n' +
-                    '</span>\n' +
-                    '<span class="mdl-list__item-secondary-action">\n' +
-                        '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">\n' +
-                            '<input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" checked />\n' +
-                        '</label>\n' +
-                    '</span>\n' +
+                '<li class="mdl-list__item mdl-pre-upgrade">\n' +
+                '<span class="mdl-list__item-primary-content mdl-pre-upgrade">\n' +
+                '<img src="../dist/img/icon.png" alt="user-image" class="mdl-list__item-avatar mdl-pre-upgrade">\n' +
+                '<span class="name">' + UNSET_USER_NAME + '</span>\n' +
+                '</span>\n' +
+                '<span class="mdl-list__item-secondary-action mdl-pre-upgrade">\n' +
+                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-pre-upgrade" for="list-checkbox-1">\n' +
+                '<input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input mdl-pre-upgrade" />\n' +
+                '</label>\n' +
+                '</span>\n' +
                 '</li>'
             );
 
             this.dlFriendList();
             this.initListeners();
         }
-        
-        initListeners(){
-            this.dialog.on('cancel', function (e) {
+
+        initListeners() {
+            const self = this;
+            this.$dialog.on('cancel', function (e) {
                 e.preventDefault();
             }).on('close', function (e) {
                 if (this.returnValue === 'yes') {
                     console.log('positive');
-                } else  {
+                } else {
                     console.log('negative');
                 }
             });
+            this.$groupIcon.on('click', function (e) {
+                e.preventDefault();
+                if (!self.task)
+                    self.$fileInput.click();
+                return false;
+            });
+            this.$fileInput.on('change', function (e) {
+                console.log('ファイル選択された');
+                self.onChooseGroupIcon(e);
+            });
         }
 
-        dlFriendList(){
+        dlFriendList() {
             const self = this;
             const scheme = makeRefScheme(['friend', loginedUser.uid]);
             defaultDatabase.ref(scheme).once('value').then(function (snapshot) {
@@ -282,15 +299,6 @@
                 if (snapshot.exists()) {
                     console.log('友達いる');
                     self.setDomAsFriendList(snapshot);
-                    // let friendJson = snapshot.toJSON();
-                    // friendJson.forEach(function (childSnap) {
-                    //     if (childSnap.key === DEFAULT)
-                    //         return;
-                    //     let $li = self.$liFrame.clone();
-                    //     SocialDataOperator.setDomDetails(childSnap.key, childSnap, $li, UNSET_USER_NAME, self.userDefIconPath);
-                    //     friendUl.append($li);
-                    // });
-                    // setElementAsMdl(friendUl);
                     self.isReady = true;
                     console.log(self.isReady);
                 } else {
@@ -303,13 +311,13 @@
             });
         }
 
-        onClickGroupCreateBtn(){
-            if (this.isReady && !this.dialog.attr('opened')){
-                this.dialog[0].showModal();
+        onClickGroupCreateBtn() {
+            if (this.isReady && !this.$dialog.attr('opened')) {
+                this.$dialog[0].showModal();
             }
         }
 
-        setDomAsFriendList(snapshot){
+        setDomAsFriendList(snapshot) {
             const self = this;
             snapshot.forEach(function (childSnap) {
                 if (childSnap.key === DEFAULT)
@@ -317,9 +325,164 @@
                 let $li = self.$liFrame.clone();
                 let json = childSnap.toJSON();
                 SocialDataOperator.setDomDetails(childSnap.key, json, $li, UNSET_USER_NAME, self.userDefIconPath);
-                self.friendUl.append($li);
+                self.$friendUl.append($li);
             });
-            setElementAsMdl(this.friendUl);
+            setElementAsMdl(this.$friendUl);
+        }
+
+        onChooseGroupIcon(e) {
+            if (this.task)
+                return;
+            const mimeType = e.target.files[0].type;
+
+            if (!GroupCreator.validateMimeType(mimeType)) {
+                showNotification(NTF_FILE_IMG_W, 'warning');
+                return;
+            }
+
+            if (!GroupCreator.validateSuffix(e.target.files[0].name)) {
+                showNotification(NTF_FILE_IMG_W, 'warning');
+                return;
+            }
+
+            if (!GroupCreator.validateSize(e.target.files[0].size)) {
+                showNotification(NTF_LIMIT_SIZE5, 'warning');
+                return;
+            }
+
+            let notification = this.showProgressNotification();
+
+            const key = defaultDatabase.ref('keyPusher').push().key;
+            const suf = mimeType.split('.')[1];
+            console.log(suf);
+            /*!!!!!つまり、グループアイコンのストレージURLは、グループkeyに一致しない!!!!*/
+            this.task = firebase.storage().ref(makeRefScheme(['group_icon', key + '.' + suf]))
+                .put(e.target.files[0]);
+            new UploadTaskOperator(this.task, notification, this.$groupIcon.find('img')).init();
+        }
+
+        static tippyForDialog(selectorVal, placement, distance) {
+            tippy(selectorVal, {
+                updateDuration: 0,
+                appendTo: $('dialog')[0],
+                distance: distance,
+                placement: placement,
+                popperOptions: {
+                    modifiers: {
+                        preventOverflow: {
+                            enabled: false
+                        }
+                    }
+                }
+            });
+        }
+
+        static validateMimeType(mimeType) {
+            const whiteList = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            return whiteList.indexOf(mimeType.toLowerCase()) !== -1;
+        }
+
+        static validateSuffix(fileName) {
+            const dotPos = fileName.indexOf('.');
+            if (dotPos === -1)
+                return false;
+            if (fileName.split('.').length !== 2)
+                return false;
+
+            const suf = fileName.substring(dotPos + 1);
+            const whiteList = ['jpeg', 'jpg', 'png', 'gif'];
+            return whiteList.indexOf(suf.toLowerCase()) !== -1;
+        }
+
+        static validateSize(fileSize) {
+            return fileSize <= 5 * 1000 * 1000;
+        }
+
+        showProgressNotification() {
+            return $.notify({
+                title: 'アップロードしています...',
+                message: '<strong>0%</strong>',
+                icon: 'fas fa-cloud-upload-alt',
+                progressbar: 0
+            }, {
+                type: 'info',
+                newest_on_top: true,
+                allow_dismiss: true,
+                showProgressbar: true,
+                delay: 0,
+                onclosed: this.cancelUpload()
+            });
+        }
+
+        static updateProgressNtf(notification, progress) {
+            const msg = '<strong>'+progress+'%</strong>';
+            notification.update({
+                'message': msg,
+                'progress': progress
+            });
+        }
+
+        cancelUpload() {
+            if (this.task)
+                this.task.cancel();
+        }
+    }
+
+    class UploadTaskOperator {
+        constructor(task, notification, $iconImg) {
+            this.task = task;
+            this.notification = notification;
+            this.$iconImg = $iconImg;
+        }
+
+        init() {
+            const self = this;
+            this.task.on('state_changed', function (snapshot) {
+                const progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 95);//残りの5%は完了動作
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                        console.log('Upload is paused');
+                        break;
+                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                        console.log('Upload is running');
+                        GroupCreator.updateProgressNtf(self.notification, progress);
+                        break;
+                }
+            }, function (error) {
+                //todo エラーデバッグすること
+                this.task = null;//これで「キャンセルしました」が出なくなる
+                this.notification.close();
+                let errMsg = ERR_MSG_OPE_FAILED;
+                switch (error.code) {
+                    case 'storage/retry_limit_exceeded':
+                        errMsg = 'タイムアウトしました';
+                        break;
+                    case 'storage/invalid_checksum':
+                        errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                        break;
+                    case 'storage/canceled':
+                        errMsg = 'キャンセルしました';
+                        break;
+                    case 'storage/cannot_slice_blob':
+                        errMsg = errMsg + '。ファイルを確かめてもう一度アップロードしてみてください。';
+                        break;
+                    case 'storage/server_wrong_file_size':
+                        errMsg = errMsg + '。もう一度アップロードしてみてください。';
+                        break;
+                }
+                showNotification(errMsg, 'danger');
+
+            }, function () {
+                let downloadURL = self.task.snapshot.downloadURL;
+                console.log(downloadURL);
+
+                GroupCreator.updateProgressNtf(self.notification, 100);
+                self.task = null;
+                self.notification.close();
+                showNotification(NTF_UPLOAD_SUCCESS, 'success');
+                self.$iconImg.attr('src', downloadURL);
+            });
         }
     }
 }();
